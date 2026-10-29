@@ -39870,430 +39870,1634 @@
         {
           "id": "m13-l01",
           "title": "React dan ekosistem frontend modern",
-          "minutes": 45,
+          "minutes": 150,
           "level": "Lanjutan",
           "depth": "integrasi",
-          "outcome": "",
+          "outcome": "Setelah pelajaran ini, Anda dapat menilai kapan sebuah antarmuka memerlukan React, menyusun komponen dari data, serta mengelola keadaan yang berubah tanpa menulis ulang seluruh halaman.",
           "codeLanguage": "jsx",
-          "objectives": [],
-          "prerequisites": [],
-          "terms": [],
-          "syntax": [],
-          "conventions": [],
-          "next": "",
+          "objectives": [
+            "Menjelaskan masalah yang diselesaikan React pada antarmuka.",
+            "Menyusun antarmuka sebagai komponen yang menerima data.",
+            "Mengelola keadaan yang berubah dan memicu pembaruan tampilan.",
+            "Menilai kapan React diperlukan dan kapan tidak."
+          ],
+          "prerequisites": [
+            {
+              "label": "Dashboard web Laravel",
+              "lessonId": "m12-l04"
+            }
+          ],
+          "terms": [
+            {
+              "term": "Komponen",
+              "definition": "Bagian antarmuka yang berdiri sendiri, menerima data, dan mengembalikan tampilan sesuai data itu."
+            },
+            {
+              "term": "Properti",
+              "definition": "Data yang diterima sebuah komponen dari luar dan dipakai untuk menyusun tampilannya."
+            },
+            {
+              "term": "Keadaan",
+              "definition": "Data di dalam komponen yang dapat berubah selama aplikasi berjalan dan memicu tampilan disusun ulang."
+            },
+            {
+              "term": "Penyusunan ulang",
+              "definition": "Proses menyusun kembali tampilan komponen ketika datanya berubah, tanpa memuat ulang halaman."
+            },
+            {
+              "term": "Kunci daftar",
+              "definition": "Penanda unik setiap butir daftar yang membantu mengenali butir mana yang berubah."
+            }
+          ],
+          "syntax": [
+            {
+              "token": "function DaftarTugas({ tugas }) { ... }",
+              "meaning": "Komponen menerima data dari luar, bukan mengambilnya sendiri. Pemisahan itu membuat komponen dapat dipakai pada banyak tempat dengan data yang berbeda.",
+              "readAs": "Baca sebagai komponen yang menerima daftar tugas lalu mengembalikan tampilannya.",
+              "example": "function DaftarTugas({ tugas }) { ... }",
+              "output": "Komponen menampilkan daftar sesuai data yang diberikan kepadanya.",
+              "pitfall": "Mengambil data langsung di dalam komponen membuatnya sulit dipakai ulang dan diuji."
+            },
+            {
+              "token": "const [judul, setJudul] = useState(\"\");",
+              "meaning": "Nilai keadaan disimpan di dalam komponen. Ketika nilainya diubah lewat fungsi pengubah, komponen disusun ulang dengan nilai baru.",
+              "readAs": "Baca sebagai penyimpanan nilai yang berubah beserta cara mengubahnya.",
+              "example": "const [judul, setJudul] = useState(\"\");",
+              "output": "Tampilan diperbarui setiap kali nilai keadaan berubah.",
+              "pitfall": "Mengubah nilai keadaan langsung tanpa fungsi pengubah membuat tampilan tidak ikut diperbarui."
+            },
+            {
+              "token": "{tugas.map((item) => (<li key={item.id}>{item.judul}</li>))}",
+              "meaning": "Setiap data diubah menjadi satu tampilan, dan kunci unik menandai butir mana yang berubah ketika datanya diperbarui.",
+              "readAs": "Baca sebagai penyusunan daftar tampilan dari sekumpulan data.",
+              "example": "{tugas.map((item) => (<li key={item.id}>{item.judul}</li>))}",
+              "output": "Setiap data muncul sebagai satu butir daftar dengan penanda uniknya.",
+              "pitfall": "Memakai indeks daftar sebagai kunci menyulitkan pengenalan butir ketika urutannya berubah."
+            }
+          ],
+          "conventions": [
+            "Pilih React ketika tampilan perlu sering berubah tanpa memuat ulang halaman.",
+            "Biarkan komponen menerima data dari luar, bukan mengambilnya sendiri.",
+            "Simpan nilai yang berubah pada keadaan dan ubah lewat fungsi pengubahnya.",
+            "Beri setiap butir daftar kunci yang unik dan tetap.",
+            "Pecah antarmuka menjadi komponen kecil yang namanya menyatakan perannya."
+          ],
+          "next": "Berikutnya: Redis dan pekerja latar. Anda akan menjalankan pekerjaan berat di luar permintaan pengguna.",
           "sections": [
             {
-              "id": "konsep",
-              "title": "Memahami konsepnya",
+              "id": "cara-membaca",
+              "title": "Cara membaca komponen",
               "body": [
-                "React memodelkan UI sebagai komponen dan state; TypeScript membantu pada kode besar. Framework meta seperti Next.js dapat menambah server rendering dan routing.",
-                "Pelajari React setelah HTML/CSS/JS murni, bukan sebagai pengganti fundamental. Pertimbangkan Laravel + Livewire jika kebutuhan utama adalah CRUD administratif."
+                "Komponen dibaca sebagai fungsi yang menerima data lalu mengembalikan tampilan. Pada contoh, komponen menerima daftar tugas dan menyusun tampilan daftar dari data itu.",
+                "Perhatikan pemeriksaan keadaan kosong di awal. Keadaan itu ditangani lebih dulu agar tampilan daftar tidak perlu menangani daftar yang belum berisi apa pun.",
+                "Bagian pengulangan mengubah setiap data menjadi satu butir tampilan. Kunci unik pada setiap butir menandai butir mana yang berubah ketika daftarnya diperbarui, sehingga pembaruan tampilan menjadi tepat sasaran."
               ],
-              "code": null,
+              "code": {
+                "language": "jsx",
+                "code": "function DaftarTugas({ tugas }) {\n  if (tugas.length === 0) {\n    return <p>Belum ada tugas.</p>;\n  }\n\n  return (\n    <ul>\n      {tugas.map((item) => (\n        <li key={item.id}>{item.judul}</li>\n      ))}\n    </ul>\n  );\n}",
+                "output": "Komponen menampilkan keterangan kosong atau daftar tugas sesuai data yang diterimanya.",
+                "explain": "Komponen menerima data dari luar, menangani keadaan kosong, lalu menyusun butir daftar dengan kunci uniknya.",
+                "annotations": [
+                  {
+                    "line": 1,
+                    "code": "function DaftarTugas({ tugas }) {",
+                    "note": "Komponen menerima daftar tugas dari luar."
+                  },
+                  {
+                    "line": 2,
+                    "code": "if (tugas.length === 0) {",
+                    "note": "Keadaan kosong ditangani lebih dulu."
+                  },
+                  {
+                    "line": 3,
+                    "code": "return <p>Belum ada tugas.</p>;",
+                    "note": "Tampilan khusus dikembalikan ketika daftar kosong."
+                  },
+                  {
+                    "line": 9,
+                    "code": "<li key={item.id}>{item.judul}</li>",
+                    "note": "Setiap butir diberi kunci unik agar mudah dikenali."
+                  }
+                ],
+                "lab": false
+              },
               "callouts": [
                 {
                   "tone": "good",
-                  "title": "Best practice",
-                  "body": "Pilih kompleksitas frontend berdasarkan kebutuhan interaksi tim dan produk."
-                },
+                  "title": "Komponen menerima data",
+                  "body": "Komponen yang menerima data dari luar dapat dipakai pada banyak tempat dan lebih mudah diuji."
+                }
+              ],
+              "checkpoint": {
+                "prompt": "Mengapa komponen sebaiknya menerima data dari luar, bukan mengambilnya sendiri?",
+                "success": "Agar komponen dapat dipakai ulang pada banyak tempat dan lebih mudah diuji."
+              }
+            },
+            {
+              "id": "keadaan-komponen",
+              "title": "Mengelola keadaan yang berubah",
+              "body": [
+                "Keadaan komponen dibaca sebagai penyimpanan nilai yang berubah selama aplikasi berjalan. Nilai itu dipakai untuk menyusun tampilan dan diperbarui lewat fungsi pengubahnya.",
+                "Pada contoh, judul tugas disimpan pada keadaan. Isian pada tampilan terikat pada nilai itu, sehingga setiap ketikan memperbarui keadaannya lewat fungsi pengubah.",
+                "Setelah pengiriman, nilai keadaan dikembalikan menjadi kosong. Karena tampilan terikat pada nilai itu, isian pada layar ikut kembali kosong tanpa perlu menyentuh tampilan secara langsung."
+              ],
+              "code": {
+                "language": "jsx",
+                "code": "function FormTugas({ onTambah }) {\n  const [judul, setJudul] = useState(\"\");\n\n  function kirim(e) {\n    e.preventDefault();\n    onTambah(judul);\n    setJudul(\"\");\n  }\n\n  return (\n    <form onSubmit={kirim}>\n      <input value={judul} onChange={(e) => setJudul(e.target.value)} />\n    </form>\n  );\n}",
+                "output": "Isian mengikuti nilai keadaan dan kembali kosong setelah tugas dikirim.",
+                "explain": "Nilai keadaan dipakai untuk menyusun tampilan dan diubah lewat fungsi pengubahnya. Tampilan ikut berubah tanpa disentuh langsung.",
+                "annotations": [
+                  {
+                    "line": 1,
+                    "code": "function FormTugas({ onTambah }) {",
+                    "note": "Komponen menerima penanganan dari luar."
+                  },
+                  {
+                    "line": 2,
+                    "code": "const [judul, setJudul] = useState(\"\");",
+                    "note": "Nilai yang berubah disimpan pada keadaan."
+                  },
+                  {
+                    "line": 6,
+                    "code": "onTambah(judul);",
+                    "note": "Nilai keadaan diserahkan saat tugas dikirim."
+                  },
+                  {
+                    "line": 7,
+                    "code": "setJudul(\"\");",
+                    "note": "Nilai keadaan dikembalikan menjadi kosong."
+                  },
+                  {
+                    "line": 12,
+                    "code": "<input value={judul} onChange={(e) => setJudul(e.target.value)} />",
+                    "note": "Isian mengikuti nilai keadaan dan memperbaruinya."
+                  }
+                ],
+                "lab": false
+              },
+              "callouts": [
                 {
-                  "tone": "bad",
-                  "title": "Kesalahan umum",
-                  "body": "Menganggap SPA selalu lebih baik daripada server-rendered pages."
+                  "tone": "warn",
+                  "title": "Ubah lewat fungsi pengubah",
+                  "body": "Ubah keadaan hanya lewat fungsi pengubahnya. Mengubah nilainya langsung membuat tampilan tidak ikut diperbarui."
                 }
               ],
               "checkpoint": null
             },
             {
-              "id": "contoh",
-              "title": "Contoh kode",
+              "id": "kapan-react",
+              "title": "Menilai kapan React diperlukan",
               "body": [
-                "Perhatikan input, proses, dan output. Ketik ulang, lalu ubah satu nilai."
+                "React membantu ketika tampilan perlu sering berubah tanpa memuat ulang halaman, misalnya daftar yang disaring, isian yang berubah seketika, atau beberapa bagian yang bergantung pada data yang sama.",
+                "Halaman yang jarang berubah dan hampir sepenuhnya disusun di peladen tidak memerlukan React. Menambahkannya justru menambah lapisan yang harus dirawat tanpa manfaat yang sepadan.",
+                "Nilai kebutuhan sebelum memilih. Bila halaman hanya menampilkan data tetap dan menyerahkan perubahan ke pemuatan halaman berikutnya, cara yang lebih sederhana lebih tepat."
               ],
-              "code": {
-                "language": "jsx",
-                "code": "// React konseptual:\nfunction Counter(){\n  const [n, setN] = React.useState(0);\n  return <button onClick={() => setN(n+1)}>{n}</button>;\n}",
-                "output": "",
-                "explain": ""
-              },
+              "code": null,
               "callouts": [],
-              "checkpoint": null
+              "checkpoint": {
+                "prompt": "Kapan React benar-benar diperlukan pada sebuah antarmuka?",
+                "success": "Ketika tampilan perlu sering berubah tanpa memuat ulang halaman dan beberapa bagian bergantung pada data yang sama."
+              }
+            },
+            {
+              "id": "ekosistem",
+              "title": "Menakar ekosistem tanpa ikut tren",
+              "body": [
+                "Ekosistem sekitar React menawarkan banyak pilihan untuk pengelolaan data, penataan gaya, dan penyusunan halaman. Menambah terlalu banyak pilihan sekaligus membuat proyek sulit dipahami.",
+                "Pilih perkakas berdasarkan masalah yang benar-benar ada. Bila kebutuhan masih dapat ditangani perkakas bawaan, menambah pustaka baru hanya menambah ketergantungan yang harus diperbarui.",
+                "Periksa juga keadaan ekosistemnya: seberapa aktif pemeliharaannya dan seberapa jelas dokumentasinya. Perkakas yang ditinggalkan pemeliharanya akan menyulitkan proyek pada kemudian hari."
+              ],
+              "code": null,
+              "callouts": [],
+              "checkpoint": {
+                "prompt": "Atas dasar apa sebuah perkakas frontend sebaiknya dipilih?",
+                "success": "Berdasarkan masalah yang benar-benar ada, bukan karena sedang populer, serta memperhatikan pemeliharaannya."
+              }
             }
           ],
           "practice": [
             {
               "id": "latihan-1",
-              "title": "Latihan 1",
-              "level": "independent",
-              "task": "Bandingkan kebutuhan dashboard CRUD vs UI kompleks sebelum memilih Livewire atau React.",
-              "steps": [],
+              "title": "Komponen daftar",
+              "level": "guided",
+              "task": "Buat komponen yang menerima daftar tugas dan menampilkan keterangan kosong bila daftarnya belum berisi.",
+              "steps": [
+                "Terima daftar tugas sebagai data dari luar.",
+                "Tangani keadaan kosong lebih dulu.",
+                "Susun setiap data menjadi satu butir.",
+                "Beri setiap butir kunci unik."
+              ],
               "hint": "",
-              "hints": [],
-              "starterCode": "",
-              "expected": "",
-              "stretch": "",
-              "verification": null
+              "hints": [
+                "Komponen menerima data dari luar.",
+                "Keadaan kosong ditangani lebih dulu.",
+                "Setiap butir punya kunci unik."
+              ],
+              "starterCode": "function DaftarTugas({ tugas }) {\n  // lengkapi\n}",
+              "expected": "Komponen menampilkan keterangan kosong atau daftar sesuai data yang diterimanya.",
+              "stretch": "Tambahkan jumlah tugas di atas daftar.",
+              "verification": {
+                "mode": "manual",
+                "command": "Berikan daftar kosong lalu daftar berisi, dan periksa tampilannya.",
+                "expected": "Keterangan kosong tampil pada daftar kosong, dan daftar tampil pada daftar berisi.",
+                "evidence": "Simpan kode komponen dan catatan hasil kedua keadaan."
+              }
             },
             {
               "id": "latihan-2",
-              "title": "Latihan 2",
+              "title": "Isian dengan keadaan",
               "level": "independent",
-              "task": "Ubah satu input atau asumsi pada contoh, catat hasil dan jelaskan alasannya.",
-              "steps": [],
+              "task": "Buat isian yang menyimpan nilainya pada keadaan dan mengosongkannya kembali setelah dikirim.",
+              "steps": [
+                "Simpan nilai isian pada keadaan.",
+                "Ikat isian pada nilai keadaan itu.",
+                "Perbarui keadaan saat isian berubah.",
+                "Kosongkan keadaan setelah dikirim."
+              ],
               "hint": "",
-              "hints": [],
-              "starterCode": "",
-              "expected": "",
-              "stretch": "",
-              "verification": null
+              "hints": [
+                "Tampilan terikat pada keadaan.",
+                "Keadaan diubah lewat fungsi pengubahnya.",
+                "Keadaan dikosongkan setelah dikirim."
+              ],
+              "starterCode": "const [nilai, setNilai] = useState(\"\");",
+              "expected": "Isian mengikuti keadaan dan kembali kosong setelah dikirim.",
+              "stretch": "Tolak pengiriman bila isian masih kosong.",
+              "verification": {
+                "mode": "manual",
+                "command": "Ketik pada isian lalu kirim dan periksa keadaannya.",
+                "expected": "Isian mengikuti ketikan dan kembali kosong setelah dikirim.",
+                "evidence": "Simpan kode komponen dan catatan hasilnya."
+              }
+            },
+            {
+              "id": "latihan-3",
+              "title": "Menilai kebutuhan React",
+              "level": "transfer",
+              "task": "Tinjau satu halaman proyek akhir dan putuskan apakah bagian itu memerlukan React, beserta alasannya.",
+              "steps": [
+                "Catat bagian yang berubah tanpa memuat ulang halaman.",
+                "Catat bagian yang bergantung pada data yang sama.",
+                "Timbang apakah cara yang lebih sederhana sudah cukup.",
+                "Tulis keputusan beserta alasannya."
+              ],
+              "hint": "",
+              "hints": [
+                "Perhatikan seberapa sering tampilan berubah.",
+                "Bagian yang berbagi data yang sama menguntungkan React.",
+                "Cara yang lebih sederhana sering cukup."
+              ],
+              "starterCode": "Bagian berubah: ...\nData bersama: ...\nKeputusan: ...",
+              "expected": "Keputusan diambil berdasarkan kebutuhan nyata, bukan kebiasaan memakai perkakas tertentu.",
+              "stretch": "Perkirakan biaya perawatan ekosistem yang ditambahkan.",
+              "verification": {
+                "mode": "manual",
+                "command": "Sampaikan keputusan kepada rekan dan periksa alasannya dapat diterima.",
+                "expected": "Keputusan masuk akal dan alasannya berkaitan dengan kebutuhan halaman itu.",
+                "evidence": "Simpan catatan keputusan beserta alasannya."
+              }
             }
           ],
-          "verification": null,
-          "troubleshooting": [],
+          "verification": {
+            "mode": "manual",
+            "command": "Jalankan komponen daftar dan isian, uji keadaan kosong serta perubahan keadaan, lalu tinjau keputusan memakai React.",
+            "expected": "Komponen menampilkan data dengan benar, keadaan berubah sesuai tindakan pengguna, dan keputusan memakai React beralasan.",
+            "evidence": "Simpan kode komponen dan catatan keputusan pemilihan."
+          },
+          "troubleshooting": [
+            {
+              "symptom": "Tampilan tidak berubah meski data sudah diubah.",
+              "cause": "Nilai keadaan diubah langsung tanpa memakai fungsi pengubahnya.",
+              "fix": "Ubah keadaan melalui fungsi pengubahnya agar tampilan disusun ulang."
+            },
+            {
+              "symptom": "Butir daftar tertukar ketika urutannya berubah.",
+              "cause": "Kunci daftar memakai indeks, bukan penanda unik data.",
+              "fix": "Pakai penanda unik data sebagai kunci setiap butir."
+            },
+            {
+              "symptom": "Komponen sulit dipakai ulang di halaman lain.",
+              "cause": "Komponen mengambil datanya sendiri, bukan menerimanya dari luar.",
+              "fix": "Pindahkan pengambilan data ke luar dan biarkan komponen menerimanya sebagai data."
+            },
+            {
+              "symptom": "Proyek penuh pustaka yang jarang dipakai.",
+              "cause": "Perkakas ditambahkan mengikuti tren, bukan kebutuhan yang ada.",
+              "fix": "Hapus pustaka yang tidak menyelesaikan masalah nyata dan pakai perkakas yang ada."
+            }
+          ],
           "quiz": {
             "questions": [
               {
                 "id": "q1",
                 "type": "recall",
-                "question": "Apa prinsip yang paling tepat untuk topik “React dan ekosistem frontend modern”?",
+                "question": "Apa masalah utama yang diselesaikan React pada antarmuka?",
                 "options": [
-                  "Pilih kompleksitas frontend berdasarkan kebutuhan interaksi tim dan produk.",
-                  "Gunakan solusi paling rumit sejak awal, meski kebutuhan belum jelas.",
-                  "Lewati pengujian karena contoh kecil pasti benar."
+                  "Memperkecil ukuran berkas",
+                  "Membuat tampilan berubah tanpa memuat ulang halaman",
+                  "Menggantikan basis data"
                 ],
-                "answer": 0,
-                "explanation": "Pilih kompleksitas frontend berdasarkan kebutuhan interaksi tim dan produk."
+                "answer": 1,
+                "explanation": "React membantu tampilan berubah tanpa memuat ulang halaman."
+              },
+              {
+                "id": "q2",
+                "type": "code-reading",
+                "question": "Mengapa setiap butir daftar diberi kunci unik?",
+                "options": [
+                  "Agar tampilan lebih berwarna",
+                  "Agar butir yang berubah dapat dikenali dengan tepat",
+                  "Agar data tersimpan"
+                ],
+                "answer": 1,
+                "explanation": "Kunci unik membantu mengenali butir mana yang berubah saat daftar diperbarui."
+              },
+              {
+                "id": "q3",
+                "type": "scenario",
+                "question": "Sebuah halaman hampir tidak pernah berubah dan disusun di peladen. Tindakan tepat...",
+                "options": [
+                  "Menambahkan React agar modern",
+                  "Mempertahankan cara yang lebih sederhana",
+                  "Menambahkan beberapa pustaka sekaligus"
+                ],
+                "answer": 1,
+                "explanation": "Halaman yang jarang berubah tidak memerlukan React; cara sederhana lebih tepat."
               }
             ]
           },
-          "resources": [],
-          "summary": [],
-          "legacy": true,
-          "code": "// React konseptual:\nfunction Counter(){\n  const [n, setN] = React.useState(0);\n  return <button onClick={() => setN(n+1)}>{n}</button>;\n}",
-          "wordCount": 157,
-          "schema": 2
+          "resources": [
+            {
+              "sourceId": "react-learn",
+              "title": "React: Learn React",
+              "publisher": "Meta Open Source",
+              "url": "https://react.dev/learn",
+              "note": "Panduan resmi menyusun komponen, data, dan keadaan.",
+              "tier": "official",
+              "version": "rolling",
+              "accessedAt": "2026-10-29",
+              "license": ""
+            },
+            {
+              "sourceId": "react-thinking",
+              "title": "React: Thinking in React",
+              "publisher": "Meta Open Source",
+              "url": "https://react.dev/learn/thinking-in-react",
+              "note": "Cara memecah antarmuka menjadi komponen sebelum menulis kode.",
+              "tier": "official",
+              "version": "rolling",
+              "accessedAt": "2026-10-29",
+              "license": ""
+            },
+            {
+              "sourceId": "mdn-learn",
+              "title": "MDN: Learn web development",
+              "publisher": "Mozilla",
+              "url": "https://developer.mozilla.org/en-US/docs/Learn_web_development",
+              "note": "Rujukan dasar antarmuka web sebelum memakai perkakas tambahan.",
+              "tier": "official",
+              "version": "rolling",
+              "accessedAt": "2026-10-28",
+              "license": ""
+            }
+          ],
+          "summary": [
+            "React membantu tampilan berubah tanpa memuat ulang halaman.",
+            "Komponen menerima data dari luar dan menyusun tampilannya.",
+            "Nilai yang berubah disimpan pada keadaan dan diubah lewat fungsi pengubahnya.",
+            "Perkakas ekosistem dipilih berdasarkan kebutuhan nyata, bukan tren."
+          ],
+          "legacy": false,
+          "code": "function DaftarTugas({ tugas }) {\n  if (tugas.length === 0) {\n    return <p>Belum ada tugas.</p>;\n  }\n\n  return (\n    <ul>\n      {tugas.map((item) => (\n        <li key={item.id}>{item.judul}</li>\n      ))}\n    </ul>\n  );\n}",
+          "wordCount": 1446,
+          "schema": 3.1
         },
         {
           "id": "m13-l02",
           "title": "Redis, background workers, dan event",
-          "minutes": 45,
+          "minutes": 150,
           "level": "Lanjutan",
           "depth": "integrasi",
-          "outcome": "",
+          "outcome": "Setelah pelajaran ini, Anda dapat memindahkan pekerjaan berat ke luar permintaan pengguna, menyusun antrean pekerjaan, serta menjalankan pekerja latar yang andal.",
           "codeLanguage": "javascript",
-          "objectives": [],
-          "prerequisites": [],
-          "terms": [],
-          "syntax": [],
-          "conventions": [],
-          "next": "",
+          "objectives": [
+            "Menjelaskan alasan pekerjaan berat dipindahkan ke latar.",
+            "Menyusun antrean pekerjaan yang dapat dikerjakan bertahap.",
+            "Menjalankan pekerja latar yang mengambil pekerjaan dari antrean.",
+            "Menangani pekerjaan yang gagal agar tidak hilang."
+          ],
+          "prerequisites": [
+            {
+              "label": "React dan ekosistem frontend modern",
+              "lessonId": "m13-l01"
+            }
+          ],
+          "terms": [
+            {
+              "term": "Antrean",
+              "definition": "Tempat menyimpan pekerjaan yang menunggu dikerjakan, sehingga pengirim tidak perlu menunggu hasilnya."
+            },
+            {
+              "term": "Pekerja latar",
+              "definition": "Program terpisah yang mengambil pekerjaan dari antrean dan mengerjakannya di luar permintaan pengguna."
+            },
+            {
+              "term": "Penyimpanan sementara",
+              "definition": "Tempat menyimpan data yang cepat dibaca dan boleh hilang, dipakai untuk antrean dan data sesaat."
+            },
+            {
+              "term": "Peristiwa",
+              "definition": "Pesan yang menyatakan sesuatu telah terjadi dan dapat ditanggapi oleh bagian lain."
+            },
+            {
+              "term": "Percobaan ulang",
+              "definition": "Pengulangan pekerjaan yang gagal, biasanya dengan jumlah percobaan terbatas agar tidak berjalan tanpa henti."
+            }
+          ],
+          "syntax": [
+            {
+              "token": "await klien.lPush(\"antrean-tugas\", JSON.stringify({ id }));",
+              "meaning": "Pengirim cukup menambahkan pekerjaan ke antrean lalu melanjutkan. Pekerjaan beratnya dikerjakan pekerja latar secara terpisah.",
+              "readAs": "Baca sebagai penambahan pekerjaan baru ke ujung antrean tanpa menunggu hasilnya.",
+              "example": "await klien.lPush(\"antrean-tugas\", JSON.stringify({ id }));",
+              "output": "Pekerjaan tercatat pada antrean dan pengirim dapat melanjutkan tanpa menunggu.",
+              "pitfall": "Mengerjakan pekerjaan berat pada permintaan pengguna membuat tanggapan lambat dan mudah gagal."
+            },
+            {
+              "token": "const pesan = await klien.brPop(\"antrean-tugas\", 0);",
+              "meaning": "Pekerja latar menunggu sampai ada pekerjaan baru, lalu mengambil satu pekerjaan untuk dikerjakan. Cara ini membuat pekerja dapat berjalan terus tanpa memeriksa berulang.",
+              "readAs": "Baca sebagai pengambilan satu pekerjaan dari antrean beserta penantian bila belum ada.",
+              "example": "const pesan = await klien.brPop(\"antrean-tugas\", 0);",
+              "output": "Pekerja menerima satu pekerjaan begitu ada yang tersedia pada antrean.",
+              "pitfall": "Memeriksa antrean berulang tanpa jeda membebani peladen tanpa manfaat."
+            },
+            {
+              "token": "await proses(id);",
+              "meaning": "Pekerjaan dikerjakan oleh pekerja latar, sehingga waktu prosesnya tidak lagi terikat pada tanggapan ke pengguna.",
+              "readAs": "Baca sebagai pengerjaan isi antrean di luar permintaan pengguna.",
+              "example": "await proses(id);",
+              "output": "Pekerjaan selesai tanpa memperlambat permintaan pengguna.",
+              "pitfall": "Membiarkan kegagalan tanpa percobaan ulang menghilangkan pekerjaan tanpa jejak."
+            }
+          ],
+          "conventions": [
+            "Pindahkan pekerjaan berat ke latar agar permintaan pengguna tetap cepat.",
+            "Simpan pekerjaan pada antrean sebelum mengerjakannya.",
+            "Jalankan pekerja latar terpisah dari peladen yang melayani pengguna.",
+            "Batasi jumlah percobaan ulang agar pekerjaan yang gagal tidak berjalan tanpa henti.",
+            "Catat pekerjaan yang gagal agar dapat ditinjau dan dikerjakan ulang."
+          ],
+          "next": "Berikutnya: integrasi AI. Anda akan memakai layanan bahasa besar dengan cara yang aman dan terkendali.",
           "sections": [
             {
-              "id": "konsep",
-              "title": "Memahami konsepnya",
+              "id": "cara-membaca",
+              "title": "Cara membaca pengiriman pekerjaan",
               "body": [
-                "Redis sering dipakai untuk cache, queue, dan rate limiting. Event dan job mengurangi coupling untuk proses asinkron.",
-                "Bukan pengganti database relasional sistem-of-record. Tetapkan invalidasi cache, retry worker, observability, dan shutdown aman."
+                "Pengiriman pekerjaan dibaca sebagai penyerahan tugas ke antrean. Peladen yang melayani pengguna cukup mencatat pekerjaan itu, lalu melanjutkan tanpa menunggu hasilnya.",
+                "Pada contoh, koneksi ke penyimpanan sementara disiapkan lebih dulu, lalu pekerjaan baru ditambahkan ke antrean dalam bentuk yang dapat dibaca pekerja latar.",
+                "Perhatikan bahwa fungsi pengiriman hanya menambahkan pekerjaan. Pekerjaan beratnya tidak dijalankan di sini, sehingga tanggapan ke pengguna tetap cepat meski pekerjaannya lama."
               ],
-              "code": null,
+              "code": {
+                "language": "javascript",
+                "code": "import { createClient } from \"redis\";\n\nconst klien = createClient({ url: process.env.REDIS_URL });\nawait klien.connect();\n\nexport async function kirimTugas(id) {\n  await klien.lPush(\"antrean-tugas\", JSON.stringify({ id }));\n}",
+                "output": "Pekerjaan tercatat pada antrean dan peladen dapat melanjutkan tanpa menunggu hasilnya.",
+                "explain": "Antrean menerima pekerjaan baru dalam bentuk yang dapat dibaca pekerja latar. Pekerjaan beratnya dikerjakan di tempat lain.",
+                "annotations": [
+                  {
+                    "line": 1,
+                    "code": "import { createClient } from \"redis\";",
+                    "note": "Pustaka penyimpanan sementara dimuat."
+                  },
+                  {
+                    "line": 3,
+                    "code": "const klien = createClient({ url: process.env.REDIS_URL });",
+                    "note": "Koneksi disiapkan dari alamat pada lingkungan."
+                  },
+                  {
+                    "line": 4,
+                    "code": "await klien.connect();",
+                    "note": "Koneksi dibuka sebelum dipakai."
+                  },
+                  {
+                    "line": 7,
+                    "code": "await klien.lPush(\"antrean-tugas\", JSON.stringify({ id }));",
+                    "note": "Pekerjaan baru ditambahkan ke antrean."
+                  }
+                ],
+                "lab": false
+              },
               "callouts": [
                 {
                   "tone": "good",
-                  "title": "Best practice",
-                  "body": "Tambahkan Redis ketika ada kebutuhan cache atau antrean yang terukur."
-                },
+                  "title": "Pengirim tidak menunggu",
+                  "body": "Dengan mencatat pekerjaan pada antrean, tanggapan ke pengguna tidak perlu menunggu pekerjaan beratnya selesai."
+                }
+              ],
+              "checkpoint": {
+                "prompt": "Mengapa peladen yang melayani pengguna sebaiknya hanya mencatat pekerjaan, bukan mengerjakannya langsung?",
+                "success": "Agar tanggapan ke pengguna tetap cepat meski pekerjaannya lama."
+              }
+            },
+            {
+              "id": "pekerja-latar",
+              "title": "Menjalankan pekerja latar",
+              "body": [
+                "Pekerja latar dibaca sebagai lingkaran yang terus mengambil pekerjaan dari antrean lalu mengerjakannya. Ia berjalan di proses terpisah, bukan di dalam permintaan pengguna.",
+                "Pada contoh, pekerja menunggu sampai ada pekerjaan, mengambilnya, membaca isinya, lalu memprosesnya. Setelah selesai, ia kembali menunggu pekerjaan berikutnya.",
+                "Perhatikan bahwa isi pekerjaan disimpan berupa teks yang dapat dibaca kembali. Bentuk yang jelas memudahkan pekerja mengenali data yang dibutuhkan tanpa menebak."
+              ],
+              "code": {
+                "language": "javascript",
+                "code": "import { createClient } from \"redis\";\n\nconst klien = createClient({ url: process.env.REDIS_URL });\nawait klien.connect();\n\nwhile (true) {\n  const pesan = await klien.brPop(\"antrean-tugas\", 0);\n  const { id } = JSON.parse(pesan.element);\n  await proses(id);\n}",
+                "output": "Pekerja mengambil setiap pekerjaan dari antrean, membacanya, lalu memprosesnya berulang.",
+                "explain": "Pekerja berjalan di proses terpisah dan mengambil pekerjaan satu per satu. Isi pekerjaan dibaca kembali dari bentuk teksnya.",
+                "annotations": [
+                  {
+                    "line": 3,
+                    "code": "const klien = createClient({ url: process.env.REDIS_URL });",
+                    "note": "Pekerja memakai koneksi yang sama ke penyimpanan."
+                  },
+                  {
+                    "line": 4,
+                    "code": "await klien.connect();",
+                    "note": "Koneksi dibuka sebelum lingkaran dimulai."
+                  },
+                  {
+                    "line": 7,
+                    "code": "const pesan = await klien.brPop(\"antrean-tugas\", 0);",
+                    "note": "Pekerja menunggu dan mengambil satu pekerjaan."
+                  },
+                  {
+                    "line": 8,
+                    "code": "const { id } = JSON.parse(pesan.element);",
+                    "note": "Isi pekerjaan dibaca dari bentuk teksnya."
+                  }
+                ],
+                "lab": false
+              },
+              "callouts": [
                 {
-                  "tone": "bad",
-                  "title": "Kesalahan umum",
-                  "body": "Mengandalkan cache sebagai penyimpanan utama data transaksi."
+                  "tone": "warn",
+                  "title": "Tangani kegagalan pekerjaan",
+                  "body": "Pekerjaan yang gagal perlu dicatat dan dicoba ulang dengan batas. Tanpa itu, pekerjaan dapat hilang tanpa jejak."
                 }
               ],
               "checkpoint": null
             },
             {
-              "id": "contoh",
-              "title": "Contoh kode",
+              "id": "kapan-antrean",
+              "title": "Menilai kapan antrean diperlukan",
               "body": [
-                "Perhatikan input, proses, dan output. Ketik ulang, lalu ubah satu nilai."
+                "Antrean berguna ketika pekerjaan berlangsung lama, tidak perlu hasilnya segera, atau datang lebih banyak daripada yang dapat dilayani sekaligus. Mengirim surel, mengubah gambar, dan menghitung laporan adalah contohnya.",
+                "Pekerjaan yang singkat dan hasilnya langsung dibutuhkan pengguna lebih baik dikerjakan pada tempatnya. Memindahkannya ke antrean menambah kerumitan tanpa manfaat yang jelas.",
+                "Pertimbangkan juga akibat bila pekerjaannya telat. Bila keterlambatan tidak mengganggu pengguna, antrean tepat. Bila hasilnya harus tampil seketika setelah tindakan, antrean justru menyulitkan."
               ],
-              "code": {
-                "language": "javascript",
-                "code": "// Alur:\n// API simpan pesanan -> dispatch job\n// worker kirim notifikasi\n// redis queue sebagai perantara",
-                "output": "",
-                "explain": ""
-              },
+              "code": null,
               "callouts": [],
-              "checkpoint": null
+              "checkpoint": {
+                "prompt": "Sebutkan dua tanda sebuah pekerjaan cocok dipindahkan ke antrean.",
+                "success": "Pekerjaannya berlangsung lama atau tidak perlu hasilnya segera, dan jumlahnya mudah melampaui daya layan sekaligus."
+              }
+            },
+            {
+              "id": "keandalan",
+              "title": "Menjaga pekerjaan tetap andal",
+              "body": [
+                "Pekerjaan yang gagal perlu dicatat beserta sebabnya. Dengan begitu, kegagalannya dapat ditinjau dan dikerjakan ulang tanpa kehilangan data.",
+                "Batasi jumlah percobaan ulang. Percobaan tanpa batas dapat menghabiskan daya dan menutupi masalah yang sebenarnya perlu diperbaiki.",
+                "Untuk pekerjaan yang sangat penting, simpan juga hasilnya pada penyimpanan tetap. Penyimpanan sementara boleh hilang, sehingga data penting tidak dapat hanya bergantung padanya."
+              ],
+              "code": null,
+              "callouts": [
+                {
+                  "tone": "warn",
+                  "title": "Penyimpanan sementara boleh hilang",
+                  "body": "Antrean pada penyimpanan sementara dapat hilang bila layanannya terganggu. Data penting tetap perlu catatan pada penyimpanan tetap."
+                }
+              ],
+              "checkpoint": {
+                "prompt": "Mengapa jumlah percobaan ulang perlu dibatasi?",
+                "success": "Agar pekerjaan yang gagal tidak menghabiskan daya tanpa henti dan masalah aslinya tetap terlihat untuk diperbaiki."
+              }
             }
           ],
           "practice": [
             {
               "id": "latihan-1",
-              "title": "Latihan 1",
-              "level": "independent",
-              "task": "Rancang tugas ekspor laporan besar dengan antrean, status, dan retry.",
-              "steps": [],
+              "title": "Kirim pekerjaan ke antrean",
+              "level": "guided",
+              "task": "Buat fungsi yang menambahkan pekerjaan baru ke antrean tanpa menunggu hasilnya.",
+              "steps": [
+                "Siapkan koneksi ke penyimpanan sementara.",
+                "Tentukan nama antrean yang jelas.",
+                "Tambahkan pekerjaan beserta data yang dibutuhkan.",
+                "Pastikan pengirim tidak menunggu hasil pekerjaannya."
+              ],
               "hint": "",
-              "hints": [],
-              "starterCode": "",
-              "expected": "",
-              "stretch": "",
-              "verification": null
+              "hints": [
+                "Pekerjaan disimpan sebagai teks.",
+                "Pengirim tidak menunggu hasil.",
+                "Nama antrean menyatakan isinya."
+              ],
+              "starterCode": "export async function kirim(id) {\n  // lengkapi\n}",
+              "expected": "Pekerjaan tercatat pada antrean dan pengirim dapat melanjutkan tanpa menunggu.",
+              "stretch": "Tambahkan waktu pembuatan pada isi pekerjaan.",
+              "verification": {
+                "mode": "manual",
+                "command": "Kirim pekerjaan lalu periksa isi antreannya.",
+                "expected": "Pekerjaan muncul pada antrean dengan data yang lengkap.",
+                "evidence": "Simpan kode pengiriman dan catatan isi antreannya."
+              }
             },
             {
               "id": "latihan-2",
-              "title": "Latihan 2",
+              "title": "Pekerja latar sederhana",
               "level": "independent",
-              "task": "Ubah satu input atau asumsi pada contoh, catat hasil dan jelaskan alasannya.",
-              "steps": [],
+              "task": "Buat pekerja latar yang mengambil pekerjaan dari antrean lalu memprosesnya berulang.",
+              "steps": [
+                "Buka koneksi ke penyimpanan sementara.",
+                "Tunggu dan ambil satu pekerjaan dari antrean.",
+                "Baca isi pekerjaan dan proses.",
+                "Tangani kegagalan dengan catatan yang jelas."
+              ],
               "hint": "",
-              "hints": [],
-              "starterCode": "",
-              "expected": "",
-              "stretch": "",
-              "verification": null
+              "hints": [
+                "Pekerja menunggu sampai ada pekerjaan.",
+                "Isi pekerjaan dibaca sebagai teks.",
+                "Kegagalan dicatat agar tidak hilang."
+              ],
+              "starterCode": "while (true) {\n  // lengkapi\n}",
+              "expected": "Pekerja memproses setiap pekerjaan yang masuk tanpa membebani permintaan pengguna.",
+              "stretch": "Tambahkan batas percobaan ulang untuk pekerjaan yang gagal.",
+              "verification": {
+                "mode": "manual",
+                "command": "Kirim beberapa pekerjaan lalu jalankan pekerja latar.",
+                "expected": "Seluruh pekerjaan terproses dan kegagalan tercatat.",
+                "evidence": "Simpan kode pekerja dan catatan keluarannya."
+              }
+            },
+            {
+              "id": "latihan-3",
+              "title": "Rancang pekerjaan latar proyek",
+              "level": "transfer",
+              "task": "Rancang pemindahan satu pekerjaan berat proyek akhir ke antrean beserta penanganan kegagalannya.",
+              "steps": [
+                "Tentukan pekerjaan yang dipindahkan dan alasannya.",
+                "Tentukan data yang perlu dikirim ke antrean.",
+                "Tentukan batas percobaan ulang dan pencatatannya.",
+                "Tentukan cara meninjau pekerjaan yang gagal."
+              ],
+              "hint": "",
+              "hints": [
+                "Pilih pekerjaan yang tidak perlu hasil segera.",
+                "Data antrean cukup yang dibutuhkan pekerja.",
+                "Kegagalan dicatat dan dibatasi percobaannya."
+              ],
+              "starterCode": "Pekerjaan: ...\nData: ...\nPercobaan ulang: ...",
+              "expected": "Rancangan memuat pekerjaan yang dipindahkan, data antrean, dan penanganan kegagalannya.",
+              "stretch": "Perkirakan berapa banyak pekerja yang dibutuhkan.",
+              "verification": {
+                "mode": "manual",
+                "command": "Jalankan alur itu dan hentikan pekerja untuk menguji kegagalan.",
+                "expected": "Pekerjaan yang gagal tercatat dan tidak hilang ketika pekerja dijalankan kembali.",
+                "evidence": "Simpan rancangan dan catatan hasil pengujian kegagalan."
+              }
             }
           ],
-          "verification": null,
-          "troubleshooting": [],
+          "verification": {
+            "mode": "manual",
+            "command": "Jalankan pengiriman pekerjaan, pekerja latar, dan uji kegagalan pekerjaan.",
+            "expected": "Pekerjaan tercatat pada antrean, terproses oleh pekerja latar, dan yang gagal tercatat serta tidak hilang.",
+            "evidence": "Simpan kode pengiriman, kode pekerja, dan catatan hasil pengujian."
+          },
+          "troubleshooting": [
+            {
+              "symptom": "Tanggapan ke pengguna terasa lambat.",
+              "cause": "Pekerjaan berat dikerjakan langsung pada permintaan pengguna.",
+              "fix": "Pindahkan pekerjaan itu ke antrean dan kerjakan lewat pekerja latar."
+            },
+            {
+              "symptom": "Pekerjaan hilang begitu saja tanpa jejak.",
+              "cause": "Kegagalan tidak dicatat dan tidak ada percobaan ulang.",
+              "fix": "Catat pekerjaan yang gagal dan tambahkan percobaan ulang dengan batas."
+            },
+            {
+              "symptom": "Peladen terasa berat meski pekerjaan sedikit.",
+              "cause": "Pekerja memeriksa antrean berulang tanpa jeda.",
+              "fix": "Pakai penantian pada pengambilan antrean agar pekerja tidak memeriksa berulang."
+            },
+            {
+              "symptom": "Data penting hilang saat layanan penyimpanan terganggu.",
+              "cause": "Data penting hanya disimpan pada penyimpanan sementara.",
+              "fix": "Simpan data penting pada penyimpanan tetap dan pakai penyimpanan sementara hanya untuk antrean."
+            }
+          ],
           "quiz": {
             "questions": [
               {
                 "id": "q1",
                 "type": "recall",
-                "question": "Apa prinsip yang paling tepat untuk topik “Redis, background workers, dan event”?",
+                "question": "Apa manfaat memindahkan pekerjaan berat ke antrean?",
                 "options": [
-                  "Tambahkan Redis ketika ada kebutuhan cache atau antrean yang terukur.",
-                  "Gunakan solusi paling rumit sejak awal, meski kebutuhan belum jelas.",
-                  "Lewati pengujian karena contoh kecil pasti benar."
+                  "Memperkecil ukuran basis data",
+                  "Membuat tanggapan ke pengguna tetap cepat",
+                  "Menghapus kebutuhan pengujian"
                 ],
-                "answer": 0,
-                "explanation": "Tambahkan Redis ketika ada kebutuhan cache atau antrean yang terukur."
+                "answer": 1,
+                "explanation": "Antrean membuat peladen tidak perlu menunggu pekerjaan berat selesai."
+              },
+              {
+                "id": "q2",
+                "type": "code-reading",
+                "question": "Apa fungsi penantian pada pengambilan antrean oleh pekerja latar?",
+                "options": [
+                  "Mempercepat jaringan",
+                  "Menunggu sampai ada pekerjaan tanpa memeriksa berulang",
+                  "Menghapus pekerjaan lama"
+                ],
+                "answer": 1,
+                "explanation": "Penantian membuat pekerja menunggu pekerjaan baru tanpa memeriksa antrean berulang."
+              },
+              {
+                "id": "q3",
+                "type": "scenario",
+                "question": "Pekerjaan mengirim surel gagal di tengah jalan. Tindakan tepat...",
+                "options": [
+                  "Membiarkannya hilang",
+                  "Mencatat kegagalannya dan mencoba ulang dengan batas",
+                  "Mencoba ulang tanpa batas"
+                ],
+                "answer": 1,
+                "explanation": "Kegagalan dicatat dan dicoba ulang dengan batas agar tidak hilang dan tidak berjalan tanpa henti."
               }
             ]
           },
-          "resources": [],
-          "summary": [],
-          "legacy": true,
-          "code": "// Alur:\n// API simpan pesanan -> dispatch job\n// worker kirim notifikasi\n// redis queue sebagai perantara",
-          "wordCount": 147,
-          "schema": 2
+          "resources": [
+            {
+              "sourceId": "redis-docs",
+              "title": "Redis Documentation",
+              "publisher": "Redis",
+              "url": "https://redis.io/docs/latest/",
+              "note": "Dokumentasi resmi penyimpanan sementara dan perintah dasarnya.",
+              "tier": "official",
+              "version": "rolling",
+              "accessedAt": "2026-10-29",
+              "license": ""
+            },
+            {
+              "sourceId": "redis-queues",
+              "title": "Redis: Queues and background jobs",
+              "publisher": "Redis",
+              "url": "https://redis.io/docs/latest/develop/use-cases/",
+              "note": "Panduan resmi pemakaian penyimpanan untuk antrean dan pekerjaan latar.",
+              "tier": "official",
+              "version": "rolling",
+              "accessedAt": "2026-10-29",
+              "license": ""
+            },
+            {
+              "sourceId": "sre-monitoring",
+              "title": "Google SRE Book: Monitoring Distributed Systems",
+              "publisher": "Google",
+              "url": "https://sre.google/sre-book/monitoring-distributed-systems/",
+              "note": "Praktik memantau pekerjaan latar dan kegagalannya.",
+              "tier": "standard",
+              "version": "current",
+              "accessedAt": "2026-10-29",
+              "license": ""
+            }
+          ],
+          "summary": [
+            "Pekerjaan berat dipindahkan ke latar agar permintaan pengguna tetap cepat.",
+            "Antrean menyimpan pekerjaan sampai ada pekerja yang mengambilnya.",
+            "Pekerja latar berjalan di proses terpisah dan mengambil pekerjaan satu per satu.",
+            "Kegagalan dicatat dan dicoba ulang dengan batas; data penting disimpan pada penyimpanan tetap."
+          ],
+          "legacy": false,
+          "code": "import { createClient } from \"redis\";\n\nconst klien = createClient({ url: process.env.REDIS_URL });\nawait klien.connect();\n\nexport async function kirimTugas(id) {\n  await klien.lPush(\"antrean-tugas\", JSON.stringify({ id }));\n}",
+          "wordCount": 1416,
+          "schema": 3.1
         },
         {
           "id": "m13-l03",
           "title": "AI API dan integrasi LLM",
-          "minutes": 45,
+          "minutes": 150,
           "level": "Lanjutan",
           "depth": "integrasi",
-          "outcome": "",
+          "outcome": "Setelah pelajaran ini, Anda dapat memanggil layanan bahasa besar dari aplikasi, menjaga kunci aksesnya, serta membatasi biaya dan menangani kegagalannya dengan rapi.",
           "codeLanguage": "javascript",
-          "objectives": [],
-          "prerequisites": [],
-          "terms": [],
-          "syntax": [],
-          "conventions": [],
-          "next": "",
+          "objectives": [
+            "Menjelaskan bentuk dasar pemanggilan layanan bahasa besar.",
+            "Menjaga kunci akses agar tidak bocor ke pengguna.",
+            "Membatasi ukuran keluaran dan biaya pemakaian.",
+            "Menangani jawaban yang gagal atau tidak sesuai harapan."
+          ],
+          "prerequisites": [
+            {
+              "label": "Redis, background workers, dan event",
+              "lessonId": "m13-l02"
+            }
+          ],
+          "terms": [
+            {
+              "term": "Layanan bahasa besar",
+              "definition": "Layanan yang menerima teks dan mengembalikan teks, dipakai untuk menjawab, merangkum, atau mengubah bahasa."
+            },
+            {
+              "term": "Kunci akses",
+              "definition": "Nilai rahasia yang memberi hak memakai layanan atas nama pemiliknya."
+            },
+            {
+              "term": "Perintah",
+              "definition": "Teks yang dikirim ke layanan untuk meminta keluarannya."
+            },
+            {
+              "term": "Token",
+              "definition": "Satuan hitung panjang teks yang dipakai layanan untuk menentukan biaya dan batas keluarannya."
+            },
+            {
+              "term": "Keluaran tidak pasti",
+              "definition": "Sifat layanan bahasa besar yang jawabannya dapat berbeda meski perintahnya sama, sehingga perlu diperiksa."
+            }
+          ],
+          "syntax": [
+            {
+              "token": "const res = await fetch(`${process.env.API_URL}/v1/messages`, { ... });",
+              "meaning": "Pemanggilan dilakukan di peladen agar kunci aksesnya tidak pernah sampai ke peramban pengguna.",
+              "readAs": "Baca sebagai pemanggilan layanan bahasa besar dari peladen, bukan dari peramban pengguna.",
+              "example": "const res = await fetch(`${process.env.API_URL}/v1/messages`, { ... });",
+              "output": "Peladen menerima tanggapan dari layanan bahasa besar.",
+              "pitfall": "Memanggil layanan langsung dari peramban membocorkan kunci akses kepada siapa pun yang membuka alat pengembang."
+            },
+            {
+              "token": "if (!res.ok) { throw new Error(...); }",
+              "meaning": "Memeriksa keberhasilan lebih dulu mencegah tanggapan gagal diproses seolah berisi jawaban yang sah.",
+              "readAs": "Baca sebagai pemeriksaan keberhasilan sebelum jawabannya dipakai.",
+              "example": "if (!res.ok) { throw new Error(...); }",
+              "output": "Kegagalan pemanggilan dihentikan dengan keterangan yang jelas.",
+              "pitfall": "Membaca jawaban tanpa memeriksa keberhasilan membuat pesan kesalahan dipakai sebagai jawaban."
+            },
+            {
+              "token": "max_tokens: 300",
+              "meaning": "Membatasi panjang keluaran menjaga biaya pemakaian tetap terkendali dan mencegah jawaban yang bertele-tele.",
+              "readAs": "Baca sebagai pembatasan panjang keluaran untuk mengendalikan biaya.",
+              "example": "max_tokens: 300",
+              "output": "Keluaran layanan tidak melebihi batas panjang yang ditentukan.",
+              "pitfall": "Membiarkan keluaran tanpa batas membuat biaya dapat membengkak tanpa disadari."
+            }
+          ],
+          "conventions": [
+            "Panggil layanan bahasa besar dari peladen, bukan dari peramban pengguna.",
+            "Simpan kunci akses pada lingkungan, bukan di dalam kode.",
+            "Batasi panjang keluaran untuk mengendalikan biaya.",
+            "Periksa keberhasilan pemanggilan sebelum memakai jawabannya.",
+            "Agar hasilnya tidak menyesatkan, sebutkan bahwa isi tetap perlu diperiksa pengguna."
+          ],
+          "next": "Berikutnya: PWA dan interoperabilitas. Anda akan membuat aplikasi web dapat dipasang dan dipakai tanpa koneksi.",
           "sections": [
             {
-              "id": "konsep",
-              "title": "Memahami konsepnya",
+              "id": "cara-membaca",
+              "title": "Cara membaca pemanggilan layanan",
               "body": [
-                "AI API dapat merangkum, mengklasifikasi, atau membantu pencarian dokumen. Sistem harus memperlakukan hasil model sebagai masukan tidak tepercaya dan memverifikasi fakta.",
-                "Simpan API key di backend, bukan browser/Flutter. Batasi biaya, token, rate, logging, data sensitif, prompt injection, dan evaluasi kualitas hasil. Buat fallback saat provider gagal."
+                "Pemanggilan dibaca sebagai permintaan yang disusun lalu dikirim ke layanan bahasa besar. Setiap bagian permintaan menjawab satu pertanyaan tentang apa yang diminta.",
+                "Pada contoh, alamat dan kunci akses diambil dari lingkungan, bukan ditulis di kode. Isi permintaan menyebut model, batas panjang keluaran, dan percakapan yang dikirim.",
+                "Perhatikan bahwa kunci akses hanya dipakai di peladen. Karena pemanggilan tidak dilakukan dari peramban, kunci itu tidak pernah sampai ke pengguna."
               ],
-              "code": null,
+              "code": {
+                "language": "javascript",
+                "code": "export async function tanya(pesan) {\n  const res = await fetch(`${process.env.API_URL}/v1/messages`, {\n    method: \"POST\",\n    headers: {\n      \"content-type\": \"application/json\",\n      \"x-api-key\": process.env.API_KEY,\n    },\n    body: JSON.stringify({\n      model: \"model-terkunci\",\n      max_tokens: 300,\n      messages: [{ role: \"user\", content: pesan }],\n    }),\n  });\n\n  return res.json();\n}",
+                "output": "Peladen mengirim permintaan ke layanan bahasa besar dan menerima tanggapannya.",
+                "explain": "Permintaan menyebut model, batas panjang keluaran, dan percakapan. Kunci akses diambil dari lingkungan agar tidak bocor.",
+                "annotations": [
+                  {
+                    "line": 1,
+                    "code": "export async function tanya(pesan) {",
+                    "note": "Fungsi menerima teks perintah dari pemanggilnya."
+                  },
+                  {
+                    "line": 2,
+                    "code": "const res = await fetch(`${process.env.API_URL}/v1/messages`, {",
+                    "note": "Pemanggilan dilakukan dari peladen dengan alamat dari lingkungan."
+                  },
+                  {
+                    "line": 6,
+                    "code": "\"x-api-key\": process.env.API_KEY,",
+                    "note": "Kunci akses diambil dari lingkungan, bukan ditulis di kode."
+                  },
+                  {
+                    "line": 10,
+                    "code": "max_tokens: 300,",
+                    "note": "Panjang keluaran dibatasi untuk mengendalikan biaya."
+                  },
+                  {
+                    "line": 11,
+                    "code": "messages: [{ role: \"user\", content: pesan }],",
+                    "note": "Percakapan dikirim dalam bentuk yang dipahami layanan."
+                  }
+                ],
+                "lab": false
+              },
+              "callouts": [
+                {
+                  "tone": "warn",
+                  "title": "Kunci akses hanya di peladen",
+                  "body": "Kunci akses tidak boleh sampai ke peramban pengguna. Panggil layanan dari peladen dan ambil kunci dari lingkungan."
+                }
+              ],
+              "checkpoint": {
+                "prompt": "Mengapa pemanggilan layanan bahasa besar dilakukan di peladen, bukan di peramban pengguna?",
+                "success": "Agar kunci akses tidak bocor kepada pengguna yang dapat membuka alat pengembang peramban."
+              }
+            },
+            {
+              "id": "menangani-jawaban",
+              "title": "Menangani jawaban dan kegagalan",
+              "body": [
+                "Jawaban layanan dibaca dengan pemeriksaan lebih dulu. Bila pemanggilan tidak berhasil, langkahnya dihentikan dengan keterangan yang jelas, bukan diteruskan seolah berisi jawaban.",
+                "Pada contoh, keberhasilan diperiksa sebelum isi jawaban dibaca. Bagian isi diambil dengan penjagaan agar pemanggilan tidak berhenti bila bentuk jawabannya tidak seperti dugaan.",
+                "Ingat bahwa keluaran layanan bahasa besar tidak pasti dan dapat keliru. Karena itu, bawaan aplikasi sebaiknya membuat pengguna tetap memeriksa hasilnya sebelum dipakai."
+              ],
+              "code": {
+                "language": "javascript",
+                "code": "if (!res.ok) {\n  throw new Error(`Permintaan gagal: ${res.status}`);\n}\n\nconst data = await res.json();\nconst jawaban = data.content?.[0]?.text ?? \"\";",
+                "output": "Kegagalan dihentikan dengan keterangan; jawaban yang berhasil dibaca dengan penjagaan bentuknya.",
+                "explain": "Keberhasilan diperiksa lebih dulu, lalu isi jawaban dibaca dengan penjagaan agar tidak berhenti pada bentuk yang berbeda.",
+                "annotations": [
+                  {
+                    "line": 1,
+                    "code": "if (!res.ok) {",
+                    "note": "Keberhasilan pemanggilan diperiksa lebih dulu."
+                  },
+                  {
+                    "line": 2,
+                    "code": "throw new Error(`Permintaan gagal: ${res.status}`);",
+                    "note": "Kegagalan dihentikan dengan keterangan yang jelas."
+                  },
+                  {
+                    "line": 5,
+                    "code": "const data = await res.json();",
+                    "note": "Isi jawaban dibaca dari tanggapan."
+                  },
+                  {
+                    "line": 6,
+                    "code": "const jawaban = data.content?.[0]?.text ?? \"\";",
+                    "note": "Bagian jawaban diambil dengan penjagaan bentuknya."
+                  }
+                ],
+                "lab": false
+              },
               "callouts": [
                 {
                   "tone": "good",
-                  "title": "Best practice",
-                  "body": "Jalankan pemanggilan provider AI dari server dan evaluasi hasilnya."
-                },
-                {
-                  "tone": "bad",
-                  "title": "Kesalahan umum",
-                  "body": "Menyematkan API key provider di aplikasi Flutter atau file JS publik."
+                  "title": "Keluaran perlu diperiksa",
+                  "body": "Keluaran layanan bahasa besar dapat keliru. Rancang aplikasi agar pengguna tetap memeriksa hasilnya sebelum dipakai."
                 }
               ],
               "checkpoint": null
             },
             {
-              "id": "contoh",
-              "title": "Contoh kode",
+              "id": "kendali-biaya",
+              "title": "Mengendalikan biaya dan pemakaian",
               "body": [
-                "Perhatikan input, proses, dan output. Ketik ulang, lalu ubah satu nilai."
+                "Pemakaian layanan bahasa besar dihitung menurut panjang teks yang dikirim dan diterima. Karena itu, biaya dapat naik cepat bila perintahnya panjang atau keluarannya tidak dibatasi.",
+                "Batasi panjang keluaran, ringkas perintah yang dikirim, dan hindari mengirim percakapan yang tidak lagi diperlukan. Setiap pengurangan panjang teks langsung menurunkan biaya.",
+                "Catat pemakaian per pengguna dan beri batas harian. Tanpa batas, satu pengguna dapat menghabiskan kuota seluruh tim tanpa disadari."
               ],
-              "code": {
-                "language": "javascript",
-                "code": "// Flow aman:\n// Browser/Flutter -> Laravel -> AI provider\n// Laravel: validasi, rate limit, log biaya,\n// redaksi data sensitif, verifikasi output.",
-                "output": "",
-                "explain": ""
-              },
+              "code": null,
               "callouts": [],
-              "checkpoint": null
+              "checkpoint": {
+                "prompt": "Sebutkan dua cara mengendalikan biaya pemakaian layanan bahasa besar.",
+                "success": "Membatasi panjang keluaran dan ringkas perintah, serta mencatat pemakaian dan memberi batas per pengguna."
+              }
+            },
+            {
+              "id": "risiko",
+              "title": "Mengenali risiko pemakaian",
+              "body": [
+                "Perintah yang dikirim dapat disisipi arahan yang tidak diinginkan bila isinya berasal dari pengguna. Perlakukan teks dari pengguna sebagai masukan yang tidak tepercaya.",
+                "Jangan menaruh rahasia atau data pribadi pada perintah kecuali benar-benar diperlukan dan telah diperhitungkan risikonya. Teks yang dikirim meninggalkan kendali Anda.",
+                "Keluaran layanan juga dapat keliru atau memihak. Jangan memakainya langsung untuk keputusan penting tanpa pemeriksaan, dan sebutkan keterbatasan itu kepada pengguna."
+              ],
+              "code": null,
+              "callouts": [
+                {
+                  "tone": "warn",
+                  "title": "Masukan pengguna tidak tepercaya",
+                  "body": "Perlakukan teks dari pengguna sebagai masukan yang tidak tepercaya. Ia dapat menyisipkan arahan yang tidak Anda inginkan."
+                }
+              ],
+              "checkpoint": {
+                "prompt": "Mengapa keluaran layanan bahasa besar tidak boleh langsung dipakai untuk keputusan penting?",
+                "success": "Karena keluarannya tidak pasti dan dapat keliru atau memihak, sehingga perlu diperiksa lebih dulu."
+              }
             }
           ],
           "practice": [
             {
               "id": "latihan-1",
-              "title": "Latihan 1",
-              "level": "independent",
-              "task": "Desain fitur ringkasan berita yang memiliki konfirmasi manusia dan batas biaya.",
-              "steps": [],
+              "title": "Panggilan pertama",
+              "level": "guided",
+              "task": "Buat fungsi yang mengirim satu perintah ke layanan bahasa besar dan mengembalikan jawabannya.",
+              "steps": [
+                "Ambil alamat dan kunci akses dari lingkungan.",
+                "Tentukan model dan batas panjang keluaran.",
+                "Kirim perintah dalam bentuk yang dipahami layanan.",
+                "Kembalikan isi jawabannya."
+              ],
               "hint": "",
-              "hints": [],
-              "starterCode": "",
-              "expected": "",
-              "stretch": "",
-              "verification": null
+              "hints": [
+                "Kunci akses diambil dari lingkungan.",
+                "Panjang keluaran dibatasi.",
+                "Isi jawaban dibaca dengan penjagaan."
+              ],
+              "starterCode": "export async function tanya(pesan) {\n  // lengkapi\n}",
+              "expected": "Fungsi mengembalikan jawaban layanan tanpa menuliskan kunci di dalam kode.",
+              "stretch": "Tambahkan batas percobaan ulang bila pemanggilan gagal sementara.",
+              "verification": {
+                "mode": "manual",
+                "command": "Panggil fungsi dengan satu perintah dan periksa jawabannya.",
+                "expected": "Jawaban tampil dan kunci akses tidak muncul pada tanggapan ke pengguna.",
+                "evidence": "Simpan kode dan contoh keluarannya."
+              }
             },
             {
               "id": "latihan-2",
-              "title": "Latihan 2",
+              "title": "Tangani kegagalan dan batas",
               "level": "independent",
-              "task": "Ubah satu input atau asumsi pada contoh, catat hasil dan jelaskan alasannya.",
-              "steps": [],
+              "task": "Tambahkan penanganan kegagalan dan batas panjang keluaran pada fungsi pemanggilan layanan.",
+              "steps": [
+                "Periksa keberhasilan pemanggilan lebih dulu.",
+                "Hentikan dengan keterangan bila gagal.",
+                "Batasi panjang keluaran.",
+                "Tampilkan pesan yang jelas kepada pengguna."
+              ],
               "hint": "",
-              "hints": [],
-              "starterCode": "",
-              "expected": "",
-              "stretch": "",
-              "verification": null
+              "hints": [
+                "Keberhasilan diperiksa lebih dulu.",
+                "Panjang keluaran dibatasi.",
+                "Pesan kegagalan menuntun langkah berikutnya."
+              ],
+              "starterCode": "if (!res.ok) {\n  // lengkapi\n}",
+              "expected": "Kegagalan ditangani dengan jelas dan keluaran tetap dalam batas.",
+              "stretch": "Bedakan pesan untuk kegagalan sementara dan kegagalan tetap.",
+              "verification": {
+                "mode": "manual",
+                "command": "Paksa pemanggilan gagal dan periksa pesannya.",
+                "expected": "Pesan kegagalan tampil jelas dan aplikasi tidak berhenti.",
+                "evidence": "Simpan kode dan catatan keluaran kedua keadaan."
+              }
+            },
+            {
+              "id": "latihan-3",
+              "title": "Rancang fitur berbantuan AI",
+              "level": "transfer",
+              "task": "Rancang satu fitur berbantuan AI pada proyek akhir beserta pengendalian biaya, penanganan kegagalan, dan batas pemeriksaan pengguna.",
+              "steps": [
+                "Tentukan masalah yang dibantu fiturnya.",
+                "Tentukan perintah yang dikirim dan batas panjangnya.",
+                "Tetapkan batas pemakaian per pengguna.",
+                "Tentukan bagian yang tetap perlu diperiksa pengguna."
+              ],
+              "hint": "",
+              "hints": [
+                "Perintah dijaga tetap ringkas.",
+                "Batas pemakaian dicatat per pengguna.",
+                "Keluaran tetap diperiksa pengguna."
+              ],
+              "starterCode": "Masalah: ...\nPerintah: ...\nBatas: ...",
+              "expected": "Rancangan memuat batas biaya, penanganan kegagalan, dan pemeriksaan oleh pengguna.",
+              "stretch": "Tentukan cara menyembunyikan data pribadi sebelum dikirim.",
+              "verification": {
+                "mode": "manual",
+                "command": "Tinjau rancangan bersama rekan dan periksa setiap risiko terjawab.",
+                "expected": "Rancangan menjawab biaya, kegagalan, dan risiko keluaran yang keliru.",
+                "evidence": "Simpan rancangan fitur beserta catatan tinjauannya."
+              }
             }
           ],
-          "verification": null,
-          "troubleshooting": [],
+          "verification": {
+            "mode": "manual",
+            "command": "Panggil layanan dengan perintah biasa, paksa kegagalan, dan periksa batas biaya serta penanganan keluaran.",
+            "expected": "Jawaban tampil tanpa membocorkan kunci akses, kegagalan ditangani dengan jelas, dan keluaran tetap dalam batas.",
+            "evidence": "Simpan kode, catatan keluaran, dan catatan batas pemakaian."
+          },
+          "troubleshooting": [
+            {
+              "symptom": "Kunci akses ditemukan pada peramban pengguna.",
+              "cause": "Layanan dipanggil langsung dari peramban, bukan dari peladen.",
+              "fix": "Pindahkan pemanggilan ke peladen dan ambil kunci akses dari lingkungan."
+            },
+            {
+              "symptom": "Biaya pemakaian naik jauh lebih cepat dari perkiraan.",
+              "cause": "Panjang keluaran tidak dibatasi dan perintah mengirim percakapan yang tidak diperlukan.",
+              "fix": "Batasi panjang keluaran, ringkas perintah, dan tetapkan batas pemakaian per pengguna."
+            },
+            {
+              "symptom": "Pesan kesalahan layanan dipakai sebagai jawaban.",
+              "cause": "Keberhasilan pemanggilan tidak diperiksa sebelum jawaban dibaca.",
+              "fix": "Periksa keberhasilan pemanggilan dan hentikan dengan keterangan bila gagal."
+            },
+            {
+              "symptom": "Pengguna memakai keluaran yang keliru untuk keputusan penting.",
+              "cause": "Keterbatasan keluaran tidak disampaikan dan tidak ada pemeriksaan pengguna.",
+              "fix": "Sebutkan bahwa keluaran perlu diperiksa dan rancang alur yang meminta pemeriksaan pengguna."
+            }
+          ],
           "quiz": {
             "questions": [
               {
                 "id": "q1",
                 "type": "recall",
-                "question": "Apa prinsip yang paling tepat untuk topik “AI API dan integrasi LLM”?",
+                "question": "Di mana pemanggilan layanan bahasa besar sebaiknya dilakukan?",
                 "options": [
-                  "Jalankan pemanggilan provider AI dari server dan evaluasi hasilnya.",
-                  "Gunakan solusi paling rumit sejak awal, meski kebutuhan belum jelas.",
-                  "Lewati pengujian karena contoh kecil pasti benar."
+                  "Peramban pengguna",
+                  "Peladen",
+                  "Berkas tampilan"
                 ],
-                "answer": 0,
-                "explanation": "Jalankan pemanggilan provider AI dari server dan evaluasi hasilnya."
+                "answer": 1,
+                "explanation": "Pemanggilan dilakukan di peladen agar kunci akses tidak bocor ke pengguna."
+              },
+              {
+                "id": "q2",
+                "type": "code-reading",
+                "question": "Apa fungsi batas panjang keluaran pada permintaan?",
+                "options": [
+                  "Mempercepat jaringan",
+                  "Mengendalikan biaya dan mencegah jawaban bertele-tele",
+                  "Menyimpan percakapan"
+                ],
+                "answer": 1,
+                "explanation": "Batas panjang keluaran menjaga biaya tetap terkendali dan mencegah jawaban bertele-tele."
+              },
+              {
+                "id": "q3",
+                "type": "scenario",
+                "question": "Teks dari pengguna akan dikirim ke layanan bahasa besar. Tindakan tepat...",
+                "options": [
+                  "Mempercayainya sepenuhnya",
+                  "Memerlakukan masukan itu sebagai tidak tepercaya",
+                  "Menyisipkan rahasia pada perintah"
+                ],
+                "answer": 1,
+                "explanation": "Teks dari pengguna tidak tepercaya dan dapat menyisipkan arahan yang tidak diinginkan."
               }
             ]
           },
-          "resources": [],
-          "summary": [],
-          "legacy": true,
-          "code": "// Flow aman:\n// Browser/Flutter -> Laravel -> AI provider\n// Laravel: validasi, rate limit, log biaya,\n// redaksi data sensitif, verifikasi output.",
-          "wordCount": 164,
-          "schema": 2
+          "resources": [
+            {
+              "sourceId": "anthropic-docs",
+              "title": "Anthropic API Documentation",
+              "publisher": "Anthropic",
+              "url": "https://docs.anthropic.com/",
+              "note": "Dokumentasi resmi bentuk permintaan dan jawaban layanan bahasa besar.",
+              "tier": "official",
+              "version": "rolling",
+              "accessedAt": "2026-10-29",
+              "license": ""
+            },
+            {
+              "sourceId": "openai-docs",
+              "title": "OpenAI Platform Documentation",
+              "publisher": "OpenAI",
+              "url": "https://platform.openai.com/docs/",
+              "note": "Panduan resmi pengendalian panjang keluaran dan pemakaian layanan.",
+              "tier": "official",
+              "version": "rolling",
+              "accessedAt": "2026-10-29",
+              "license": ""
+            },
+            {
+              "sourceId": "owasp-llm-top10",
+              "title": "OWASP Top 10 for Large Language Model Applications",
+              "publisher": "OWASP Foundation",
+              "url": "https://owasp.org/www-project-top-10-for-large-language-model-applications/",
+              "note": "Daftar risiko keamanan pada aplikasi yang memakai model bahasa besar.",
+              "tier": "standard",
+              "version": "2025",
+              "accessedAt": "2026-10-29",
+              "license": ""
+            }
+          ],
+          "summary": [
+            "Layanan bahasa besar dipanggil dari peladen agar kunci akses tidak bocor.",
+            "Panjang keluaran dibatasi dan pemakaian dicatat untuk mengendalikan biaya.",
+            "Keberhasilan pemanggilan diperiksa sebelum jawaban dipakai.",
+            "Masukan pengguna tidak tepercaya dan keluaran tetap perlu diperiksa."
+          ],
+          "legacy": false,
+          "code": "export async function tanya(pesan) {\n  const res = await fetch(`${process.env.API_URL}/v1/messages`, {\n    method: \"POST\",\n    headers: {\n      \"content-type\": \"application/json\",\n      \"x-api-key\": process.env.API_KEY,\n    },\n    body: JSON.stringify({\n      model: \"model-terkunci\",\n      max_tokens: 300,\n      messages: [{ role: \"user\", content: pesan }],\n    }),\n  });\n\n  return res.json();\n}",
+          "wordCount": 1428,
+          "schema": 3.1
         },
         {
           "id": "m13-l04",
           "title": "PWA, native app, dan interoperabilitas",
-          "minutes": 45,
+          "minutes": 150,
           "level": "Lanjutan",
           "depth": "integrasi",
-          "outcome": "",
+          "outcome": "Setelah pelajaran ini, Anda dapat membuat aplikasi web dapat dipasang di perangkat, melayani sebagian pemakaian tanpa koneksi, serta memilih antara aplikasi web dan aplikasi asli secara beralasan.",
           "codeLanguage": "javascript",
-          "objectives": [],
-          "prerequisites": [],
-          "terms": [],
-          "syntax": [],
-          "conventions": [],
-          "next": "",
+          "objectives": [
+            "Menjelaskan syarat aplikasi web dapat dipasang.",
+            "Menyiapkan berkas keterangan aplikasi.",
+            "Menyimpan berkas agar aplikasi dapat dipakai tanpa koneksi.",
+            "Menilai kapan aplikasi asli lebih tepat daripada aplikasi web."
+          ],
+          "prerequisites": [
+            {
+              "label": "AI API dan integrasi LLM",
+              "lessonId": "m13-l03"
+            }
+          ],
+          "terms": [
+            {
+              "term": "Aplikasi web dapat dipasang",
+              "definition": "Aplikasi web yang dapat dipasang di perangkat dan dijalankan seperti aplikasi biasa, lengkap dengan ikonnya."
+            },
+            {
+              "term": "Berkas keterangan",
+              "definition": "Berkas yang menjelaskan nama, ikon, dan cara menampilkan aplikasi saat dipasang."
+            },
+            {
+              "term": "Pekerja layanan",
+              "definition": "Program yang berjalan di latar peramban dan mengatur penyimpanan berkas serta permintaan jaringan."
+            },
+            {
+              "term": "Simpanan berkas",
+              "definition": "Tempat menyimpan berkas aplikasi di perangkat agar dapat dipakai tanpa koneksi."
+            },
+            {
+              "term": "Aplikasi asli",
+              "definition": "Aplikasi yang dipasang dari toko aplikasi dan memakai kemampuan perangkat secara langsung."
+            }
+          ],
+          "syntax": [
+            {
+              "token": "self.addEventListener(\"install\", (event) => { ... });",
+              "meaning": "Saat pemasangan, berkas penting disimpan lebih dulu agar aplikasi dapat dibuka tanpa koneksi.",
+              "readAs": "Baca sebagai penanganan saat pekerja layanan pertama dipasang.",
+              "example": "self.addEventListener(\"install\", (event) => { ... });",
+              "output": "Berkas penting tersimpan di perangkat saat pemasangan.",
+              "pitfall": "Tidak menyimpan berkas penting saat pemasangan membuat aplikasi gagal dibuka tanpa koneksi."
+            },
+            {
+              "token": "caches.match(event.request).then((hasil) => hasil ?? fetch(event.request))",
+              "meaning": "Permintaan dilayani dari berkas tersimpan bila tersedia, dan hanya diteruskan ke jaringan bila belum tersimpan.",
+              "readAs": "Baca sebagai pemakaian berkas tersimpan lebih dulu, lalu jaringan bila belum ada.",
+              "example": "caches.match(event.request).then((hasil) => hasil ?? fetch(event.request))",
+              "output": "Aplikasi tetap dapat dibuka dari berkas tersimpan tanpa koneksi.",
+              "pitfall": "Selalu mengambil dari jaringan membuat aplikasi tidak dapat dipakai saat koneksi terputus."
+            },
+            {
+              "token": "\"display\": \"standalone\"",
+              "meaning": "Pengaturan tampilan menentukan bagaimana aplikasi muncul setelah dipasang, salah satunya tanpa bilah peramban sehingga terasa seperti aplikasi biasa.",
+              "readAs": "Baca sebagai pengaturan agar aplikasi tampil tanpa bilah peramban saat dipasang.",
+              "example": "\"display\": \"standalone\"",
+              "output": "Aplikasi tampil tanpa bilah peramban setelah dipasang.",
+              "pitfall": "Mengabaikan pengaturan tampilan membuat aplikasi tampil seperti halaman web biasa meski sudah dipasang."
+            }
+          ],
+          "conventions": [
+            "Sediakan berkas keterangan agar aplikasi dapat dipasang.",
+            "Layani aplikasi dari peladen dengan alamat yang tetap, bukan lokasi berkas lokal.",
+            "Simpan berkas penting saat pemasangan pekerja layanan.",
+            "Perbarui berkas tersimpan ketika versi aplikasi berubah.",
+            "Pilih aplikasi asli hanya ketika benar-benar memerlukan kemampuan perangkat yang tidak tersedia di web."
+          ],
+          "next": "Anda telah menyelesaikan seluruh modul kurikulum. Lanjutkan dengan membangun proyek sendiri dan meninjau keputusan teknologi secara berkala.",
           "sections": [
             {
-              "id": "konsep",
-              "title": "Memahami konsepnya",
+              "id": "cara-membaca",
+              "title": "Cara membaca pekerja layanan",
               "body": [
-                "PWA memakai web manifest dan service worker agar web dapat diinstal serta bekerja offline. Flutter membangun aplikasi native lintas platform. Pilihan bergantung fitur perangkat, distribusi, dan biaya maintenance.",
-                "PWA offline perlu strategi cache dan update; file:// tidak mendukung service worker. Aplikasi web offline tidak otomatis memiliki sinkronisasi antarperangkat tanpa backend."
+                "Pekerja layanan dibaca sebagai dua penanganan utama: saat pemasangan dan saat ada permintaan berkas. Keduanya mengatur bagaimana aplikasi berperilaku di perangkat.",
+                "Pada contoh, saat pemasangan, berkas penting disimpan ke simpanan berkas. Saat ada permintaan, berkas tersimpan dipakai lebih dulu, dan jaringan hanya dipakai bila berkasnya belum tersimpan.",
+                "Perhatikan urutan pemakaian itu. Karena berkas tersimpan didahulukan, aplikasi dapat dibuka meski koneksi sedang terputus. Jaringan menjadi cadangan, bukan satu-satunya sumber."
               ],
-              "code": null,
+              "code": {
+                "language": "javascript",
+                "code": "self.addEventListener(\"install\", (event) => {\n  event.waitUntil(\n    caches.open(\"versi-1\").then((cache) => cache.addAll([\"/\", \"/index.html\"])),\n  );\n});\n\nself.addEventListener(\"fetch\", (event) => {\n  event.respondWith(\n    caches.match(event.request).then((hasil) => hasil ?? fetch(event.request)),\n  );\n});",
+                "output": "Berkas penting tersimpan saat pemasangan, lalu permintaan dilayani dari berkas tersimpan atau jaringan.",
+                "explain": "Pemasangan menyimpan berkas penting. Permintaan dilayani berkas tersimpan lebih dulu, dan jaringan dipakai bila berkasnya belum tersimpan.",
+                "annotations": [
+                  {
+                    "line": 1,
+                    "code": "self.addEventListener(\"install\", (event) => {",
+                    "note": "Pemasangan menyiapkan berkas yang diperlukan."
+                  },
+                  {
+                    "line": 3,
+                    "code": "caches.open(\"versi-1\").then((cache) => cache.addAll([\"/\", \"/index.html\"])),",
+                    "note": "Berkas penting disimpan ke simpanan berkas."
+                  },
+                  {
+                    "line": 7,
+                    "code": "self.addEventListener(\"fetch\", (event) => {",
+                    "note": "Penanganan permintaan berkas disiapkan."
+                  },
+                  {
+                    "line": 9,
+                    "code": "caches.match(event.request).then((hasil) => hasil ?? fetch(event.request)),",
+                    "note": "Berkas tersimpan didahulukan, jaringan menjadi cadangan."
+                  }
+                ],
+                "lab": false
+              },
               "callouts": [
                 {
                   "tone": "good",
-                  "title": "Best practice",
-                  "body": "Mulai dari platform paling sederhana yang memenuhi kebutuhan pengguna."
-                },
+                  "title": "Berkas tersimpan lebih dulu",
+                  "body": "Mendahulukan berkas tersimpan membuat aplikasi tetap dapat dibuka meski koneksi sedang terputus."
+                }
+              ],
+              "checkpoint": {
+                "prompt": "Mengapa berkas tersimpan dipakai lebih dulu daripada jaringan pada penanganan permintaan?",
+                "success": "Agar aplikasi tetap dapat dibuka meski koneksi sedang terputus."
+              }
+            },
+            {
+              "id": "berkas-keterangan",
+              "title": "Menyiapkan berkas keterangan",
+              "body": [
+                "Berkas keterangan dibaca sebagai keterangan aplikasi kepada perangkat: nama, ikon, alamat awal, dan cara menampilkannya saat dipasang.",
+                "Pada contoh, aplikasi diberi nama panjang dan nama pendek, alamat awal ketika dibuka, cara tampil tanpa bilah peramban, serta ikon yang dipakai perangkat.",
+                "Keterangan ini membuat aplikasi dapat dipasang dan tampil wajar di layar utama perangkat, dengan ikon dan nama yang dikenal pengguna."
+              ],
+              "code": {
+                "language": "json",
+                "code": "{\n  \"name\": \"Catatan Tugas\",\n  \"short_name\": \"Tugas\",\n  \"start_url\": \"/\",\n  \"display\": \"standalone\",\n  \"icons\": [{ \"src\": \"/ikon-192.png\", \"sizes\": \"192x192\" }]\n}",
+                "output": "Perangkat mengenali aplikasi beserta nama, ikon, alamat awalnya, dan cara tampilnya.",
+                "explain": "Berkas keterangan menyebut nama, alamat awal, cara tampilan, dan ikon. Keterangan itu membuat aplikasi dapat dipasang dan dikenali pengguna.",
+                "annotations": [
+                  {
+                    "line": 2,
+                    "code": "\"name\": \"Catatan Tugas\",",
+                    "note": "Nama panjang dipakai pada daftar aplikasi."
+                  },
+                  {
+                    "line": 4,
+                    "code": "\"start_url\": \"/\",",
+                    "note": "Alamat awal menentukan halaman pertama saat dibuka."
+                  },
+                  {
+                    "line": 5,
+                    "code": "\"display\": \"standalone\",",
+                    "note": "Cara tampilan menentukan aplikasi muncul tanpa bilah peramban."
+                  },
+                  {
+                    "line": 6,
+                    "code": "\"icons\": [{ \"src\": \"/ikon-192.png\", \"sizes\": \"192x192\" }]",
+                    "note": "Ikon dipakai perangkat pada layar utama."
+                  }
+                ],
+                "lab": false
+              },
+              "callouts": [
                 {
-                  "tone": "bad",
-                  "title": "Kesalahan umum",
-                  "body": "Menganggap localStorage otomatis tersinkron antar perangkat."
+                  "tone": "good",
+                  "title": "Pasang dari peladen",
+                  "body": "Aplikasi dapat dipasang bila dilayani dari peladen dengan aman. Berkas lokal tidak dapat memasang aplikasi di perangkat."
                 }
               ],
               "checkpoint": null
             },
             {
-              "id": "contoh",
-              "title": "Contoh kode",
+              "id": "web-atau-asli",
+              "title": "Memilih antara aplikasi web dan asli",
               "body": [
-                "Perhatikan input, proses, dan output. Ketik ulang, lalu ubah satu nilai."
+                "Aplikasi web dapat dipasang cocok ketika aplikasinya banyak memakai tampilan dan jaringan, serta ingin dipakai tanpa pemasangan lewat toko. Pembaruannya pun langsung sampai ke pengguna.",
+                "Aplikasi asli lebih tepat ketika benar-benar memerlukan kemampuan perangkat seperti kamera tingkat lanjut, layanan latar yang berjalan terus, atau akses ke perangkat yang khas. Kemampuan itu belum sepenuhnya tersedia di web.",
+                "Timbang biaya perawatan. Aplikasi asli biasanya perlu dikembangkan terpisah untuk setiap sistem, sedangkan aplikasi web dapat dipakai di banyak perangkat dari satu kode."
               ],
-              "code": {
-                "language": "javascript",
-                "code": "// PWA memerlukan:\n// index.html + manifest.json + sw.js\n// HTTPS atau localhost untuk service worker.",
-                "output": "",
-                "explain": ""
-              },
+              "code": null,
+              "callouts": [
+                {
+                  "tone": "warn",
+                  "title": "Ajukan izin sesuai kebutuhan",
+                  "body": "Aplikasi yang meminta izin lebih banyak dari yang diperlukan membuat pengguna curiga. Ajukan izin hanya ketika benar-benar dipakai."
+                }
+              ],
+              "checkpoint": {
+                "prompt": "Kapan aplikasi asli lebih tepat daripada aplikasi web yang dapat dipasang?",
+                "success": "Ketika aplikasi benar-benar memerlukan kemampuan perangkat yang belum tersedia sepenuhnya di web, misalnya layanan latar yang berjalan terus."
+              }
+            },
+            {
+              "id": "interoperabilitas",
+              "title": "Menjaga interoperabilitas",
+              "body": [
+                "Aplikasi yang baik bertukar data dengan layanan lain lewat bentuk yang umum, bukan bentuk yang hanya dipahaminya sendiri. Bentuk yang umum membuat data tetap berguna di luar aplikasi Anda.",
+                "Gunakan alamat web biasa dan bentuk data yang lazim untuk bertukar informasi. Dengan begitu, aplikasi lain dapat memanfaatkannya tanpa perlu menyesuaikan diri pada bentuk khusus.",
+                "Perbarui berkas tersimpan saat aplikasi berubah versi. Berkas lama yang tertinggal membuat pengguna menjalankan versi usang meski versi barunya sudah tersedia di peladen."
+              ],
+              "code": null,
               "callouts": [],
-              "checkpoint": null
+              "checkpoint": {
+                "prompt": "Mengapa pertukaran data sebaiknya memakai bentuk yang umum, bukan bentuk khusus?",
+                "success": "Agar data tetap dapat dimanfaatkan aplikasi lain tanpa perlu menyesuaikan diri pada bentuk khusus."
+              }
             }
           ],
           "practice": [
             {
               "id": "latihan-1",
-              "title": "Latihan 1",
-              "level": "independent",
-              "task": "Tentukan apakah katalog offline lebih cocok PWA statis atau Flutter dengan alasan.",
-              "steps": [],
+              "title": "Berkas keterangan aplikasi",
+              "level": "guided",
+              "task": "Buat berkas keterangan aplikasi yang memuat nama, ikon, alamat awal, dan cara tampilnya.",
+              "steps": [
+                "Tentukan nama panjang dan nama pendek.",
+                "Tentukan alamat awal saat aplikasi dibuka.",
+                "Tentukan cara tampil tanpa bilah peramban.",
+                "Sediakan ikon sesuai ukuran yang disarankan."
+              ],
               "hint": "",
-              "hints": [],
-              "starterCode": "",
-              "expected": "",
-              "stretch": "",
-              "verification": null
+              "hints": [
+                "Nama pendek dipakai di layar utama.",
+                "Alamat awal menentukan halaman pertama.",
+                "Ikon perlu ukuran yang sesuai."
+              ],
+              "starterCode": "{\n  \"name\": \"...\",\n  \"start_url\": \"/\"\n}",
+              "expected": "Aplikasi dikenali perangkat beserta nama, ikon, dan cara tampilnya.",
+              "stretch": "Tambahkan warna latar agar tampilan pemasangan serasi.",
+              "verification": {
+                "mode": "manual",
+                "command": "Muat berkas keterangan dan periksa perangkat mengenali aplikasinya.",
+                "expected": "Aplikasi dapat dipasang dengan nama dan ikon yang benar.",
+                "evidence": "Simpan berkas keterangan dan tangkapan tampilannya."
+              }
             },
             {
               "id": "latihan-2",
-              "title": "Latihan 2",
+              "title": "Pekerja layanan sederhana",
               "level": "independent",
-              "task": "Ubah satu input atau asumsi pada contoh, catat hasil dan jelaskan alasannya.",
-              "steps": [],
+              "task": "Buat pekerja layanan yang menyimpan berkas penting saat pemasangan dan melayani permintaan dari berkas tersimpan lebih dulu.",
+              "steps": [
+                "Tangani saat pemasangan.",
+                "Simpan berkas penting ke simpanan berkas.",
+                "Tangani permintaan berkas.",
+                "Dahulukan berkas tersimpan, lalu jaringan."
+              ],
               "hint": "",
-              "hints": [],
-              "starterCode": "",
-              "expected": "",
-              "stretch": "",
-              "verification": null
+              "hints": [
+                "Berkas penting disimpan saat pemasangan.",
+                "Berkas tersimpan didahulukan.",
+                "Jaringan menjadi cadangan."
+              ],
+              "starterCode": "self.addEventListener(\"install\", (event) => {\n  // lengkapi\n});",
+              "expected": "Aplikasi dapat dibuka dari berkas tersimpan meski koneksi terputus.",
+              "stretch": "Tambahkan penghapusan berkas versi lama saat versi baru dipasang.",
+              "verification": {
+                "mode": "manual",
+                "command": "Buka aplikasi tanpa koneksi setelah sekali dibuka dengan koneksi.",
+                "expected": "Aplikasi tetap terbuka dari berkas tersimpan.",
+                "evidence": "Simpan kode pekerja layanan dan catatan hasilnya."
+              }
+            },
+            {
+              "id": "latihan-3",
+              "title": "Putuskan bentuk aplikasi",
+              "level": "transfer",
+              "task": "Nilai apakah proyek akhir sebaiknya dilanjutkan sebagai aplikasi web yang dapat dipasang atau memerlukan aplikasi asli, beserta alasannya.",
+              "steps": [
+                "Daftar kemampuan perangkat yang benar-benar diperlukan.",
+                "Periksa apakah kemampuan itu tersedia di web.",
+                "Timbang biaya perawatan masing-masing bentuk.",
+                "Tulis keputusan beserta alasannya."
+              ],
+              "hint": "",
+              "hints": [
+                "Periksa kebutuhan kemampuan perangkat lebih dulu.",
+                "Perhatikan biaya perawatan setiap bentuk.",
+                "Pilih bentuk yang paling sesuai kebutuhan."
+              ],
+              "starterCode": "Kemampuan: ...\nTersedia di web: ...\nKeputusan: ...",
+              "expected": "Keputusan diambil berdasarkan kebutuhan nyata dan biaya perawatan.",
+              "stretch": "Perkirakan cara memperbarui kedua bentuk bila keduanya dipakai.",
+              "verification": {
+                "mode": "manual",
+                "command": "Sampaikan keputusan kepada rekan dan periksa alasannya dapat diterima.",
+                "expected": "Keputusan masuk akal dan alasannya berkaitan dengan kebutuhan aplikasi.",
+                "evidence": "Simpan catatan keputusan beserta alasannya."
+              }
             }
           ],
-          "verification": null,
-          "troubleshooting": [],
+          "verification": {
+            "mode": "manual",
+            "command": "Muat aplikasi dari peladen, pasang di perangkat, buka tanpa koneksi, dan periksa pembaruan versinya.",
+            "expected": "Aplikasi dapat dipasang, terbuka tanpa koneksi dari berkas tersimpan, dan diperbarui saat versinya berubah.",
+            "evidence": "Simpan berkas keterangan, pekerja layanan, dan catatan hasil pengujian."
+          },
+          "troubleshooting": [
+            {
+              "symptom": "Aplikasi tidak dapat dipasang di perangkat.",
+              "cause": "Berkas keterangan tidak ada atau aplikasi tidak dilayani dari peladen dengan aman.",
+              "fix": "Sediakan berkas keterangan dan layani aplikasi dari peladen dengan aman."
+            },
+            {
+              "symptom": "Aplikasi menampilkan halaman kosong tanpa koneksi.",
+              "cause": "Berkas penting tidak disimpan saat pemasangan.",
+              "fix": "Simpan berkas penting pada penanganan pemasangan pekerja layanan."
+            },
+            {
+              "symptom": "Pengguna masih memakai versi lama meski versi baru sudah terbit.",
+              "cause": "Berkas tersimpan tidak diperbarui saat versi aplikasi berubah.",
+              "fix": "Perbarui nama simpanan berkas saat versi berubah dan hapus berkas versi lama."
+            },
+            {
+              "symptom": "Pengguna ragu memakai aplikasi karena banyak permintaan izin.",
+              "cause": "Izin diminta lebih banyak daripada yang benar-benar dipakai.",
+              "fix": "Ajukan izin hanya ketika benar-benar diperlukan dan jelaskan alasannya."
+            }
+          ],
           "quiz": {
             "questions": [
               {
                 "id": "q1",
                 "type": "recall",
-                "question": "Apa prinsip yang paling tepat untuk topik “PWA, native app, dan interoperabilitas”?",
+                "question": "Apa manfaat mendahulukan berkas tersimpan pada penanganan permintaan?",
                 "options": [
-                  "Mulai dari platform paling sederhana yang memenuhi kebutuhan pengguna.",
-                  "Gunakan solusi paling rumit sejak awal, meski kebutuhan belum jelas.",
-                  "Lewati pengujian karena contoh kecil pasti benar."
+                  "Memperkecil ukuran berkas",
+                  "Aplikasi tetap dapat dibuka tanpa koneksi",
+                  "Menghapus kebutuhan berkas keterangan"
                 ],
-                "answer": 0,
-                "explanation": "Mulai dari platform paling sederhana yang memenuhi kebutuhan pengguna."
+                "answer": 1,
+                "explanation": "Berkas tersimpan memungkinkan aplikasi dibuka meski koneksi terputus."
+              },
+              {
+                "id": "q2",
+                "type": "code-reading",
+                "question": "Apa fungsi berkas keterangan pada aplikasi web yang dapat dipasang?",
+                "options": [
+                  "Menyimpan data pengguna",
+                  "Menyebut nama, ikon, dan cara tampil aplikasi ketika dipasang",
+                  "Menjalankan kode di latar"
+                ],
+                "answer": 1,
+                "explanation": "Berkas keterangan memberi tahu perangkat nama, ikon, alamat awal, dan cara tampil aplikasi."
+              },
+              {
+                "id": "q3",
+                "type": "scenario",
+                "question": "Aplikasi perlu layanan latar yang berjalan terus di perangkat. Tindakan tepat...",
+                "options": [
+                  "Memaksakannya pada aplikasi web tanpa pertimbangan",
+                  "Menimbang aplikasi asli karena kemampuannya lebih sesuai",
+                  "Menghapus fitur itu"
+                ],
+                "answer": 1,
+                "explanation": "Kemampuan perangkat seperti layanan latar yang berjalan terus lebih sesuai dikerjakan aplikasi asli."
               }
             ]
           },
-          "resources": [],
-          "summary": [],
-          "legacy": true,
-          "code": "// PWA memerlukan:\n// index.html + manifest.json + sw.js\n// HTTPS atau localhost untuk service worker.",
-          "wordCount": 164,
-          "schema": 2
+          "resources": [
+            {
+              "sourceId": "mdn-pwa",
+              "title": "MDN: Progressive web apps",
+              "publisher": "MDN Web Docs",
+              "url": "https://developer.mozilla.org/en-US/docs/Web/Progressive_web_apps",
+              "note": "Dokumentasi resmi aplikasi web yang dapat dipasang beserta pekerja layanannya.",
+              "tier": "official",
+              "version": "rolling",
+              "accessedAt": "2026-10-29",
+              "license": ""
+            },
+            {
+              "sourceId": "webdev-pwa",
+              "title": "web.dev: Learn PWA",
+              "publisher": "Google",
+              "url": "https://web.dev/learn/pwa",
+              "note": "Panduan menyiapkan aplikasi web agar dapat dipasang dan dipakai tanpa koneksi.",
+              "tier": "official",
+              "version": "current",
+              "accessedAt": "2026-10-29",
+              "license": ""
+            },
+            {
+              "sourceId": "mdn-http-caching",
+              "title": "MDN: HTTP caching",
+              "publisher": "Mozilla",
+              "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/Caching",
+              "note": "Dasar penyimpanan berkas dan pengaturan kesegarannya.",
+              "tier": "official",
+              "version": "rolling",
+              "accessedAt": "2026-10-28",
+              "license": ""
+            }
+          ],
+          "summary": [
+            "Aplikasi web dapat dipasang bila menyediakan berkas keterangan dan dilayani dari peladen dengan aman.",
+            "Pekerja layanan menyimpan berkas penting dan mendahulukan berkas tersimpan.",
+            "Berkas tersimpan diperbarui ketika versi aplikasi berubah.",
+            "Aplikasi asli dipilih hanya ketika benar-benar memerlukan kemampuan perangkat yang tidak tersedia di web."
+          ],
+          "legacy": false,
+          "code": "self.addEventListener(\"install\", (event) => {\n  event.waitUntil(\n    caches.open(\"versi-1\").then((cache) => cache.addAll([\"/\", \"/index.html\"])),\n  );\n});\n\nself.addEventListener(\"fetch\", (event) => {\n  event.respondWith(\n    caches.match(event.request).then((hasil) => hasil ?? fetch(event.request)),\n  );\n});",
+          "wordCount": 1486,
+          "schema": 3.1
         }
       ],
       "lessonCount": 4,
-      "wordCount": 632
+      "wordCount": 5776
     }
   ],
   "roadmap": [
@@ -42088,6 +43292,96 @@
       "version": "2.2",
       "accessedAt": "2026-10-29",
       "license": ""
+    },
+    {
+      "id": "react-learn",
+      "title": "React: Learn React",
+      "publisher": "Meta Open Source",
+      "url": "https://react.dev/learn",
+      "tier": "official",
+      "version": "rolling",
+      "accessedAt": "2026-10-29",
+      "license": ""
+    },
+    {
+      "id": "react-thinking",
+      "title": "React: Thinking in React",
+      "publisher": "Meta Open Source",
+      "url": "https://react.dev/learn/thinking-in-react",
+      "tier": "official",
+      "version": "rolling",
+      "accessedAt": "2026-10-29",
+      "license": ""
+    },
+    {
+      "id": "redis-docs",
+      "title": "Redis Documentation",
+      "publisher": "Redis",
+      "url": "https://redis.io/docs/latest/",
+      "tier": "official",
+      "version": "rolling",
+      "accessedAt": "2026-10-29",
+      "license": ""
+    },
+    {
+      "id": "redis-queues",
+      "title": "Redis: Queues and background jobs",
+      "publisher": "Redis",
+      "url": "https://redis.io/docs/latest/develop/use-cases/",
+      "tier": "official",
+      "version": "rolling",
+      "accessedAt": "2026-10-29",
+      "license": ""
+    },
+    {
+      "id": "openai-docs",
+      "title": "OpenAI Platform Documentation",
+      "publisher": "OpenAI",
+      "url": "https://platform.openai.com/docs/",
+      "tier": "official",
+      "version": "rolling",
+      "accessedAt": "2026-10-29",
+      "license": ""
+    },
+    {
+      "id": "anthropic-docs",
+      "title": "Anthropic API Documentation",
+      "publisher": "Anthropic",
+      "url": "https://docs.anthropic.com/",
+      "tier": "official",
+      "version": "rolling",
+      "accessedAt": "2026-10-29",
+      "license": ""
+    },
+    {
+      "id": "mdn-pwa",
+      "title": "MDN: Progressive web apps",
+      "publisher": "MDN Web Docs",
+      "url": "https://developer.mozilla.org/en-US/docs/Web/Progressive_web_apps",
+      "tier": "official",
+      "version": "rolling",
+      "accessedAt": "2026-10-29",
+      "license": ""
+    },
+    {
+      "id": "webdev-pwa",
+      "title": "web.dev: Learn PWA",
+      "publisher": "Google",
+      "url": "https://web.dev/learn/pwa",
+      "tier": "official",
+      "version": "current",
+      "accessedAt": "2026-10-29",
+      "license": ""
+    },
+    {
+      "id": "owasp-llm-top10",
+      "title": "OWASP Top 10 for Large Language Model Applications",
+      "publisher": "OWASP Foundation",
+      "url": "https://owasp.org/www-project-top-10-for-large-language-model-applications/",
+      "tier": "standard",
+      "version": "2025",
+      "accessedAt": "2026-10-29",
+      "license": ""
     }
   ],
   "contentPolicy": {
@@ -42195,7 +43489,11 @@
       "m12-l04",
       "m12-l05",
       "m12-l06",
-      "m12-l07"
+      "m12-l07",
+      "m13-l01",
+      "m13-l02",
+      "m13-l03",
+      "m13-l04"
     ],
     "depthWordBands": {
       "fondasi": [
@@ -42234,7 +43532,7 @@
   "stats": {
     "modules": 14,
     "lessons": 97,
-    "words": 167471,
-    "minutes": 10130
+    "words": 172615,
+    "minutes": 10550
   }
 }
