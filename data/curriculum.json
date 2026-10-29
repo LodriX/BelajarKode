@@ -17362,108 +17362,362 @@
         {
           "id": "m05-l01",
           "title": "DOM dan event listener",
-          "minutes": 45,
+          "minutes": 120,
           "level": "Dasar",
           "depth": "integrasi",
-          "outcome": "",
+          "outcome": "Setelah pelajaran ini, Anda dapat mengambil elemen dari halaman, mengubah isinya dengan aman, serta menanggapi tindakan pengguna lewat event listener tanpa menimpa konten yang tidak seharusnya diubah.",
           "codeLanguage": "javascript",
-          "objectives": [],
-          "prerequisites": [],
-          "terms": [],
-          "syntax": [],
-          "conventions": [],
-          "next": "",
+          "objectives": [
+            "Menjelaskan DOM sebagai representasi halaman yang dapat dibaca dan diubah JavaScript.",
+            "Mengambil elemen memakai querySelector dan querySelectorAll.",
+            "Mengubah teks dengan textContent, bukan innerHTML, agar aman dari sisipan kode.",
+            "Mendaftarkan event listener dan memahami alur peristiwa dari target ke pendengar."
+          ],
+          "prerequisites": [
+            {
+              "label": "HTML semantik dan struktur dokumen",
+              "lessonId": "m04-l01"
+            }
+          ],
+          "terms": [
+            {
+              "term": "DOM",
+              "definition": "Document Object Model, representasi halaman HTML sebagai pohon objek yang dapat dibaca dan diubah JavaScript."
+            },
+            {
+              "term": "querySelector",
+              "definition": "Fungsi yang mengembalikan elemen pertama yang cocok dengan selector CSS."
+            },
+            {
+              "term": "Event listener",
+              "definition": "Fungsi yang didaftarkan untuk dijalankan setiap kali sebuah peristiwa terjadi pada elemen."
+            },
+            {
+              "term": "Peristiwa (event)",
+              "definition": "Kabar bahwa sesuatu terjadi pada halaman, misalnya klik, penekanan tombol, atau pengiriman form."
+            }
+          ],
+          "syntax": [
+            {
+              "token": "const daftar = document.querySelector(\"#daftar\");",
+              "meaning": "querySelector mencari satu elemen memakai selector CSS. Hasilnya null bila tidak ada yang cocok, sehingga perlu diperiksa sebelum dipakai.",
+              "readAs": "Baca sebagai pengambilan elemen pertama yang cocok dengan selector #daftar dari dokumen.",
+              "example": "const daftar = document.querySelector(\"#daftar\");",
+              "output": "Variabel daftar menunjuk ke elemen ber-id daftar, atau null bila tidak ditemukan.",
+              "pitfall": "Menulis JavaScript di head sebelum elemen ada membuat querySelector mengembalikan null."
+            },
+            {
+              "token": "item.textContent = \"Belajar\";",
+              "meaning": "textContent menulis teks apa adanya. Karakter seperti < dan > ditampilkan sebagai teks, bukan dijalankan sebagai elemen.",
+              "readAs": "Baca sebagai penggantian seluruh teks di dalam elemen, tanpa menafsirkan HTML.",
+              "example": "judul.textContent = \"<b>Belajar</b>\";",
+              "output": "Pengguna melihat tulisan <b>Belajar</b> apa adanya.",
+              "pitfall": "Memakai innerHTML untuk data dari pengguna membuka celah penyisipan kode berbahaya."
+            },
+            {
+              "token": "tombol.addEventListener(\"click\", simpan);",
+              "meaning": "addEventListener menerima nama peristiwa dan fungsi. Fungsi itu tidak dijalankan saat didaftarkan, melainkan saat peristiwa terjadi.",
+              "readAs": "Baca sebagai pendaftaran fungsi simpan untuk dijalankan setiap kali tombol diklik.",
+              "example": "tombol.addEventListener(\"click\", () => simpan(tugas));",
+              "output": "Setiap klik memanggil fungsi penangan satu kali.",
+              "pitfall": "Menulis tanda kurung saat mendaftarkan, misalnya simpan(), membuat fungsi dijalankan langsung."
+            }
+          ],
+          "conventions": [
+            "Tunggu DOM siap atau letakkan skrip di akhir body sebelum mengambil elemen.",
+            "Pakai textContent untuk data dari pengguna dan innerHTML hanya untuk HTML yang Anda kendalikan.",
+            "Periksa hasil querySelector karena nilainya bisa null sebelum dipakai.",
+            "Simpan elemen yang sering dipakai dalam konstanta, bukan mencari ulang setiap saat.",
+            "Pisahkan pengambilan elemen, logika, dan pemasangan event agar mudah diuji."
+          ],
+          "next": "Berikutnya: JSON dan HTTP fetch. Anda akan mengambil data dari server dan mengubahnya menjadi tampilan.",
           "sections": [
             {
-              "id": "konsep",
-              "title": "Memahami konsepnya",
+              "id": "cara-membaca",
+              "title": "Cara membaca interaksi DOM",
               "body": [
-                "DOM merupakan representasi HTML sebagai object. JavaScript dapat mencari elemen, mengubah teks, membuat node, dan merespons event.",
-                "Gunakan textContent untuk teks pengguna; hindari memasukkan string tidak tepercaya lewat innerHTML yang membuka risiko XSS. Tambahkan listener pada elemen yang relevan."
+                "Kode DOM dibaca sebagai rangkaian tiga tahap: mengambil elemen, mengubahnya, lalu memasang pendengar peristiwa. Mulailah dari tahap pengambilan karena semua tahap lain bergantung pada elemen yang sudah ditemukan.",
+                "Setelah elemen didapat, perubahan dilakukan lewat properti atau method. textContent mengganti teks, createElement membuat elemen baru, dan append menyisipkannya. Urutan ini penting: elemen harus dibuat dan diisi sebelum disisipkan.",
+                "Tahap terakhir memasang pendengar. Fungsi penangan baru berjalan ketika peristiwa terjadi, sehingga urutan baris di dalamnya menggambarkan apa yang dilakukan pengguna, bukan urutan saat halaman dimuat."
+              ],
+              "code": {
+                "language": "html",
+                "code": "<ul id=\"daftar\">\n  <li class=\"item\">Olahraga</li>\n</ul>\n\n<button id=\"tambah\">Tambah</button>",
+                "output": "Daftar berisi satu item sebelum tombol diklik, lalu bertambah setiap klik.",
+                "explain": "Blok HTML menyediakan wadah dan tombol dengan pengenal yang stabil. JavaScript memakai pengenal itu untuk menemukan elemen, membuat item baru, lalu menyisipkannya ke dalam daftar.",
+                "annotations": [
+                  {
+                    "line": 1,
+                    "code": "<ul id=\"daftar\">",
+                    "note": "Wadah daftar diberi id agar mudah ditemukan."
+                  },
+                  {
+                    "line": 2,
+                    "code": "<li class=\"item\">Olahraga</li>",
+                    "note": "Kelas item menandai setiap baris tugas."
+                  },
+                  {
+                    "line": 5,
+                    "code": "<button id=\"tambah\">Tambah</button>",
+                    "note": "Tombol memiliki id untuk dipasangi pendengar."
+                  }
+                ],
+                "lab": false
+              },
+              "callouts": [],
+              "checkpoint": null
+            },
+            {
+              "id": "seleksi-elemen",
+              "title": "Memilih elemen yang tepat",
+              "body": [
+                "Ada dua cara utama mengambil elemen. querySelector mengembalikan elemen pertama yang cocok, sedangkan querySelectorAll mengembalikan seluruh yang cocok dalam bentuk daftar. Pilih yang sesuai kebutuhan agar tidak menulis perulangan yang tidak perlu.",
+                "Selector yang dipakai sama dengan selector CSS. Karena itu, kelas dan struktur yang sudah Anda buat untuk gaya dapat langsung dipakai untuk memilih elemen, sehingga tidak perlu menambah penanda baru.",
+                "Hasil querySelector bisa null. Selalu periksa sebelum memakai, atau pastikan elemen ada di dalam markup. Kelalaian memeriksa null adalah penyebab paling umum error pada kode DOM."
               ],
               "code": null,
               "callouts": [
                 {
-                  "tone": "good",
-                  "title": "Best practice",
-                  "body": "Gunakan textContent untuk teks dinamis yang tidak memerlukan HTML."
-                },
+                  "tone": "warn",
+                  "title": "Periksa null",
+                  "body": "Jika elemen tidak ada, querySelector mengembalikan null. Memanggil properti pada null menghentikan skrip, sehingga periksa lebih dulu."
+                }
+              ],
+              "checkpoint": {
+                "prompt": "Anda ingin memasang pendengar pada semua tombol berkelas aksi. Fungsi mana yang dipakai?",
+                "success": "querySelectorAll(\".aksi\") lalu memasang pendengar pada setiap elemen hasilnya."
+              }
+            },
+            {
+              "id": "alur-peristiwa",
+              "title": "Alur peristiwa dan objek event",
+              "body": [
+                "Saat peristiwa terjadi, browser membuat objek event dan mengirimkannya ke penangan. Objek itu memuat informasi seperti target, yaitu elemen yang memicu peristiwa, dan method seperti preventDefault untuk membatalkan perilaku bawaan.",
+                "Peristiwa menjalar dari elemen terdalam ke luar, lalu kembali. Karena itu, satu pendengar yang dipasang pada wadah dapat menangani klik dari banyak anaknya. Pola ini disebut delegasi peristiwa dan mengurangi jumlah pendengar yang perlu dipasang.",
+                "Gunakan objek event untuk mengetahui elemen mana yang terlibat. Untuk daftar tombol hapus, satu pendengar pada wadah dapat memeriksa event.target lalu menentukan baris mana yang harus dihapus."
+              ],
+              "code": null,
+              "callouts": [],
+              "checkpoint": {
+                "prompt": "Mengapa satu pendengar pada wadah daftar dapat menggantikan banyak pendengar pada setiap tombol hapus?",
+                "success": "Karena peristiwa dari tombol menjalar ke wadah, sehingga wadah dapat memeriksa event.target dan menangani klik itu."
+              }
+            },
+            {
+              "id": "mengubah-halaman",
+              "title": "Mengubah halaman dengan aman",
+              "body": [
+                "Perubahan halaman sebaiknya dinyatakan sebagai fungsi dari state. Ambil state terkini, lalu gambar ulang bagian yang berubah. Pola ini mencegah tampilan dan data berbeda, yang sering terjadi bila Anda mengubah DOM di banyak tempat secara terpisah.",
+                "textContent adalah cara aman menulis teks. innerHTML menafsirkan teks sebagai HTML, sehingga data dari pengguna dapat menyisipkan elemen atau skrip yang tidak Anda inginkan. Pakai innerHTML hanya untuk potongan HTML yang Anda susun sendiri.",
+                "Untuk membuat banyak elemen, buat semuanya lebih dulu dalam sebuah wadah, lalu sisipkan wadah itu sekali. Menyisipkan satu per satu ke dokumen memicu lebih banyak perhitungan tata letak."
+              ],
+              "code": null,
+              "callouts": [
                 {
                   "tone": "bad",
                   "title": "Kesalahan umum",
-                  "body": "Memasukkan input pengguna langsung ke innerHTML."
+                  "body": "Memakai innerHTML untuk menampilkan judul tugas dari pengguna. Judul berisi tanda < dapat merusak halaman atau menyisipkan skrip. Gunakan textContent."
                 }
               ],
-              "checkpoint": null
-            },
-            {
-              "id": "contoh",
-              "title": "Contoh kode",
-              "body": [
-                "Perhatikan input, proses, dan output. Ketik ulang, lalu ubah satu nilai."
-              ],
-              "code": {
-                "language": "javascript",
-                "code": "const tombol = document.querySelector(\"#tombol\");\ntombol?.addEventListener(\"click\", () => {\n  document.querySelector(\"#hasil\").textContent = \"Diklik\";\n});",
-                "output": "",
-                "explain": ""
-              },
-              "callouts": [],
               "checkpoint": null
             }
           ],
           "practice": [
             {
               "id": "latihan-1",
-              "title": "Latihan 1",
-              "level": "independent",
-              "task": "Buat tombol penghitung klik dengan addEventListener.",
-              "steps": [],
+              "title": "Tampilkan penghitung item",
+              "level": "guided",
+              "task": "Tampilkan jumlah item daftar pada sebuah elemen penghitung setiap kali daftar berubah.",
+              "steps": [
+                "Ambil elemen daftar dan elemen penghitung memakai querySelector.",
+                "Tulis fungsi yang menghitung jumlah item anak.",
+                "Perbarui textContent penghitung dengan hasil hitungan.",
+                "Panggil fungsi itu setelah menyisipkan item baru."
+              ],
               "hint": "",
-              "hints": [],
-              "starterCode": "",
-              "expected": "",
-              "stretch": "",
-              "verification": null
+              "hints": [
+                "querySelector(\"#daftar\") mengembalikan elemen daftar.",
+                "Jumlah anak dapat dibaca dari daftar.children.length.",
+                "textContent dipakai untuk menulis teks penghitung."
+              ],
+              "starterCode": "<p id=\"hitung\">0 item</p>\n<ul id=\"daftar\"></ul>\n<script>\n  // ambil elemen dan perbarui penghitung\n</script>",
+              "expected": "Penghitung menampilkan jumlah item yang benar setelah setiap penambahan.",
+              "stretch": "Ubah teks menjadi bentuk jamak yang tepat saat jumlah item bukan satu.",
+              "verification": {
+                "mode": "manual",
+                "command": "Tambahkan tiga item lalu periksa teks penghitung.",
+                "expected": "Penghitung menampilkan angka yang sama dengan jumlah item.",
+                "evidence": "Simpan berkas HTML dan catatan hasil pengujian."
+              }
             },
             {
               "id": "latihan-2",
-              "title": "Latihan 2",
+              "title": "Tombol hapus per baris",
               "level": "independent",
-              "task": "Ubah satu input atau asumsi pada contoh, catat hasil dan jelaskan alasannya.",
-              "steps": [],
+              "task": "Tambahkan tombol hapus pada setiap item daftar dan hapus barisnya saat tombol diklik.",
+              "steps": [
+                "Buat tombol sebagai bagian dari setiap item.",
+                "Pasang satu pendengar pada wadah daftar, bukan pada setiap tombol.",
+                "Periksa event.target untuk mengetahui tombol mana yang diklik.",
+                "Hapus item yang sesuai dari daftar."
+              ],
               "hint": "",
-              "hints": [],
-              "starterCode": "",
-              "expected": "",
-              "stretch": "",
-              "verification": null
+              "hints": [
+                "Satu pendengar pada daftar dapat melayani banyak tombol.",
+                "event.target adalah elemen yang diklik.",
+                "closest(\".hapus\") membantu menemukan tombol dari target."
+              ],
+              "starterCode": "<ul id=\"daftar\">\n  <li>Belajar <button class=\"hapus\">Hapus</button></li>\n</ul>",
+              "expected": "Klik tombol hapus menghilangkan barisnya tanpa memengaruhi baris lain.",
+              "stretch": "Beri nama tombol dengan aria-label yang menyebut judul tugasnya.",
+              "verification": {
+                "mode": "manual",
+                "command": "Klik tombol hapus pada beberapa baris.",
+                "expected": "Hanya baris yang tombolnya diklik yang hilang.",
+                "evidence": "Simpan berkas HTML dan catatan uji."
+              }
+            },
+            {
+              "id": "latihan-3",
+              "title": "Gambar ulang daftar dari state",
+              "level": "transfer",
+              "task": "Ubah pendekatan menjadi menggambar ulang seluruh daftar dari array state setiap kali data berubah.",
+              "steps": [
+                "Simpan daftar tugas dalam satu array.",
+                "Buat fungsi gambar yang mengosongkan wadah lalu mengisi ulang dari state.",
+                "Panggil fungsi gambar setelah menambah atau menghapus data.",
+                "Pastikan tampilan selalu sama dengan isi array."
+              ],
+              "hint": "",
+              "hints": [
+                "Kosongkan wadah dengan textContent = \"\" sebelum mengisi ulang.",
+                "Bangun seluruh baris, lalu sisipkan sekali ke dokumen.",
+                "Jangan mengubah DOM di luar fungsi gambar agar tidak ada dua sumber kebenaran."
+              ],
+              "starterCode": "let tugas = [{ id: 1, judul: \"Belajar\" }];\nfunction gambar() { /* isi ulang wadah */ }",
+              "expected": "Setelah setiap perubahan, tampilan cocok dengan isi array tanpa penyesuaian manual.",
+              "stretch": "Pisahkan fungsi gambar menjadi bagian yang membuat satu baris dan bagian yang memasang semuanya.",
+              "verification": {
+                "mode": "manual",
+                "command": "Tambah dan hapus beberapa tugas, lalu bandingkan tampilan dengan isi array.",
+                "expected": "Tidak ada perbedaan antara tampilan dan isi array.",
+                "evidence": "Simpan berkas HTML dan catatan pemeriksaan."
+              }
             }
           ],
-          "verification": null,
-          "troubleshooting": [],
+          "verification": {
+            "mode": "manual",
+            "command": "Tambahkan beberapa item dan hapus satu, lalu periksa konsol untuk error dan bandingkan tampilan.",
+            "expected": "Daftar bertambah dan berkurang sesuai tindakan, teks tampil apa adanya, dan tidak ada error di konsol.",
+            "evidence": "Simpan berkas HTML dan catatan hasil uji interaksi."
+          },
+          "troubleshooting": [
+            {
+              "symptom": "Skrip error dengan pesan tidak dapat membaca properti dari null.",
+              "cause": "querySelector tidak menemukan elemen karena skrip berjalan sebelum elemen dibuat.",
+              "fix": "Letakkan skrip di akhir body atau jalankan setelah peristiwa DOMContentLoaded."
+            },
+            {
+              "symptom": "Fungsi penangan berjalan sekali saat halaman dimuat, bukan saat diklik.",
+              "cause": "Fungsi dipanggil dengan tanda kurung saat didaftarkan.",
+              "fix": "Berikan fungsi itu sendiri ke addEventListener, bukan hasil pemanggilannya."
+            },
+            {
+              "symptom": "Teks pengguna merusak tampilan halaman.",
+              "cause": "Data pengguna ditulis memakai innerHTML sehingga ditafsirkan sebagai HTML.",
+              "fix": "Ganti innerHTML dengan textContent untuk data dari pengguna."
+            },
+            {
+              "symptom": "Baris yang dihapus tidak sesuai dengan tombol yang diklik.",
+              "cause": "Penangan menghapus item pertama atau memakai indeks yang salah alih-alih event.target.",
+              "fix": "Tentukan baris dari event.target memakai closest, lalu hapus elemen itu."
+            }
+          ],
           "quiz": {
             "questions": [
               {
                 "id": "q1",
                 "type": "recall",
-                "question": "Apa prinsip yang paling tepat untuk topik “DOM dan event listener”?",
+                "question": "Apa yang dikembalikan querySelector bila tidak ada elemen yang cocok?",
                 "options": [
-                  "Gunakan textContent untuk teks dinamis yang tidak memerlukan HTML.",
-                  "Gunakan solusi paling rumit sejak awal, meski kebutuhan belum jelas.",
-                  "Lewati pengujian karena contoh kecil pasti benar."
+                  "Array kosong",
+                  "null",
+                  "Error"
                 ],
-                "answer": 0,
-                "explanation": "Gunakan textContent untuk teks dinamis yang tidak memerlukan HTML."
+                "answer": 1,
+                "explanation": "querySelector mengembalikan null bila tidak menemukan elemen."
+              },
+              {
+                "id": "q2",
+                "type": "code-reading",
+                "question": "Apa perbedaan textContent dan innerHTML saat diisi teks berisi tanda < ?",
+                "options": [
+                  "Tidak ada perbedaan",
+                  "textContent menampilkan teks apa adanya, innerHTML menafsirkannya sebagai HTML",
+                  "innerHTML selalu menampilkan teks apa adanya"
+                ],
+                "answer": 1,
+                "explanation": "textContent aman untuk data pengguna, sedangkan innerHTML menafsirkan teks sebagai HTML."
+              },
+              {
+                "id": "q3",
+                "type": "scenario",
+                "question": "Ingin memasang satu penangan untuk semua tombol dalam sebuah daftar. Pendekatan yang tepat...",
+                "options": [
+                  "Memasang penangan pada setiap tombol satu per satu",
+                  "Memasang satu pendengar pada wadah lalu memeriksa event.target",
+                  "Memasang penangan pada document untuk semua peristiwa"
+                ],
+                "answer": 1,
+                "explanation": "Delegasi peristiwa memakai satu pendengar pada wadah untuk melayani banyak anak."
               }
             ]
           },
-          "resources": [],
-          "summary": [],
-          "legacy": true,
-          "code": "const tombol = document.querySelector(\"#tombol\");\ntombol?.addEventListener(\"click\", () => {\n  document.querySelector(\"#hasil\").textContent = \"Diklik\";\n});",
-          "wordCount": 145,
-          "schema": 2
+          "resources": [
+            {
+              "sourceId": "mdn-dom",
+              "title": "MDN: Document Object Model (DOM)",
+              "publisher": "Mozilla",
+              "url": "https://developer.mozilla.org/en-US/docs/Web/API/Document_Object_Model",
+              "note": "Referensi resmi Document Object Model dan API elemen dokumen.",
+              "tier": "official",
+              "version": "rolling",
+              "accessedAt": "2026-10-29",
+              "license": ""
+            },
+            {
+              "sourceId": "mdn-events",
+              "title": "MDN: Introduction to events",
+              "publisher": "Mozilla",
+              "url": "https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/Scripting/Events",
+              "note": "Penjelasan MDN tentang peristiwa, pendengar, dan alur peristiwa.",
+              "tier": "official",
+              "version": "rolling",
+              "accessedAt": "2026-10-29",
+              "license": ""
+            },
+            {
+              "sourceId": "mdn-js-guide",
+              "title": "MDN: JavaScript Guide",
+              "publisher": "Mozilla",
+              "url": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide",
+              "note": "Panduan JavaScript MDN tentang manipulasi dokumen.",
+              "tier": "official",
+              "version": "rolling",
+              "accessedAt": "2026-10-28",
+              "license": ""
+            }
+          ],
+          "summary": [
+            "DOM adalah representasi halaman sebagai pohon objek yang dapat dibaca dan diubah JavaScript.",
+            "querySelector dan querySelectorAll mengambil elemen memakai selector CSS.",
+            "textContent aman untuk data pengguna; innerHTML hanya untuk HTML yang Anda kendalikan.",
+            "Event listener dijalankan saat peristiwa terjadi dan dapat dipasang sekali pada wadah untuk banyak anak."
+          ],
+          "legacy": false,
+          "code": "<ul id=\"daftar\">\n  <li class=\"item\">Olahraga</li>\n</ul>\n\n<button id=\"tambah\">Tambah</button>",
+          "wordCount": 1551,
+          "schema": 3.1
         },
         {
           "id": "m05-l02",
@@ -18088,537 +18342,2003 @@
         },
         {
           "id": "m05-l03",
-          "title": "JSON dan HTTP Fetch",
-          "minutes": 45,
+          "title": "JSON dan HTTP fetch",
+          "minutes": 120,
           "level": "Dasar",
           "depth": "integrasi",
-          "outcome": "",
+          "outcome": "Setelah pelajaran ini, Anda dapat mengambil data dari server memakai fetch, mengubahnya dari JSON, dan menangani tanggapan sukses maupun gagal tanpa membuat antarmuka membeku.",
           "codeLanguage": "javascript",
-          "objectives": [],
-          "prerequisites": [],
-          "terms": [],
-          "syntax": [],
-          "conventions": [],
-          "next": "",
+          "objectives": [
+            "Menjelaskan bagian permintaan dan tanggapan HTTP yang penting bagi pengembang.",
+            "Mengambil data memakai fetch dan mengubahnya dengan response.json().",
+            "Memeriksa response.ok sebelum memakai data.",
+            "Menampilkan keadaan memuat, berhasil, dan gagal pada antarmuka."
+          ],
+          "prerequisites": [
+            {
+              "label": "State dan localStorage: menyimpan daftar tugas",
+              "lessonId": "m05-l02"
+            }
+          ],
+          "terms": [
+            {
+              "term": "HTTP",
+              "definition": "Protokol permintaan dan tanggapan yang dipakai browser dan server untuk bertukar data di web."
+            },
+            {
+              "term": "JSON",
+              "definition": "Format teks untuk pertukaran data yang menyerupai object JavaScript, tetapi hanya mendukung tipe dasar."
+            },
+            {
+              "term": "fetch",
+              "definition": "Fungsi browser untuk mengirim permintaan HTTP dan mengembalikan promise berisi tanggapan."
+            },
+            {
+              "term": "Kode status",
+              "definition": "Angka pada tanggapan HTTP yang menyatakan hasil, misalnya 200 berhasil dan 404 tidak ditemukan."
+            }
+          ],
+          "syntax": [
+            {
+              "token": "const res = await fetch(\"/api/tugas\");",
+              "meaning": "fetch mengembalikan promise. Dengan await, kode menunggu tanggapan sebelum melanjutkan tanpa membekukan antarmuka.",
+              "readAs": "Baca sebagai pengiriman permintaan ke alamat itu dan penantian tanggapannya.",
+              "example": "const res = await fetch(\"/api/tugas\");",
+              "output": "Variabel res berisi tanggapan, termasuk kode status dan isi.",
+              "pitfall": "fetch hanya gagal pada masalah jaringan; tanggapan 404 atau 500 tetap dianggap berhasil sampai Anda memeriksa statusnya."
+            },
+            {
+              "token": "if (!res.ok) throw new Error(\"Gagal memuat data\");",
+              "meaning": "res.ok bernilai benar hanya untuk kode status 200 sampai 299, sehingga kesalahan server tidak lolos diam-diam.",
+              "readAs": "Baca sebagai pemeriksaan kode status dan penghentian alur bila tanggapan tidak berhasil.",
+              "example": "if (!res.ok) throw new Error(`HTTP ${res.status}`);",
+              "output": "Kesalahan dilempar sehingga dapat ditangani di satu tempat.",
+              "pitfall": "Memakai data tanpa memeriksa ok membuat pesan kesalahan server dianggap sebagai data sah."
+            },
+            {
+              "token": "const data = await res.json();",
+              "meaning": "json mengembalikan promise karena isi tanggapan dibaca bertahap. Await memastikan nilainya siap sebelum dipakai.",
+              "readAs": "Baca sebagai pembacaan isi tanggapan dan pengubahannya dari teks JSON menjadi nilai JavaScript.",
+              "example": "const tugas = await res.json();",
+              "output": "Nilai berupa array atau object yang siap dipakai di antarmuka.",
+              "pitfall": "Memanggil json dua kali gagal karena isi tanggapan hanya dapat dibaca sekali."
+            }
+          ],
+          "conventions": [
+            "Selalu periksa response.ok sebelum memakai data tanggapan.",
+            "Bungkus pengambilan data dengan try/catch agar kesalahan jaringan tertangani.",
+            "Tampilkan keadaan memuat sebelum permintaan dan hilangkan setelah selesai.",
+            "Pisahkan fungsi pengambilan data dari kode yang mengubah tampilan.",
+            "Jangan menaruh kunci rahasia di kode klien karena kode itu dapat dibaca siapa pun."
+          ],
+          "next": "Berikutnya: promise dan async/await. Anda akan memahami mekanisme di balik await dan menangani banyak pekerjaan asinkron sekaligus.",
           "sections": [
             {
-              "id": "konsep",
-              "title": "Memahami konsepnya",
+              "id": "cara-membaca",
+              "title": "Cara membaca alur pengambilan data",
               "body": [
-                "JSON adalah format pertukaran data, bukan database transaksional. fetch mengirim request HTTP dan menerima Response; response.ok dan status perlu diperiksa.",
-                "Pemanggilan fetch menghasilkan Promise. Gagal jaringan, timeout, respons bukan JSON, dan status 4xx/5xx perlu ditangani. Buka file HTML langsung dapat membatasi fetch file JSON; local server lebih konsisten."
+                "Alur pengambilan data dibaca dari permintaan menuju tampilan. Kode mengirim permintaan, menunggu tanggapan, memeriksa statusnya, lalu mengubah isi menjadi nilai JavaScript. Setiap tahap dapat gagal, sehingga setiap tahap punya jawaban untuk keadaan gagal.",
+                "Kata await menandai titik tunggu. Selama menunggu, antarmuka tetap responsif karena pekerjaan itu tidak memblokir. Karena itu, kode setelah await baru berjalan ketika data benar-benar tersedia.",
+                "try/catch membungkus seluruh alur. Kesalahan jaringan dan kesalahan status yang dilempar sendiri sama-sama ditangkap di satu tempat, sehingga antarmuka tidak berhenti dan pesan kesalahan dapat ditampilkan sekali dengan cara yang sama."
+              ],
+              "code": {
+                "language": "javascript",
+                "code": "async function muatTugas() {\n  try {\n    const res = await fetch(\"/api/tugas\");\n    if (!res.ok) throw new Error(`HTTP ${res.status}`);\n    const data = await res.json();\n    return data.tugas;\n  } catch (err) {\n    console.error(\"Gagal memuat:\", err.message);\n    return [];\n  }\n}",
+                "output": "Berhasil: mengembalikan daftar tugas. Gagal: mencatat kesalahan dan mengembalikan daftar kosong.",
+                "explain": "Permintaan dikirim dengan fetch, status diperiksa sebelum isi dipakai, dan isi diubah dengan json. Blok catch menangkap semua kegagalan sehingga pemanggil selalu menerima array.",
+                "annotations": [
+                  {
+                    "line": 3,
+                    "code": "const res = await fetch(\"/api/tugas\");",
+                    "note": "Permintaan dikirim dan hasilnya ditunggu."
+                  },
+                  {
+                    "line": 4,
+                    "code": "if (!res.ok) throw new Error(`HTTP ${res.status}`);",
+                    "note": "Status diperiksa sebelum data dipakai."
+                  },
+                  {
+                    "line": 5,
+                    "code": "const data = await res.json();",
+                    "note": "Isi tanggapan diubah dari JSON menjadi nilai JavaScript."
+                  },
+                  {
+                    "line": 7,
+                    "code": "} catch (err) {",
+                    "note": "Kesalahan apa pun ditangkap di satu tempat."
+                  },
+                  {
+                    "line": 9,
+                    "code": "return [];",
+                    "note": "Nilai cadangan dikembalikan agar pemanggil tetap aman."
+                  }
+                ],
+                "lab": false
+              },
+              "callouts": [
+                {
+                  "tone": "good",
+                  "title": "Satu fungsi, satu tugas",
+                  "body": "Fungsi ini hanya mengambil dan mengembalikan data. Kode tampilan memanggilnya dan memutuskan cara menampilkan hasil."
+                }
+              ],
+              "checkpoint": {
+                "prompt": "Apa yang terjadi bila server mengembalikan status 500 pada contoh ini?",
+                "success": "Baris pemeriksaan status melempar kesalahan, blok catch menangkapnya, dan fungsi mengembalikan daftar kosong."
+              }
+            },
+            {
+              "id": "permintaan-http",
+              "title": "Permintaan dan tanggapan HTTP",
+              "body": [
+                "Permintaan HTTP memuat method, alamat, dan terkadang body. Method menyatakan maksud: GET untuk mengambil, POST untuk membuat, PUT atau PATCH untuk mengubah, dan DELETE untuk menghapus. Alamat menyatakan sumber daya yang dimaksud.",
+                "Tanggapan memuat kode status, header, dan body. Kode 200 sampai 299 berarti berhasil, 400 sampai 499 menandakan kesalahan dari sisi pengirim, dan 500 sampai 599 menandakan kesalahan server. Memahami kelompok ini membantu menentukan langkah berikutnya.",
+                "Body sering berupa JSON. Header content-type memberi tahu jenis isi, sehingga server dan klien sepakat cara membacanya. Saat mengirim JSON, Anda perlu mengubahnya menjadi teks dan menyertakan header yang sesuai."
+              ],
+              "code": null,
+              "callouts": [],
+              "checkpoint": {
+                "prompt": "Sebutkan method yang tepat untuk mengambil daftar tugas, membuat tugas baru, dan menghapus satu tugas.",
+                "success": "GET untuk mengambil, POST untuk membuat, dan DELETE untuk menghapus."
+              }
+            },
+            {
+              "id": "mengirim-data",
+              "title": "Mengirim data ke server",
+              "body": [
+                "Mengirim data mirip mengambil, tetapi dengan method yang menyatakan maksud dan body yang memuat data. Body harus berupa teks, sehingga object diubah lebih dulu memakai JSON.stringify. Header content-type memberi tahu server bahwa isinya JSON.",
+                "Kesalahan paling umum adalah mengirim object langsung sebagai body. Fetch akan mengubahnya dengan aturan bawaan yang tidak menghasilkan JSON, sehingga server menerima teks yang salah. Selalu ubah dengan JSON.stringify.",
+                "Setelah permintaan mengubah data di server, perbarui state lokal dari tanggapan atau muat ulang daftar. Jangan menganggap perubahan lokal sudah pasti sama dengan yang tersimpan di server."
+              ],
+              "code": {
+                "language": "javascript",
+                "code": "const res = await fetch(\"/api/tugas\", {\n  method: \"POST\",\n  headers: { \"content-type\": \"application/json\" },\n  body: JSON.stringify({ judul: \"Belajar\" }),\n});",
+                "output": "Permintaan POST terkirim dengan isi JSON berisi judul tugas.",
+                "explain": "Method menyatakan pembuatan data, header menyatakan jenis isi, dan body memuat object yang sudah diubah menjadi teks JSON.",
+                "annotations": [
+                  {
+                    "line": 1,
+                    "code": "const res = await fetch(\"/api/tugas\", {",
+                    "note": "Method POST menyatakan maksud membuat data baru."
+                  },
+                  {
+                    "line": 2,
+                    "code": "method: \"POST\",",
+                    "note": "Header memberi tahu server bahwa isi berupa JSON."
+                  },
+                  {
+                    "line": 3,
+                    "code": "headers: { \"content-type\": \"application/json\" },",
+                    "note": "Object diubah menjadi teks JSON sebelum dikirim."
+                  }
+                ],
+                "lab": false
+              },
+              "callouts": [],
+              "checkpoint": null
+            },
+            {
+              "id": "keadaan-antarmuka",
+              "title": "Menampilkan keadaan memuat dan gagal",
+              "body": [
+                "Permintaan membutuhkan waktu, meski singkat. Antarmuka perlu menunjukkan bahwa pekerjaan sedang berjalan agar pengguna tidak menekan tombol berkali-kali. Keadaan ini biasanya berupa teks memuat atau penanda pada tombol.",
+                "Ketika permintaan gagal, tunjukkan pesan yang dapat dipahami beserta pilihan untuk mencoba lagi. Pesan seperti “Gagal memuat data” lebih berguna daripada membiarkan halaman kosong tanpa penjelasan.",
+                "Tiga keadaan yang perlu ditangani konsisten: sedang memuat, berhasil, dan gagal. Jika salah satu tidak ditangani, pengguna akan melihat antarmuka yang tampak rusak pada skenario tertentu."
               ],
               "code": null,
               "callouts": [
                 {
-                  "tone": "good",
-                  "title": "Best practice",
-                  "body": "Periksa status HTTP dan berikan UI untuk loading/error/kosong."
-                },
-                {
-                  "tone": "bad",
-                  "title": "Kesalahan umum",
-                  "body": "Menganggap fetch resolve berarti permintaan pasti sukses."
+                  "tone": "warn",
+                  "title": "Jangan hardcode kunci rahasia",
+                  "body": "Kode di klien dapat dibaca siapa pun. Kunci rahasia diletakkan di server, bukan di berkas JavaScript yang dikirim ke browser."
                 }
               ],
-              "checkpoint": null
-            },
-            {
-              "id": "contoh",
-              "title": "Contoh kode",
-              "body": [
-                "Perhatikan input, proses, dan output. Ketik ulang, lalu ubah satu nilai."
-              ],
-              "code": {
-                "language": "javascript",
-                "code": "async function ambilData(url) {\n  const response = await fetch(url);\n  if (!response.ok) throw new Error(`HTTP ${response.status}`);\n  return response.json();\n}\nconsole.log(\"Fungsi fetch siap\");",
-                "output": "",
-                "explain": ""
-              },
-              "callouts": [],
-              "checkpoint": null
+              "checkpoint": {
+                "prompt": "Sebutkan tiga keadaan antarmuka yang perlu ditangani saat mengambil data dari server.",
+                "success": "Sedang memuat, berhasil menampilkan data, dan gagal dengan pesan serta pilihan mencoba lagi."
+              }
             }
           ],
           "practice": [
             {
               "id": "latihan-1",
-              "title": "Latihan 1",
-              "level": "independent",
-              "task": "Dengan server lokal, ambil data/data.json dan tampilkan jumlah item ke halaman.",
-              "steps": [],
+              "title": "Ambil dan tampilkan daftar tugas",
+              "level": "guided",
+              "task": "Ambil daftar tugas dari alamat contoh, lalu tampilkan setiap judul ke dalam daftar halaman.",
+              "steps": [
+                "Kirim permintaan dengan fetch dan tunggu tanggapannya.",
+                "Periksa response.ok sebelum memakai data.",
+                "Ubah isi menjadi JSON dan ulangi setiap tugas.",
+                "Sisipkan setiap judul ke dalam daftar."
+              ],
               "hint": "",
-              "hints": [],
-              "starterCode": "",
-              "expected": "",
-              "stretch": "",
-              "verification": null
+              "hints": [
+                "await fetch(...) mengembalikan tanggapan.",
+                "res.ok bernilai salah untuk kode di luar 200 sampai 299.",
+                "res.json() mengembalikan promise yang perlu ditunggu."
+              ],
+              "starterCode": "async function muat() {\n  // fetch, periksa ok, ubah JSON, tampilkan\n}\nmuat();",
+              "expected": "Setiap tugas muncul sekali di daftar, dan kegagalan menampilkan pesan yang jelas.",
+              "stretch": "Tampilkan jumlah tugas setelah daftar dimuat.",
+              "verification": {
+                "mode": "manual",
+                "command": "Jalankan dengan server yang mengembalikan daftar, lalu dengan alamat yang salah.",
+                "expected": "Kasus berhasil menampilkan daftar; kasus gagal menampilkan pesan tanpa menghentikan halaman.",
+                "evidence": "Simpan berkas dan catatan dua hasil pengujian."
+              }
             },
             {
               "id": "latihan-2",
-              "title": "Latihan 2",
+              "title": "Kirim tugas baru",
               "level": "independent",
-              "task": "Ubah satu input atau asumsi pada contoh, catat hasil dan jelaskan alasannya.",
-              "steps": [],
+              "task": "Kirim tugas baru ke server memakai method POST dan tampilkan hasilnya setelah berhasil.",
+              "steps": [
+                "Siapkan object tugas yang akan dikirim.",
+                "Kirim dengan method POST dan header content-type JSON.",
+                "Ubah object menjadi teks memakai JSON.stringify.",
+                "Perbarui daftar setelah tanggapan berhasil."
+              ],
               "hint": "",
-              "hints": [],
-              "starterCode": "",
-              "expected": "",
-              "stretch": "",
-              "verification": null
+              "hints": [
+                "Body harus berupa teks, bukan object.",
+                "Header content-type memberi tahu server jenis isi.",
+                "Periksa status sebelum menganggap penyimpanan berhasil."
+              ],
+              "starterCode": "async function kirim(judul) {\n  // POST ke /api/tugas\n}",
+              "expected": "Tugas baru tersimpan di server dan daftar lokal ikut diperbarui.",
+              "stretch": "Nonaktifkan tombol kirim selama permintaan berlangsung.",
+              "verification": {
+                "mode": "manual",
+                "command": "Kirim satu tugas lalu muat ulang daftar dari server.",
+                "expected": "Tugas baru muncul kembali setelah dimuat ulang.",
+                "evidence": "Simpan berkas dan catatan hasil uji."
+              }
+            },
+            {
+              "id": "latihan-3",
+              "title": "Tiga keadaan antarmuka",
+              "level": "transfer",
+              "task": "Tambahkan keadaan memuat, berhasil, dan gagal pada halaman daftar tugas, lengkap dengan tombol coba lagi saat gagal.",
+              "steps": [
+                "Tambahkan penanda keadaan sebelum permintaan dikirim.",
+                "Tampilkan daftar ketika data berhasil dimuat.",
+                "Tampilkan pesan dan tombol coba lagi ketika gagal.",
+                "Pastikan hanya satu keadaan tampil pada satu waktu."
+              ],
+              "hint": "",
+              "hints": [
+                "Satu variabel keadaan menyederhanakan pengaturan tampilan.",
+                "Sembunyikan tombol coba lagi saat tidak gagal.",
+                "Uji dengan mematikan jaringan untuk melihat keadaan gagal."
+              ],
+              "starterCode": "<p id=\"status\"></p>\n<ul id=\"daftar\"></ul>\n<button id=\"cobaLagi\" hidden>Coba lagi</button>",
+              "expected": "Antarmuka selalu menunjukkan tepat satu keadaan dan tombol coba lagi bekerja.",
+              "stretch": "Catat waktu permintaan dan tampilkan bila lebih dari satu detik.",
+              "verification": {
+                "mode": "manual",
+                "command": "Uji tiga skenario: normal, lambat, dan jaringan mati.",
+                "expected": "Setiap skenario menampilkan keadaan yang sesuai tanpa antarmuka kosong.",
+                "evidence": "Simpan berkas dan catatan tiga skenario."
+              }
             }
           ],
-          "verification": null,
-          "troubleshooting": [],
+          "verification": {
+            "mode": "manual",
+            "command": "Uji pengambilan data pada skenario berhasil, gagal status, dan jaringan mati.",
+            "expected": "Data tampil pada kasus berhasil, dan pesan yang dapat dipahami muncul pada kasus gagal.",
+            "evidence": "Simpan berkas dan catatan hasil tiga skenario pengujian."
+          },
+          "troubleshooting": [
+            {
+              "symptom": "Data tidak muncul meski permintaan berhasil.",
+              "cause": "response.json tidak ditunggu atau dipanggil dua kali.",
+              "fix": "Simpan hasil json dalam variabel dengan await dan pakai variabel itu."
+            },
+            {
+              "symptom": "Kesalahan server dianggap data sah.",
+              "cause": "response.ok tidak diperiksa sebelum data dipakai.",
+              "fix": "Periksa response.ok dan lempar kesalahan bila status bukan 200 sampai 299."
+            },
+            {
+              "symptom": "Permintaan gagal dengan pesan tentang CORS.",
+              "cause": "Server tujuan tidak mengizinkan permintaan dari asal halaman.",
+              "fix": "Atur header CORS di server atau pakai alamat yang memang ditujukan untuk permintaan lintas asal."
+            },
+            {
+              "symptom": "Isi permintaan sampai ke server dalam bentuk yang salah.",
+              "cause": "Body dikirim sebagai object tanpa diubah menjadi teks.",
+              "fix": "Ubah body memakai JSON.stringify dan sertakan header content-type JSON."
+            }
+          ],
           "quiz": {
             "questions": [
               {
                 "id": "q1",
                 "type": "recall",
-                "question": "Apa prinsip yang paling tepat untuk topik “JSON dan HTTP Fetch”?",
+                "question": "Apa arti kode status 404 pada tanggapan HTTP?",
                 "options": [
-                  "Periksa status HTTP dan berikan UI untuk loading/error/kosong.",
-                  "Gunakan solusi paling rumit sejak awal, meski kebutuhan belum jelas.",
-                  "Lewati pengujian karena contoh kecil pasti benar."
+                  "Berhasil",
+                  "Tidak ditemukan",
+                  "Kesalahan server"
+                ],
+                "answer": 1,
+                "explanation": "404 termasuk kelompok 400-an yang menandakan kesalahan dari sisi pengirim, yaitu sumber daya tidak ditemukan."
+              },
+              {
+                "id": "q2",
+                "type": "code-reading",
+                "question": "Mengapa response.json perlu ditunggu dengan await?",
+                "options": [
+                  "Karena json mengembalikan promise",
+                  "Karena json selalu lambat",
+                  "Karena json mengubah status tanggapan"
                 ],
                 "answer": 0,
-                "explanation": "Periksa status HTTP dan berikan UI untuk loading/error/kosong."
+                "explanation": "Membaca isi tanggapan mengembalikan promise, sehingga perlu ditunggu sebelum nilainya dipakai."
+              },
+              {
+                "id": "q3",
+                "type": "scenario",
+                "question": "Permintaan mengirim object langsung sebagai body. Apa yang salah?",
+                "options": [
+                  "Tidak ada yang salah",
+                  "Body harus diubah menjadi teks JSON memakai JSON.stringify",
+                  "Body harus berupa FormData"
+                ],
+                "answer": 1,
+                "explanation": "Body harus berupa teks, sehingga object diubah lebih dulu dengan JSON.stringify."
               }
             ]
           },
-          "resources": [],
-          "summary": [],
-          "legacy": true,
-          "code": "async function ambilData(url) {\n  const response = await fetch(url);\n  if (!response.ok) throw new Error(`HTTP ${response.status}`);\n  return response.json();\n}\nconsole.log(\"Fungsi fetch siap\");",
-          "wordCount": 157,
-          "schema": 2
+          "resources": [
+            {
+              "sourceId": "mdn-json",
+              "title": "MDN: JSON",
+              "publisher": "Mozilla",
+              "url": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON",
+              "note": "Penjelasan resmi format JSON dan cara mengubahnya di JavaScript.",
+              "tier": "official",
+              "version": "rolling",
+              "accessedAt": "2026-10-29",
+              "license": ""
+            },
+            {
+              "sourceId": "mdn-fetch",
+              "title": "MDN: Fetch API",
+              "publisher": "Mozilla",
+              "url": "https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API",
+              "note": "Referensi Fetch API untuk mengirim permintaan dan membaca tanggapan.",
+              "tier": "official",
+              "version": "rolling",
+              "accessedAt": "2026-10-29",
+              "license": ""
+            },
+            {
+              "sourceId": "mdn-http-overview",
+              "title": "MDN: HTTP overview",
+              "publisher": "Mozilla",
+              "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/Overview",
+              "note": "Gambaran MDN tentang method, kode status, dan header HTTP.",
+              "tier": "official",
+              "version": "rolling",
+              "accessedAt": "2026-10-28",
+              "license": ""
+            }
+          ],
+          "summary": [
+            "Permintaan HTTP memuat method, alamat, header, dan kadang body; tanggapan memuat status dan isi.",
+            "fetch mengembalikan promise; periksa response.ok sebelum memakai data.",
+            "Body JSON diubah dengan JSON.stringify dan dibaca dengan response.json.",
+            "Antarmuka perlu menangani keadaan memuat, berhasil, dan gagal."
+          ],
+          "legacy": false,
+          "code": "async function muatTugas() {\n  try {\n    const res = await fetch(\"/api/tugas\");\n    if (!res.ok) throw new Error(`HTTP ${res.status}`);\n    const data = await res.json();\n    return data.tugas;\n  } catch (err) {\n    console.error(\"Gagal memuat:\", err.message);\n    return [];\n  }\n}",
+          "wordCount": 1575,
+          "schema": 3.1
         },
         {
           "id": "m05-l04",
           "title": "Promise dan async/await",
-          "minutes": 45,
-          "level": "Dasar",
+          "minutes": 120,
+          "level": "Menengah",
           "depth": "integrasi",
-          "outcome": "",
+          "outcome": "Setelah pelajaran ini, Anda dapat menjelaskan promise sebagai nilai yang akan tersedia, memakai async dan await untuk menulis alur asinkron yang rapi, serta menjalankan beberapa pekerjaan sekaligus dengan Promise.all.",
           "codeLanguage": "javascript",
-          "objectives": [],
-          "prerequisites": [],
-          "terms": [],
-          "syntax": [],
-          "conventions": [],
-          "next": "",
+          "objectives": [
+            "Menjelaskan tiga keadaan promise: menunggu, terpenuhi, dan ditolak.",
+            "Menulis fungsi async dan memakai await untuk menunggu hasil.",
+            "Menangani penolakan dengan try/catch.",
+            "Menjalankan beberapa pekerjaan asinkron sekaligus memakai Promise.all."
+          ],
+          "prerequisites": [
+            {
+              "label": "JSON dan HTTP fetch",
+              "lessonId": "m05-l03"
+            }
+          ],
+          "terms": [
+            {
+              "term": "Asinkron",
+              "definition": "Pekerjaan yang hasilnya belum tersedia saat baris itu dijalankan, sehingga perlu ditunggu tanpa memblokir antarmuka."
+            },
+            {
+              "term": "Promise",
+              "definition": "Objek yang mewakili nilai yang akan tersedia nanti, dengan tiga keadaan: menunggu, terpenuhi, dan ditolak."
+            },
+            {
+              "term": "async",
+              "definition": "Penanda fungsi yang selalu mengembalikan promise."
+            },
+            {
+              "term": "await",
+              "definition": "Kata kunci untuk menunggu promise selesai di dalam fungsi async, menghasilkan nilainya atau melempar sebab penolakan."
+            }
+          ],
+          "syntax": [
+            {
+              "token": "async function muat() { ... }",
+              "meaning": "Fungsi async memungkinkan pemakaian await di dalamnya. Nilai yang dikembalikan dibungkus menjadi promise, sehingga pemanggil dapat menunggunya.",
+              "readAs": "Baca sebagai pendefinisian fungsi yang selalu mengembalikan promise.",
+              "example": "async function muat() { return 1; }",
+              "output": "Pemanggilan muat mengembalikan promise yang terpenuhi dengan nilai 1.",
+              "pitfall": "Memakai await di luar fungsi async menyebabkan kesalahan sintaks."
+            },
+            {
+              "token": "const data = await muat();",
+              "meaning": "await menghentikan sementara fungsi ini sampai promise selesai, tanpa memblokir sisa halaman. Bila promise ditolak, await melempar kesalahan.",
+              "readAs": "Baca sebagai penantian hasil muat sebelum melanjutkan ke baris berikutnya.",
+              "example": "const data = await muat();",
+              "output": "Variabel data berisi nilai hasil promise.",
+              "pitfall": "await tanpa try/catch membuat penolakan menjadi kesalahan yang tak tertangani."
+            },
+            {
+              "token": "const hasil = await Promise.all([a(), b()]);",
+              "meaning": "Promise.all menjalankan semua promise bersamaan dan menunggu semuanya. Hasilnya array dengan urutan sesuai masukan.",
+              "readAs": "Baca sebagai penantian selesainya semua pekerjaan, lalu pengambilan hasilnya secara berurutan.",
+              "example": "const [tugas, pengguna] = await Promise.all([muatTugas(), muatPengguna()]);",
+              "output": "Kedua pekerjaan berjalan bersamaan sehingga total waktu lebih singkat.",
+              "pitfall": "Bila satu promise ditolak, seluruh Promise.all ditolak meski yang lain berhasil."
+            }
+          ],
+          "conventions": [
+            "Tandai fungsi yang menunggu pekerjaan asinkron dengan async.",
+            "Bungkus await dengan try/catch bila penolakan mungkin terjadi.",
+            "Jalankan pekerjaan yang tidak saling bergantung secara bersamaan memakai Promise.all.",
+            "Kembalikan nilai yang konsisten dari fungsi async, jangan mencampur nilai dan promise.",
+            "Jangan menambahkan async pada fungsi yang tidak menunggu apa pun."
+          ],
+          "next": "Berikutnya: ES Modules, NPM, dan tooling. Anda akan memecah kode menjadi modul dan memakai paket dari ekosistem JavaScript.",
           "sections": [
             {
-              "id": "konsep",
-              "title": "Memahami konsepnya",
+              "id": "cara-membaca",
+              "title": "Cara membaca alur asinkron",
               "body": [
-                "Promise merepresentasikan operasi yang selesai di masa depan. async/await membuat penanganan asinkron lebih mudah dibaca; try/catch untuk error.",
-                "Jangan memblokir UI menunggu operasi jaringan. Untuk beberapa permintaan independen, Promise.all dapat menjalankan paralel tetapi gagal bila salah satu gagal."
+                "Alur asinkron dibaca sebagai dua jalur. Jalur pertama berjalan langsung sampai menemui await. Setelah await, fungsi berhenti sementara dan kendali kembali ke pemanggil, sehingga halaman tetap responsif.",
+                "Jalur kedua berlanjut ketika pekerjaan yang ditunggu selesai. Pada contoh, tulisan “mulai” muncul lebih dulu, lalu satu detik kemudian tulisan kedua. Urutan ini menunjukkan bahwa await menunda sisa fungsi, bukan seluruh halaman.",
+                "Bila promise ditolak, await melempar kesalahan pada titik itu. Karena itu, perlakuan terhadap hasil dan penanganan kesalahan berada pada jalur yang sama, sehingga mudah dibaca."
               ],
-              "code": null,
+              "code": {
+                "language": "javascript",
+                "code": "function tunggu(ms) {\n  return new Promise((selesai) => setTimeout(selesai, ms));\n}\n\nasync function jalan() {\n  console.log(\"mulai\");\n  await tunggu(1000);\n  console.log(\"setelah satu detik\");\n}",
+                "output": "Tulisan \"mulai\" muncul segera, lalu \"setelah satu detik\" muncul setelah penundaan.",
+                "explain": "Fungsi tunggu mengembalikan promise yang selesai setelah waktu tertentu. Fungsi jalan menunggu promise itu, sehingga baris terakhir berjalan belakangan tanpa memblokir halaman.",
+                "annotations": [
+                  {
+                    "line": 2,
+                    "code": "return new Promise((selesai) => setTimeout(selesai, ms));",
+                    "note": "Promise dibuat dan terpenuhi setelah timeout."
+                  },
+                  {
+                    "line": 5,
+                    "code": "async function jalan() {",
+                    "note": "Fungsi ditandai async agar dapat memakai await."
+                  },
+                  {
+                    "line": 6,
+                    "code": "console.log(\"mulai\");",
+                    "note": "Baris ini berjalan langsung tanpa menunggu."
+                  },
+                  {
+                    "line": 7,
+                    "code": "await tunggu(1000);",
+                    "note": "await menunda sisa fungsi sampai promise selesai."
+                  },
+                  {
+                    "line": 8,
+                    "code": "console.log(\"setelah satu detik\");",
+                    "note": "Baris ini baru berjalan setelah penundaan selesai."
+                  }
+                ],
+                "lab": false
+              },
               "callouts": [
                 {
                   "tone": "good",
-                  "title": "Best practice",
-                  "body": "Tangani kegagalan asinkron secara eksplisit."
-                },
+                  "title": "await tidak membekukan halaman",
+                  "body": "await hanya menunda sisa fungsi ini. Sisa halaman, termasuk tombol dan animasi, tetap berjalan."
+                }
+              ],
+              "checkpoint": {
+                "prompt": "Sebutkan urutan keluaran pada contoh dan jelaskan mengapa urutannya demikian.",
+                "success": "Mulai lebih dulu, lalu tulisan kedua setelah satu detik, karena await menunda sisa fungsi sampai promise selesai."
+              }
+            },
+            {
+              "id": "tiga-keadaan",
+              "title": "Tiga keadaan promise",
+              "body": [
+                "Promise dimulai dalam keadaan menunggu. Ia berubah menjadi terpenuhi ketika berhasil, atau ditolak ketika gagal. Setelah berubah, keadaannya tetap dan tidak dapat dibalik.",
+                "Penanganan dibagi dua jalur. then menerima nilai saat terpenuhi, dan catch menerima sebab saat ditolak. Promise juga punya finally untuk pekerjaan yang selalu dijalankan, misalnya menghilangkan penanda memuat.",
+                "Dengan async dan await, ketiga jalur ini tetap ada tetapi ditulis lebih rapi. Nilai terpenuhi menjadi hasil await, penolakan menjadi kesalahan yang dilempar, dan pekerjaan penutup ditulis di blok finally pada try/catch."
+              ],
+              "code": null,
+              "callouts": [],
+              "checkpoint": {
+                "prompt": "Sebutkan tiga keadaan promise dan apa yang diterima catch.",
+                "success": "Menunggu, terpenuhi, dan ditolak; catch menerima sebab penolakan."
+              }
+            },
+            {
+              "id": "pekerjaan-bersamaan",
+              "title": "Pekerjaan asinkron secara bersamaan",
+              "body": [
+                "Bila dua pekerjaan tidak saling bergantung, jalankan bersamaan. Menunggu keduanya secara berurutan memakan waktu jumlah keduanya, sedangkan menjalankan bersamaan hanya memakan waktu terlama.",
+                "Promise.all menerima daftar promise dan menunggu semuanya. Hasilnya array dengan urutan sesuai masukan, sehingga dapat dibongkar langsung memakai destructuring.",
+                "Blok finally berguna untuk pekerjaan penutup yang harus berjalan baik pada kasus berhasil maupun gagal. Contohnya menghilangkan penanda memuat atau mengaktifkan kembali tombol."
+              ],
+              "code": {
+                "language": "javascript",
+                "code": "async function muatSemua() {\n  try {\n    const [tugas, pengguna] = await Promise.all([\n      fetch(\"/api/tugas\").then((r) => r.json()),\n      fetch(\"/api/pengguna\").then((r) => r.json()),\n    ]);\n    return { tugas, pengguna };\n  } finally {\n    sembunyikanMemuat();\n  }\n}",
+                "output": "Kedua permintaan berjalan bersamaan dan hasilnya tersedia setelah keduanya selesai; penanda memuat selalu disembunyikan.",
+                "explain": "Promise.all menjalankan kedua permintaan sekaligus dan mengembalikan hasilnya berurutan. Blok finally memastikan pekerjaan penutup berjalan pada semua hasil.",
+                "annotations": [
+                  {
+                    "line": 3,
+                    "code": "const [tugas, pengguna] = await Promise.all([",
+                    "note": "Kedua permintaan dimulai bersamaan."
+                  },
+                  {
+                    "line": 4,
+                    "code": "fetch(\"/api/tugas\").then((r) => r.json()),",
+                    "note": "Isi tanggapan diubah menjadi JSON untuk permintaan pertama."
+                  },
+                  {
+                    "line": 6,
+                    "code": "]);",
+                    "note": "Hasil kedua permintaan dibongkar berurutan."
+                  },
+                  {
+                    "line": 8,
+                    "code": "} finally {",
+                    "note": "Blok finally selalu dijalankan."
+                  },
+                  {
+                    "line": 9,
+                    "code": "sembunyikanMemuat();",
+                    "note": "Pekerjaan penutup dijalankan pada semua hasil."
+                  }
+                ],
+                "lab": false
+              },
+              "callouts": [
                 {
-                  "tone": "bad",
-                  "title": "Kesalahan umum",
-                  "body": "Lupa await sehingga yang tampil adalah Promise, bukan data."
+                  "tone": "warn",
+                  "title": "Saling bergantung berarti berurutan",
+                  "body": "Bila pekerjaan kedua butuh hasil pekerjaan pertama, jalankan berurutan. Menjalankannya bersamaan justru menghasilkan kesalahan."
                 }
               ],
               "checkpoint": null
             },
             {
-              "id": "contoh",
-              "title": "Contoh kode",
+              "id": "kesalahan-asinkron",
+              "title": "Menangani kesalahan asinkron",
               "body": [
-                "Perhatikan input, proses, dan output. Ketik ulang, lalu ubah satu nilai."
+                "Kesalahan asinkron tidak tertangkap oleh try/catch yang tidak membungkus kode asinkron. Karena itu, await perlu berada di dalam blok try agar penolakannya tertangani.",
+                "Bila fungsi async tidak menangkap kesalahannya, penolakan berpindah ke pemanggil. Rantai ini dapat membuat kesalahan muncul jauh dari sumbernya, sehingga sebaiknya setiap fungsi menangani kesalahan pada tingkat yang tepat.",
+                "Bedakan kesalahan yang dapat dipulihkan dari yang tidak. Kesalahan jaringan sering dapat dicoba ulang, sedangkan kesalahan data yang tidak valid biasanya perlu ditampilkan kepada pengguna untuk diperbaiki."
               ],
-              "code": {
-                "language": "javascript",
-                "code": "async function contoh() {\n  try {\n    const hasil = await Promise.resolve(42);\n    console.log(hasil);\n  } catch (err) {\n    console.error(err);\n  }\n}\ncontoh();",
-                "output": "",
-                "explain": ""
-              },
+              "code": null,
               "callouts": [],
-              "checkpoint": null
+              "checkpoint": {
+                "prompt": "Mengapa await harus berada di dalam blok try untuk dapat ditangani catch?",
+                "success": "Karena penolakan promise menjadi kesalahan yang dilempar pada titik await, sehingga hanya tertangkap bila di dalam try."
+              }
             }
           ],
           "practice": [
             {
               "id": "latihan-1",
-              "title": "Latihan 1",
-              "level": "independent",
-              "task": "Tulis fungsi async yang mengembalikan data dan memiliki cabang ketika gagal.",
-              "steps": [],
+              "title": "Fungsi tunggu sederhana",
+              "level": "guided",
+              "task": "Tulis fungsi yang mengembalikan promise dan terpenuhi setelah jangka waktu tertentu, lalu panggil dengan await.",
+              "steps": [
+                "Buat promise dengan setTimeout untuk menunda.",
+                "Tandai fungsi pemanggil sebagai async.",
+                "Tunggu promise dengan await di dalam try/catch."
+              ],
               "hint": "",
-              "hints": [],
-              "starterCode": "",
-              "expected": "",
-              "stretch": "",
-              "verification": null
+              "hints": [
+                "Promise dibuat dengan new Promise.",
+                "setTimeout memanggil fungsi selesai setelah waktu tertentu.",
+                "await hanya boleh dipakai di dalam fungsi async."
+              ],
+              "starterCode": "function tunggu(ms) { /* kembalikan promise */ }\nasync function jalan() { /* await tunggu */ }",
+              "expected": "Fungsi menunggu tanpa memblokir dan menampilkan keluaran sesuai urutan.",
+              "stretch": "Tambahkan pilihan untuk menolak promise agar jalur kesalahan dapat diuji.",
+              "verification": {
+                "mode": "manual",
+                "command": "Jalankan dan periksa urutan keluaran.",
+                "expected": "Keluaran sesuai urutan penundaan dan tidak ada kesalahan yang tak tertangani.",
+                "evidence": "Simpan berkas dan catatan keluaran konsol."
+              }
             },
             {
               "id": "latihan-2",
-              "title": "Latihan 2",
+              "title": "Ubah then menjadi await",
               "level": "independent",
-              "task": "Ubah satu input atau asumsi pada contoh, catat hasil dan jelaskan alasannya.",
-              "steps": [],
+              "task": "Diberikan rantai then dan catch, tulis ulang menjadi async dan await dengan perilaku yang sama.",
+              "steps": [
+                "Identifikasi setiap then dan ubah menjadi await.",
+                "Pindahkan catch menjadi blok catch pada try.",
+                "Pastikan nilai yang dikembalikan tetap sama."
+              ],
               "hint": "",
-              "hints": [],
-              "starterCode": "",
-              "expected": "",
-              "stretch": "",
-              "verification": null
+              "hints": [
+                "Bungkus await dengan try/catch.",
+                "Nilai dari await sama dengan nilai pada then.",
+                "Penolakan menjadi kesalahan yang ditangkap catch."
+              ],
+              "starterCode": "muat()\n  .then((data) => tampilkan(data))\n  .catch((err) => tampilkanGagal(err));",
+              "expected": "Versi await menghasilkan perilaku yang sama dengan versi then.",
+              "stretch": "Tambahkan blok finally untuk menghilangkan penanda memuat.",
+              "verification": {
+                "mode": "manual",
+                "command": "Bandingkan keluaran kedua versi pada kasus berhasil dan gagal.",
+                "expected": "Kedua versi menampilkan hasil yang sama untuk kedua kasus.",
+                "evidence": "Simpan kedua versi dan catatan perbandingan."
+              }
+            },
+            {
+              "id": "latihan-3",
+              "title": "Muat dua sumber bersamaan",
+              "level": "transfer",
+              "task": "Muat dua sumber data yang tidak saling bergantung secara bersamaan, lalu tampilkan keduanya setelah selesai.",
+              "steps": [
+                "Tulis dua fungsi pengambilan data yang mengembalikan promise.",
+                "Jalankan keduanya bersama dengan Promise.all.",
+                "Bongkar hasilnya secara berurutan.",
+                "Tangani kesalahan dengan try/catch dan bersihkan penanda memuat."
+              ],
+              "hint": "",
+              "hints": [
+                "Promise.all menunggu semua promise.",
+                "Hasilnya array sesuai urutan masukan.",
+                "Bila satu ditolak, seluruh Promise.all ditolak."
+              ],
+              "starterCode": "async function muatSemua() {\n  // Promise.all untuk dua sumber\n}",
+              "expected": "Kedua sumber dimuat bersamaan, hasilnya ditampilkan, dan kegagalan salah satu tertangani.",
+              "stretch": "Ukur waktu total dan bandingkan dengan versi berurutan.",
+              "verification": {
+                "mode": "manual",
+                "command": "Uji kasus kedua sumber tersedia dan kasus salah satu gagal.",
+                "expected": "Kasus sukses menampilkan keduanya; kasus gagal menampilkan pesan tanpa menghentikan halaman.",
+                "evidence": "Simpan berkas dan catatan dua skenario."
+              }
             }
           ],
-          "verification": null,
-          "troubleshooting": [],
+          "verification": {
+            "mode": "manual",
+            "command": "Jalankan alur asinkron pada kasus sukses dan kasus penolakan, lalu periksa konsol.",
+            "expected": "Urutan keluaran sesuai penantian, pekerjaan bersamaan benar-benar bersamaan, dan tidak ada penolakan yang tak tertangani.",
+            "evidence": "Simpan berkas dan catatan keluaran konsol dua skenario."
+          },
+          "troubleshooting": [
+            {
+              "symptom": "Kesalahan tidak tertangkap meski memakai try/catch.",
+              "cause": "await berada di luar blok try, atau promise tidak ditunggu sama sekali.",
+              "fix": "Letakkan await di dalam blok try agar penolakannya tertangkap."
+            },
+            {
+              "symptom": "Hasil keluaran berurutan padahal seharusnya bersamaan.",
+              "cause": "Pekerjaan dijalankan dengan await satu per satu alih-alih Promise.all.",
+              "fix": "Mulai semua promise lebih dulu, lalu tunggu bersama dengan Promise.all."
+            },
+            {
+              "symptom": "Seluruh proses gagal karena satu permintaan gagal.",
+              "cause": "Promise.all menolak bila salah satu promise ditolak.",
+              "fix": "Tangani tiap permintaan agar tidak menolak, atau pakai cara yang mengumpulkan hasil dan kesalahan."
+            },
+            {
+              "symptom": "Fungsi mengembalikan promise padahal pemanggil mengharapkan nilai biasa.",
+              "cause": "Fungsi ditandai async sehingga nilainya selalu dibungkus promise.",
+              "fix": "Tunggu fungsi itu dengan await di pemanggil, atau hapus async bila tidak diperlukan."
+            }
+          ],
           "quiz": {
             "questions": [
               {
                 "id": "q1",
                 "type": "recall",
-                "question": "Apa prinsip yang paling tepat untuk topik “Promise dan async/await”?",
+                "question": "Apa yang selalu dikembalikan fungsi async?",
                 "options": [
-                  "Tangani kegagalan asinkron secara eksplisit.",
-                  "Gunakan solusi paling rumit sejak awal, meski kebutuhan belum jelas.",
-                  "Lewati pengujian karena contoh kecil pasti benar."
+                  "Nilai biasa",
+                  "Promise",
+                  "Callback"
                 ],
-                "answer": 0,
-                "explanation": "Tangani kegagalan asinkron secara eksplisit."
+                "answer": 1,
+                "explanation": "Fungsi async selalu mengembalikan promise, terlepas dari nilai yang ditulis di return."
+              },
+              {
+                "id": "q2",
+                "type": "code-reading",
+                "question": "Apa yang dilakukan await pada penolakan promise?",
+                "options": [
+                  "Mengabaikannya",
+                  "Melempar kesalahan pada titik await",
+                  "Mengulang promise otomatis"
+                ],
+                "answer": 1,
+                "explanation": "await melempar kesalahan bila promise ditolak, sehingga dapat ditangkap try/catch."
+              },
+              {
+                "id": "q3",
+                "type": "scenario",
+                "question": "Dua permintaan tidak saling bergantung dan Anda ingin memuatnya secepat mungkin. Pendekatan tepat...",
+                "options": [
+                  "Menunggu satu per satu dengan await",
+                  "Menjalankan keduanya dan menunggu dengan Promise.all",
+                  "Memakai callback bertingkat"
+                ],
+                "answer": 1,
+                "explanation": "Promise.all menjalankan keduanya bersamaan sehingga waktu total lebih singkat."
               }
             ]
           },
-          "resources": [],
-          "summary": [],
-          "legacy": true,
-          "code": "async function contoh() {\n  try {\n    const hasil = await Promise.resolve(42);\n    console.log(hasil);\n  } catch (err) {\n    console.error(err);\n  }\n}\ncontoh();",
-          "wordCount": 138,
-          "schema": 2
+          "resources": [
+            {
+              "sourceId": "mdn-promise",
+              "title": "MDN: Promise",
+              "publisher": "Mozilla",
+              "url": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise",
+              "note": "Referensi resmi objek Promise dan tiga keadaannya.",
+              "tier": "official",
+              "version": "rolling",
+              "accessedAt": "2026-10-29",
+              "license": ""
+            },
+            {
+              "sourceId": "mdn-async",
+              "title": "MDN: async function",
+              "publisher": "Mozilla",
+              "url": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/async_function",
+              "note": "Penjelasan async function dan pemakaian await.",
+              "tier": "official",
+              "version": "rolling",
+              "accessedAt": "2026-10-29",
+              "license": ""
+            },
+            {
+              "sourceId": "mdn-fetch",
+              "title": "MDN: Fetch API",
+              "publisher": "Mozilla",
+              "url": "https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API",
+              "note": "Contoh pemakaian promise dan await bersama Fetch API.",
+              "tier": "official",
+              "version": "rolling",
+              "accessedAt": "2026-10-29",
+              "license": ""
+            }
+          ],
+          "summary": [
+            "Promise mewakili nilai yang akan tersedia dan memiliki tiga keadaan: menunggu, terpenuhi, ditolak.",
+            "Fungsi async selalu mengembalikan promise; await menunggu hasilnya tanpa memblokir halaman.",
+            "Penolakan promise menjadi kesalahan yang dilempar pada titik await, sehingga perlu try/catch.",
+            "Promise.all menjalankan pekerjaan yang tidak saling bergantung secara bersamaan."
+          ],
+          "legacy": false,
+          "code": "function tunggu(ms) {\n  return new Promise((selesai) => setTimeout(selesai, ms));\n}\n\nasync function jalan() {\n  console.log(\"mulai\");\n  await tunggu(1000);\n  console.log(\"setelah satu detik\");\n}",
+          "wordCount": 1486,
+          "schema": 3.1
         },
         {
           "id": "m05-l05",
-          "title": "ES Modules, NPM dan tooling",
-          "minutes": 45,
-          "level": "Dasar",
+          "title": "ES Modules, NPM, dan tooling",
+          "minutes": 120,
+          "level": "Menengah",
           "depth": "integrasi",
-          "outcome": "",
+          "outcome": "Setelah pelajaran ini, Anda dapat memecah kode menjadi modul dengan export dan import, mengelola paket memakai NPM, serta menjelaskan peran skrip build dalam alur kerja proyek.",
           "codeLanguage": "javascript",
-          "objectives": [],
-          "prerequisites": [],
-          "terms": [],
-          "syntax": [],
-          "conventions": [],
-          "next": "",
+          "objectives": [
+            "Memecah kode menjadi modul dengan tanggung jawab yang jelas.",
+            "Memakai export dan import untuk bertukar fungsi antarberkas.",
+            "Mengelola paket pihak ketiga memakai NPM dan berkas package.json.",
+            "Menjelaskan peran skrip build dalam alur kerja pengembangan."
+          ],
+          "prerequisites": [
+            {
+              "label": "Promise dan async/await",
+              "lessonId": "m05-l04"
+            }
+          ],
+          "terms": [
+            {
+              "term": "Modul",
+              "definition": "Berkas JavaScript dengan lingkup sendiri yang dapat mengekspor nilai dan mengimpor nilai dari modul lain."
+            },
+            {
+              "term": "export",
+              "definition": "Kata kunci untuk membagikan nilai dari sebuah modul ke modul lain."
+            },
+            {
+              "term": "Paket",
+              "definition": "Kumpulan kode pihak ketiga yang dipasang lewat NPM dan dipakai sebagai dependensi."
+            },
+            {
+              "term": "package.json",
+              "definition": "Berkas yang mendeskripsikan proyek: nama, skrip, dan daftar dependensi."
+            },
+            {
+              "term": "Build",
+              "definition": "Proses mengubah kode sumber menjadi berkas yang siap dijalankan, termasuk menggabungkan modul dan mengoptimalkan aset."
+            }
+          ],
+          "syntax": [
+            {
+              "token": "export function hitungSelesai(tugas) { ... }",
+              "meaning": "export membuka nilai dari lingkup modul. Nilai yang tidak diekspor tetap bersifat pribadi di dalam berkas.",
+              "readAs": "Baca sebagai pendefinisian fungsi yang dapat dipakai modul lain.",
+              "example": "export const VERSI = 1;",
+              "output": "Modul lain dapat mengimpor VERSI memakai namanya.",
+              "pitfall": "Mengekspor terlalu banyak membuat batas modul kabur dan sulit dirawat."
+            },
+            {
+              "token": "import { hitungSelesai } from \"./tugas.js\";",
+              "meaning": "import bernama mengambil ekspor yang sesuai dengan nama di dalam kurung. Jalur relatif harus menyertakan ekstensi berkas di browser.",
+              "readAs": "Baca sebagai pengambilan ekspor bernama dari modul tugas.",
+              "example": "import { hitungSelesai } from \"./tugas.js\";",
+              "output": "Nama hitungSelesai tersedia di dalam modul ini.",
+              "pitfall": "Lupa menulis ekstensi .js pada jalur membuat browser gagal memuat modul."
+            },
+            {
+              "token": "\"scripts\": { \"test\": \"vitest run\", \"build\": \"vite build\" }",
+              "meaning": "Skrip menyimpan perintah proyek secara konsisten sehingga semua orang menjalankannya dengan cara yang sama.",
+              "readAs": "Baca sebagai daftar perintah bernama yang dapat dijalankan memakai npm run.",
+              "example": "\"scripts\": { \"dev\": \"vite\", \"build\": \"vite build\" }",
+              "output": "Menjalankan npm run build memakai perintah yang sudah ditetapkan proyek.",
+              "pitfall": "Menjalankan perkakas langsung tanpa skrip membuat alur kerja berbeda-beda antaranggota tim."
+            }
+          ],
+          "conventions": [
+            "Satu modul memiliki satu tanggung jawab yang jelas.",
+            "Ekspor hanya yang perlu dipakai modul lain.",
+            "Sertakan ekstensi berkas pada jalur import di browser.",
+            "Catat dependensi dan skrip di package.json agar proyek dapat dipasang ulang.",
+            "Jangan menaruh kunci rahasia di kode yang dikirim ke browser."
+          ],
+          "next": "Berikutnya: TypeScript, tipe, dan interface. Anda akan menambahkan pemeriksaan tipe agar kesalahan data ditemukan sebelum kode berjalan.",
           "sections": [
             {
-              "id": "konsep",
-              "title": "Memahami konsepnya",
+              "id": "cara-membaca",
+              "title": "Cara membaca pemecahan modul",
               "body": [
-                "Modul ES menggunakan import/export. NPM mengelola paket JavaScript dan script proyek; package-lock membantu instalasi yang dapat direproduksi.",
-                "Pada proyek kecil jangan bergantung ke banyak paket. Evaluasi reputasi, lisensi, pembaruan, dan risiko supply chain. Pakai format/lint untuk konsistensi, bukan karena tren."
+                "Modul dibaca dari batasnya. Periksa apa yang diekspor dan apa yang diimpor. Nilai yang diekspor adalah bagian yang boleh dipakai modul lain; sisanya tetap pribadi di dalam berkas.",
+                "Pada contoh, modul tugas mengekspor sebuah konstanta dan sebuah fungsi. Modul tampilan mengimpor fungsi itu lalu memakainya tanpa mengetahui cara menghitungnya. Pemisahan ini membuat aturan hitung dapat diuji tanpa melibatkan tampilan.",
+                "Perhatikan jalur import memakai awalan ./ dan diakhiri .js. Di browser, jalur harus tepat karena tidak ada langkah tambahan yang menebak ekstensi. Kesalahan jalur adalah penyebab paling umum modul gagal dimuat."
+              ],
+              "code": {
+                "language": "javascript",
+                "code": "// tugas.js\nexport const VERSI = 1;\n\nexport function hitungAktif(tugas) {\n  return tugas.filter((t) => !t.selesai).length;\n}",
+                "output": "Modul ini menyediakan konstanta dan fungsi yang dapat dipakai modul lain.",
+                "explain": "export membuka konstanta dan fungsi. Fungsi menerima daftar tugas dan mengembalikan jumlah yang belum selesai, tanpa menyentuh tampilan.",
+                "annotations": [
+                  {
+                    "line": 2,
+                    "code": "export const VERSI = 1;",
+                    "note": "Konstanta dibagikan agar versi konsisten."
+                  },
+                  {
+                    "line": 4,
+                    "code": "export function hitungAktif(tugas) {",
+                    "note": "Fungsi diekspor untuk dipakai modul lain."
+                  },
+                  {
+                    "line": 5,
+                    "code": "return tugas.filter((t) => !t.selesai).length;",
+                    "note": "Fungsi hanya berurusan dengan data, bukan tampilan."
+                  }
+                ],
+                "lab": false
+              },
+              "callouts": [],
+              "checkpoint": null
+            },
+            {
+              "id": "paket-npm",
+              "title": "Mengelola paket dengan NPM",
+              "body": [
+                "NPM memasang paket pihak ketiga dan mencatatnya di package.json. Ketika orang lain memasang proyek Anda, satu perintah memulihkan seluruh dependensi sesuai catatan itu.",
+                "Dependensi dibagi dua jenis. Dependensi biasa dipakai saat aplikasi berjalan, sedangkan dependensi pengembangan hanya dipakai saat mengembangkan, misalnya perkakas uji dan penggabung berkas.",
+                "Selalu periksa paket sebelum memasangnya. Lihat siapa yang menerbitkan, kapan terakhir diperbarui, dan berapa banyak yang memakainya. Paket yang tidak dirawat dapat menjadi sumber masalah keamanan."
               ],
               "code": null,
               "callouts": [
                 {
-                  "tone": "good",
-                  "title": "Best practice",
-                  "body": "Batasi dependensi, pin versi sesuai kebutuhan, dan commit lockfile."
-                },
-                {
-                  "tone": "bad",
-                  "title": "Kesalahan umum",
-                  "body": "Menambahkan library untuk fungsi yang bisa ditulis dengan 3 baris."
+                  "tone": "warn",
+                  "title": "Paket berarti kode orang lain",
+                  "body": "Setiap dependensi menambah kode yang Anda percaya. Pasang seperlunya dan perbarui secara berkala."
                 }
               ],
-              "checkpoint": null
+              "checkpoint": {
+                "prompt": "Apa perbedaan dependensi biasa dan dependensi pengembangan?",
+                "success": "Dependensi biasa dipakai saat aplikasi berjalan; dependensi pengembangan hanya dipakai saat mengembangkan."
+              }
             },
             {
-              "id": "contoh",
-              "title": "Contoh kode",
+              "id": "package-json",
+              "title": "Membaca package.json",
               "body": [
-                "Perhatikan input, proses, dan output. Ketik ulang, lalu ubah satu nilai."
+                "package.json adalah pusat proyek. Nama mengidentifikasi proyek, type menentukan cara JavaScript diperlakukan, scripts menyimpan perintah bernama, dan daftar dependensi mencatat paket yang dipakai.",
+                "Bidang type bernilai module membuat berkas .js diperlakukan sebagai modul, sehingga import dan export dapat dipakai. Tanpa itu, perilakunya berbeda dan import bisa ditolak.",
+                "Skrip membuat cara menjalankan proyek seragam. Alih-alih mengingat perintah panjang, setiap orang menjalankan npm run test atau npm run build. Perubahan cara kerja perkakas cukup diubah di satu tempat."
               ],
               "code": {
-                "language": "javascript",
-                "code": "// util.js\nexport const tambah = (a, b) => a + b;\n// app.js\n// import { tambah } from \"./util.js\";",
-                "output": "",
-                "explain": ""
+                "language": "json",
+                "code": "{\n  \"name\": \"catatan-tugas\",\n  \"type\": \"module\",\n  \"scripts\": {\n    \"dev\": \"vite\",\n    \"test\": \"vitest run\",\n    \"build\": \"vite build\"\n  },\n  \"dependencies\": { \"date-fns\": \"^3.0.0\" }\n}",
+                "output": "Proyek dikenali sebagai modul, memiliki tiga perintah bernama, dan mencatat satu dependensi.",
+                "explain": "type menetapkan perlakuan berkas sebagai modul. scripts mendefinisikan perintah yang dapat dijalankan. dependencies mencatat paket yang dipakai aplikasi.",
+                "annotations": [
+                  {
+                    "line": 2,
+                    "code": "\"name\": \"catatan-tugas\",",
+                    "note": "Nama proyek mengidentifikasi paket."
+                  },
+                  {
+                    "line": 3,
+                    "code": "\"type\": \"module\",",
+                    "note": "type module mengaktifkan import dan export pada berkas .js."
+                  },
+                  {
+                    "line": 5,
+                    "code": "\"dev\": \"vite\",",
+                    "note": "Skrip dev menjalankan server pengembangan."
+                  },
+                  {
+                    "line": 7,
+                    "code": "\"build\": \"vite build\"",
+                    "note": "Skrip build menghasilkan berkas siap pakai."
+                  },
+                  {
+                    "line": 9,
+                    "code": "\"dependencies\": { \"date-fns\": \"^3.0.0\" }",
+                    "note": "Dependensi dicatat beserta rentang versinya."
+                  }
+                ],
+                "lab": false
               },
               "callouts": [],
               "checkpoint": null
+            },
+            {
+              "id": "alur-build",
+              "title": "Alur build dan penggabungan",
+              "body": [
+                "Kode sumber dipecah menjadi modul agar mudah dibaca, sedangkan berkas yang dikirim ke browser sebaiknya sesedikit mungkin. Langkah build menjembatani keduanya dengan menggabungkan modul, mengoptimalkan aset, dan menghasilkan berkas akhir.",
+                "Pada proyek ini, hasil build berupa satu berkas HTML yang memuat seluruh kode, gaya, dan konten di dalamnya. Karena itu, aplikasi dapat dijalankan langsung dari sistem berkas tanpa server.",
+                "Alur build juga tempat pemeriksaan dijalankan: validasi konten, pengujian, dan pemeriksaan aksesibilitas. Menjalankan pemeriksaan ini sebelum rilis menghemat waktu karena kesalahan ditemukan sebelum sampai ke pengguna."
+              ],
+              "code": null,
+              "callouts": [],
+              "checkpoint": {
+                "prompt": "Mengapa kode sumber dipecah menjadi modul sementara berkas akhir digabung?",
+                "success": "Modul memudahkan pengembangan dan pengujian; penggabungan mengurangi jumlah berkas yang perlu diunduh browser."
+              }
             }
           ],
           "practice": [
             {
               "id": "latihan-1",
-              "title": "Latihan 1",
-              "level": "independent",
-              "task": "Buat dua file JS: satu export fungsi, satu import lalu panggil (via local server).",
-              "steps": [],
+              "title": "Pecah fungsi hitung ke modul",
+              "level": "guided",
+              "task": "Pindahkan fungsi perhitungan tugas ke satu modul dan impor fungsi itu di modul tampilan.",
+              "steps": [
+                "Buat berkas tugas.js yang mengekspor fungsi hitung.",
+                "Buat berkas tampilan.js yang mengimpor fungsi itu.",
+                "Panggil fungsi dan tampilkan hasilnya.",
+                "Uji dengan membuka halaman di browser."
+              ],
               "hint": "",
-              "hints": [],
-              "starterCode": "",
-              "expected": "",
-              "stretch": "",
-              "verification": null
+              "hints": [
+                "export menandai nilai yang boleh dipakai modul lain.",
+                "import menyebut jalur relatif dengan ekstensi.",
+                "Skrip pemanggil diberi type module."
+              ],
+              "starterCode": "// tugas.js\n// tampilan.js",
+              "expected": "Fungsi hitung terpisah dari tampilan dan keduanya tersambung lewat import.",
+              "stretch": "Tambahkan ekspor konstanta versi dan tampilkan di konsol.",
+              "verification": {
+                "mode": "manual",
+                "command": "Buka halaman dan periksa konsol tidak ada kesalahan modul.",
+                "expected": "Modul dimuat dan hasil hitung tampil sesuai data.",
+                "evidence": "Simpan kedua berkas dan catatan keluaran."
+              }
             },
             {
               "id": "latihan-2",
-              "title": "Latihan 2",
+              "title": "Tambahkan skrip proyek",
               "level": "independent",
-              "task": "Ubah satu input atau asumsi pada contoh, catat hasil dan jelaskan alasannya.",
-              "steps": [],
+              "task": "Tambahkan skrip dev, test, dan build pada package.json, lalu jalankan salah satunya.",
+              "steps": [
+                "Tentukan perintah untuk tiap skrip.",
+                "Tulis bagian scripts pada package.json.",
+                "Jalankan salah satu skrip dan periksa keluarannya."
+              ],
               "hint": "",
-              "hints": [],
-              "starterCode": "",
-              "expected": "",
-              "stretch": "",
-              "verification": null
+              "hints": [
+                "Setiap skrip adalah pasangan nama dan perintah.",
+                "Jalankan dengan npm run nama-skrip.",
+                "Pesan kesalahan biasanya menyebut skrip yang dijalankan."
+              ],
+              "starterCode": "{ \"name\": \"catatan-tugas\", \"scripts\": {} }",
+              "expected": "Skrip dapat dijalankan memakai npm run dan menghasilkan keluaran sesuai perintahnya.",
+              "stretch": "Tambahkan skrip gabungan yang menjalankan uji lalu build.",
+              "verification": {
+                "mode": "manual",
+                "command": "Jalankan npm run build dan periksa keluaran.",
+                "expected": "Perintah berjalan dan menghasilkan berkas hasil build.",
+                "evidence": "Simpan berkas package.json dan keluaran perintah."
+              }
+            },
+            {
+              "id": "latihan-3",
+              "title": "Rencana pemecahan modul",
+              "level": "transfer",
+              "task": "Rencanakan pemecahan aplikasi catatan tugas menjadi tiga sampai empat modul beserta tanggung jawabnya, lalu tulis daftar ekspor tiap modul.",
+              "steps": [
+                "Tetapkan tanggung jawab tiap modul.",
+                "Tentukan nilai dan fungsi yang diekspor.",
+                "Tentukan modul mana yang mengimpor dari mana.",
+                "Catat ketergantungan melingkar bila ada."
+              ],
+              "hint": "",
+              "hints": [
+                "Pisahkan data, tampilan, dan penyimpanan.",
+                "Hindari dua modul yang saling mengimpor.",
+                "Ekspor hanya yang dipakai modul lain."
+              ],
+              "starterCode": "Modul 1: ...\nModul 2: ...\nModul 3: ...",
+              "expected": "Setiap modul punya satu tanggung jawab, dan arah impor membentuk struktur yang masuk akal tanpa ketergantungan melingkar.",
+              "stretch": "Terapkan rencana itu pada satu modul untuk membuktikan bahwa batasnya nyaman.",
+              "verification": {
+                "mode": "manual",
+                "command": "Periksa setiap impor dapat diselesaikan sesuai daftar ekspor.",
+                "expected": "Tidak ada impor yang tidak memiliki ekspor pasangannya.",
+                "evidence": "Simpan rencana modul dan daftar ekspor."
+              }
             }
           ],
-          "verification": null,
-          "troubleshooting": [],
+          "verification": {
+            "mode": "manual",
+            "command": "Jalankan proyek dan periksa konsol modul serta keluaran skrip build.",
+            "expected": "Modul termuat tanpa kesalahan jalur, dan skrip build menghasilkan berkas akhir.",
+            "evidence": "Simpan berkas proyek, package.json, dan catatan keluaran perintah."
+          },
+          "troubleshooting": [
+            {
+              "symptom": "Kesalahan bahwa modul tidak ditemukan.",
+              "cause": "Jalur import salah atau ekstensi berkas tidak ditulis.",
+              "fix": "Samakan jalur dengan lokasi berkas dan sertakan ekstensi .js."
+            },
+            {
+              "symptom": "Import gagal meski jalur benar.",
+              "cause": "Skrip tidak dikenali sebagai modul karena type belum diatur.",
+              "fix": "Atur type module pada package.json atau muat skrip sebagai modul di browser."
+            },
+            {
+              "symptom": "Nilai yang diekspor tidak tersedia di modul lain.",
+              "cause": "Ekspor bernama diambil dengan nama yang berbeda, atau nilai tidak diekspor sama sekali.",
+              "fix": "Samakan nama pada ekspor dan impor, atau tambahkan export pada nilai tersebut."
+            },
+            {
+              "symptom": "Proyek berjalan di komputer Anda tetapi gagal di komputer lain.",
+              "cause": "Dependensi tidak dicatat di package.json sehingga tidak ikut terpasang.",
+              "fix": "Catat seluruh dependensi dan pasang ulang dari package.json."
+            }
+          ],
           "quiz": {
             "questions": [
               {
                 "id": "q1",
                 "type": "recall",
-                "question": "Apa prinsip yang paling tepat untuk topik “ES Modules, NPM dan tooling”?",
+                "question": "Apa fungsi export pada sebuah modul?",
                 "options": [
-                  "Batasi dependensi, pin versi sesuai kebutuhan, dan commit lockfile.",
-                  "Gunakan solusi paling rumit sejak awal, meski kebutuhan belum jelas.",
-                  "Lewati pengujian karena contoh kecil pasti benar."
+                  "Menyembunyikan kode dari modul lain",
+                  "Membagikan nilai agar dapat dipakai modul lain",
+                  "Menggabungkan berkas menjadi satu"
                 ],
-                "answer": 0,
-                "explanation": "Batasi dependensi, pin versi sesuai kebutuhan, dan commit lockfile."
+                "answer": 1,
+                "explanation": "export membuka nilai dari lingkup modul agar dapat diimpor modul lain."
+              },
+              {
+                "id": "q2",
+                "type": "code-reading",
+                "question": "Mengapa jalur import di browser perlu menuliskan ekstensi .js?",
+                "options": [
+                  "Agar berkas lebih kecil",
+                  "Karena browser tidak menebak ekstensi berkas",
+                  "Karena wajib menurut bahasa JavaScript"
+                ],
+                "answer": 1,
+                "explanation": "Browser memuat jalur apa adanya, sehingga ekstensi harus ditulis lengkap."
+              },
+              {
+                "id": "q3",
+                "type": "scenario",
+                "question": "Anda ingin seluruh anggota tim menjalankan pengujian dengan cara yang sama. Tindakan tepat...",
+                "options": [
+                  "Menuliskan perintah panjang di dokumen",
+                  "Menambahkan skrip test pada package.json",
+                  "Memberi tahu secara lisan"
+                ],
+                "answer": 1,
+                "explanation": "Skrip pada package.json menyatukan cara menjalankan perintah untuk semua orang."
               }
             ]
           },
-          "resources": [],
-          "summary": [],
-          "legacy": true,
-          "code": "// util.js\nexport const tambah = (a, b) => a + b;\n// app.js\n// import { tambah } from \"./util.js\";",
-          "wordCount": 160,
-          "schema": 2
+          "resources": [
+            {
+              "sourceId": "mdn-modules",
+              "title": "MDN: JavaScript modules",
+              "publisher": "Mozilla",
+              "url": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Modules",
+              "note": "Panduan resmi modul JavaScript: export, import, dan pemuatan di browser.",
+              "tier": "official",
+              "version": "rolling",
+              "accessedAt": "2026-10-29",
+              "license": ""
+            },
+            {
+              "sourceId": "npm-docs",
+              "title": "npm Docs",
+              "publisher": "npm, Inc.",
+              "url": "https://docs.npmjs.com/",
+              "note": "Dokumentasi NPM tentang package.json, skrip, dan pengelolaan dependensi.",
+              "tier": "official",
+              "version": "rolling",
+              "accessedAt": "2026-10-29",
+              "license": ""
+            },
+            {
+              "sourceId": "mdn-command-line",
+              "title": "MDN: Command line crash course",
+              "publisher": "Mozilla",
+              "url": "https://developer.mozilla.org/en-US/docs/Learn_web_development/Getting_started/Environment_setup/Command_line",
+              "note": "Dasar perintah terminal yang dipakai menjalankan perkakas proyek.",
+              "tier": "official",
+              "version": "rolling",
+              "accessedAt": "2026-10-28",
+              "license": ""
+            }
+          ],
+          "summary": [
+            "Modul memecah kode dengan lingkup sendiri dan bertukar nilai lewat export serta import.",
+            "Jalur import di browser memakai awalan relatif dan menyertakan ekstensi berkas.",
+            "NPM memasang paket dan mencatatnya di package.json bersama skrip proyek.",
+            "Langkah build menggabungkan modul menjadi berkas akhir dan menjalankan pemeriksaan."
+          ],
+          "legacy": false,
+          "code": "// tugas.js\nexport const VERSI = 1;\n\nexport function hitungAktif(tugas) {\n  return tugas.filter((t) => !t.selesai).length;\n}",
+          "wordCount": 1473,
+          "schema": 3.1
         },
         {
           "id": "m05-l06",
           "title": "TypeScript: tipe dan interface",
-          "minutes": 45,
-          "level": "Dasar",
+          "minutes": 120,
+          "level": "Menengah",
           "depth": "integrasi",
-          "outcome": "",
+          "outcome": "Setelah pelajaran ini, Anda dapat menuliskan tipe pada variabel, parameter, dan bentuk data, lalu memakai TypeScript untuk menangkap kesalahan sebelum kode dijalankan.",
           "codeLanguage": "typescript",
-          "objectives": [],
-          "prerequisites": [],
-          "terms": [],
-          "syntax": [],
-          "conventions": [],
-          "next": "",
+          "objectives": [
+            "Menjelaskan manfaat pemeriksaan tipe statis dibanding JavaScript murni.",
+            "Menuliskan tipe pada variabel, parameter, dan nilai kembalian fungsi.",
+            "Mendeskripsikan bentuk object memakai interface dan type.",
+            "Menyempitkan tipe gabungan memakai pemeriksaan sebelum memakai nilai."
+          ],
+          "prerequisites": [
+            {
+              "label": "ES Modules, NPM, dan tooling",
+              "lessonId": "m05-l05"
+            }
+          ],
+          "terms": [
+            {
+              "term": "TypeScript",
+              "definition": "Bahasa yang menambahkan tipe pada JavaScript lalu dikompilasi menjadi JavaScript biasa."
+            },
+            {
+              "term": "Tipe statis",
+              "definition": "Pemeriksaan jenis nilai yang dilakukan sebelum kode dijalankan, bukan saat berjalan."
+            },
+            {
+              "term": "Interface",
+              "definition": "Deklarasi bentuk object, memuat nama dan tipe setiap properti."
+            },
+            {
+              "term": "Union",
+              "definition": "Tipe yang menerima salah satu dari beberapa tipe yang digabung dengan tanda garis tegak."
+            },
+            {
+              "term": "Penyempitan",
+              "definition": "Proses mempersempit tipe gabungan setelah pemeriksaan, sehingga tipe yang tersisa lebih pasti."
+            }
+          ],
+          "syntax": [
+            {
+              "token": "let jumlah: number = 0;",
+              "meaning": "Anotasi tipe ditulis setelah nama variabel. Pemeriksa tipe menolak pengisian nilai dengan tipe lain.",
+              "readAs": "Baca sebagai variabel bernama jumlah yang hanya boleh berisi angka.",
+              "example": "let aktif: boolean = false;",
+              "output": "Mengisi variabel itu dengan teks akan dilaporkan sebagai kesalahan sebelum dijalankan.",
+              "pitfall": "Menuliskan tipe secara berlebihan pada nilai yang jelas dapat menambah kerumitan tanpa manfaat."
+            },
+            {
+              "token": "function hitung(tugas: Tugas[]): number { ... }",
+              "meaning": "Parameter dan nilai kembalian diberi tipe. Tipe kembalian memastikan pemanggil menerima jenis nilai yang dijanjikan.",
+              "readAs": "Baca sebagai fungsi yang menerima daftar tugas dan mengembalikan angka.",
+              "example": "function selesai(tugas: Tugas[]): Tugas[] { return tugas.filter((t) => t.selesai); }",
+              "output": "Pemanggil dapat memakai hasilnya sebagai daftar tugas tanpa menebak.",
+              "pitfall": "Menulis tipe kembalian any menghapus manfaat pemeriksaan pada pemanggil."
+            },
+            {
+              "token": "interface Tugas { id: number; judul: string; selesai: boolean }",
+              "meaning": "Interface menyatakan bentuk data yang dipakai berulang. Semua tempat yang memakai bentuk itu diperiksa terhadap deklarasi yang sama.",
+              "readAs": "Baca sebagai deklarasi bentuk object yang memuat id angka, judul teks, dan selesai boolean.",
+              "example": "interface Tugas { id: number; judul: string }",
+              "output": "Object tanpa properti wajib atau dengan tipe salah dilaporkan sebagai kesalahan.",
+              "pitfall": "Menambahkan properti opsional yang sebenarnya selalu ada membuat pemeriksaan kehilangan ketelitian."
+            }
+          ],
+          "conventions": [
+            "Beri tipe pada batas modul: parameter dan nilai kembalian fungsi.",
+            "Pakai interface untuk bentuk object yang dipakai berulang.",
+            "Hindari any; pilih tipe yang lebih sempit agar kesalahan tertangkap.",
+            "Sempitkan tipe gabungan dengan pemeriksaan sebelum memakai nilai.",
+            "Biarkan tipe disimpulkan bila sudah jelas dari nilai awalnya."
+          ],
+          "next": "Berikutnya: unit test dan debugging frontend. Anda akan menguji fungsi secara otomatis dan mencari penyebab bug dengan alat pengembang.",
           "sections": [
             {
-              "id": "konsep",
-              "title": "Memahami konsepnya",
+              "id": "cara-membaca",
+              "title": "Cara membaca tipe TypeScript",
               "body": [
-                "TypeScript menambahkan pengecekan tipe saat development dan dikompilasi menjadi JavaScript. Tipe tidak otomatis memvalidasi data JSON saat runtime.",
-                "Gunakan strict mode, interface/type, union, dan narrowing. Hindari any sebagai jalan pintas. JS sudah harus dikuasai sebelum menambah TS."
+                "Anotasi tipe dibaca sebagai janji tentang bentuk nilai. interface menyatakan bentuk object, dan setiap fungsi menyatakan jenis masukan serta jenis hasilnya. Pemeriksa tipe memastikan janji itu tidak dilanggar.",
+                "Pada contoh, bentuk Tugas menjelaskan tiga properti beserta tipenya. Fungsi hitungAktif menerima daftar Tugas dan mengembalikan angka. Karena bentuknya dinyatakan, properti yang salah tulis atau hilang langsung dilaporkan.",
+                "Perhatikan bahwa tipe tidak muncul saat program berjalan. TypeScript diubah menjadi JavaScript tanpa anotasi. Manfaatnya muncul lebih awal, yaitu saat Anda menulis kode, bukan saat pengguna menemukan bug."
+              ],
+              "code": {
+                "language": "typescript",
+                "code": "interface Tugas {\n  id: number;\n  judul: string;\n  selesai: boolean;\n}\n\nfunction hitungAktif(tugas: Tugas[]): number {\n  return tugas.filter((t) => !t.selesai).length;\n}",
+                "output": "Fungsi mengembalikan jumlah tugas yang belum selesai, dan properti yang salah tulis dilaporkan sebelum dijalankan.",
+                "explain": "Interface mendefinisikan bentuk data sekali. Fungsi memakainya pada parameter dan nilai kembalian, sehingga seluruh pemakaian diperiksa terhadap bentuk yang sama.",
+                "annotations": [
+                  {
+                    "line": 1,
+                    "code": "interface Tugas {",
+                    "note": "Interface menyatakan bentuk data yang dipakai berulang."
+                  },
+                  {
+                    "line": 2,
+                    "code": "id: number;",
+                    "note": "Properti id bertipe angka."
+                  },
+                  {
+                    "line": 3,
+                    "code": "judul: string;",
+                    "note": "Properti judul bertipe teks."
+                  },
+                  {
+                    "line": 4,
+                    "code": "selesai: boolean;",
+                    "note": "Properti selesai bertipe boolean."
+                  },
+                  {
+                    "line": 7,
+                    "code": "function hitungAktif(tugas: Tugas[]): number {",
+                    "note": "Parameter diberi tipe daftar Tugas."
+                  },
+                  {
+                    "line": 8,
+                    "code": "return tugas.filter((t) => !t.selesai).length;",
+                    "note": "Nilai kembalian diberi tipe angka."
+                  }
+                ],
+                "lab": false
+              },
+              "callouts": [
+                {
+                  "tone": "good",
+                  "title": "Bentuk data sekali saja",
+                  "body": "Dengan satu deklarasi bentuk, seluruh fungsi memakai kontrak yang sama. Mengubah bentuk data cukup diubah di satu tempat."
+                }
+              ],
+              "checkpoint": {
+                "prompt": "Sebutkan tiga properti pada interface Tugas beserta tipenya.",
+                "success": "id bertipe number, judul bertipe string, dan selesai bertipe boolean."
+              }
+            },
+            {
+              "id": "manfaat-tipe",
+              "title": "Mengapa tipe membantu",
+              "body": [
+                "Pada JavaScript, kesalahan tipe baru terlihat saat baris itu dijalankan. Pada TypeScript, kesalahan serupa dilaporkan sebelum program berjalan. Waktu perbaikan jauh lebih singkat ketika kesalahan ditemukan di editor, bukan di tangan pengguna.",
+                "Tipe juga menjadi dokumentasi yang diperiksa. Nama fungsi dan tipenya menjelaskan cara pemakaian tanpa perlu membaca seluruh isinya. Karena diperiksa mesin, dokumentasi ini tidak dapat basi diam-diam.",
+                "Manfaat terbesar muncul di batas antara bagian kode. Ketika satu fungsi mengubah bentuk datanya, pemanggil yang tidak menyesuaikan langsung dilaporkan, sehingga perubahan menyebar dengan aman."
               ],
               "code": null,
               "callouts": [
                 {
-                  "tone": "good",
-                  "title": "Best practice",
-                  "body": "Gunakan strict mode dan validasi data eksternal saat runtime."
-                },
-                {
-                  "tone": "bad",
-                  "title": "Kesalahan umum",
-                  "body": "Mengira TypeScript mencegah data tak valid yang dikirim API."
+                  "tone": "warn",
+                  "title": "Tipe bukan pengganti uji",
+                  "body": "Tipe memeriksa bentuk data, bukan kebenaran perilaku. Logika tetap perlu diuji dengan kasus yang mewakili penggunaan nyata."
                 }
               ],
-              "checkpoint": null
+              "checkpoint": {
+                "prompt": "Sebutkan dua manfaat menuliskan tipe pada batas antar fungsi.",
+                "success": "Kesalahan bentuk data tertangkap sebelum dijalankan, dan perubahan bentuk data menyebar dengan aman ke pemanggil."
+              }
             },
             {
-              "id": "contoh",
-              "title": "Contoh kode",
+              "id": "union-dan-penyempitan",
+              "title": "Tipe gabungan dan penyempitan",
               "body": [
-                "Perhatikan input, proses, dan output. Ketik ulang, lalu ubah satu nilai."
+                "Union menyatakan bahwa sebuah nilai hanya boleh bernilai salah satu dari beberapa pilihan. Contoh Status hanya menerima \"aktif\" atau \"selesai\", sehingga nilai lain ditolak sejak awal.",
+                "Setelah sebuah pemeriksaan, TypeScript menyempitkan tipe. Di dalam cabang status sama dengan \"aktif\", tipe yang tersisa diketahui, sehingga nilai dapat dipakai dengan aman.",
+                "Pola ini juga berguna untuk nilai yang mungkin kosong. Tipe gabungan dengan null memaksa Anda memeriksa sebelum memakai nilainya, sehingga kesalahan yang sering terjadi di JavaScript dicegah lebih awal."
               ],
               "code": {
                 "language": "typescript",
-                "code": "type Status = \"pending\" | \"done\";\ninterface Task { id: number; judul: string; status: Status }\nfunction selesai(tugas: Task): boolean {\n  return tugas.status === \"done\";\n}",
-                "output": "",
-                "explain": ""
+                "code": "type Status = \"aktif\" | \"selesai\";\n\nfunction label(status: Status): string {\n  if (status === \"aktif\") return \"Belum selesai\";\n  return \"Selesai\";\n}",
+                "output": "Fungsi mengembalikan label teks sesuai status yang diberikan.",
+                "explain": "Tipe Status membatasi nilai yang sah. Pemeriksaan menyempitkan tipe, sehingga kedua cabang dapat dikembalikan tanpa kemungkinan nilai lain.",
+                "annotations": [
+                  {
+                    "line": 1,
+                    "code": "type Status = \"aktif\" | \"selesai\";",
+                    "note": "Union membatasi status pada dua nilai yang sah."
+                  },
+                  {
+                    "line": 3,
+                    "code": "function label(status: Status): string {",
+                    "note": "Parameter diberi tipe union Status."
+                  },
+                  {
+                    "line": 4,
+                    "code": "if (status === \"aktif\") return \"Belum selesai\";",
+                    "note": "Pemeriksaan menyempitkan nilai ke satu cabang."
+                  }
+                ],
+                "lab": false
               },
               "callouts": [],
-              "checkpoint": null
+              "checkpoint": {
+                "prompt": "Apa yang terjadi bila fungsi label dipanggil dengan nilai \"dibatalkan\"?",
+                "success": "Pemeriksa tipe melaporkan kesalahan karena nilai itu tidak termasuk tipe Status."
+              }
+            },
+            {
+              "id": "tipe-di-proyek",
+              "title": "Menerapkan tipe di proyek nyata",
+              "body": [
+                "Mulailah dari batas modul. Beri tipe pada parameter dan nilai kembalian fungsi, serta bentuk data yang dipakai bersama. Bagian dalam fungsi dapat dibiarkan disimpulkan oleh sistem tipe selama jelas.",
+                "Berkas konfigurasi menentukan seketat apa pemeriksaan berjalan. Mode ketat membuat lebih banyak kesalahan terdeteksi, meski awalnya terasa merepotkan. Untuk proyek baru, memulai dalam mode ketat lebih murah daripada mengaktifkannya belakangan.",
+                "Seiring proyek tumbuh, tipe menjadi tempat mendefinisikan istilah domain: apa itu tugas, status, dan pengguna. Dengan begitu, kode dan percakapan tim memakai istilah yang sama."
+              ],
+              "code": null,
+              "callouts": [],
+              "checkpoint": {
+                "prompt": "Dari mana sebaiknya mulai menambahkan tipe pada proyek JavaScript yang sudah ada?",
+                "success": "Dari batas modul, yaitu parameter dan nilai kembalian fungsi serta bentuk data yang dipakai bersama."
+              }
             }
           ],
           "practice": [
             {
               "id": "latihan-1",
-              "title": "Latihan 1",
-              "level": "independent",
-              "task": "Buat interface Product dengan id, name, price, stock lalu contoh objek valid.",
-              "steps": [],
+              "title": "Tipe untuk bentuk tugas",
+              "level": "guided",
+              "task": "Tulis interface Tugas dengan id, judul, dan selesai, lalu buat fungsi yang menerima daftar tugas dan mengembalikan jumlah yang selesai.",
+              "steps": [
+                "Deklarasikan interface dengan tipe tiap properti.",
+                "Tulis fungsi dengan parameter bertipe daftar Tugas.",
+                "Beri tipe angka pada nilai kembalian."
+              ],
               "hint": "",
-              "hints": [],
-              "starterCode": "",
-              "expected": "",
-              "stretch": "",
-              "verification": null
+              "hints": [
+                "Setiap properti diberi nama dan tipe.",
+                "Parameter daftar ditulis Tugas[].",
+                "filter dan length bekerja seperti di JavaScript."
+              ],
+              "starterCode": "interface Tugas {\n  // lengkapi\n}\nfunction hitungSelesai(tugas: Tugas[]): number {\n  // lengkapi\n}",
+              "expected": "Fungsi mengembalikan angka dan pemakaian properti yang salah dilaporkan.",
+              "stretch": "Tambahkan properti tenggat opsional bertipe string.",
+              "verification": {
+                "mode": "manual",
+                "command": "Hapus satu properti wajib pada object uji dan periksa kesalahan yang dilaporkan.",
+                "expected": "Pemeriksa melaporkan properti yang hilang atau salah tipe.",
+                "evidence": "Simpan berkas dan pesan kesalahan yang muncul."
+              }
             },
             {
               "id": "latihan-2",
-              "title": "Latihan 2",
+              "title": "Status sebagai tipe gabungan",
               "level": "independent",
-              "task": "Ubah satu input atau asumsi pada contoh, catat hasil dan jelaskan alasannya.",
-              "steps": [],
+              "task": "Buat tipe Status dengan tiga nilai yang sah dan fungsi yang mengembalikan label untuk setiap nilai.",
+              "steps": [
+                "Deklarasikan tipe union berisi tiga nilai.",
+                "Tulis fungsi dengan parameter bertipe Status.",
+                "Kembalikan label untuk setiap kemungkinan.",
+                "Pastikan nilai di luar daftar ditolak."
+              ],
               "hint": "",
-              "hints": [],
-              "starterCode": "",
-              "expected": "",
-              "stretch": "",
-              "verification": null
+              "hints": [
+                "Union memakai tanda garis tegak antar nilai.",
+                "Setiap cabang dikembalikan dengan string.",
+                "Nilai asing dilaporkan tanpa harus dijalankan."
+              ],
+              "starterCode": "type Status = ...;\nfunction label(status: Status): string { /* lengkapi */ }",
+              "expected": "Setiap nilai sah memiliki label dan nilai asing ditolak pemeriksa tipe.",
+              "stretch": "Tambah satu nilai baru dan periksa cabang mana yang perlu disesuaikan.",
+              "verification": {
+                "mode": "manual",
+                "command": "Panggil fungsi dengan nilai yang sah dan nilai asing.",
+                "expected": "Nilai sah diterima; nilai asing dilaporkan sebagai kesalahan.",
+                "evidence": "Simpan berkas dan catatan kesalahan."
+              }
+            },
+            {
+              "id": "latihan-3",
+              "title": "Tipekan modul nyata",
+              "level": "transfer",
+              "task": "Tambahkan tipe pada satu modul aplikasi catatan tugas: bentuk data, fungsi murni, dan nilai kembaliannya.",
+              "steps": [
+                "Tentukan bentuk data utama.",
+                "Beri tipe pada setiap fungsi yang menyeberang antar modul.",
+                "Ganti seluruh pemakaian any.",
+                "Pastikan kode tetap berjalan setelah tipe ditambahkan."
+              ],
+              "hint": "",
+              "hints": [
+                "Mulai dari bentuk data yang dipakai bersama.",
+                "Beri tipe pada parameter dan nilai kembalian.",
+                "Jalankan pemeriksa tipe untuk menemukan sisa masalah."
+              ],
+              "starterCode": "// modul tugas dari latihan sebelumnya",
+              "expected": "Tidak ada any tersisa, batas modul bertipe jelas, dan perilaku tetap sama.",
+              "stretch": "Aktifkan mode ketat dan perbaiki setiap kesalahan yang muncul.",
+              "verification": {
+                "mode": "manual",
+                "command": "Jalankan pemeriksa tipe dan uji fungsi yang sudah diberi tipe.",
+                "expected": "Pemeriksa tidak melaporkan kesalahan dan hasil fungsi tetap benar.",
+                "evidence": "Simpan modul bertipe dan keluaran pemeriksa tipe."
+              }
             }
           ],
-          "verification": null,
-          "troubleshooting": [],
+          "verification": {
+            "mode": "manual",
+            "command": "Jalankan pemeriksa tipe lalu uji fungsi yang sudah diberi tipe.",
+            "expected": "Tidak ada kesalahan tipe dan perilaku fungsi tetap benar saat dijalankan.",
+            "evidence": "Simpan berkas bertipe dan keluaran pemeriksa tipe."
+          },
+          "troubleshooting": [
+            {
+              "symptom": "Pemeriksa tipe mengeluh nilai mungkin null atau undefined.",
+              "cause": "Tipe gabungan belum disempitkan sebelum nilai dipakai.",
+              "fix": "Periksa nilai kosong lebih dulu, baru pakai setelah tipe tersempitkan."
+            },
+            {
+              "symptom": "Banyak kesalahan tipe pada kode pustaka lama.",
+              "cause": "Pustaka tidak menyertakan informasi tipe sehingga dianggap any.",
+              "fix": "Pasang paket tipe yang sesuai atau tulis deklarasi tipe minimal untuk yang dipakai."
+            },
+            {
+              "symptom": "Kode berjalan padahal sudah ada kesalahan tipe.",
+              "cause": "TypeScript tetap menghasilkan JavaScript meski ada kesalahan.",
+              "fix": "Jalankan pemeriksa tipe sebagai bagian dari alur build agar kesalahan tidak lolos."
+            },
+            {
+              "symptom": "Tipe terlalu rumit sampai sulit dibaca.",
+              "cause": "Anotasi ditulis pada nilai yang sebenarnya sudah jelas.",
+              "fix": "Cukup beri tipe pada batas modul dan biarkan nilai lokal disimpulkan."
+            }
+          ],
           "quiz": {
             "questions": [
               {
                 "id": "q1",
                 "type": "recall",
-                "question": "Apa prinsip yang paling tepat untuk topik “TypeScript: tipe dan interface”?",
+                "question": "Kapan kesalahan tipe dilaporkan pada TypeScript?",
                 "options": [
-                  "Gunakan strict mode dan validasi data eksternal saat runtime.",
-                  "Gunakan solusi paling rumit sejak awal, meski kebutuhan belum jelas.",
-                  "Lewati pengujian karena contoh kecil pasti benar."
+                  "Saat program berjalan",
+                  "Sebelum program dijalankan",
+                  "Hanya saat diuji"
+                ],
+                "answer": 1,
+                "explanation": "Pemeriksa tipe bekerja sebelum kode dijalankan, sehingga kesalahan ditemukan lebih awal."
+              },
+              {
+                "id": "q2",
+                "type": "code-reading",
+                "question": "Apa maksud tipe \"aktif\" | \"selesai\" pada sebuah parameter?",
+                "options": [
+                  "Parameter hanya boleh salah satu dari dua nilai itu",
+                  "Parameter harus berisi kedua nilai sekaligus",
+                  "Parameter menerima teks apa pun"
                 ],
                 "answer": 0,
-                "explanation": "Gunakan strict mode dan validasi data eksternal saat runtime."
+                "explanation": "Union membatasi nilai pada salah satu pilihan yang dinyatakan."
+              },
+              {
+                "id": "q3",
+                "type": "scenario",
+                "question": "Sebuah fungsi menerima data yang mungkin null. Tindakan tepat menurut TypeScript...",
+                "options": [
+                  "Langsung memakai nilainya",
+                  "Memeriksa null lebih dulu sehingga tipe tersempitkan",
+                  "Menulis any agar lolos pemeriksaan"
+                ],
+                "answer": 1,
+                "explanation": "Pemeriksaan menyempitkan tipe dan mencegah kesalahan saat nilai kosong."
               }
             ]
           },
-          "resources": [],
-          "summary": [],
-          "legacy": true,
-          "code": "type Status = \"pending\" | \"done\";\ninterface Task { id: number; judul: string; status: Status }\nfunction selesai(tugas: Task): boolean {\n  return tugas.status === \"done\";\n}",
-          "wordCount": 152,
-          "schema": 2
+          "resources": [
+            {
+              "sourceId": "typescript-handbook",
+              "title": "TypeScript Handbook",
+              "publisher": "Microsoft",
+              "url": "https://www.typescriptlang.org/docs/handbook/",
+              "note": "Buku panduan resmi TypeScript tentang tipe, interface, dan penyempitan.",
+              "tier": "official",
+              "version": "rolling",
+              "accessedAt": "2026-10-28",
+              "license": ""
+            },
+            {
+              "sourceId": "mdn-what-is-javascript",
+              "title": "MDN: What is JavaScript?",
+              "publisher": "Mozilla",
+              "url": "https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/Scripting/What_is_JavaScript",
+              "note": "Penjelasan MDN tentang JavaScript dan sistem tipenya yang dinamis.",
+              "tier": "official",
+              "version": "rolling",
+              "accessedAt": "2026-10-28",
+              "license": ""
+            },
+            {
+              "sourceId": "mdn-js-guide",
+              "title": "MDN: JavaScript Guide",
+              "publisher": "Mozilla",
+              "url": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide",
+              "note": "Panduan JavaScript yang menjadi dasar tipe di TypeScript.",
+              "tier": "official",
+              "version": "rolling",
+              "accessedAt": "2026-10-28",
+              "license": ""
+            }
+          ],
+          "summary": [
+            "TypeScript menambahkan pemeriksaan tipe statis lalu dikompilasi menjadi JavaScript biasa.",
+            "Interface dan type mendeskripsikan bentuk data dan dipakai berulang sebagai kontrak.",
+            "Tipe pada parameter dan nilai kembalian memperjelas batas antar fungsi.",
+            "Union dan penyempitan memaksa pemeriksaan sebelum nilai yang mungkin kosong dipakai."
+          ],
+          "legacy": false,
+          "code": "interface Tugas {\n  id: number;\n  judul: string;\n  selesai: boolean;\n}\n\nfunction hitungAktif(tugas: Tugas[]): number {\n  return tugas.filter((t) => !t.selesai).length;\n}",
+          "wordCount": 1565,
+          "schema": 3.1
         },
         {
           "id": "m05-l07",
           "title": "Unit test dan debugging frontend",
-          "minutes": 45,
-          "level": "Dasar",
+          "minutes": 120,
+          "level": "Menengah",
           "depth": "integrasi",
-          "outcome": "",
+          "outcome": "Setelah pelajaran ini, Anda dapat menulis unit test yang memeriksa perilaku fungsi penting dan mencari penyebab bug dengan alat pengembang secara sistematis.",
           "codeLanguage": "javascript",
-          "objectives": [],
-          "prerequisites": [],
-          "terms": [],
-          "syntax": [],
-          "conventions": [],
-          "next": "",
+          "objectives": [
+            "Menjelaskan susunan satu unit test: persiapan, tindakan, dan pemeriksaan.",
+            "Menulis test yang memeriksa perilaku, bukan detail implementasi.",
+            "Memakai alat pengembang untuk menghentikan kode dan memeriksa nilai.",
+            "Menelusuri bug dengan mengubah satu variabel pada satu waktu."
+          ],
+          "prerequisites": [
+            {
+              "label": "TypeScript: tipe dan interface",
+              "lessonId": "m05-l06"
+            }
+          ],
+          "terms": [
+            {
+              "term": "Unit test",
+              "definition": "Pengujian yang memeriksa satu unit kode, biasanya satu fungsi, dengan masukan tertentu."
+            },
+            {
+              "term": "Assertion",
+              "definition": "Pernyataan dalam test yang membandingkan hasil nyata dengan hasil yang diharapkan."
+            },
+            {
+              "term": "Debugger",
+              "definition": "Alat yang memungkinkan kode dihentikan sementara lalu nilai variabel diperiksa pada titik itu."
+            },
+            {
+              "term": "Titik henti",
+              "definition": "Penanda pada baris kode tempat eksekusi dihentikan sementara."
+            },
+            {
+              "term": "Regresi",
+              "definition": "Bug lama yang muncul kembali setelah perubahan, biasanya karena tidak ada test yang menjaganya."
+            }
+          ],
+          "syntax": [
+            {
+              "token": "expect(hitungAktif(tugas)).toBe(2);",
+              "meaning": "expect menerima hasil nyata dan toBe membandingkannya dengan nilai harapan. Bila berbeda, test gagal dan menampilkan keduanya.",
+              "readAs": "Baca sebagai pemeriksaan bahwa hasil pemanggilan sama dengan nilai yang diharapkan.",
+              "example": "expect(hitungAktif(tugas)).toBe(2);",
+              "output": "Test lulus bila hasilnya 2 dan gagal bila bukan.",
+              "pitfall": "Memeriksa nilai yang dihitung ulang dengan kode yang sama membuat test tidak membuktikan apa pun."
+            },
+            {
+              "token": "test(\"judul\", () => { ... });",
+              "meaning": "Setiap test berdiri sendiri dan berisi tindakan serta pemeriksaan. Nama test menyatakan perilaku yang dijamin.",
+              "readAs": "Baca sebagai pendefinisian satu kasus uji dengan nama yang menjelaskan perilaku yang diperiksa.",
+              "example": "test(\"menghitung tugas aktif\", () => { ... });",
+              "output": "Test berjalan sendiri dan menampilkan lulus atau gagal beserta namanya.",
+              "pitfall": "Nama test yang samar membuat kegagalan sulit ditelusuri; sebut masukan dan hasil yang diharapkan."
+            },
+            {
+              "token": "debugger;",
+              "meaning": "Pernyataan debugger menghentikan kode seperti titik henti, sehingga nilai variabel dapat diperiksa pada keadaan sebenarnya.",
+              "readAs": "Baca sebagai perintah menghentikan eksekusi pada baris itu saat alat pengembang terbuka.",
+              "example": "function hitung(tugas) { debugger; return tugas.length; }",
+              "output": "Eksekusi berhenti di baris itu dan panel debugging menampilkan nilai saat itu.",
+              "pitfall": "Lupa menghapus debugger sebelum rilis membuat kode berhenti pada pengguna yang membuka alat pengembang."
+            }
+          ],
+          "conventions": [
+            "Satu test memeriksa satu perilaku dengan satu pemeriksaan utama.",
+            "Beri nama test yang menyebut masukan dan hasil yang diharapkan.",
+            "Uji batas: kosong, satu item, dan banyak item.",
+            "Periksa perilaku yang dapat diamati, bukan cara internal menyimpannya.",
+            "Ubah satu variabel pada satu waktu saat menelusuri bug."
+          ],
+          "next": "Materi berikutnya melanjutkan ke backend dan basis data. Anda akan memakai JavaScript di server serta menyimpan data secara permanen.",
           "sections": [
             {
-              "id": "konsep",
-              "title": "Memahami konsepnya",
+              "id": "cara-membaca",
+              "title": "Cara membaca satu unit test",
               "body": [
-                "Unit test memastikan fungsi kecil menghasilkan output sesuai masukan. Test sebaiknya mencakup normal, batas, salah input, dan regresi bug.",
-                "Pisahkan logika dari DOM agar dapat diuji tanpa browser. Gunakan assert bawaan atau Vitest ketika toolchain sudah siap. Nama test menyatakan perilaku."
+                "Satu test dibaca dalam tiga bagian: persiapan, tindakan, dan pemeriksaan. Persiapan menyiapkan data, tindakan memanggil fungsi yang diuji, dan pemeriksaan membandingkan hasil dengan harapan.",
+                "Pada contoh, persiapan membuat daftar tiga tugas, tindakan memanggil hitungAktif, dan pemeriksaan memastikan hasilnya dua. Bagian-bagian ini biasanya dipisahkan baris kosong agar mudah dibaca.",
+                "Nama test menyatakan perilaku yang dijamin. Ketika test gagal, nama itu memberi tahu apa yang rusak tanpa perlu membaca isinya. Karena itu, nama yang jelas sama pentingnya dengan pemeriksaannya."
               ],
-              "code": null,
+              "code": {
+                "language": "javascript",
+                "code": "function hitungAktif(tugas) {\n  return tugas.filter((t) => !t.selesai).length;\n}\n\ntest(\"menghitung dua tugas aktif\", () => {\n  const tugas = [\n    { id: 1, selesai: false },\n    { id: 2, selesai: true },\n    { id: 3, selesai: false },\n  ];\n  expect(hitungAktif(tugas)).toBe(2);\n});",
+                "output": "Test lulus karena dua dari tiga tugas belum selesai.",
+                "explain": "Fungsi diuji dengan data tetap. Test menyiapkan data, memanggil fungsi, lalu memeriksa hasilnya terhadap angka yang diharapkan.",
+                "annotations": [
+                  {
+                    "line": 1,
+                    "code": "function hitungAktif(tugas) {",
+                    "note": "Fungsi yang diuji hanya bergantung pada masukannya."
+                  },
+                  {
+                    "line": 2,
+                    "code": "return tugas.filter((t) => !t.selesai).length;",
+                    "note": "Perhitungan memakai filter lalu menghitung panjangnya."
+                  },
+                  {
+                    "line": 5,
+                    "code": "test(\"menghitung dua tugas aktif\", () => {",
+                    "note": "Nama test menyatakan perilaku yang diperiksa."
+                  },
+                  {
+                    "line": 6,
+                    "code": "const tugas = [",
+                    "note": "Data uji disiapkan dengan variasi yang jelas."
+                  },
+                  {
+                    "line": 11,
+                    "code": "expect(hitungAktif(tugas)).toBe(2);",
+                    "note": "Pemeriksaan membandingkan hasil dengan angka yang diharapkan."
+                  }
+                ],
+                "lab": false
+              },
               "callouts": [
                 {
                   "tone": "good",
-                  "title": "Best practice",
-                  "body": "Tulis tes perilaku yang penting, bukan hanya tes bahwa fungsi dipanggil."
-                },
+                  "title": "Data uji yang jelas",
+                  "body": "Pilih data uji yang membuat hasilnya mudah diperiksa: dua belum selesai dari tiga. Data seperti ini membuat kegagalan langsung terbaca."
+                }
+              ],
+              "checkpoint": {
+                "prompt": "Sebutkan tiga bagian test pada contoh dan baris yang mewakili masing-masing.",
+                "success": "Persiapan pada penyusunan data, tindakan pada pemanggilan hitungAktif, dan pemeriksaan pada expect."
+              }
+            },
+            {
+              "id": "jenis-test",
+              "title": "Jenis test dan tingkatannya",
+              "body": [
+                "Unit test memeriksa satu unit kecil dan berjalan cepat. Integration test memeriksa beberapa bagian bersama, misalnya fungsi dengan penyimpanan. End-to-end test menjalankan aplikasi seperti pengguna, dari mengklik sampai melihat hasil.",
+                "Piramida pengujian menyarankan banyak unit test, lebih sedikit integration test, dan sedikit end-to-end test. Alasannya kecepatan dan kestabilan: unit test cepat dan stabil, sedangkan end-to-end lebih lambat dan lebih mudah goyah.",
+                "Mulailah dari unit test untuk logika murni. Bagian yang paling sering berubah dan paling mudah salah adalah tempat pertama yang layak diuji."
+              ],
+              "code": null,
+              "callouts": [],
+              "checkpoint": {
+                "prompt": "Mengapa piramida pengujian menyarankan jumlah unit test lebih banyak daripada end-to-end?",
+                "success": "Karena unit test lebih cepat dan lebih stabil, sehingga memberi perlindungan luas dengan biaya rendah."
+              }
+            },
+            {
+              "id": "debugging",
+              "title": "Mencari penyebab dengan debugger",
+              "body": [
+                "Alat pengembang memungkinkan kode berhenti sementara pada titik tertentu. Saat berhenti, Anda dapat memeriksa nilai setiap variabel, menelusuri baris satu per satu, dan melihat urutan pemanggilan fungsi.",
+                "Keunggulan debugger dibanding menambah cetakan adalah Anda melihat keadaan sebenarnya tanpa mengubah kode, lalu melanjutkan kapan saja. Nilai objek yang besar pun dapat diperiksa dengan mudah.",
+                "Cara paling produktif adalah membentuk dugaan lebih dulu, lalu memakai debugger untuk membuktikannya. Menghentikan kode tanpa dugaan hanya menambah waktu tanpa arah."
+              ],
+              "code": {
+                "language": "javascript",
+                "code": "function hitungAktif(tugas) {\n  debugger;\n  const aktif = tugas.filter((t) => !t.selesai);\n  return aktif.length;\n}",
+                "output": "Eksekusi berhenti di baris penanda dan nilai tugas serta hasil filter dapat diperiksa.",
+                "explain": "Pernyataan debugger menghentikan kode saat alat pengembang terbuka. Nilai variabel ditampilkan pada keadaan sebenarnya, termasuk daftar tugas dan hasil filternya.",
+                "annotations": [
+                  {
+                    "line": 2,
+                    "code": "debugger;",
+                    "note": "Eksekusi berhenti pada titik ini saat alat pengembang terbuka."
+                  },
+                  {
+                    "line": 3,
+                    "code": "const aktif = tugas.filter((t) => !t.selesai);",
+                    "note": "Nilai variabel dapat diperiksa setelah berhenti."
+                  },
+                  {
+                    "line": 4,
+                    "code": "return aktif.length;",
+                    "note": "Nilai kembalian diperiksa sebelum fungsi selesai."
+                  }
+                ],
+                "lab": false
+              },
+              "callouts": [
                 {
-                  "tone": "bad",
-                  "title": "Kesalahan umum",
-                  "body": "Menjalankan contoh satu kali dan menyebutnya telah dites."
+                  "tone": "warn",
+                  "title": "Bersihkan penanda",
+                  "body": "Hapus debugger atau titik henti setelah selesai. Penanda yang tertinggal membuat kode berhenti pada orang lain."
                 }
               ],
               "checkpoint": null
             },
             {
-              "id": "contoh",
-              "title": "Contoh kode",
+              "id": "menelusuri-bug",
+              "title": "Menelusuri bug secara sistematis",
               "body": [
-                "Perhatikan input, proses, dan output. Ketik ulang, lalu ubah satu nilai."
+                "Bug yang baik ditelusuri dengan cara yang dapat diulang. Perkecil kasus sampai sekecil mungkin, lalu ubah satu variabel pada satu waktu. Bila mengubah dua hal sekaligus, Anda tidak tahu mana yang berpengaruh.",
+                "Tuliskan dugaan sebelum menguji. Dugaan yang salah tetap berguna karena mempersempit ruang pencarian. Setelah bug ditemukan, tambahkan test yang menangkapnya agar tidak muncul lagi.",
+                "Setiap bug yang diperbaiki tanpa test cenderung kembali. Test itu menjadi pengingat permanen tentang perilaku yang harus dijaga, sekaligus menutup celah regresi."
               ],
-              "code": {
-                "language": "javascript",
-                "code": "function diskon(harga, persen) {\n  return harga * (1 - persen / 100);\n}\nconsole.assert(diskon(100000, 10) === 90000);",
-                "output": "",
-                "explain": ""
-              },
+              "code": null,
               "callouts": [],
-              "checkpoint": null
+              "checkpoint": {
+                "prompt": "Mengapa setiap perbaikan bug sebaiknya disertai test baru?",
+                "success": "Agar bug itu tidak muncul kembali dan perilaku yang benar terjaga saat kode berubah."
+              }
             }
           ],
           "practice": [
             {
               "id": "latihan-1",
-              "title": "Latihan 1",
-              "level": "independent",
-              "task": "Tulis tiga assert untuk perhitungan harga: normal, 0, dan diskon 100%.",
-              "steps": [],
+              "title": "Test untuk fungsi hitung",
+              "level": "guided",
+              "task": "Tulis tiga test untuk fungsi yang menghitung tugas aktif: daftar kosong, semua selesai, dan sebagian aktif.",
+              "steps": [
+                "Tulis test untuk daftar kosong yang mengharapkan nol.",
+                "Tulis test untuk semua selesai yang mengharapkan nol.",
+                "Tulis test untuk sebagian aktif yang mengharapkan angka yang benar."
+              ],
               "hint": "",
-              "hints": [],
-              "starterCode": "",
-              "expected": "",
-              "stretch": "",
-              "verification": null
+              "hints": [
+                "Satu test untuk satu perilaku.",
+                "Kasus batas sering menjadi sumber bug.",
+                "Nama test menyebut masukan dan harapan."
+              ],
+              "starterCode": "test(\"daftar kosong\", () => {\n  expect(hitungAktif([])).toBe(0);\n});",
+              "expected": "Ketiga test lulus dan mencakup kasus batas yang penting.",
+              "stretch": "Tambahkan test yang memastikan fungsi tidak mengubah data masukan.",
+              "verification": {
+                "mode": "manual",
+                "command": "Jalankan seluruh test dan periksa hasilnya.",
+                "expected": "Semua test lulus, termasuk kasus batas.",
+                "evidence": "Simpan berkas test dan keluaran pengujian."
+              }
             },
             {
               "id": "latihan-2",
-              "title": "Latihan 2",
+              "title": "Temukan bug dengan debugger",
               "level": "independent",
-              "task": "Ubah satu input atau asumsi pada contoh, catat hasil dan jelaskan alasannya.",
-              "steps": [],
+              "task": "Diberikan fungsi yang memberi hasil salah, temukan penyebabnya memakai debugger dan perbaiki.",
+              "steps": [
+                "Tulis dugaan tentang penyebabnya.",
+                "Pasang titik henti pada baris yang mencurigakan.",
+                "Periksa nilai variabel pada keadaan sebenarnya.",
+                "Perbaiki dan tambahkan test yang menangkap bug itu."
+              ],
               "hint": "",
-              "hints": [],
-              "starterCode": "",
-              "expected": "",
-              "stretch": "",
-              "verification": null
+              "hints": [
+                "Periksa nilai selesai pada setiap tugas.",
+                "debugger menghentikan kode pada baris itu.",
+                "Setelah memperbaiki, pastikan test baru gagal sebelum perbaikan."
+              ],
+              "starterCode": "function hitungAktif(tugas) {\n  return tugas.filter((t) => t.selesai).length;\n}",
+              "expected": "Penulis menemukan penyebab (kondisi filter terbalik), memperbaikinya, dan menambahkan test.",
+              "stretch": "Telusuri bagaimana nilai berubah pada setiap langkah filter.",
+              "verification": {
+                "mode": "manual",
+                "command": "Jalankan test baru sebelum dan sesudah perbaikan.",
+                "expected": "Test gagal sebelum perbaikan dan lulus setelahnya.",
+                "evidence": "Simpan berkas dan catatan dua hasil pengujian."
+              }
+            },
+            {
+              "id": "latihan-3",
+              "title": "Lapisan test untuk daftar tugas",
+              "level": "transfer",
+              "task": "Rancang susunan pengujian untuk aplikasi catatan tugas: unit untuk logika, integration untuk penyimpanan, dan satu end-to-end untuk alur utama.",
+              "steps": [
+                "Daftar perilaku penting yang perlu dijamin.",
+                "Kelompokkan setiap perilaku ke tingkat pengujian yang sesuai.",
+                "Tulis satu unit test sebagai contoh.",
+                "Jelaskan alasan penempatan setiap kelompok."
+              ],
+              "hint": "",
+              "hints": [
+                "Logika murni cocok untuk unit test.",
+                "Interaksi penyimpanan butuh integration test.",
+                "End-to-end cukup untuk alur utama, tidak semua variasi."
+              ],
+              "starterCode": "Unit: ...\nIntegration: ...\nEnd-to-end: ...",
+              "expected": "Setiap perilaku diuji pada tingkat paling murah yang dapat menangkap kesalahannya.",
+              "stretch": "Terapkan susunan itu pada satu fitur lengkap.",
+              "verification": {
+                "mode": "manual",
+                "command": "Jalankan satu unit test contoh dan periksa hasilnya.",
+                "expected": "Test contoh lulus dan susunan pengujian masuk akal untuk proyek.",
+                "evidence": "Simpan rencana pengujian dan satu berkas test."
+              }
             }
           ],
-          "verification": null,
-          "troubleshooting": [],
+          "verification": {
+            "mode": "manual",
+            "command": "Jalankan seluruh test dan lakukan satu sesi debugger pada fungsi yang gagal.",
+            "expected": "Seluruh test lulus dan penyebab bug dapat dijelaskan berdasarkan nilai yang diperiksa.",
+            "evidence": "Simpan berkas test, keluaran pengujian, dan catatan sesi debugging."
+          },
+          "troubleshooting": [
+            {
+              "symptom": "Test lulus tetapi bug tetap terjadi pada pengguna.",
+              "cause": "Test memeriksa cara internal, bukan perilaku yang diamati, atau tidak mencakup kasus batas.",
+              "fix": "Tambahkan test yang mewakili penggunaan nyata dan kasus batas."
+            },
+            {
+              "symptom": "Eksekusi berhenti meski titik henti sudah dihapus.",
+              "cause": "Pernyataan debugger masih tertinggal di kode.",
+              "fix": "Hapus pernyataan debugger sebelum menggabungkan atau merilis kode."
+            },
+            {
+              "symptom": "Test gagal hanya pada sebagian urutan eksekusi.",
+              "cause": "Test saling bergantung karena data atau keadaan dibagi antar-test.",
+              "fix": "Siapkan data di dalam setiap test agar test berdiri sendiri."
+            },
+            {
+              "symptom": "Nilai variabel tidak seperti yang diduga saat diperiksa.",
+              "cause": "Titik henti dipasang di baris yang salah atau terlalu jauh dari sumber masalah.",
+              "fix": "Pasang titik henti lebih dekat ke baris yang mengubah nilai dan telusuri selangkah demi selangkah."
+            }
+          ],
           "quiz": {
             "questions": [
               {
                 "id": "q1",
                 "type": "recall",
-                "question": "Apa prinsip yang paling tepat untuk topik “Unit test dan debugging frontend”?",
+                "question": "Sebutkan tiga bagian dari satu unit test.",
                 "options": [
-                  "Tulis tes perilaku yang penting, bukan hanya tes bahwa fungsi dipanggil.",
-                  "Gunakan solusi paling rumit sejak awal, meski kebutuhan belum jelas.",
-                  "Lewati pengujian karena contoh kecil pasti benar."
+                  "Persiapan, tindakan, dan pemeriksaan",
+                  "Import, export, dan build",
+                  "Klik, ketik, dan hapus"
                 ],
                 "answer": 0,
-                "explanation": "Tulis tes perilaku yang penting, bukan hanya tes bahwa fungsi dipanggil."
+                "explanation": "Test yang baik menyiapkan data, menjalankan tindakan, lalu memeriksa hasilnya."
+              },
+              {
+                "id": "q2",
+                "type": "code-reading",
+                "question": "Apa yang dilakukan pernyataan debugger?",
+                "options": [
+                  "Menampilkan pesan ke konsol",
+                  "Menghentikan eksekusi pada baris itu saat alat pengembang terbuka",
+                  "Mengulang kode otomatis"
+                ],
+                "answer": 1,
+                "explanation": "debugger menghentikan kode seperti titik henti sehingga nilai dapat diperiksa."
+              },
+              {
+                "id": "q3",
+                "type": "scenario",
+                "question": "Anda memperbaiki bug di layar. Langkah lanjutan yang paling berguna...",
+                "options": [
+                  "Menutup tugas dan lanjut ke fitur berikutnya",
+                  "Menambahkan test yang menangkap bug itu",
+                  "Menghapus kode yang mencurigakan"
+                ],
+                "answer": 1,
+                "explanation": "Test baru menjaga agar bug yang sama tidak muncul kembali."
               }
             ]
           },
-          "resources": [],
-          "summary": [],
-          "legacy": true,
-          "code": "function diskon(harga, persen) {\n  return harga * (1 - persen / 100);\n}\nconsole.assert(diskon(100000, 10) === 90000);",
-          "wordCount": 162,
-          "schema": 2
+          "resources": [
+            {
+              "sourceId": "vitest-guide",
+              "title": "Vitest: Getting Started",
+              "publisher": "Vitest",
+              "url": "https://vitest.dev/guide/",
+              "note": "Panduan resmi Vitest tentang penulisan test dan pemeriksaan hasil.",
+              "tier": "official",
+              "version": "rolling",
+              "accessedAt": "2026-10-29",
+              "license": ""
+            },
+            {
+              "sourceId": "mdn-debugging-js",
+              "title": "MDN: Debugging JavaScript",
+              "publisher": "Mozilla",
+              "url": "https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/Scripting/Debugging_JavaScript",
+              "note": "Panduan MDN tentang aliran kode, kesalahan, dan penanganannya.",
+              "tier": "official",
+              "version": "rolling",
+              "accessedAt": "2026-10-28",
+              "license": ""
+            },
+            {
+              "sourceId": "chrome-devtools-js",
+              "title": "Chrome DevTools: Debug JavaScript",
+              "publisher": "Google",
+              "url": "https://developer.chrome.com/docs/devtools/javascript/",
+              "note": "Dokumentasi Chrome DevTools tentang men-debug JavaScript dan titik henti.",
+              "tier": "official",
+              "version": "rolling",
+              "accessedAt": "2026-10-28",
+              "license": ""
+            }
+          ],
+          "summary": [
+            "Unit test menyiapkan data, menjalankan tindakan, lalu memeriksa hasilnya.",
+            "Nama test menyatakan perilaku yang dijamin; uji juga kasus batas.",
+            "Debugger menghentikan kode sementara sehingga nilai sebenarnya dapat diperiksa.",
+            "Setiap perbaikan bug sebaiknya disertai test agar tidak muncul kembali."
+          ],
+          "legacy": false,
+          "code": "function hitungAktif(tugas) {\n  return tugas.filter((t) => !t.selesai).length;\n}\n\ntest(\"menghitung dua tugas aktif\", () => {\n  const tugas = [\n    { id: 1, selesai: false },\n    { id: 2, selesai: true },\n    { id: 3, selesai: false },\n  ];\n  expect(hitungAktif(tugas)).toBe(2);\n});",
+          "wordCount": 1533,
+          "schema": 3.1
         }
       ],
       "lessonCount": 7,
-      "wordCount": 3054
+      "wordCount": 11323
     },
     {
       "id": "m06",
@@ -25687,6 +27407,76 @@
       "version": "rolling",
       "accessedAt": "2026-10-29",
       "license": ""
+    },
+    {
+      "id": "mdn-dom",
+      "title": "MDN: Document Object Model (DOM)",
+      "publisher": "Mozilla",
+      "url": "https://developer.mozilla.org/en-US/docs/Web/API/Document_Object_Model",
+      "tier": "official",
+      "version": "rolling",
+      "accessedAt": "2026-10-29",
+      "license": ""
+    },
+    {
+      "id": "mdn-events",
+      "title": "MDN: Introduction to events",
+      "publisher": "Mozilla",
+      "url": "https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/Scripting/Events",
+      "tier": "official",
+      "version": "rolling",
+      "accessedAt": "2026-10-29",
+      "license": ""
+    },
+    {
+      "id": "mdn-fetch",
+      "title": "MDN: Fetch API",
+      "publisher": "Mozilla",
+      "url": "https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API",
+      "tier": "official",
+      "version": "rolling",
+      "accessedAt": "2026-10-29",
+      "license": ""
+    },
+    {
+      "id": "mdn-promise",
+      "title": "MDN: Promise",
+      "publisher": "Mozilla",
+      "url": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise",
+      "tier": "official",
+      "version": "rolling",
+      "accessedAt": "2026-10-29",
+      "license": ""
+    },
+    {
+      "id": "mdn-async",
+      "title": "MDN: async function",
+      "publisher": "Mozilla",
+      "url": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/async_function",
+      "tier": "official",
+      "version": "rolling",
+      "accessedAt": "2026-10-29",
+      "license": ""
+    },
+    {
+      "id": "npm-docs",
+      "title": "npm Docs",
+      "publisher": "npm, Inc.",
+      "url": "https://docs.npmjs.com/",
+      "tier": "official",
+      "version": "rolling",
+      "accessedAt": "2026-10-29",
+      "license": ""
+    },
+    {
+      "id": "vitest-guide",
+      "title": "Vitest: Getting Started",
+      "publisher": "Vitest",
+      "url": "https://vitest.dev/guide/",
+      "tier": "official",
+      "version": "rolling",
+      "accessedAt": "2026-10-29",
+      "license": ""
     }
   ],
   "contentPolicy": {
@@ -25738,7 +27528,13 @@
       "m04-l04",
       "m04-l05",
       "m04-l06",
-      "m04-l07"
+      "m04-l07",
+      "m05-l01",
+      "m05-l03",
+      "m05-l04",
+      "m05-l05",
+      "m05-l06",
+      "m05-l07"
     ],
     "depthWordBands": {
       "fondasi": [
@@ -25777,7 +27573,7 @@
   "stats": {
     "modules": 14,
     "lessons": 97,
-    "words": 93534,
-    "minutes": 6050
+    "words": 101803,
+    "minutes": 6500
   }
 }

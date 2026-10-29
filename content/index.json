@@ -1170,6 +1170,69 @@
       "tier": "official",
       "version": "rolling",
       "accessedAt": "2026-10-29"
+    },
+    {
+      "id": "mdn-dom",
+      "title": "MDN: Document Object Model (DOM)",
+      "publisher": "Mozilla",
+      "url": "https://developer.mozilla.org/en-US/docs/Web/API/Document_Object_Model",
+      "tier": "official",
+      "version": "rolling",
+      "accessedAt": "2026-10-29"
+    },
+    {
+      "id": "mdn-events",
+      "title": "MDN: Introduction to events",
+      "publisher": "Mozilla",
+      "url": "https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/Scripting/Events",
+      "tier": "official",
+      "version": "rolling",
+      "accessedAt": "2026-10-29"
+    },
+    {
+      "id": "mdn-fetch",
+      "title": "MDN: Fetch API",
+      "publisher": "Mozilla",
+      "url": "https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API",
+      "tier": "official",
+      "version": "rolling",
+      "accessedAt": "2026-10-29"
+    },
+    {
+      "id": "mdn-promise",
+      "title": "MDN: Promise",
+      "publisher": "Mozilla",
+      "url": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise",
+      "tier": "official",
+      "version": "rolling",
+      "accessedAt": "2026-10-29"
+    },
+    {
+      "id": "mdn-async",
+      "title": "MDN: async function",
+      "publisher": "Mozilla",
+      "url": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/async_function",
+      "tier": "official",
+      "version": "rolling",
+      "accessedAt": "2026-10-29"
+    },
+    {
+      "id": "npm-docs",
+      "title": "npm Docs",
+      "publisher": "npm, Inc.",
+      "url": "https://docs.npmjs.com/",
+      "tier": "official",
+      "version": "rolling",
+      "accessedAt": "2026-10-29"
+    },
+    {
+      "id": "vitest-guide",
+      "title": "Vitest: Getting Started",
+      "publisher": "Vitest",
+      "url": "https://vitest.dev/guide/",
+      "tier": "official",
+      "version": "rolling",
+      "accessedAt": "2026-10-29"
     }
   ],
   "modules": [
@@ -1279,7 +1342,13 @@
       "m04-l04",
       "m04-l05",
       "m04-l06",
-      "m04-l07"
+      "m04-l07",
+      "m05-l01",
+      "m05-l03",
+      "m05-l04",
+      "m05-l05",
+      "m05-l06",
+      "m05-l07"
     ],
     "depthWordBands": {
       "fondasi": [
