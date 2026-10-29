@@ -1575,6 +1575,114 @@
       "tier": "standard",
       "version": "current",
       "accessedAt": "2026-10-29"
+    },
+    {
+      "id": "owasp-xss",
+      "title": "OWASP Cheat Sheet: Cross Site Scripting Prevention",
+      "publisher": "OWASP",
+      "url": "https://cheatsheetseries.owasp.org/cheatsheets/Cross_Site_Scripting_Prevention_Cheat_Sheet.html",
+      "tier": "standard",
+      "version": "current",
+      "accessedAt": "2026-10-29"
+    },
+    {
+      "id": "owasp-csrf",
+      "title": "OWASP Cheat Sheet: Cross-Site Request Forgery Prevention",
+      "publisher": "OWASP",
+      "url": "https://cheatsheetseries.owasp.org/cheatsheets/Cross-Site_Request_Forgery_Prevention_Cheat_Sheet.html",
+      "tier": "standard",
+      "version": "current",
+      "accessedAt": "2026-10-29"
+    },
+    {
+      "id": "owasp-secrets",
+      "title": "OWASP Cheat Sheet: Secrets Management",
+      "publisher": "OWASP",
+      "url": "https://cheatsheetseries.owasp.org/cheatsheets/Secrets_Management_Cheat_Sheet.html",
+      "tier": "standard",
+      "version": "current",
+      "accessedAt": "2026-10-29"
+    },
+    {
+      "id": "mdn-tls",
+      "title": "MDN: Transport Layer Security",
+      "publisher": "Mozilla",
+      "url": "https://developer.mozilla.org/en-US/docs/Web/Security/Transport_Layer_Security",
+      "tier": "official",
+      "version": "rolling",
+      "accessedAt": "2026-10-29"
+    },
+    {
+      "id": "twelve-factor",
+      "title": "The Twelve-Factor App",
+      "publisher": "Adam Wiggins",
+      "url": "https://12factor.net/",
+      "tier": "standard",
+      "version": "current",
+      "accessedAt": "2026-10-29"
+    },
+    {
+      "id": "docker-docs",
+      "title": "Docker Documentation: Get Started",
+      "publisher": "Docker",
+      "url": "https://docs.docker.com/get-started/",
+      "tier": "official",
+      "version": "current",
+      "accessedAt": "2026-10-29"
+    },
+    {
+      "id": "docker-build-best",
+      "title": "Docker Docs: Building Best Practices",
+      "publisher": "Docker",
+      "url": "https://docs.docker.com/build/building/best-practices/",
+      "tier": "official",
+      "version": "current",
+      "accessedAt": "2026-10-29"
+    },
+    {
+      "id": "github-actions",
+      "title": "GitHub Docs: Actions",
+      "publisher": "GitHub",
+      "url": "https://docs.github.com/en/actions",
+      "tier": "official",
+      "version": "current",
+      "accessedAt": "2026-10-29"
+    },
+    {
+      "id": "fowler-test-pyramid",
+      "title": "The Practical Test Pyramid",
+      "publisher": "Martin Fowler",
+      "url": "https://martinfowler.com/articles/practical-test-pyramid.html",
+      "tier": "standard",
+      "version": "current",
+      "accessedAt": "2026-10-29"
+    },
+    {
+      "id": "sre-monitoring",
+      "title": "Google SRE Book: Monitoring Distributed Systems",
+      "publisher": "Google",
+      "url": "https://sre.google/sre-book/monitoring-distributed-systems/",
+      "tier": "standard",
+      "version": "current",
+      "accessedAt": "2026-10-29"
+    },
+    {
+      "id": "webdev-vitals",
+      "title": "web.dev: Core Web Vitals",
+      "publisher": "Google",
+      "url": "https://web.dev/articles/vitals",
+      "tier": "official",
+      "version": "current",
+      "accessedAt": "2026-10-29"
+    },
+    {
+      "id": "wcag-quickref",
+      "title": "WCAG 2.2 Quick Reference",
+      "publisher": "W3C",
+      "url": "https://www.w3.org/WAI/WCAG22/quickref/",
+      "tier": "standard",
+      "version": "2.2",
+      "accessedAt": "2026-10-29"
     }
   ],
   "modules": [
@@ -1725,7 +1833,15 @@
       "m10-l06",
       "m10-l07",
       "m10-l08",
-      "m10-l09"
+      "m10-l09",
+      "m11-l01",
+      "m11-l02",
+      "m11-l03",
+      "m11-l04",
+      "m11-l05",
+      "m11-l06",
+      "m11-l07",
+      "m11-l08"
     ],
     "depthWordBands": {
       "fondasi": [

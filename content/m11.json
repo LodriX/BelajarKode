@@ -12,210 +12,2701 @@
     {
       "id": "m11-l01",
       "title": "Threat modeling dan OWASP 2025",
-      "minutes": 45,
-      "level": "Lanjutan",
-      "intro": "Threat modeling menanyakan apa yang dilindungi, dari siapa, bagaimana diserang, dan mitigasinya. OWASP Top 10:2025 mencakup access control, misconfiguration, supply chain, injection, dan lain-lain.",
-      "explanation": "Petakan aset penting seperti data pribadi, akun admin, dan token. Utamakan kontrol berdasarkan risiko; jangan mengandalkan scanning semata. Referensi: top10.owasp.org/2025.",
-      "code": "// Checklist threat model:\n// Aset: data pengguna\n// Ancaman: akses tanpa hak\n// Kontrol: authz per-resource + audit log + test",
+      "minutes": 120,
+      "level": "Menengah",
+      "depth": "integrasi",
+      "schema": 3.1,
       "codeLanguage": "javascript",
-      "practice": [
-        "Buat ancaman dan mitigasi untuk endpoint edit data pegawai.",
-        "Ubah satu input atau asumsi pada contoh, catat hasil dan jelaskan alasannya."
+      "outcome": "Setelah pelajaran ini, Anda dapat memetakan ancaman pada sebuah fitur serta memakai daftar risiko teratas sebagai rujukan pemeriksaan keamanan.",
+      "objectives": [
+        "Menjelaskan maksud pemodelan ancaman dan kapan dilakukan.",
+        "Mengenali aset, pelaku, dan jalur serangan pada sebuah fitur.",
+        "Memakai daftar risiko OWASP sebagai daftar periksa.",
+        "Menyusun langkah penanganan ancaman yang terurut."
       ],
-      "bestPractice": "Terapkan otorisasi, validasi, dan pengelolaan secret sejak desain.",
-      "commonMistake": "Beranggapan login sudah cukup untuk mengamankan setiap endpoint.",
+      "prerequisites": [
+        {
+          "label": "Testing dan rilis Flutter",
+          "lessonId": "m10-l09"
+        }
+      ],
+      "terms": [
+        {
+          "term": "Pemodelan ancaman",
+          "definition": "Cara memeriksa sebuah sistem untuk menemukan hal yang dapat disalahgunakan dan cara mencegahnya."
+        },
+        {
+          "term": "Aset",
+          "definition": "Sesuatu yang perlu dilindungi, misalnya data pribadi, kunci akses, atau ketersediaan layanan."
+        },
+        {
+          "term": "Pelaku",
+          "definition": "Pihak yang mungkin mencoba menyalahgunakan sistem, baik dari luar maupun dari dalam."
+        },
+        {
+          "term": "Permukaan serangan",
+          "definition": "Kumpulan titik yang dapat dihubungi pihak luar, misalnya alamat API, kolom masukan, dan berkas unggahan."
+        },
+        {
+          "term": "Penanganan",
+          "definition": "Langkah yang mengurangi atau menghilangkan sebuah ancaman."
+        }
+      ],
+      "syntax": [
+        {
+          "token": "aset -> ancaman -> penanganan",
+          "readAs": "Baca sebagai urutan pemeriksaan: apa yang dilindungi, apa yang mengancamnya, dan bagaimana menanganinya.",
+          "meaning": "Urutan ini memandu pemeriksaan keamanan agar tidak berhenti pada daftar ancaman tanpa langkah penanganan.",
+          "example": "aset -> ancaman -> penanganan",
+          "output": "Setiap ancaman yang ditemukan berpasangan dengan penanganannya.",
+          "pitfall": "Menuliskan ancaman tanpa penanganan membuat pemeriksaan tidak menghasilkan tindakan."
+        },
+        {
+          "token": "input pengguna = tidak tepercaya",
+          "readAs": "Baca sebagai anggapan dasar bahwa semua masukan dari luar perlu diperiksa.",
+          "meaning": "Anggapan ini menjadi dasar sebagian besar penanganan keamanan. Masukan dari luar tidak boleh dipercaya sebelum diperiksa.",
+          "example": "input pengguna = tidak tepercaya",
+          "output": "Setiap jalur masukan diperiksa sebelum dipakai.",
+          "pitfall": "Mempercayai masukan karena datangnya dari aplikasi sendiri membuka celah yang mudah disalahgunakan."
+        },
+        {
+          "token": "prioritas = dampak x kemungkinan",
+          "readAs": "Baca sebagai cara menyusun prioritas penanganan berdasarkan besarnya dampak dan kemungkinan terjadinya.",
+          "meaning": "Tidak semua ancaman sama penting. Urutan penanganan ditentukan oleh besarnya kerugian bila terjadi dan seberapa mungkin terjadi.",
+          "example": "prioritas = dampak x kemungkinan",
+          "output": "Ancaman dengan dampak besar dan kemungkinan tinggi ditangani lebih dulu.",
+          "pitfall": "Menangani semua ancaman tanpa prioritas menguras waktu pada hal yang risikonya kecil."
+        }
+      ],
+      "conventions": [
+        "Lakukan pemodelan ancaman saat merancang fitur, bukan setelah dirilis.",
+        "Anggap setiap masukan dari luar sebagai tidak tepercaya.",
+        "Petakan aset lebih dulu agar penanganan terarah pada yang penting.",
+        "Pakai daftar risiko teratas sebagai daftar periksa, bukan satu-satunya rujukan.",
+        "Susun prioritas penanganan berdasarkan dampak dan kemungkinan."
+      ],
+      "sections": [
+        {
+          "id": "cara-membaca",
+          "title": "Cara membaca pemetaan ancaman",
+          "body": [
+            "Pemetaan ancaman dibaca sebagai daftar yang saling berkaitan: apa yang dilindungi, dari mana serangan bisa masuk, dan pemeriksaan apa yang menjaganya.",
+            "Pada contoh, daftar aset menyebut yang perlu dilindungi, dan daftar masukan menyebut titik masuk yang dapat dihubungi pihak luar. Fungsi pemeriksa memberi satu contoh pemeriksaan pada jalur masuk itu.",
+            "Dengan membaca kedua daftar itu berdampingan, Anda dapat memeriksa apakah setiap titik masuk punya pemeriksaan yang memadai. Titik masuk tanpa pemeriksaan adalah celah yang perlu ditutup."
+          ],
+          "code": {
+            "language": "javascript",
+            "lab": false,
+            "code": "const aset = [\"data pribadi\", \"token akses\", \"ketersediaan layanan\"];\n\nconst masukan = [\"kolom formulir\", \"berkas unggahan\", \"parameter alamat\"];\n\nfunction periksa(masukan) {\n  if (typeof masukan !== \"string\") return \"tipe tidak sesuai\";\n  return null;\n}",
+            "output": "Daftar aset dan titik masuk berdampingan, dengan satu contoh pemeriksaan pada masukan.",
+            "explain": "Aset menyatakan apa yang dilindungi, dan titik masuk menyatakan dari mana serangan dapat datang. Fungsi pemeriksa menjadi contoh penjagaan pada satu titik masuk.",
+            "annotations": [
+              {
+                "line": 1,
+                "code": "const aset = [\"data pribadi\", \"token akses\", \"ketersediaan layanan\"];",
+                "note": "Aset menyatakan apa yang perlu dilindungi."
+              },
+              {
+                "line": 3,
+                "code": "const masukan = [\"kolom formulir\", \"berkas unggahan\", \"parameter alamat\"];",
+                "note": "Titik masuk menyatakan dari mana serangan dapat datang."
+              },
+              {
+                "line": 6,
+                "code": "if (typeof masukan !== \"string\") return \"tipe tidak sesuai\";",
+                "note": "Setiap jalur masukan diperiksa sebelum dipakai."
+              }
+            ]
+          },
+          "callouts": [
+            {
+              "tone": "good",
+              "title": "Masukan tidak tepercaya",
+              "body": "Anggap semua masukan dari luar sebagai tidak tepercaya. Pemeriksaan pada setiap titik masuk menutup sebagian besar celah umum."
+            }
+          ],
+          "checkpoint": {
+            "prompt": "Mengapa daftar aset dan titik masuk perlu dibaca berdampingan?",
+            "success": "Agar dapat diperiksa apakah setiap titik masuk memang punya pemeriksaan yang memadai untuk melindungi aset."
+          }
+        },
+        {
+          "id": "owasp-sebagai-rujukan",
+          "title": "Memakai daftar risiko sebagai rujukan",
+          "body": [
+            "Daftar risiko teratas berisi jenis kelemahan yang paling sering muncul. Ia berguna sebagai daftar periksa awal agar pemeriksaan tidak melewatkan hal yang umum.",
+            "Namun daftar itu bukan satu-satunya rujukan. Setiap jenis aplikasi punya ancaman khas sendiri, misalnya unggahan berkas atau integrasi pihak ketiga, yang perlu diperiksa terpisah.",
+            "Pakai daftar itu bersama pemodelan ancaman fitur. Daftar memberi kerangka umum, sedangkan pemodelan fitur menemukan hal yang khas pada sistem Anda."
+          ],
+          "checkpoint": {
+            "prompt": "Mengapa daftar risiko teratas tidak cukup sebagai satu-satunya rujukan keamanan?",
+            "success": "Karena setiap aplikasi punya ancaman khas sendiri yang perlu diperiksa lewat pemodelan ancaman fiturnya."
+          }
+        },
+        {
+          "id": "menyusun-prioritas",
+          "title": "Menyusun prioritas penanganan",
+          "body": [
+            "Tidak semua ancaman perlu ditangani sekaligus. Susun prioritas berdasarkan dampaknya bila terjadi dan seberapa mungkin terjadi. Keduanya menentukan seberapa mendesak penanganannya.",
+            "Ancaman dengan dampak besar dan kemungkinan tinggi ditangani lebih dulu. Ancaman dengan dampak kecil dan kemungkinan rendah dapat ditunda, tetapi tetap dicatat agar tidak terlupa.",
+            "Sertakan biaya penanganan dalam pertimbangan. Penanganan yang mahal untuk ancaman berisiko kecil sebaiknya tidak mengalahkan penanganan murah untuk ancaman berisiko besar."
+          ],
+          "checkpoint": {
+            "prompt": "Sebutkan dua hal yang menentukan prioritas penanganan ancaman.",
+            "success": "Besarnya dampak bila ancaman terjadi dan seberapa mungkin ancaman itu terjadi."
+          }
+        },
+        {
+          "id": "menyimpan-catatan",
+          "title": "Menyimpan hasil pemodelan",
+          "body": [
+            "Hasil pemodelan sebaiknya disimpan sebagai catatan yang dapat ditinjau ulang. Catatan itu menjadi rujukan ketika fitur berubah atau ketika ada pemeriksaan keamanan berikutnya.",
+            "Tuliskan aset, ancaman yang ditemukan, dan penanganan yang dipilih beserta alasannya. Alasan itu penting ketika keadaan berubah dan keputusan perlu ditinjau kembali.",
+            "Tinjau catatan itu ketika fitur berubah besar-besaran. Perubahan yang menambah titik masuk baru biasanya menambah ancaman baru juga."
+          ],
+          "checkpoint": {
+            "prompt": "Mengapa alasan penanganan perlu dicatat bersama ancamannya?",
+            "success": "Agar keputusan dapat ditinjau kembali ketika keadaan berubah dan alasan aslinya tetap diketahui."
+          }
+        }
+      ],
+      "practice": [
+        {
+          "id": "latihan-1",
+          "level": "guided",
+          "title": "Petakan ancaman satu fitur",
+          "task": "Petakan aset, titik masuk, dan pemeriksaan untuk fitur komentar pada sebuah aplikasi.",
+          "steps": [
+            "Sebutkan aset yang perlu dilindungi.",
+            "Sebutkan titik masuk yang dapat dihubungi pihak luar.",
+            "Tentukan pemeriksaan untuk setiap titik masuk.",
+            "Periksa apakah ada titik masuk tanpa pemeriksaan."
+          ],
+          "starterCode": "Aset: ...\nTitik masuk: ...\nPemeriksaan: ...",
+          "expected": "Setiap titik masuk punya pemeriksaan yang sesuai dengan aset yang dilindunginya.",
+          "stretch": "Tambahkan ancaman yang khas pada integrasi pihak ketiga.",
+          "hints": [
+            "Aset menyatakan apa yang dilindungi.",
+            "Titik masuk menyatakan dari mana serangan datang.",
+            "Setiap titik masuk perlu pemeriksaan."
+          ],
+          "verification": {
+            "command": "Periksa setiap titik masuk terhadap daftar pemeriksaannya.",
+            "expected": "Tidak ada titik masuk yang tanpa pemeriksaan.",
+            "evidence": "Simpan peta ancaman beserta pemeriksaannya."
+          }
+        },
+        {
+          "id": "latihan-2",
+          "level": "independent",
+          "title": "Susun prioritas penanganan",
+          "task": "Diberikan lima ancaman pada sebuah fitur, susun urutan penanganannya berdasarkan dampak dan kemungkinan.",
+          "steps": [
+            "Tentukan dampak setiap ancaman.",
+            "Tentukan kemungkinan setiap ancaman.",
+            "Susun urutan penanganan.",
+            "Jelaskan alasan urutan itu."
+          ],
+          "starterCode": "Ancaman 1: dampak ... kemungkinan ...",
+          "expected": "Urutan penanganan beralasan dan mempertimbangkan dampak serta kemungkinan.",
+          "stretch": "Tambahkan perkiraan biaya penanganan ke dalam pertimbangan.",
+          "hints": [
+            "Prioritas berasal dari dampak dan kemungkinan.",
+            "Ancaman berisiko kecil dapat ditunda tetapi tetap dicatat.",
+            "Biaya penanganan ikut dipertimbangkan."
+          ],
+          "verification": {
+            "command": "Periksa urutan terhadap penilaian dampak dan kemungkinan.",
+            "expected": "Ancaman berisiko besar dan mungkin ditangani lebih dulu.",
+            "evidence": "Simpan penilaian dan urutan penanganannya."
+          }
+        },
+        {
+          "id": "latihan-3",
+          "level": "transfer",
+          "title": "Lakukan pemodelan pada fitur baru",
+          "task": "Lakukan pemodelan ancaman untuk fitur unggah berkas beserta pemakaiannya oleh pengguna lain.",
+          "steps": [
+            "Sebutkan aset yang terlibat.",
+            "Sebutkan titik masuk termasuk unggahan berkas.",
+            "Tentukan ancaman pada setiap titik masuk.",
+            "Tentukan penanganan beserta prioritasnya."
+          ],
+          "starterCode": "Aset: ...\nAncaman: ...\nPenanganan: ...",
+          "expected": "Pemodelan menemukan ancaman khas unggahan berkas beserta penanganannya.",
+          "stretch": "Bandingkan hasilnya dengan daftar risiko teratas sebagai daftar periksa.",
+          "hints": [
+            "Berkas dari pengguna termasuk masukan tidak tepercaya.",
+            "Jenis dan ukuran berkas perlu diperiksa.",
+            "Prioritaskan ancaman sesuai dampak dan kemungkinan."
+          ],
+          "verification": {
+            "command": "Periksa setiap ancaman memiliki penanganan dan prioritasnya jelas.",
+            "expected": "Seluruh ancaman berpasangan dengan penanganan yang beralasan.",
+            "evidence": "Simpan hasil pemodelan dan daftar prioritasnya."
+          }
+        }
+      ],
+      "verification": {
+        "mode": "manual",
+        "command": "Tinjau hasil pemodelan bersama daftar risiko teratas dan periksa setiap ancaman memiliki penanganan.",
+        "expected": "Aset, titik masuk, dan penanganan tercatat lengkap, dengan prioritas yang beralasan dan tidak ada titik masuk tanpa pemeriksaan.",
+        "evidence": "Simpan hasil pemodelan, prioritas, dan catatan pemeriksaan."
+      },
+      "troubleshooting": [
+        {
+          "symptom": "Pemeriksaan keamanan berhenti pada daftar ancaman tanpa tindakan.",
+          "cause": "Pemodelan tidak dilanjutkan sampai langkah penanganan.",
+          "fix": "Pasangkan setiap ancaman dengan penanganan yang dapat dilakukan."
+        },
+        {
+          "symptom": "Ada titik masuk yang tidak diperiksa sama sekali.",
+          "cause": "Titik masuk baru ditambahkan tanpa memeriksa keamanannya.",
+          "fix": "Periksa setiap titik masuk terhadap daftar pemeriksaan yang sudah ditetapkan."
+        },
+        {
+          "symptom": "Waktu tersita menangani ancaman yang risikonya kecil.",
+          "cause": "Penanganan tidak disusun berdasarkan dampak dan kemungkinan.",
+          "fix": "Susun prioritas penanganan berdasarkan dampak dan kemungkinan terjadinya."
+        },
+        {
+          "symptom": "Keputusan keamanan lama ditinjau ulang tanpa dasar.",
+          "cause": "Alasan penanganan tidak dicatat bersama ancamannya.",
+          "fix": "Catat alasan setiap penanganan agar keputusan dapat ditinjau dengan dasar yang jelas."
+        }
+      ],
       "quiz": {
-        "question": "Apa prinsip yang paling tepat untuk topik “Threat modeling dan OWASP 2025”?",
-        "options": [
-          "Terapkan otorisasi, validasi, dan pengelolaan secret sejak desain.",
-          "Gunakan solusi paling rumit sejak awal, meski kebutuhan belum jelas.",
-          "Lewati pengujian karena contoh kecil pasti benar."
-        ],
-        "answer": 0,
-        "explanation": "Terapkan otorisasi, validasi, dan pengelolaan secret sejak desain."
-      }
+        "questions": [
+          {
+            "id": "q1",
+            "type": "recall",
+            "question": "Kapan waktu terbaik melakukan pemodelan ancaman?",
+            "options": [
+              "Setelah fitur dirilis",
+              "Saat merancang fitur",
+              "Hanya setelah terjadi insiden"
+            ],
+            "answer": 1,
+            "explanation": "Pemodelan saat merancang memungkinkan penanganan dipasang sejak awal, bukan setelah celah terbuka."
+          },
+          {
+            "id": "q2",
+            "type": "code-reading",
+            "question": "Apa anggapan dasar yang dipakai pada sebagian besar penanganan keamanan?",
+            "options": [
+              "Masukan dari luar tepercaya",
+              "Masukan dari luar tidak tepercaya",
+              "Semua masukan berupa teks"
+            ],
+            "answer": 1,
+            "explanation": "Masukan dari luar dianggap tidak tepercaya sehingga diperiksa sebelum dipakai."
+          },
+          {
+            "id": "q3",
+            "type": "scenario",
+            "question": "Dua ancaman ditemukan, satu berdampak besar dan mungkin terjadi, satu berdampak kecil. Tindakan tepat...",
+            "options": [
+              "Menangani keduanya bersamaan",
+              "Menangani yang berdampak besar dan mungkin terjadi lebih dulu",
+              "Mengabaikan keduanya"
+            ],
+            "answer": 1,
+            "explanation": "Prioritas ditentukan oleh dampak dan kemungkinan sehingga ancaman berisiko besar ditangani lebih dulu."
+          }
+        ]
+      },
+      "resources": [
+        {
+          "sourceId": "owasp-top10",
+          "note": "Daftar risiko keamanan teratas sebagai daftar periksa pemeriksaan."
+        },
+        {
+          "sourceId": "owasp-secrets",
+          "note": "Panduan pengelolaan rahasia yang menjadi salah satu titik masuk penting."
+        },
+        {
+          "sourceId": "cisa-stopransomware",
+          "note": "Panduan umum perlindungan sistem dari serangan yang berdampak besar."
+        }
+      ],
+      "summary": [
+        "Pemodelan ancaman memeriksa aset, titik masuk, dan penanganannya pada sebuah fitur.",
+        "Setiap masukan dari luar dianggap tidak tepercaya dan diperiksa sebelum dipakai.",
+        "Daftar risiko teratas dipakai sebagai kerangka, dilengkapi pemodelan ancaman fitur.",
+        "Penanganan disusun berdasarkan dampak, kemungkinan, dan biayanya."
+      ],
+      "next": "Berikutnya: celah umum XSS, SQL injection, dan CSRF. Anda akan mengenali dan mencegah tiga kelemahan yang paling sering muncul."
     },
     {
       "id": "m11-l02",
       "title": "XSS, SQL injection, CSRF",
-      "minutes": 45,
-      "level": "Lanjutan",
-      "intro": "XSS terjadi ketika data tak tepercaya dieksekusi sebagai script; SQL injection saat input memengaruhi struktur query; CSRF menyalahgunakan sesi browser untuk aksi tanpa niat pemiliknya.",
-      "explanation": "Gunakan output escaping, query binding, framework CSRF protection, Content Security Policy terukur, dan validation. Jauhi solusi security homemade tanpa audit.",
-      "code": "// Aman untuk teks pengguna:\nelement.textContent = inputPengguna;\n// Hindari: element.innerHTML = inputPengguna;",
+      "minutes": 120,
+      "level": "Menengah",
+      "depth": "integrasi",
+      "schema": 3.1,
       "codeLanguage": "javascript",
-      "practice": [
-        "Jelaskan cara membatasi risiko tiga serangan di form komentar.",
-        "Ubah satu input atau asumsi pada contoh, catat hasil dan jelaskan alasannya."
+      "outcome": "Setelah pelajaran ini, Anda dapat mengenali tiga kelemahan web yang paling sering muncul serta menerapkan penanganan yang mencegahnya.",
+      "objectives": [
+        "Menjelaskan cara kerja XSS dan cara mencegahnya.",
+        "Menjelaskan cara kerja SQL injection dan cara mencegahnya.",
+        "Menjelaskan cara kerja CSRF dan cara mencegahnya.",
+        "Memilih penanganan yang sesuai untuk setiap kelemahan."
       ],
-      "bestPractice": "Gunakan escaping, parameterized query, dan perlindungan CSRF sesuai konteks.",
-      "commonMistake": "Menonaktifkan CSRF karena API POST selalu 419.",
+      "prerequisites": [
+        {
+          "label": "Threat modeling dan OWASP 2025",
+          "lessonId": "m11-l01"
+        }
+      ],
+      "terms": [
+        {
+          "term": "XSS",
+          "definition": "Kelemahan ketika skrip dari pihak lain ikut dijalankan di halaman pengguna karena data ditampilkan tanpa diamankan."
+        },
+        {
+          "term": "SQL injection",
+          "definition": "Kelemahan ketika masukan pengguna disisipkan langsung ke perintah basis data sehingga dapat mengubah maksud perintahnya."
+        },
+        {
+          "term": "CSRF",
+          "definition": "Kelemahan ketika situs lain membuat peramban pengguna mengirim permintaan yang tidak diinginkannya ke situs yang sedang dipakai."
+        },
+        {
+          "term": "Pengamanan keluaran",
+          "definition": "Penyiapan data sebelum ditampilkan agar tidak diperlakukan sebagai kode."
+        },
+        {
+          "term": "Kueri berparameter",
+          "definition": "Penyusunan perintah basis data yang memisahkan perintah dari nilainya sehingga nilai tidak dapat mengubah maksudnya."
+        }
+      ],
+      "syntax": [
+        {
+          "token": "textContent = judul;",
+          "readAs": "Baca sebagai penulisan teks ke halaman tanpa diperlakukan sebagai kode.",
+          "meaning": "Menulis lewat properti teks membuat isinya ditampilkan apa adanya, bukan dijalankan. Ini penanganan utama untuk XSS.",
+          "example": "textContent = judul;",
+          "output": "Judul tampil sebagai teks meski isinya memuat tanda kurung sudut.",
+          "pitfall": "Menulis data ke halaman lewat cara yang menafsirkan kode membuat skrip pihak lain ikut dijalankan."
+        },
+        {
+          "token": "db.query(\"SELECT * FROM tugas WHERE judul = ?\", [judul]);",
+          "readAs": "Baca sebagai perintah basis data dengan nilai dipisahkan dari perintahnya.",
+          "meaning": "Nilai dikirim terpisah sehingga tidak dapat mengubah maksud perintah. Inilah penanganan utama untuk SQL injection.",
+          "example": "db.query(\"SELECT * FROM tugas WHERE judul = ?\", [judul]);",
+          "output": "Nilai apa pun diperlakukan sebagai data, bukan bagian dari perintah.",
+          "pitfall": "Menyusun perintah dengan menggabungkan teks dan nilai membuatnya dapat diubah oleh masukan."
+        },
+        {
+          "token": "SameSite=Strict; Secure; HttpOnly",
+          "readAs": "Baca sebagai pengaturan cookie yang membatasi pengirimannya lintas situs dan menjaganya dari pembacaan skrip.",
+          "meaning": "Pengaturan ini mengurangi risiko CSRF dan melindungi cookie dari pembacaan skrip halaman.",
+          "example": "SameSite=Strict; Secure; HttpOnly",
+          "output": "Cookie tidak ikut terkirim pada permintaan lintas situs dan tidak dapat dibaca skrip.",
+          "pitfall": "Membiarkan cookie terkirim pada permintaan lintas situs membuka jalan bagi CSRF."
+        }
+      ],
+      "conventions": [
+        "Amankan data sebelum ditampilkan, bukan hanya sebelum disimpan.",
+        "Selalu pakai kueri berparameter, jangan menyusun perintah dengan penggabungan teks.",
+        "Batasi pengiriman cookie lintas situs untuk mengurangi risiko CSRF.",
+        "Pakai token khusus pada formulir yang mengubah data.",
+        "Uji setiap jalur masukan dengan nilai yang mencoba keluar dari maksud aslinya."
+      ],
+      "sections": [
+        {
+          "id": "cara-membaca",
+          "title": "Cara membaca penanganan tiga kelemahan",
+          "body": [
+            "Ketiga penanganan itu dibaca sebagai pemisahan antara data dan maksud. Data tidak pernah diberi kesempatan mengubah maksud halaman, perintah, atau permintaan.",
+            "Pada contoh, judul ditulis sebagai teks sehingga tidak dijalankan sebagai kode. Nilai kueri dikirim terpisah sehingga tidak mengubah perintah basis data. Cookie dibatasi agar tidak ikut pada permintaan lintas situs.",
+            "Perhatikan bahwa penanganan bekerja pada tiga tempat berbeda: saat menampilkan, saat menyusun perintah, dan saat mengirim data. Ketiganya perlu karena masing-masing menutup jalur yang berbeda."
+          ],
+          "code": {
+            "language": "javascript",
+            "lab": false,
+            "code": "element.textContent = judul;\n\ndb.query(\"SELECT * FROM tugas WHERE judul = ?\", [judul]);\n\nres.cookie(\"sesi\", nilai, {\n  sameSite: \"strict\",\n  secure: true,\n  httpOnly: true,\n});",
+            "output": "Data ditampilkan sebagai teks, nilai kueri dipisahkan dari perintahnya, dan cookie dibatasi pengirimannya.",
+            "explain": "Setiap penanganan memisahkan data dari maksudnya. Data ditampilkan sebagai teks, dikirim terpisah pada kueri, dan cookie dibatasi pengirimannya lintas situs.",
+            "annotations": [
+              {
+                "line": 1,
+                "code": "element.textContent = judul;",
+                "note": "Judul ditampilkan sebagai teks, bukan dijalankan sebagai kode."
+              },
+              {
+                "line": 3,
+                "code": "db.query(\"SELECT * FROM tugas WHERE judul = ?\", [judul]);",
+                "note": "Nilai kueri dikirim terpisah dari perintahnya."
+              },
+              {
+                "line": 5,
+                "code": "res.cookie(\"sesi\", nilai, {",
+                "note": "Cookie diberi pengaturan pengaman saat dikirim."
+              },
+              {
+                "line": 6,
+                "code": "sameSite: \"strict\",",
+                "note": "Pengiriman cookie dibatasi pada situs yang sama."
+              },
+              {
+                "line": 8,
+                "code": "httpOnly: true,",
+                "note": "Cookie hanya dikirim lewat koneksi aman."
+              }
+            ]
+          },
+          "callouts": [
+            {
+              "tone": "good",
+              "title": "Pisahkan data dari maksud",
+              "body": "Prinsip yang menyatukan ketiga penanganan ini sederhana: data tidak boleh dapat mengubah maksud halaman, perintah, atau permintaan."
+            }
+          ],
+          "checkpoint": {
+            "prompt": "Di tiga tempat mana penanganan bekerja pada contoh di atas?",
+            "success": "Saat menampilkan data, saat menyusun perintah basis data, dan saat mengirim cookie."
+          }
+        },
+        {
+          "id": "xss",
+          "title": "Menangani XSS",
+          "body": [
+            "XSS terjadi ketika data dari pengguna ditampilkan di halaman tanpa diamankan, sehingga data itu diperlakukan sebagai kode dan dijalankan oleh peramban.",
+            "Penanganan utamanya adalah mengamankan keluaran pada saat data ditampilkan. Data ditampilkan sebagai teks biasa, bukan sebagai struktur yang dapat memuat kode.",
+            "Selain itu, batasi tempat yang boleh menerima struktur kaya. Bila memang perlu, bersihkan data itu dengan alat yang terpercaya, jangan menyusun sendiri aturan pembersihannya."
+          ],
+          "callouts": [
+            {
+              "tone": "warn",
+              "title": "Amankan saat menampilkan",
+              "body": "Pengamanan saat menyimpan tidak cukup. Data yang sama dapat ditampilkan di banyak tempat, sehingga pengamanan keluaran wajib ada di setiap tempat itu."
+            }
+          ],
+          "checkpoint": {
+            "prompt": "Mengapa pengamanan saat menyimpan tidak cukup untuk mencegah XSS?",
+            "success": "Karena data yang sama dapat ditampilkan di banyak tempat, sehingga pengamanan keluaran di setiap tempat tetap diperlukan."
+          }
+        },
+        {
+          "id": "sql-injection",
+          "title": "Menangani SQL injection",
+          "body": [
+            "SQL injection terjadi ketika masukan pengguna disisipkan langsung ke perintah basis data. Akibatnya, masukan itu dapat mengubah maksud perintah aslinya.",
+            "Penanganan utamanya adalah kueri berparameter. Perintah dan nilainya dikirim terpisah sehingga nilai apa pun hanya diperlakukan sebagai data, bukan bagian dari perintah.",
+            "Hindari menyusun perintah dengan menggabungkan teks dan nilai, termasuk untuk pengurutan atau nama kolom. Bagian itu pun perlu dibatasi pada daftar nilai yang diizinkan."
+          ],
+          "checkpoint": {
+            "prompt": "Mengapa kueri berparameter mencegah SQL injection?",
+            "success": "Karena perintah dan nilainya dikirim terpisah sehingga nilai tidak dapat mengubah maksud perintah."
+          }
+        },
+        {
+          "id": "csrf",
+          "title": "Menangani CSRF",
+          "body": [
+            "CSRF terjadi ketika situs lain membuat peramban pengguna mengirim permintaan ke situs yang sedang dipakai. Peramban menyertakan kredensial pengguna secara otomatis, sehingga permintaan itu tampak sah.",
+            "Penanganan utamanya adalah token khusus pada formulir yang mengubah data. Situs memeriksa token itu, dan situs lain tidak dapat mengetahuinya.",
+            "Pengaturan cookie juga membantu. Membatasi pengiriman cookie lintas situs mengurangi permintaan yang ikut membawa kredensial tanpa kehendak pengguna."
+          ],
+          "checkpoint": {
+            "prompt": "Mengapa situs lain tidak dapat memalsukan token CSRF?",
+            "success": "Karena token itu hanya diketahui situs yang membuatnya, sehingga situs lain tidak dapat menyertakan token yang sah."
+          }
+        }
+      ],
+      "practice": [
+        {
+          "id": "latihan-1",
+          "level": "guided",
+          "title": "Tampilkan data dengan aman",
+          "task": "Tampilkan judul yang berasal dari pengguna tanpa membuatnya dijalankan sebagai kode, lalu buktikan dengan judul berisi tanda kurung sudut.",
+          "steps": [
+            "Ambil judul dari sumber tidak tepercaya.",
+            "Tampilkan lewat properti teks, bukan struktur kode.",
+            "Uji dengan judul berisi tanda kurung sudut.",
+            "Pastikan tanda itu tampil sebagai teks."
+          ],
+          "starterCode": "element.textContent = judul;",
+          "expected": "Judul berisi tanda kurung sudut tampil apa adanya tanpa dijalankan.",
+          "stretch": "Uji juga judul berisi tanda kutip dan garis miring.",
+          "hints": [
+            "Data ditampilkan sebagai teks.",
+            "Struktur kode diperlakukan sebagai kode.",
+            "Uji dengan nilai yang mencoba keluar dari maksudnya."
+          ],
+          "verification": {
+            "command": "Tampilkan judul biasa lalu judul berisi tanda kurung sudut.",
+            "expected": "Pada kedua kasus, teksnya tampil apa adanya tanpa skrip yang dijalankan.",
+            "evidence": "Simpan kode dan tangkapan kedua kasus."
+          }
+        },
+        {
+          "id": "latihan-2",
+          "level": "independent",
+          "title": "Kueri berparameter",
+          "task": "Ubah perintah basis data yang menyusun teks dan nilai menjadi kueri berparameter.",
+          "steps": [
+            "Temukan perintah yang menggabungkan teks dan nilai.",
+            "Tentukan bagian yang merupakan data.",
+            "Kirim bagian itu sebagai parameter terpisah.",
+            "Uji dengan nilai yang memuat tanda kutip."
+          ],
+          "starterCode": "db.query(\"SELECT * FROM tugas WHERE judul = ?\", [judul]);",
+          "expected": "Nilai apa pun diperlakukan sebagai data dan tidak mengubah maksud perintah.",
+          "stretch": "Terapkan hal yang sama pada bagian pengurutan dengan daftar nilai yang diizinkan.",
+          "hints": [
+            "Perintah dan nilai dipisahkan.",
+            "Nilai tidak boleh menyatu ke dalam perintah.",
+            "Uji dengan nilai yang memuat karakter khusus."
+          ],
+          "verification": {
+            "command": "Jalankan kueri dengan judul biasa lalu judul berisi karakter khusus.",
+            "expected": "Kedua kasus berjalan tanpa mengubah maksud perintahnya.",
+            "evidence": "Simpan kueri dan catatan hasil kedua kasus."
+          }
+        },
+        {
+          "id": "latihan-3",
+          "level": "transfer",
+          "title": "Amankan formulir yang mengubah data",
+          "task": "Rancang penanganan untuk formulir yang mengubah data: token khusus, pengaturan cookie, dan pengamanan keluaran.",
+          "steps": [
+            "Tentukan token khusus untuk formulir itu.",
+            "Tentukan pengaturan cookie yang membatasi lintas situs.",
+            "Tentukan cara mengamankan keluaran nilai formulir.",
+            "Uji permintaan dari asal lain."
+          ],
+          "starterCode": "Token formulir: ...\nPengaturan cookie: ...",
+          "expected": "Formulir menolak permintaan dari asal lain dan menampilkan nilai dengan aman.",
+          "stretch": "Terapkan hal yang sama pada seluruh formulir yang mengubah data.",
+          "hints": [
+            "Token hanya diketahui situs pembuatnya.",
+            "Pengiriman cookie dibatasi lintas situs.",
+            "Nilai formulir ditampilkan dengan aman."
+          ],
+          "verification": {
+            "command": "Kirim formulir dari situs sendiri lalu dari asal lain, dan tampilkan nilai yang memuat karakter khusus.",
+            "expected": "Permintaan dari asal lain ditolak dan nilai tetap tampil aman.",
+            "evidence": "Simpan kode dan catatan hasil kedua pengujian."
+          }
+        }
+      ],
+      "verification": {
+        "mode": "manual",
+        "command": "Uji pengamanan keluaran, kueri berparameter, dan penanganan formulir dengan nilai yang mencoba keluar dari maksud aslinya.",
+        "expected": "Data ditampilkan sebagai teks, kueri tidak dapat diubah maksudnya, dan permintaan dari asal lain ditolak.",
+        "evidence": "Simpan kode dan catatan hasil setiap pengujian."
+      },
+      "troubleshooting": [
+        {
+          "symptom": "Skrip yang dimasukkan pengguna ikut dijalankan di halaman.",
+          "cause": "Data ditampilkan lewat cara yang menafsirkan kode alih-alih sebagai teks.",
+          "fix": "Tampilkan data lewat properti teks, atau bersihkan struktur kaya dengan alat terpercaya."
+        },
+        {
+          "symptom": "Perintah basis data dapat berubah maksud karena masukan.",
+          "cause": "Nilai digabungkan langsung ke dalam perintah.",
+          "fix": "Gunakan kueri berparameter sehingga nilai dikirim terpisah dari perintahnya."
+        },
+        {
+          "symptom": "Permintaan dari situs lain berhasil mengubah data.",
+          "cause": "Formulir tidak memakai token khusus dan cookie terkirim lintas situs.",
+          "fix": "Tambahkan token khusus pada formulir dan batasi pengiriman cookie lintas situs."
+        },
+        {
+          "symptom": "Karakter khusus tampil sebagai struktur di halaman.",
+          "cause": "Pengamanan keluaran tidak dijalankan pada tempat itu.",
+          "fix": "Terapkan pengamanan keluaran di setiap tempat data ditampilkan."
+        }
+      ],
       "quiz": {
-        "question": "Apa prinsip yang paling tepat untuk topik “XSS, SQL injection, CSRF”?",
-        "options": [
-          "Gunakan escaping, parameterized query, dan perlindungan CSRF sesuai konteks.",
-          "Gunakan solusi paling rumit sejak awal, meski kebutuhan belum jelas.",
-          "Lewati pengujian karena contoh kecil pasti benar."
-        ],
-        "answer": 0,
-        "explanation": "Gunakan escaping, parameterized query, dan perlindungan CSRF sesuai konteks."
-      }
+        "questions": [
+          {
+            "id": "q1",
+            "type": "recall",
+            "question": "Apa penanganan utama untuk SQL injection?",
+            "options": [
+              "Menyembunyikan pesan kesalahan",
+              "Memakai kueri berparameter sehingga nilai dipisahkan dari perintahnya",
+              "Menyimpan perintah pada berkas terpisah"
+            ],
+            "answer": 1,
+            "explanation": "Kueri berparameter memisahkan perintah dari nilainya sehingga nilai tidak dapat mengubah maksudnya."
+          },
+          {
+            "id": "q2",
+            "type": "code-reading",
+            "question": "Mengapa menulis data lewat properti teks mencegah XSS?",
+            "options": [
+              "Agar halaman lebih cepat",
+              "Karena isinya ditampilkan apa adanya, bukan dijalankan sebagai kode",
+              "Karena data tidak tersimpan"
+            ],
+            "answer": 1,
+            "explanation": "Properti teks memperlakukan isinya sebagai teks sehingga skrip pihak lain tidak dijalankan."
+          },
+          {
+            "id": "q3",
+            "type": "scenario",
+            "question": "Situs lain membuat peramban pengguna mengirim permintaan yang tidak diinginkan. Kelemahan ini disebut...",
+            "options": [
+              "XSS",
+              "SQL injection",
+              "CSRF"
+            ],
+            "answer": 2,
+            "explanation": "CSRF adalah permintaan yang dikirim tanpa kehendak pengguna karena kredensialnya ikut terkirim otomatis."
+          }
+        ]
+      },
+      "resources": [
+        {
+          "sourceId": "owasp-xss",
+          "note": "Panduan OWASP tentang pencegahan XSS."
+        },
+        {
+          "sourceId": "owasp-csrf",
+          "note": "Panduan OWASP tentang pencegahan CSRF."
+        },
+        {
+          "sourceId": "owasp-sqli",
+          "note": "Panduan OWASP tentang pencegahan SQL injection."
+        }
+      ],
+      "summary": [
+        "XSS dicegah dengan mengamankan keluaran sehingga data ditampilkan sebagai teks.",
+        "SQL injection dicegah dengan kueri berparameter yang memisahkan perintah dari nilainya.",
+        "CSRF dicegah dengan token khusus pada formulir dan pembatasan cookie lintas situs.",
+        "Ketiganya bekerja dengan memisahkan data dari maksudnya."
+      ],
+      "next": "Berikutnya: rahasia, HTTPS, dan konfigurasi. Anda akan menjaga kunci akses dan menyiapkan koneksi yang aman."
     },
     {
       "id": "m11-l03",
       "title": "Secrets, HTTPS, dan konfigurasi",
-      "minutes": 45,
-      "level": "Lanjutan",
-      "intro": "Konfigurasi penting: HTTPS/TLS, cookie Secure/HttpOnly/SameSite bila cocok, secrets via env/secrets manager, debug mati di production, rate limiting, dan access logs.",
-      "explanation": "Cloudflare/reverse proxy harus mengirim informasi scheme dan trusted proxy secara benar. Batasi akses admin, rotate credential, dan review paket pihak ketiga.",
-      "code": "APP_ENV=production\nAPP_DEBUG=false\n# Contoh konfigurasi; jangan commit .env asli.",
+      "minutes": 120,
+      "level": "Menengah",
+      "depth": "integrasi",
+      "schema": 3.1,
       "codeLanguage": "bash",
-      "practice": [
-        "Buat checklist pra-publikasi untuk aplikasi Laravel di balik reverse proxy.",
-        "Ubah satu input atau asumsi pada contoh, catat hasil dan jelaskan alasannya."
+      "outcome": "Setelah pelajaran ini, Anda dapat mengelola kunci akses dengan aman, menyiapkan koneksi terenkripsi, dan memisahkan konfigurasi dari kode.",
+      "objectives": [
+        "Menjelaskan mengapa rahasia tidak boleh berada di dalam kode.",
+        "Menyimpan rahasia pada tempat yang sesuai dengan lingkungannya.",
+        "Menjelaskan peran HTTPS pada perlindungan data.",
+        "Memisahkan konfigurasi dari kode aplikasi."
       ],
-      "bestPractice": "Pisahkan secret dari kode dan batasi hak akses minimum.",
-      "commonMistake": "Menyimpan credential dalam file JavaScript frontend.",
+      "prerequisites": [
+        {
+          "label": "XSS, SQL injection, CSRF",
+          "lessonId": "m11-l02"
+        }
+      ],
+      "terms": [
+        {
+          "term": "Rahasia",
+          "definition": "Nilai yang memberi akses istimewa, misalnya kata kunci basis data, kunci API, atau kunci penandatanganan."
+        },
+        {
+          "term": "Variabel lingkungan",
+          "definition": "Nilai konfigurasi yang disediakan dari luar aplikasi, bukan tertulis di dalam kodenya."
+        },
+        {
+          "term": "HTTPS",
+          "definition": "Koneksi web yang dienkripsi sehingga isinya tidak dapat dibaca di tengah jalan."
+        },
+        {
+          "term": "Konfigurasi",
+          "definition": "Pengaturan yang berbeda antar lingkungan, misalnya alamat basis data dan mode pengembangan."
+        }
+      ],
+      "syntax": [
+        {
+          "token": "const kunci = process.env.KUNCI_API;",
+          "readAs": "Baca sebagai pengambilan nilai rahasia dari luar kode.",
+          "meaning": "Nilai rahasia disediakan oleh lingkungan, bukan ditulis di dalam berkas kode yang ikut tersimpan pada riwayat perubahan.",
+          "example": "const kunci = process.env.KUNCI_API;",
+          "output": "Nilai rahasia tersedia bagi aplikasi tanpa tertulis di dalam kode.",
+          "pitfall": "Menulis kunci langsung di dalam kode membuatnya ikut tersimpan pada riwayat perubahan dan sulit dicabut."
+        },
+        {
+          "token": "HSTS: max-age=31536000; includeSubDomains",
+          "readAs": "Baca sebagai permintaan agar peramban selalu memakai koneksi terenkripsi ke situs ini.",
+          "meaning": "Pengaturan ini mencegah peramban mencoba koneksi tanpa enkripsi yang dapat disadap.",
+          "example": "HSTS: max-age=31536000; includeSubDomains",
+          "output": "Peramban memakai koneksi terenkripsi pada kunjungan berikutnya.",
+          "pitfall": "Mengaktifkan pengaturan ini tanpa seluruh subdomain siap dapat memutus akses ke sebagian layanan."
+        },
+        {
+          "token": "if (process.env.MODE === \"produksi\") { ... }",
+          "readAs": "Baca sebagai pemilihan perilaku menurut nilai konfigurasi lingkungan.",
+          "meaning": "Perilaku yang berbeda antar lingkungan dipilih lewat konfigurasi, sehingga kode yang sama dapat dipakai di mana saja.",
+          "example": "if (process.env.MODE === \"produksi\") { ... }",
+          "output": "Aplikasi berperilaku sesuai lingkungan tanpa mengubah kodenya.",
+          "pitfall": "Menuliskan perbedaan lingkungan langsung di dalam kode membuat kode yang sama tidak dapat dipakai di lingkungan lain."
+        }
+      ],
+      "conventions": [
+        "Jangan menulis rahasia di dalam kode atau berkas yang ikut tersimpan.",
+        "Sedikan konfigurasi lewat variabel lingkungan.",
+        "Pakai koneksi terenkripsi untuk seluruh lalu lintas yang membawa data pengguna.",
+        "Batasi siapa yang dapat membaca rahasia produksi.",
+        "Sediakan cara mencabut dan mengganti rahasia tanpa mengubah kode."
+      ],
+      "sections": [
+        {
+          "id": "cara-membaca",
+          "title": "Cara membaca konfigurasi dari lingkungan",
+          "body": [
+            "Kode dibaca sebagai pemakaian nilai yang berasal dari luar. Nilai rahasia dan pengaturan lingkungan diambil dari lingkungan, bukan ditulis di dalam berkas.",
+            "Pada contoh, kunci API diambil dari lingkungan dan langsung diperiksa keberadaannya. Bila kunci itu belum diset, aplikasi berhenti lebih awal dengan pesan yang jelas.",
+            "Memeriksa keberadaan nilai itu penting. Tanpa pemeriksaan, aplikasi dapat berjalan dengan kunci kosong dan gagal pada saat yang lebih sulit dilacak."
+          ],
+          "code": {
+            "language": "bash",
+            "lab": false,
+            "code": "const kunci = process.env.KUNCI_API;\nconst mode = process.env.MODE ?? \"pengembangan\";\n\nif (!kunci) {\n  throw new Error(\"KUNCI_API belum diset\");\n}\n\napp.set(\"mode\", mode);",
+            "output": "Aplikasi mengambil kunci dan mode dari lingkungan, lalu berhenti bila kunci wajib belum diset.",
+            "explain": "Nilai rahasia dan konfigurasi diambil dari lingkungan. Keberadaan nilai wajib diperiksa lebih awal agar kegagalan terdeteksi cepat.",
+            "annotations": [
+              {
+                "line": 1,
+                "code": "const kunci = process.env.KUNCI_API;",
+                "note": "Kunci rahasia diambil dari luar kode."
+              },
+              {
+                "line": 2,
+                "code": "const mode = process.env.MODE ?? \"pengembangan\";",
+                "note": "Mode lingkungan diberi nilai bawaan yang aman."
+              },
+              {
+                "line": 4,
+                "code": "if (!kunci) {",
+                "note": "Keberadaan nilai wajib diperiksa."
+              },
+              {
+                "line": 5,
+                "code": "throw new Error(\"KUNCI_API belum diset\");",
+                "note": "Aplikasi berhenti lebih awal bila nilai wajib tidak ada."
+              }
+            ]
+          },
+          "callouts": [
+            {
+              "tone": "warn",
+              "title": "Jangan tulis rahasia di kode",
+              "body": "Rahasia di dalam kode ikut tersimpan pada riwayat perubahan dan sulit dicabut. Ambil dari lingkungan, jangan tulis di berkas."
+            }
+          ],
+          "checkpoint": {
+            "prompt": "Mengapa keberadaan nilai wajib dari lingkungan perlu diperiksa lebih awal?",
+            "success": "Agar kegagalan akibat nilai yang tidak tersedia terdeteksi cepat, bukan pada saat yang lebih sulit dilacak."
+          }
+        },
+        {
+          "id": "mengelola-rahasia",
+          "title": "Mengelola rahasia",
+          "body": [
+            "Rahasia tidak boleh tertulis di dalam kode. Kode tersimpan pada riwayat perubahan, dibagikan ke anggota tim, dan disalin ke banyak tempat. Rahasia yang tertulis di sana sulit dicabut.",
+            "Sediakan rahasia lewat tempat yang sesuai dengan lingkungannya. Pada pengembangan, variabel lingkungan dari berkas yang tidak ikut tersimpan sudah memadai. Pada produksi, pakai penyimpanan rahasia yang terkelola.",
+            "Batasi siapa yang dapat membaca rahasia produksi. Berikan hanya kepada yang benar-benar membutuhkannya, dan siapkan cara mencabut serta menggantinya bila terjadi kebocoran."
+          ],
+          "callouts": [
+            {
+              "tone": "warn",
+              "title": "Rahasia yang bocor",
+              "body": "Rahasia yang pernah tersimpan pada riwayat perubahan harus dianggap bocor dan segera diganti, meski berkasnya sudah dihapus."
+            }
+          ],
+          "checkpoint": {
+            "prompt": "Mengapa rahasia yang pernah tersimpan pada riwayat perubahan harus dianggap bocor?",
+            "success": "Karena riwayat itu masih memuat nilainya sehingga rahasia tetap dapat dibaca meski berkasnya sudah dihapus."
+          }
+        },
+        {
+          "id": "https",
+          "title": "Melindungi lalu lintas dengan HTTPS",
+          "body": [
+            "HTTPS mengenkripsi lalu lintas sehingga isinya tidak dapat dibaca di tengah jalan. Ia melindungi data pengguna, termasuk kata sandi dan token, dari penyadapan.",
+            "Pakai koneksi terenkripsi untuk seluruh lalu lintas yang membawa data pengguna, bukan hanya halaman masuk. Mengirim data penting lewat koneksi tanpa enkripsi membuka peluang penyadapan.",
+            "Tambahkan pengaturan yang meminta peramban selalu memakai koneksi terenkripsi. Pengaturan ini mencegah koneksi tanpa enkripsi yang mungkin dicoba pada kunjungan berikutnya."
+          ],
+          "checkpoint": {
+            "prompt": "Mengapa enkripsi perlu dipakai pada seluruh lalu lintas, bukan hanya halaman masuk?",
+            "success": "Karena data penting, termasuk token, dapat terkirim pada lalu lintas lain dan berisiko disadap bila tidak dienkripsi."
+          }
+        },
+        {
+          "id": "konfigurasi",
+          "title": "Memisahkan konfigurasi dari kode",
+          "body": [
+            "Konfigurasi berbeda antar lingkungan: alamat basis data, mode pengembangan, dan alamat layanan luar. Menuliskan perbedaan itu langsung di dalam kode membuat kode yang sama tidak dapat dipakai di lingkungan lain.",
+            "Sediakan konfigurasi sebagai nilai dari luar sehingga kode yang sama dapat dijalankan di mana saja. Aplikasi cukup membaca nilainya, tanpa perlu tahu lingkungan mana yang sedang dipakai.",
+            "Beri nilai bawaan yang aman untuk pengembangan, tetapi wajibkan nilai yang tepat pada produksi. Cara ini memudahkan pengembangan tanpa mengorbankan keselamatan produksi."
+          ],
+          "checkpoint": {
+            "prompt": "Apa keuntungan memisahkan konfigurasi dari kode?",
+            "success": "Kode yang sama dapat dipakai di beberapa lingkungan tanpa perubahan, karena perbedaannya disediakan dari luar."
+          }
+        }
+      ],
+      "practice": [
+        {
+          "id": "latihan-1",
+          "level": "guided",
+          "title": "Ambil rahasia dari lingkungan",
+          "task": "Ubah kode yang menulis kunci langsung agar mengambil kunci dari lingkungan dan memeriksa keberadaannya.",
+          "steps": [
+            "Temukan kunci yang tertulis di dalam kode.",
+            "Ganti dengan pembacaan dari lingkungan.",
+            "Periksa keberadaan nilai wajib.",
+            "Beri pesan yang jelas bila nilai itu tidak ada."
+          ],
+          "starterCode": "const kunci = process.env.KUNCI_API;",
+          "expected": "Kunci tidak lagi tertulis di kode dan aplikasi berhenti lebih awal bila kunci tidak ada.",
+          "stretch": "Tambahkan pemeriksaan untuk seluruh rahasia yang wajib.",
+          "hints": [
+            "Rahasia diambil dari lingkungan.",
+            "Nilai wajib diperiksa lebih awal.",
+            "Pesan kegagalan menyebut nilai yang hilang."
+          ],
+          "verification": {
+            "command": "Jalankan aplikasi tanpa nilai itu lalu dengan nilai terisi.",
+            "expected": "Tanpa nilai aplikasi berhenti dengan pesan jelas; dengan nilai aplikasi berjalan.",
+            "evidence": "Simpan kode dan catatan hasil kedua keadaan."
+          }
+        },
+        {
+          "id": "latihan-2",
+          "level": "independent",
+          "title": "Siapkan berkas rahasia terpisah",
+          "task": "Siapkan berkas rahasia untuk pengembangan yang tidak ikut tersimpan pada riwayat perubahan, lalu pakai nilainya.",
+          "steps": [
+            "Buat berkas rahasia untuk pengembangan.",
+            "Pastikan berkas itu diabaikan oleh riwayat perubahan.",
+            "Sediakan contoh berkas tanpa nilai nyata.",
+            "Jalankan aplikasi memakai nilai dari berkas itu."
+          ],
+          "starterCode": "KUNCI_API=...\nMODE=pengembangan",
+          "expected": "Aplikasi memakai rahasia dari berkas terpisah yang tidak ikut tersimpan.",
+          "stretch": "Tambahkan pemeriksaan bahwa berkas rahasia tidak ikut tersimpan.",
+          "hints": [
+            "Berkas rahasia tidak ikut tersimpan.",
+            "Sediakan contoh tanpa nilai nyata.",
+            "Aplikasi membaca dari berkas itu."
+          ],
+          "verification": {
+            "command": "Periksa daftar berkas yang ikut tersimpan dan jalankan aplikasinya.",
+            "expected": "Berkas rahasia tidak ikut tersimpan dan aplikasi tetap berjalan.",
+            "evidence": "Simpan daftar berkas dan keluaran aplikasi."
+          }
+        },
+        {
+          "id": "latihan-3",
+          "level": "transfer",
+          "title": "Rancang pengelolaan rahasia",
+          "task": "Rancang cara pengelolaan rahasia untuk aplikasi dengan pengembangan, uji, dan produksi, termasuk cara mengganti rahasia.",
+          "steps": [
+            "Tentukan rahasia yang dipakai aplikasi.",
+            "Tentukan tempat penyimpanan tiap lingkungan.",
+            "Tentukan siapa yang dapat membacanya.",
+            "Tentukan cara mencabut dan mengganti rahasia."
+          ],
+          "starterCode": "Rahasia: ...\nPengembangan: ...\nProduksi: ...",
+          "expected": "Setiap lingkungan punya cara penyimpanan yang sesuai dan rahasia dapat diganti tanpa mengubah kode.",
+          "stretch": "Tambahkan langkah bila terjadi kebocoran rahasia.",
+          "hints": [
+            "Penyimpanan disesuaikan lingkungannya.",
+            "Akses rahasia produksi dibatasi.",
+            "Penggantian tidak memerlukan perubahan kode."
+          ],
+          "verification": {
+            "command": "Ganti sebuah rahasia dan jalankan aplikasi tanpa mengubah kodenya.",
+            "expected": "Aplikasi memakai rahasia baru tanpa perubahan kode.",
+            "evidence": "Simpan rancangan dan catatan hasil penggantian."
+          }
+        }
+      ],
+      "verification": {
+        "mode": "manual",
+        "command": "Jalankan aplikasi tanpa dan dengan rahasia, lalu periksa riwayat perubahan tidak memuat rahasia.",
+        "expected": "Aplikasi berhenti lebih awal bila rahasia wajib tidak ada, berjalan saat rahasia tersedia, dan tidak ada rahasia pada riwayat perubahan.",
+        "evidence": "Simpan kode, daftar berkas tersimpan, dan catatan hasil pengujian."
+      },
+      "troubleshooting": [
+        {
+          "symptom": "Rahasia terbaca dari riwayat perubahan.",
+          "cause": "Rahasia ditulis di dalam berkas yang ikut tersimpan.",
+          "fix": "Pindahkan rahasia ke lingkungan, ganti nilainya, dan pastikan berkasnya tidak ikut tersimpan."
+        },
+        {
+          "symptom": "Aplikasi berjalan dengan kunci kosong lalu gagal belakangan.",
+          "cause": "Keberadaan nilai wajib tidak diperiksa lebih awal.",
+          "fix": "Periksa keberadaan nilai wajib saat aplikasi mulai dan berhenti dengan pesan yang jelas."
+        },
+        {
+          "symptom": "Data pengguna dapat disadap di jaringan.",
+          "cause": "Sebagian lalu lintas dikirim tanpa enkripsi.",
+          "fix": "Pakai koneksi terenkripsi untuk seluruh lalu lintas yang membawa data pengguna."
+        },
+        {
+          "symptom": "Kode yang sama tidak dapat dijalankan di lingkungan lain.",
+          "cause": "Perbedaan lingkungan ditulis langsung di dalam kode.",
+          "fix": "Pindahkan perbedaan itu ke konfigurasi dari luar."
+        }
+      ],
       "quiz": {
-        "question": "Apa prinsip yang paling tepat untuk topik “Secrets, HTTPS, dan konfigurasi”?",
-        "options": [
-          "Pisahkan secret dari kode dan batasi hak akses minimum.",
-          "Gunakan solusi paling rumit sejak awal, meski kebutuhan belum jelas.",
-          "Lewati pengujian karena contoh kecil pasti benar."
-        ],
-        "answer": 0,
-        "explanation": "Pisahkan secret dari kode dan batasi hak akses minimum."
-      }
+        "questions": [
+          {
+            "id": "q1",
+            "type": "recall",
+            "question": "Mengapa rahasia tidak boleh ditulis di dalam kode?",
+            "options": [
+              "Agar kode lebih pendek",
+              "Karena kode tersimpan pada riwayat perubahan sehingga rahasia mudah tersebar dan sulit dicabut",
+              "Agar aplikasi lebih cepat"
+            ],
+            "answer": 1,
+            "explanation": "Kode tersimpan dan dibagikan, sehingga rahasia di dalamnya mudah tersebar dan sulit dicabut."
+          },
+          {
+            "id": "q2",
+            "type": "code-reading",
+            "question": "Apa yang dilakukan pemeriksaan keberadaan nilai wajib saat aplikasi mulai?",
+            "options": [
+              "Menghentikan aplikasi lebih awal bila nilai tidak ada",
+              "Mengisi nilainya secara otomatis",
+              "Menghapus nilai lain"
+            ],
+            "answer": 0,
+            "explanation": "Pemeriksaan itu membuat kegagalan terdeteksi cepat dengan pesan yang jelas."
+          },
+          {
+            "id": "q3",
+            "type": "scenario",
+            "question": "Rahasia pernah tersimpan pada riwayat perubahan lalu dihapus. Tindakan tepat...",
+            "options": [
+              "Membiarkannya karena sudah dihapus",
+              "Menganggapnya bocor dan segera menggantinya",
+              "Menambah komentar di kode"
+            ],
+            "answer": 1,
+            "explanation": "Riwayat masih memuat nilainya, sehingga rahasia itu harus dianggap bocor dan diganti."
+          }
+        ]
+      },
+      "resources": [
+        {
+          "sourceId": "owasp-secrets",
+          "note": "Panduan OWASP tentang pengelolaan rahasia."
+        },
+        {
+          "sourceId": "mdn-tls",
+          "note": "Penjelasan enkripsi lalu lintas dan HTTPS."
+        },
+        {
+          "sourceId": "twelve-factor",
+          "note": "Panduan memisahkan konfigurasi dari kode aplikasi."
+        }
+      ],
+      "summary": [
+        "Rahasia diambil dari lingkungan, bukan ditulis di dalam kode.",
+        "Rahasia yang pernah tersimpan pada riwayat perubahan harus dianggap bocor dan diganti.",
+        "HTTPS melindungi seluruh lalu lintas yang membawa data pengguna.",
+        "Konfigurasi dipisahkan dari kode agar kode yang sama dapat dipakai di beberapa lingkungan."
+      ],
+      "next": "Berikutnya: piramida pengujian dan mutu kode. Anda akan menyusun pengujian berlapis yang cepat dan andal."
     },
     {
       "id": "m11-l04",
-      "title": "Testing pyramid & kualitas kode",
-      "minutes": 45,
-      "level": "Lanjutan",
-      "intro": "Unit test cepat, integration/feature test menilai interaksi komponen, E2E menguji alur dari sudut pengguna. Static analysis dan formatter mendukung konsistensi.",
-      "explanation": "Jangan mengejar coverage 100% tanpa kualitas; prioritaskan alur bisnis dan akses tidak sah. Test deterministik: tidak tergantung waktu/jaringan tanpa mock.",
-      "code": "// Contoh matriks test:\n// normal: tugas berhasil dibuat\n// invalid: judul kosong -> 422\n// authz: bukan pemilik -> 403",
+      "title": "Testing pyramid dan kualitas kode",
+      "minutes": 120,
+      "level": "Menengah",
+      "depth": "integrasi",
+      "schema": 3.1,
       "codeLanguage": "javascript",
-      "practice": [
-        "Tuliskan test plan untuk fitur login, membuat tugas, dan eksport data.",
-        "Ubah satu input atau asumsi pada contoh, catat hasil dan jelaskan alasannya."
+      "outcome": "Setelah pelajaran ini, Anda dapat menyusun pengujian berlapis dengan jumlah yang seimbang serta menjaga mutu kode melalui pemeriksaan otomatis.",
+      "objectives": [
+        "Menjelaskan susunan piramida pengujian.",
+        "Memilih jenis pengujian yang tepat untuk setiap bagian.",
+        "Menjaga pengujian tetap cepat dan andal.",
+        "Memakai pemeriksaan otomatis untuk menjaga mutu kode."
       ],
-      "bestPractice": "Uji perilaku penting, termasuk kasus gagal dan keamanan.",
-      "commonMistake": "Tes hanya happy path dan melewatkan status error.",
+      "prerequisites": [
+        {
+          "label": "Secrets, HTTPS, dan konfigurasi",
+          "lessonId": "m11-l03"
+        }
+      ],
+      "terms": [
+        {
+          "term": "Piramida pengujian",
+          "definition": "Susunan pengujian dengan banyak pengujian unit di bawah, lebih sedikit pengujian integrasi, dan sedikit pengujian menyeluruh di atas."
+        },
+        {
+          "term": "Pengujian integrasi",
+          "definition": "Pengujian yang memeriksa kerja sama beberapa bagian, misalnya aplikasi dan basis data."
+        },
+        {
+          "term": "Pengujian yang rapuh",
+          "definition": "Pengujian yang gagal atau lulus bukan karena perilaku berubah, melainkan karena hal yang tidak berkaitan."
+        },
+        {
+          "term": "Pemeriksaan otomatis",
+          "definition": "Alat yang memeriksa gaya penulisan dan kesalahan umum pada kode secara otomatis."
+        }
+      ],
+      "syntax": [
+        {
+          "token": "describe(\"hitungTotal\", () => { it(\"menjumlahkan\", ...) });",
+          "readAs": "Baca sebagai pengelompokan pengujian di bawah satu nama, dengan beberapa kasus di dalamnya.",
+          "meaning": "Pengelompokan membuat hasil pengujian mudah dibaca dan menunjukkan bagian mana yang bermasalah ketika gagal.",
+          "example": "describe(\"hitungTotal\", () => { it(\"menjumlahkan\", ...) });",
+          "output": "Hasil pengujian tersusun menurut bagian yang diuji.",
+          "pitfall": "Menggabungkan banyak hal dalam satu pengujian membuat letak kesalahan sulit ditemukan saat gagal."
+        },
+        {
+          "token": "expect(hitung([1, 2])).toBe(3);",
+          "readAs": "Baca sebagai pernyataan harapan bahwa hasilnya sama dengan nilai tertentu.",
+          "meaning": "Pernyataan harapan menyatakan perilaku yang diuji. Bila tidak terpenuhi, pengujian gagal dan menunjukkan bagian yang bermasalah.",
+          "example": "expect(hitung([1, 2])).toBe(3);",
+          "output": "Pengujian lulus bila hasilnya sesuai harapan.",
+          "pitfall": "Menguji tampilan dalam yang mudah berubah membuat pengujian sering gagal tanpa perilaku yang benar-benar berubah."
+        },
+        {
+          "token": "npm run lint && npm run test",
+          "readAs": "Baca sebagai menjalankan pemeriksaan gaya lalu pengujian secara berurutan.",
+          "meaning": "Menjalankan keduanya bersamaan menjaga mutu kode dan perilakunya pada setiap perubahan.",
+          "example": "npm run lint && npm run test",
+          "output": "Pemeriksaan gaya dan pengujian berjalan berurutan; kegagalan menghentikan langkah berikutnya.",
+          "pitfall": "Menjalankan pengujian tanpa pemeriksaan gaya membiarkan kesalahan umum lolos ke riwayat perubahan."
+        }
+      ],
+      "conventions": [
+        "Utamakan pengujian unit, tambahkan pengujian integrasi seperlunya.",
+        "Uji perilaku yang dapat diamati, bukan rincian dalam yang mudah berubah.",
+        "Buat setiap pengujian berdiri sendiri tanpa bergantung urutan.",
+        "Jalankan pemeriksaan gaya bersama pengujian pada setiap perubahan.",
+        "Jaga pengujian tetap cepat agar sering dijalankan."
+      ],
+      "sections": [
+        {
+          "id": "cara-membaca",
+          "title": "Cara membaca pengujian unit",
+          "body": [
+            "Pengujian dibaca sebagai pernyataan perilaku. Setiap kasus menyiapkan masukan, menjalankan bagian yang diuji, lalu menyatakan harapan atas hasilnya.",
+            "Pada contoh, dua kasus diuji: daftar berisi campuran tugas, dan daftar kosong. Kasus kedua penting karena keadaan batas sering terlewat padahal mudah menimbulkan kesalahan.",
+            "Nama setiap kasus menyatakan perilaku yang diperiksa. Ketika pengujian gagal, nama itu langsung memberi tahu perilaku mana yang tidak sesuai harapan."
+          ],
+          "code": {
+            "language": "javascript",
+            "lab": false,
+            "code": "describe(\"hitungSelesai\", () => {\n  it(\"menghitung tugas selesai\", () => {\n    const tugas = [{ selesai: true }, { selesai: false }];\n    expect(hitungSelesai(tugas)).toBe(1);\n  });\n\n  it(\"mengembalikan nol untuk daftar kosong\", () => {\n    expect(hitungSelesai([])).toBe(0);\n  });\n});",
+            "output": "Kedua kasus lulus: daftar bercampur menghasilkan satu, dan daftar kosong menghasilkan nol.",
+            "explain": "Setiap kasus menyiapkan masukan, menjalankan bagian yang diuji, lalu menyatakan harapan. Keadaan batas seperti daftar kosong diuji terpisah.",
+            "annotations": [
+              {
+                "line": 1,
+                "code": "describe(\"hitungSelesai\", () => {",
+                "note": "Pengujian dikelompokkan di bawah satu nama bagian."
+              },
+              {
+                "line": 3,
+                "code": "const tugas = [{ selesai: true }, { selesai: false }];",
+                "note": "Masukan disiapkan untuk kasus ini."
+              },
+              {
+                "line": 4,
+                "code": "expect(hitungSelesai(tugas)).toBe(1);",
+                "note": "Pernyataan harapan menyatakan hasil yang diharapkan."
+              },
+              {
+                "line": 7,
+                "code": "it(\"mengembalikan nol untuk daftar kosong\", () => {",
+                "note": "Keadaan batas diuji terpisah."
+              }
+            ]
+          },
+          "callouts": [
+            {
+              "tone": "good",
+              "title": "Uji keadaan batas",
+              "body": "Keadaan batas seperti daftar kosong sering terlewat dan mudah menimbulkan kesalahan. Uji keadaan itu secara terpisah."
+            }
+          ],
+          "checkpoint": {
+            "prompt": "Mengapa keadaan batas seperti daftar kosong perlu diuji?",
+            "success": "Karena keadaan itu sering terlewat padahal mudah menimbulkan kesalahan."
+          }
+        },
+        {
+          "id": "susunan-piramida",
+          "title": "Susunan pengujian berlapis",
+          "body": [
+            "Piramida pengujian menggambarkan jumlah. Banyak pengujian unit di bawah karena cepat dan tepat menunjukkan letak kesalahan. Lebih sedikit pengujian integrasi karena lebih lambat. Sedikit pengujian menyeluruh di atas karena paling lambat dan paling rapuh.",
+            "Susunan itu penting karena pengujian yang lambat jarang dijalankan. Menumpuk pengujian menyeluruh membuat pekerjaan melambat, sedangkan pengujian yang jarang dijalankan kurang berguna.",
+            "Namun lapisan atas tetap diperlukan. Sebagian kesalahan hanya muncul ketika bagian-bagian bekerja bersama, dan hanya pengujian yang lebih menyeluruh yang dapat menemukannya."
+          ],
+          "checkpoint": {
+            "prompt": "Mengapa jumlah pengujian unit paling banyak pada piramida pengujian?",
+            "success": "Karena pengujian unit cepat dan tepat menunjukkan letak kesalahan, sehingga dapat dijalankan sering."
+          }
+        },
+        {
+          "id": "pengujian-andal",
+          "title": "Menjaga pengujian tetap andal",
+          "body": [
+            "Pengujian yang rapuh gagal atau lulus bukan karena perilaku berubah. Penyebabnya sering karena bergantung pada data nyata, urutan menjalankan, atau waktu.",
+            "Buat setiap pengujian berdiri sendiri dengan datanya disiapkan sendiri. Dengan begitu, hasilnya tidak berubah ketika urutan menjalankan berbeda atau data lain berubah.",
+            "Hindari hal yang bergantung pada waktu atau keadaan luar yang tidak dapat dikendalikan. Bila harus, tirulah keadaan itu agar hasil pengujian tetap tetap."
+          ],
+          "callouts": [
+            {
+              "tone": "warn",
+              "title": "Pengujian rapuh merugikan",
+              "body": "Pengujian yang sering gagal tanpa sebab jelas akan diabaikan. Jaga setiap pengujian tetap berdiri sendiri dan tidak bergantung keadaan luar."
+            }
+          ],
+          "checkpoint": {
+            "prompt": "Sebutkan dua penyebab pengujian menjadi rapuh.",
+            "success": "Bergantung pada data nyata atau urutan menjalankan, dan bergantung pada waktu atau keadaan luar."
+          }
+        },
+        {
+          "id": "mutu-kode",
+          "title": "Pemeriksaan otomatis untuk mutu kode",
+          "body": [
+            "Pemeriksaan otomatis menemukan masalah gaya penulisan dan kesalahan umum sebelum kode ditinjau manusia. Hal ini menghemat waktu tinjauan untuk hal yang lebih penting.",
+            "Jalankan pemeriksaan itu bersama pengujian pada setiap perubahan. Kegagalan pemeriksaan menghentikan langkah berikutnya sehingga masalah tertangkap lebih awal.",
+            "Terapkan aturan yang disepakati bersama, bukan aturan pribadi. Aturan yang konsisten membuat kode mudah dibaca oleh seluruh anggota tim."
+          ],
+          "checkpoint": {
+            "prompt": "Apa manfaat memakai pemeriksaan otomatis sebelum kode ditinjau manusia?",
+            "success": "Masalah gaya dan kesalahan umum tertangkap lebih awal sehingga tinjauan manusia dapat fokus pada hal yang penting."
+          }
+        }
+      ],
+      "practice": [
+        {
+          "id": "latihan-1",
+          "level": "guided",
+          "title": "Pengujian unit fungsi",
+          "task": "Tulis pengujian unit untuk sebuah fungsi yang menerima daftar dan mengembalikan nilai hitungan, termasuk keadaan batas.",
+          "steps": [
+            "Kelompokkan pengujian di bawah satu nama.",
+            "Uji kasus biasa dengan masukan bercampur.",
+            "Uji keadaan batas seperti daftar kosong.",
+            "Pastikan setiap kasus berdiri sendiri."
+          ],
+          "starterCode": "describe(\"fungsi\", () => {\n  it(\"kasus biasa\", ...);\n});",
+          "expected": "Pengujian lulus untuk kasus biasa dan keadaan batas secara terpisah.",
+          "stretch": "Tambahkan kasus dengan masukan tidak diharapkan dan tentukan perilakunya.",
+          "hints": [
+            "Setiap pengujian menyiapkan masukannya sendiri.",
+            "Keadaan batas diuji terpisah.",
+            "Nama kasus menyatakan perilakunya."
+          ],
+          "verification": {
+            "command": "Jalankan pengujian dan periksa seluruh kasus lulus.",
+            "expected": "Seluruh kasus lulus dan kegagalan menunjuk pada kasus yang bermasalah.",
+            "evidence": "Simpan berkas pengujian dan keluarannya."
+          }
+        },
+        {
+          "id": "latihan-2",
+          "level": "independent",
+          "title": "Pengujian integrasi sederhana",
+          "task": "Tulis pengujian integrasi yang memeriksa kerja sama aplikasi dengan basis data pada satu alur penyimpanan.",
+          "steps": [
+            "Siapkan data uji secara terpisah.",
+            "Jalankan alur penyimpanan melalui lapisan aplikasi.",
+            "Periksa data tersimpan sesuai harapan.",
+            "Bersihkan data uji setelah pengujian."
+          ],
+          "starterCode": "it(\"menyimpan tugas\", async () => { /* lengkapi */ });",
+          "expected": "Alur penyimpanan teruji bersama basis data dan data uji dibersihkan setelahnya.",
+          "stretch": "Tambahkan kasus penyimpanan yang gagal dan pastikan tidak menyisakan data.",
+          "hints": [
+            "Data uji disiapkan sendiri.",
+            "Pengujian memeriksa hasil di basis data.",
+            "Data uji dibersihkan setelah pengujian."
+          ],
+          "verification": {
+            "command": "Jalankan pengujian integrasi dua kali berturut-turut.",
+            "expected": "Hasilnya sama pada kedua percobaan tanpa bergantung data sebelumnya.",
+            "evidence": "Simpan berkas pengujian dan keluaran kedua percobaan."
+          }
+        },
+        {
+          "id": "latihan-3",
+          "level": "transfer",
+          "title": "Rancang susunan pengujian fitur",
+          "task": "Rancang susunan pengujian untuk sebuah fitur lengkap: bagian mana diuji unit, mana diuji integrasi, dan alur mana diuji menyeluruh.",
+          "steps": [
+            "Pecah fitur menjadi bagian yang dapat diuji.",
+            "Tentukan bagian yang diuji unit.",
+            "Tentukan bagian yang diuji integrasi.",
+            "Tentukan alur penting yang diuji menyeluruh."
+          ],
+          "starterCode": "Unit: ...\nIntegrasi: ...\nMenyeluruh: ...",
+          "expected": "Susunan seimbang dengan banyak pengujian unit dan sedikit pengujian menyeluruh pada alur penting.",
+          "stretch": "Perkirakan waktu menjalankan seluruh pengujian.",
+          "hints": [
+            "Logika murni diuji unit.",
+            "Kerja sama bagian diuji integrasi.",
+            "Alur penting diuji menyeluruh."
+          ],
+          "verification": {
+            "command": "Periksa susunan terhadap piramida pengujian.",
+            "expected": "Jumlah pengujian terbanyak berada pada lapisan tercepat.",
+            "evidence": "Simpan rancangan susunan pengujian."
+          }
+        }
+      ],
+      "verification": {
+        "mode": "manual",
+        "command": "Jalankan pemeriksaan gaya dan seluruh pengujian, lalu periksa hasilnya stabil pada pengulangan.",
+        "expected": "Seluruh pengujian lulus tanpa bergantung urutan, pemeriksaan gaya berjalan bersamanya, dan hasilnya tetap pada pengulangan.",
+        "evidence": "Simpan keluaran pengujian dan catatan hasil pengulangan."
+      },
+      "troubleshooting": [
+        {
+          "symptom": "Pengujian kadang lulus kadang gagal tanpa perubahan kode.",
+          "cause": "Pengujian bergantung pada data nyata, urutan, atau waktu.",
+          "fix": "Buat setiap pengujian berdiri sendiri dengan datanya sendiri dan hindari ketergantungan waktu."
+        },
+        {
+          "symptom": "Pengujian lambat sehingga jarang dijalankan.",
+          "cause": "Terlalu banyak pengujian menyeluruh dan terlalu sedikit pengujian unit.",
+          "fix": "Pindahkan sebagian besar pengujian ke lapisan unit dan simpan pengujian menyeluruh untuk alur penting."
+        },
+        {
+          "symptom": "Kesalahan gaya penulisan sering lolos ke tinjauan kode.",
+          "cause": "Pemeriksaan otomatis tidak dijalankan pada setiap perubahan.",
+          "fix": "Jalankan pemeriksaan gaya bersama pengujian sebagai bagian dari setiap perubahan."
+        },
+        {
+          "symptom": "Letak kesalahan sulit ditemukan ketika pengujian gagal.",
+          "cause": "Satu pengujian memeriksa terlalu banyak hal sekaligus.",
+          "fix": "Pecah pengujian menjadi kasus kecil yang masing-masing memeriksa satu perilaku."
+        }
+      ],
       "quiz": {
-        "question": "Apa prinsip yang paling tepat untuk topik “Testing pyramid & kualitas kode”?",
-        "options": [
-          "Uji perilaku penting, termasuk kasus gagal dan keamanan.",
-          "Gunakan solusi paling rumit sejak awal, meski kebutuhan belum jelas.",
-          "Lewati pengujian karena contoh kecil pasti benar."
-        ],
-        "answer": 0,
-        "explanation": "Uji perilaku penting, termasuk kasus gagal dan keamanan."
-      }
+        "questions": [
+          {
+            "id": "q1",
+            "type": "recall",
+            "question": "Bagaimana susunan jumlah pada piramida pengujian?",
+            "options": [
+              "Banyak pengujian menyeluruh, sedikit pengujian unit",
+              "Banyak pengujian unit, lebih sedikit integrasi, dan sedikit pengujian menyeluruh",
+              "Jumlahnya sama semua"
+            ],
+            "answer": 1,
+            "explanation": "Piramida menempatkan paling banyak pengujian unit, lebih sedikit integrasi, dan paling sedikit menyeluruh."
+          },
+          {
+            "id": "q2",
+            "type": "code-reading",
+            "question": "Mengapa pengujian keadaan batas seperti daftar kosong penting?",
+            "options": [
+              "Agar pengujian lebih banyak",
+              "Karena keadaan batas sering terlewat padahal mudah menimbulkan kesalahan",
+              "Agar kode lebih panjang"
+            ],
+            "answer": 1,
+            "explanation": "Keadaan batas sering terlewat padahal mudah menimbulkan kesalahan."
+          },
+          {
+            "id": "q3",
+            "type": "scenario",
+            "question": "Pengujian sering gagal tanpa perubahan kode. Tindakan tepat...",
+            "options": [
+              "Menghapus pengujian itu",
+              "Membuatnya berdiri sendiri dan menghindari ketergantungan data nyata serta waktu",
+              "Menjalankannya berkali-kali sampai lulus"
+            ],
+            "answer": 1,
+            "explanation": "Pengujian rapuh diperbaiki dengan membuatnya berdiri sendiri dan bebas ketergantungan luar."
+          }
+        ]
+      },
+      "resources": [
+        {
+          "sourceId": "fowler-test-pyramid",
+          "note": "Penjelasan piramida pengujian dan susunan lapisannya."
+        },
+        {
+          "sourceId": "vitest-guide",
+          "note": "Panduan alat pengujian JavaScript untuk menulis kasus yang berdiri sendiri."
+        },
+        {
+          "sourceId": "github-actions",
+          "note": "Cara menjalankan pemeriksaan dan pengujian otomatis pada setiap perubahan."
+        }
+      ],
+      "summary": [
+        "Piramida pengujian menempatkan paling banyak pengujian unit, lebih sedikit integrasi, dan paling sedikit menyeluruh.",
+        "Pengujian yang baik memeriksa perilaku yang dapat diamati dan berdiri sendiri.",
+        "Keadaan batas diuji terpisah karena mudah terlewat.",
+        "Pemeriksaan otomatis menjaga gaya dan menangkap kesalahan umum lebih awal."
+      ],
+      "next": "Berikutnya: Docker dan kesamaan lingkungan. Anda akan menjalankan aplikasi pada lingkungan yang sama di mana pun."
     },
     {
       "id": "m11-l05",
       "title": "Docker dan environment parity",
-      "minutes": 45,
-      "level": "Lanjutan",
-      "intro": "Container mengemas aplikasi dan dependensi agar mudah direproduksi; Docker Compose mengorkestrasi beberapa service pada development. Container bukan pengganti desain jaringan dan backup.",
-      "explanation": "Pada tahap awal Laravel native juga valid. Pilih Docker jika tim membutuhkan environment konsisten atau multi-service. Tetap dokumentasikan versi, volumes, env, dan healthchecks.",
-      "code": "services:\n  app:\n    image: nginx:alpine\n    ports:\n      - \"8080:80\"",
+      "minutes": 120,
+      "level": "Menengah",
+      "depth": "integrasi",
+      "schema": 3.1,
       "codeLanguage": "yaml",
-      "practice": [
-        "Bandingkan deployment Laravel native dan Docker berdasarkan kompleksitas, backup, dan troubleshooting.",
-        "Ubah satu input atau asumsi pada contoh, catat hasil dan jelaskan alasannya."
+      "outcome": "Setelah pelajaran ini, Anda dapat membungkus aplikasi beserta ketergantungannya dalam wadah serta menjaga lingkungan pengembangan dan produksi tetap sama.",
+      "objectives": [
+        "Menjelaskan apa yang dimaksud lingkungan yang sama pada Docker.",
+        "Membaca dan menulis berkas pembangunan wadah.",
+        "Menyusun lapisan pembangunan agar hemat ruang dan waktu.",
+        "Menyediakan konfigurasi dari luar wadah."
       ],
-      "bestPractice": "Pilih deployment sesuai kebutuhan operasi, bukan sekadar tren.",
-      "commonMistake": "Menaruh DB tanpa volume persisten dan kehilangan data saat recreate.",
+      "prerequisites": [
+        {
+          "label": "Testing pyramid & kualitas kode",
+          "lessonId": "m11-l04"
+        }
+      ],
+      "terms": [
+        {
+          "term": "Wadah",
+          "definition": "Kemasan yang memuat aplikasi beserta ketergantungannya sehingga dapat dijalankan sama di mana pun."
+        },
+        {
+          "term": "Gambar",
+          "definition": "Cetak biru wadah yang berisi sistem dasar, ketergantungan, dan aplikasi."
+        },
+        {
+          "term": "Lapisan",
+          "definition": "Setiap langkah pembangunan gambar yang hasilnya disimpan bertingkat."
+        },
+        {
+          "term": "Kesamaan lingkungan",
+          "definition": "Keadaan ketika pengembangan, pengujian, dan produksi memakai susunan yang sama sehingga perbedaan tidak muncul diam-diam."
+        }
+      ],
+      "syntax": [
+        {
+          "token": "FROM node:22-alpine",
+          "readAs": "Baca sebagai penentuan sistem dasar dan versi yang dipakai gambar.",
+          "meaning": "Sistem dasar menentukan versi bahasa dan pustaka yang tersedia, sehingga aplikasi berjalan pada versi yang sama di mana pun.",
+          "example": "FROM node:22-alpine",
+          "output": "Gambar dibangun di atas versi sistem dasar yang ditentukan.",
+          "pitfall": "Memakai versi yang tidak tetap membuat gambar berbeda antara satu pembangunan dan berikutnya."
+        },
+        {
+          "token": "COPY package.json ./ && RUN npm ci",
+          "readAs": "Baca sebagai penyalinan daftar ketergantungan lalu pemasangannya secara terkunci.",
+          "meaning": "Mendahulukan pemasangan ketergantungan sebelum menyalin kode memanfaatkan lapisan tersimpan sehingga pembangunan berikutnya lebih cepat.",
+          "example": "COPY package.json ./ && RUN npm ci",
+          "output": "Ketergantungan terpasang pada lapisan tersendiri sebelum kode disalin.",
+          "pitfall": "Menyalin seluruh kode sebelum memasang ketergantungan membuat lapisan tersimpan selalu dibuang ulang."
+        },
+        {
+          "token": "ENV NODE_ENV=production",
+          "readAs": "Baca sebagai penentuan pengaturan bawaan yang dapat diganti dari luar wadah.",
+          "meaning": "Pengaturan berbeda antar lingkungan diberikan saat menjalankan wadah, bukan ditulis di dalam gambar.",
+          "example": "ENV NODE_ENV=production",
+          "output": "Wadah berjalan dengan pengaturan sesuai lingkungannya.",
+          "pitfall": "Menulis alamat produksi di dalam gambar membuat gambar yang sama tidak dapat dipakai di lingkungan lain."
+        }
+      ],
+      "conventions": [
+        "Pakai versi sistem dasar yang tetap, bukan versi terbaru tanpa penanda.",
+        "Salin berkas ketergantungan sebelum kode agar lapisan tersimpan bermanfaat.",
+        "Sediakan konfigurasi dari luar gambar saat wadah dijalankan.",
+        "Jangan menaruh rahasia di dalam gambar.",
+        "Bangun gambar yang sama untuk pengembangan dan produksi, bedakan hanya konfigurasinya."
+      ],
+      "sections": [
+        {
+          "id": "cara-membaca",
+          "title": "Cara membaca berkas pembangunan gambar",
+          "body": [
+            "Berkas pembangunan dibaca dari atas ke bawah sebagai urutan langkah. Setiap langkah menambah satu lapisan yang hasilnya disimpan.",
+            "Pada contoh, sistem dasar ditentukan lebih dulu, lalu direktori kerja, kemudian ketergantungan dipasang sebelum kode disalin. Urutan ini membuat lapisan ketergantungan dapat dipakai ulang ketika hanya kode yang berubah.",
+            "Perhatikan bahwa konfigurasi seperti alamat basis data tidak ditulis di sini. Nilai itu diberikan saat wadah dijalankan, sehingga gambar yang sama dapat dipakai di beberapa lingkungan."
+          ],
+          "code": {
+            "language": "yaml",
+            "lab": false,
+            "code": "FROM node:22-alpine\nWORKDIR /app\nCOPY package.json package-lock.json ./\nRUN npm ci\nCOPY . .\nEXPOSE 3000\nCMD [\"node\", \"server.js\"]",
+            "output": "Gambar terbentuk dengan sistem dasar, ketergantungan terpasang, dan perintah menjalankan aplikasi.",
+            "explain": "Setiap langkah menambah lapisan. Ketergantungan dipasang sebelum kode disalin agar lapisan tersimpan berguna pada pembangunan berikutnya.",
+            "annotations": [
+              {
+                "line": 1,
+                "code": "FROM node:22-alpine",
+                "note": "Sistem dasar dan versinya ditentukan tetap."
+              },
+              {
+                "line": 3,
+                "code": "COPY package.json package-lock.json ./",
+                "note": "Berkas ketergantungan disalin lebih dulu."
+              },
+              {
+                "line": 4,
+                "code": "RUN npm ci",
+                "note": "Ketergantungan dipasang secara terkunci."
+              },
+              {
+                "line": 5,
+                "code": "COPY . .",
+                "note": "Kode aplikasi disalin setelah ketergantungan terpasang."
+              },
+              {
+                "line": 7,
+                "code": "CMD [\"node\", \"server.js\"]",
+                "note": "Perintah menjalankan aplikasi ditentukan."
+              }
+            ]
+          },
+          "callouts": [
+            {
+              "tone": "good",
+              "title": "Ketergantungan dulu, kode kemudian",
+              "body": "Memasang ketergantungan sebelum menyalin kode membuat lapisan tersimpan dipakai ulang saat hanya kode yang berubah."
+            }
+          ],
+          "checkpoint": {
+            "prompt": "Mengapa berkas ketergantungan disalin sebelum kode aplikasi?",
+            "success": "Agar lapisan pemasangan ketergantungan dipakai ulang saat hanya kode yang berubah sehingga pembangunan lebih cepat."
+          }
+        },
+        {
+          "id": "kesamaan-lingkungan",
+          "title": "Kesamaan lingkungan",
+          "body": [
+            "Kesamaan lingkungan berarti pengembangan, pengujian, dan produksi memakai susunan yang sama. Perbedaan susunan adalah sumber masalah yang muncul hanya di salah satu lingkungan.",
+            "Wadah membantu karena ia membawa ketergantungan aplikasi bersama kodenya. Versi bahasa dan pustaka yang sama dipakai di mana pun, sehingga kesalahan akibat perbedaan versi berkurang.",
+            "Namun wadah bukan jaminan penuh. Perbedaan sistem di luar wadah, seperti versi basis data atau layanan luar, tetap perlu diperhatikan agar lingkungan benar-benar sepadan."
+          ],
+          "checkpoint": {
+            "prompt": "Apa maksud kesamaan lingkungan dan mengapa penting?",
+            "success": "Pengembangan, pengujian, dan produksi memakai susunan sama; perbedaan susunan menjadi sumber masalah yang muncul hanya di satu lingkungan."
+          }
+        },
+        {
+          "id": "lapisan-hemat",
+          "title": "Menyusun lapisan yang hemat",
+          "body": [
+            "Setiap langkah pembangunan menjadi lapisan yang disimpan. Bila sebuah langkah jarang berubah dan diletakkan lebih awal, lapisannya dapat dipakai ulang pada pembangunan berikutnya.",
+            "Karena itu, urutkan langkah dari yang paling jarang berubah ke yang paling sering. Sistem dasar dan ketergantungan jarang berubah, sedangkan kode sering berubah sehingga diletakkan paling akhir.",
+            "Kurangi juga hal yang tidak perlu masuk ke gambar. Berkas yang tidak dipakai, berkas uji, dan berkas rahasia sebaiknya tidak ikut disalin agar gambar tetap ringkas dan aman."
+          ],
+          "callouts": [
+            {
+              "tone": "warn",
+              "title": "Jangan salin berkas rahasia",
+              "body": "Jangan menyalin berkas rahasia ke dalam gambar. Rahasia itu akan ikut tersimpan pada lapisan gambar dan sulit dihapus."
+            }
+          ],
+          "checkpoint": {
+            "prompt": "Bagaimana urutan langkah memengaruhi kecepatan pembangunan gambar?",
+            "success": "Langkah yang jarang berubah diletakkan lebih awal agar lapisannya dipakai ulang pada pembangunan berikutnya."
+          }
+        },
+        {
+          "id": "konfigurasi-wadah",
+          "title": "Konfigurasi dari luar wadah",
+          "body": [
+            "Wadah yang sama dipakai di beberapa lingkungan, sedangkan konfigurasinya berbeda. Karena itu, konfigurasi diberikan saat wadah dijalankan, bukan ditulis di dalam gambar.",
+            "Perbedaan antar lingkungan meliputi alamat basis data, mode pengembangan, dan alamat layanan luar. Semuanya disediakan dari luar sehingga gambar tetap sama.",
+            "Rahasia pun diberikan dari luar. Dengan begitu, gambar yang sama dapat dibagikan tanpa memuat kunci yang hanya berlaku di satu lingkungan."
+          ],
+          "checkpoint": {
+            "prompt": "Mengapa konfigurasi diberikan saat wadah dijalankan, bukan ditulis di dalam gambar?",
+            "success": "Agar gambar yang sama dapat dipakai di beberapa lingkungan dengan konfigurasi yang berbeda."
+          }
+        }
+      ],
+      "practice": [
+        {
+          "id": "latihan-1",
+          "level": "guided",
+          "title": "Tulis berkas pembangunan gambar",
+          "task": "Tulis berkas pembangunan untuk aplikasi dengan sistem dasar tetap, ketergantungan, dan perintah menjalankan.",
+          "steps": [
+            "Tentukan sistem dasar beserta versinya.",
+            "Tentukan direktori kerja di dalam wadah.",
+            "Salin berkas ketergantungan lalu pasang.",
+            "Salin kode dan tentukan perintah menjalankan."
+          ],
+          "starterCode": "FROM node:22-alpine\nWORKDIR /app\n# lengkapi",
+          "expected": "Gambar terbentuk dan aplikasi dapat dijalankan di dalamnya.",
+          "stretch": "Tambahkan langkah pembersihan berkas sementara setelah pemasangan.",
+          "hints": [
+            "Versi sistem dasar ditentukan tetap.",
+            "Ketergantungan dipasang sebelum kode disalin.",
+            "Perintah menjalankan ditentukan di akhir."
+          ],
+          "verification": {
+            "command": "Bangun gambar lalu jalankan wadahnya dan periksa aplikasi berjalan.",
+            "expected": "Gambar terbentuk tanpa kesalahan dan aplikasi berjalan di dalam wadah.",
+            "evidence": "Simpan berkas pembangunan dan catatan hasil pembangunan."
+          }
+        },
+        {
+          "id": "latihan-2",
+          "level": "independent",
+          "title": "Kurangi hal yang masuk gambar",
+          "task": "Tambahkan aturan pengabaian agar berkas yang tidak dipakai tidak ikut disalin ke dalam gambar.",
+          "steps": [
+            "Tentukan berkas yang tidak perlu masuk gambar.",
+            "Tulis aturan pengabaian untuk berkas itu.",
+            "Bangun ulang gambar.",
+            "Bandingkan ukurannya dengan sebelumnya."
+          ],
+          "starterCode": "node_modules\n.git\n.env",
+          "expected": "Gambar tidak lagi memuat berkas yang tidak perlu dan ukurannya berkurang.",
+          "stretch": "Periksa bahwa tidak ada berkas rahasia yang ikut masuk gambar.",
+          "hints": [
+            "Berkas tidak perlu tidak ikut disalin.",
+            "Berkas rahasia tidak boleh masuk gambar.",
+            "Bandingkan ukuran sebelum dan sesudah."
+          ],
+          "verification": {
+            "command": "Periksa isi gambar dan bandingkan ukurannya.",
+            "expected": "Tidak ada berkas yang tidak perlu atau rahasia di dalam gambar.",
+            "evidence": "Simpan aturan pengabaian dan catatan ukuran gambar."
+          }
+        },
+        {
+          "id": "latihan-3",
+          "level": "transfer",
+          "title": "Sediakan konfigurasi wadah",
+          "task": "Sediakan konfigurasi dari luar untuk aplikasi di dalam wadah: alamat basis data, mode, dan rahasia.",
+          "steps": [
+            "Tentukan nilai yang berbeda antar lingkungan.",
+            "Berikan nilai itu saat wadah dijalankan.",
+            "Pastikan gambar tidak memuat nilai tetap.",
+            "Uji wadah dengan dua konfigurasi berbeda."
+          ],
+          "starterCode": "docker run -e MODE=produksi -e DB_URL=... aplikasi",
+          "expected": "Wadah yang sama berjalan dengan dua konfigurasi berbeda tanpa mengubah gambar.",
+          "stretch": "Sediakan berkas konfigurasi untuk pengembangan tanpa rahasia nyata.",
+          "hints": [
+            "Nilai diberikan saat menjalankan wadah.",
+            "Gambar tetap sama antar lingkungan.",
+            "Rahasia tidak ditulis di dalam gambar."
+          ],
+          "verification": {
+            "command": "Jalankan wadah yang sama dengan dua konfigurasi dan periksa perilakunya.",
+            "expected": "Wadah berperilaku sesuai konfigurasi yang diberikan tanpa perubahan gambar.",
+            "evidence": "Simpan perintah menjalankan dan catatan hasilnya."
+          }
+        }
+      ],
+      "verification": {
+        "mode": "manual",
+        "command": "Bangun gambar, jalankan wadah dengan dua konfigurasi, dan periksa isi gambar.",
+        "expected": "Wadah berjalan dengan konfigurasi yang diberikan, gambar tetap sama antar lingkungan, dan tidak ada berkas rahasia di dalamnya.",
+        "evidence": "Simpan berkas pembangunan dan catatan hasil pengujian."
+      },
+      "troubleshooting": [
+        {
+          "symptom": "Aplikasi berjalan berbeda antara pengembangan dan produksi.",
+          "cause": "Susunan lingkungan berbeda, misalnya versi bahasa atau pustaka.",
+          "fix": "Pakai wadah sehingga susunan aplikasi dan ketergantungannya sama di mana pun."
+        },
+        {
+          "symptom": "Pembangunan gambar selalu lambat meski hanya kode yang berubah.",
+          "cause": "Ketergantungan dipasang setelah kode disalin sehingga lapisannya selalu dibuang ulang.",
+          "fix": "Salin berkas ketergantungan dan pasang lebih dulu, baru salin kode."
+        },
+        {
+          "symptom": "Rahasia ditemukan di dalam gambar.",
+          "cause": "Berkas rahasia ikut disalin saat pembangunan.",
+          "fix": "Tambahkan aturan pengabaian dan berikan rahasia saat wadah dijalankan."
+        },
+        {
+          "symptom": "Gambar yang sama tidak dapat dipakai di lingkungan lain.",
+          "cause": "Alamat atau pengaturan lingkungan tertulis di dalam gambar.",
+          "fix": "Pindahkan seluruh pengaturan lingkungan ke konfigurasi luar saat menjalankan wadah."
+        }
+      ],
       "quiz": {
-        "question": "Apa prinsip yang paling tepat untuk topik “Docker dan environment parity”?",
-        "options": [
-          "Pilih deployment sesuai kebutuhan operasi, bukan sekadar tren.",
-          "Gunakan solusi paling rumit sejak awal, meski kebutuhan belum jelas.",
-          "Lewati pengujian karena contoh kecil pasti benar."
-        ],
-        "answer": 0,
-        "explanation": "Pilih deployment sesuai kebutuhan operasi, bukan sekadar tren."
-      }
+        "questions": [
+          {
+            "id": "q1",
+            "type": "recall",
+            "question": "Apa maksud kesamaan lingkungan?",
+            "options": [
+              "Semua lingkungan memakai perangkat keras yang sama",
+              "Pengembangan, pengujian, dan produksi memakai susunan yang sama",
+              "Semua lingkungan berada pada satu mesin"
+            ],
+            "answer": 1,
+            "explanation": "Kesamaan lingkungan berarti susunan aplikasi dan ketergantungannya sama di ketiga lingkungan."
+          },
+          {
+            "id": "q2",
+            "type": "code-reading",
+            "question": "Mengapa langkah pemasangan ketergantungan diletakkan sebelum penyalinan kode?",
+            "options": [
+              "Agar kode lebih pendek",
+              "Agar lapisannya dipakai ulang saat hanya kode yang berubah sehingga pembangunan lebih cepat",
+              "Agar gambar lebih besar"
+            ],
+            "answer": 1,
+            "explanation": "Langkah yang jarang berubah diletakkan lebih awal agar lapisannya dimanfaatkan ulang."
+          },
+          {
+            "id": "q3",
+            "type": "scenario",
+            "question": "Aplikasi memerlukan alamat basis data berbeda antar lingkungan. Tindakan tepat...",
+            "options": [
+              "Menulis alamat produksi di dalam gambar",
+              "Memberikan alamat itu saat wadah dijalankan",
+              "Membuat gambar terpisah untuk setiap lingkungan"
+            ],
+            "answer": 1,
+            "explanation": "Konfigurasi diberikan saat wadah dijalankan agar gambar yang sama dapat dipakai di beberapa lingkungan."
+          }
+        ]
+      },
+      "resources": [
+        {
+          "sourceId": "docker-docs",
+          "note": "Dokumentasi resmi Docker tentang membuat dan menjalankan wadah."
+        },
+        {
+          "sourceId": "docker-build-best",
+          "note": "Praktik terbaik pembangunan gambar dan penyusunan lapisan."
+        },
+        {
+          "sourceId": "twelve-factor",
+          "note": "Panduan menyediakan konfigurasi dari luar aplikasi."
+        }
+      ],
+      "summary": [
+        "Wadah membawa aplikasi beserta ketergantungannya sehingga dapat dijalankan sama di mana pun.",
+        "Ketergantungan dipasang sebelum kode disalin agar lapisan tersimpan berguna.",
+        "Konfigurasi dan rahasia diberikan saat wadah dijalankan, bukan ditulis di dalam gambar.",
+        "Berkas yang tidak perlu dan berkas rahasia tidak ikut masuk ke gambar."
+      ],
+      "next": "Berikutnya: integrasi berkelanjutan dan disiplin rilis. Anda akan mengotomatiskan pemeriksaan dan penerbitan."
     },
     {
       "id": "m11-l06",
       "title": "CI/CD dan release discipline",
-      "minutes": 45,
-      "level": "Lanjutan",
-      "intro": "CI menjalankan linter, test, dan build otomatis tiap perubahan. CD membantu distribusi setelah pemeriksaan. Pipeline sebaiknya memiliki guard terhadap secret dan error.",
-      "explanation": "Rilis gunakan tag/versi, migrasi diuji, backup, healthcheck, rollout, dan rollback. Pisahkan permissions build dari production.",
-      "code": "// Pipeline konseptual:\n// checkout -> install -> lint -> test -> build\n// -> approval -> deploy -> smoke test",
+      "minutes": 120,
+      "level": "Menengah",
+      "depth": "integrasi",
+      "schema": 3.1,
       "codeLanguage": "javascript",
-      "practice": [
-        "Rancang pipeline untuk Laravel dan Flutter (test di PR, build saat release).",
-        "Ubah satu input atau asumsi pada contoh, catat hasil dan jelaskan alasannya."
+      "outcome": "Setelah pelajaran ini, Anda dapat menyusun alur pemeriksaan otomatis serta menerapkan disiplin rilis agar perubahan dapat diterbitkan dengan aman.",
+      "objectives": [
+        "Menjelaskan maksud integrasi berkelanjutan dan penerbitan berkelanjutan.",
+        "Menyusun alur pemeriksaan otomatis pada setiap perubahan.",
+        "Menjaga agar penerbitan dapat diulang dan dapat dikembalikan.",
+        "Menerapkan langkah rilis yang terkendali."
       ],
-      "bestPractice": "Rilis hanya dari commit yang sudah diuji dan bisa dilacak.",
-      "commonMistake": "Deploy langsung dari laptop tanpa tahu commit dan perubahan skema.",
+      "prerequisites": [
+        {
+          "label": "Docker dan environment parity",
+          "lessonId": "m11-l05"
+        }
+      ],
+      "terms": [
+        {
+          "term": "Integrasi berkelanjutan",
+          "definition": "Kebiasaan menjalankan pemeriksaan dan pengujian otomatis pada setiap perubahan kode."
+        },
+        {
+          "term": "Penerbitan berkelanjutan",
+          "definition": "Kebiasaan menerbitkan perubahan ke produksi secara otomatis setelah seluruh pemeriksaan lulus."
+        },
+        {
+          "term": "Alur kerja",
+          "definition": "Rangkaian langkah otomatis yang dijalankan ketika perubahan masuk."
+        },
+        {
+          "term": "Penerbitan yang dapat dikembalikan",
+          "definition": "Kemampuan mengembalikan versi sebelumnya bila versi baru bermasalah."
+        }
+      ],
+      "syntax": [
+        {
+          "token": "on: pull_request",
+          "readAs": "Baca sebagai pemicu alur kerja ketika ada usulan perubahan masuk.",
+          "meaning": "Alur kerja dijalankan otomatis pada peristiwa yang ditentukan, sehingga pemeriksaan tidak bergantung pada ingatan manusia.",
+          "example": "on: pull_request",
+          "output": "Pemeriksaan berjalan setiap kali ada usulan perubahan.",
+          "pitfall": "Menjalankan pemeriksaan hanya secara manual membuat perubahan dapat lolos tanpa diperiksa."
+        },
+        {
+          "token": "jobs: { uji: { steps: [...] } }",
+          "readAs": "Baca sebagai rangkaian langkah yang dijalankan berurutan dalam satu pekerjaan.",
+          "meaning": "Setiap langkah menjalankan satu bagian pemeriksaan, dan kegagalan menghentikan langkah berikutnya.",
+          "example": "jobs: { uji: { steps: [...] } }",
+          "output": "Seluruh langkah berjalan berurutan dan berhenti pada kegagalan.",
+          "pitfall": "Menaruh semua langkah pada satu pekerjaan panjang menyulitkan menemukan langkah yang gagal."
+        },
+        {
+          "token": "if (semuaLulus) terbitkan();",
+          "readAs": "Baca sebagai penerbitan yang hanya dijalankan setelah seluruh pemeriksaan lulus.",
+          "meaning": "Penerbitan bergantung pada hasil pemeriksaan. Versi yang gagal diperiksa tidak diterbitkan.",
+          "example": "if (semuaLulus) terbitkan();",
+          "output": "Hanya versi yang sudah lulus pemeriksaan yang diterbitkan.",
+          "pitfall": "Menerbitkan tanpa menunggu pemeriksaan berisiko mengirim versi yang bermasalah ke pengguna."
+        }
+      ],
+      "conventions": [
+        "Jalankan pemeriksaan dan pengujian otomatis pada setiap perubahan.",
+        "Pisahkan langkah pemeriksaan agar letak kegagalan mudah ditemukan.",
+        "Terbitkan hanya setelah seluruh pemeriksaan lulus.",
+        "Pastikan setiap terbitan dapat dikembalikan ke versi sebelumnya.",
+        "Catat perubahan pada setiap terbitan agar mudah di telusuri."
+      ],
+      "sections": [
+        {
+          "id": "cara-membaca",
+          "title": "Cara membaca alur kerja otomatis",
+          "body": [
+            "Alur kerja dibaca sebagai urutan: kapan dijalankan, di mana dijalankan, dan langkah apa saja yang dilakukan. Setiap bagian menjawab satu pertanyaan.",
+            "Pada contoh, alur dijalankan ketika ada usulan perubahan. Langkahnya menyiapkan kode, memasang ketergantungan, lalu menjalankan pemeriksaan gaya dan pengujian.",
+            "Perhatikan bahwa langkah-langkah itu berurutan. Bila satu langkah gagal, langkah berikutnya tidak dijalankan, sehingga perubahan yang tidak lulus terlihat jelas."
+          ],
+          "code": {
+            "language": "javascript",
+            "lab": false,
+            "code": "name: uji\non: pull_request\njobs:\n  uji:\n    runs-on: ubuntu-latest\n    steps:\n      - uses: actions/checkout@v4\n      - run: npm ci\n      - run: npm run lint && npm run test",
+            "output": "Alur kerja berjalan pada setiap usulan perubahan, memasang ketergantungan, lalu menjalankan pemeriksaan dan pengujian.",
+            "explain": "Alur dijalankan pada peristiwa tertentu. Langkahnya menyiapkan kode, memasang ketergantungan, dan menjalankan pemeriksaan yang berhenti pada kegagalan.",
+            "annotations": [
+              {
+                "line": 2,
+                "code": "on: pull_request",
+                "note": "Alur dijalankan ketika ada usulan perubahan."
+              },
+              {
+                "line": 5,
+                "code": "runs-on: ubuntu-latest",
+                "note": "Lingkungan menjalankan langkah ditentukan."
+              },
+              {
+                "line": 7,
+                "code": "- uses: actions/checkout@v4",
+                "note": "Kode diambil untuk diperiksa."
+              },
+              {
+                "line": 8,
+                "code": "- run: npm ci",
+                "note": "Ketergantungan dipasang secara terkunci."
+              },
+              {
+                "line": 9,
+                "code": "- run: npm run lint && npm run test",
+                "note": "Pemeriksaan gaya dan pengujian dijalankan berurutan."
+              }
+            ]
+          },
+          "callouts": [
+            {
+              "tone": "good",
+              "title": "Pemeriksaan tidak bergantung ingatan",
+              "body": "Alur otomatis menghilangkan ketergantungan pada ingatan manusia. Setiap perubahan diperiksa dengan cara yang sama."
+            }
+          ],
+          "checkpoint": {
+            "prompt": "Apa yang terjadi bila satu langkah pada alur kerja gagal?",
+            "success": "Langkah berikutnya tidak dijalankan sehingga perubahan yang tidak lulus terlihat jelas."
+          }
+        },
+        {
+          "id": "integrasi-berkelanjutan",
+          "title": "Menjaga integrasi tetap berkelanjutan",
+          "body": [
+            "Integrasi berkelanjutan berarti setiap perubahan diperiksa dengan cara yang sama secara otomatis. Perubahan kecil yang sering diperiksa lebih mudah dibenahi daripada perubahan besar yang lama mengendap.",
+            "Manfaatnya muncul ketika pemeriksaan dijalankan sebelum perubahan digabungkan. Masalah tertangkap saat perubahan masih kecil dan fokus, bukan setelah bercampur dengan perubahan lain.",
+            "Jaga agar pemeriksaan tetap cepat. Pemeriksaan yang lambat membuat orang malas menjalankannya dan menunda penggabungan, yang justru menghilangkan manfaatnya."
+          ],
+          "checkpoint": {
+            "prompt": "Mengapa perubahan kecil yang sering diperiksa lebih menguntungkan?",
+            "success": "Karena masalah tertangkap saat perubahan masih kecil dan fokus sehingga lebih mudah dibenahi."
+          }
+        },
+        {
+          "id": "disiplin-rilis",
+          "title": "Menerapkan disiplin rilis",
+          "body": [
+            "Disiplin rilis berarti versi diterbitkan melalui langkah yang tetap, bukan secara mendadak. Setiap terbitan melewati pemeriksaan yang sama dan tercatat.",
+            "Penting agar setiap terbitan dapat dikembalikan. Bila versi baru bermasalah, versi sebelumnya dapat dipakai lagi tanpa menunggu perbaikan.",
+            "Catat perubahan pada setiap terbitan. Catatan itu membantu tim dan pengguna memahami apa yang berbeda, dan memudahkan menelusuri penyebab ketika ada masalah."
+          ],
+          "callouts": [
+            {
+              "tone": "warn",
+              "title": "Siapkan jalan kembali",
+              "body": "Siapkan cara mengembalikan versi sebelumnya sebelum dibutuhkan. Rencana kembali yang belum diuji sering gagal saat dipakai."
+            }
+          ],
+          "checkpoint": {
+            "prompt": "Mengapa setiap terbitan perlu dapat dikembalikan?",
+            "success": "Agar versi sebelumnya dapat dipakai lagi bila versi baru bermasalah, tanpa menunggu perbaikan."
+          }
+        },
+        {
+          "id": "langkah-terkendali",
+          "title": "Menyusun langkah rilis yang terkendali",
+          "body": [
+            "Langkah rilis sebaiknya tersusun: periksa, uji, bangun, terbitkan, lalu pantau. Setiap langkah menyiapkan satu hal sebelum langkah berikutnya.",
+            "Pisahkan langkah penerbitan dari langkah pemeriksaan. Pemeriksaan berjalan pada setiap perubahan, sedangkan penerbitan hanya pada perubahan yang memang akan dirilis.",
+            "Sertakan pemantauan setelah penerbitan. Tanpa pemantauan, masalah pada versi baru dapat berjalan lama sebelum diketahui."
+          ],
+          "checkpoint": {
+            "prompt": "Sebutkan urutan langkah rilis yang terkendali.",
+            "success": "Periksa, uji, bangun, terbitkan, lalu pantau."
+          }
+        }
+      ],
+      "practice": [
+        {
+          "id": "latihan-1",
+          "level": "guided",
+          "title": "Alur kerja pemeriksaan",
+          "task": "Tulis alur kerja yang menjalankan pemeriksaan gaya dan pengujian pada setiap usulan perubahan.",
+          "steps": [
+            "Tentukan peristiwa pemicu.",
+            "Tentukan lingkungan menjalankan.",
+            "Tambahkan langkah menyiapkan kode dan ketergantungan.",
+            "Tambahkan langkah pemeriksaan dan pengujian."
+          ],
+          "starterCode": "name: uji\non: pull_request\njobs:\n  uji:\n    steps: []",
+          "expected": "Alur berjalan pada setiap usulan perubahan dan menjalankan pemeriksaan berurutan.",
+          "stretch": "Pisahkan pemeriksaan gaya dan pengujian menjadi dua pekerjaan.",
+          "hints": [
+            "Pemicu menentukan kapan alur berjalan.",
+            "Langkah berjalan berurutan.",
+            "Kegagalan menghentikan langkah berikutnya."
+          ],
+          "verification": {
+            "command": "Kirim usulan perubahan yang lulus lalu yang sengaja gagal.",
+            "expected": "Alur lulus pada perubahan baik dan gagal pada perubahan yang bermasalah.",
+            "evidence": "Simpan berkas alur dan catatan hasil kedua perubahan."
+          }
+        },
+        {
+          "id": "latihan-2",
+          "level": "independent",
+          "title": "Penerbitan setelah lulus",
+          "task": "Tambahkan langkah penerbitan yang hanya dijalankan setelah seluruh pemeriksaan lulus.",
+          "steps": [
+            "Tentukan syarat penerbitan.",
+            "Hubungkan penerbitan dengan hasil pemeriksaan.",
+            "Terbitkan hanya pada cabang yang sesuai.",
+            "Catat versi yang diterbitkan."
+          ],
+          "starterCode": "if (semuaLulus) terbitkan();",
+          "expected": "Penerbitan hanya berjalan setelah pemeriksaan lulus pada cabang yang sesuai.",
+          "stretch": "Tambahkan pencatatan perubahan otomatis pada setiap terbitan.",
+          "hints": [
+            "Penerbitan bergantung hasil pemeriksaan.",
+            "Hanya cabang tertentu yang diterbitkan.",
+            "Versi yang diterbitkan dicatat."
+          ],
+          "verification": {
+            "command": "Uji penerbitan pada perubahan yang lulus dan yang gagal.",
+            "expected": "Penerbitan berjalan hanya pada perubahan yang lulus.",
+            "evidence": "Simpan berkas alur dan catatan hasil kedua kasus."
+          }
+        },
+        {
+          "id": "latihan-3",
+          "level": "transfer",
+          "title": "Susun langkah rilis terpantau",
+          "task": "Susun langkah rilis lengkap dari pemeriksaan sampai pemantauan, termasuk cara kembali bila versi baru bermasalah.",
+          "steps": [
+            "Tentukan urutan langkah dari pemeriksaan sampai terbit.",
+            "Tentukan cara memantau setelah terbit.",
+            "Tentukan cara kembali ke versi sebelumnya.",
+            "Jalankan seluruh urutan pada lingkungan uji."
+          ],
+          "starterCode": "1. periksa\n2. uji\n3. ...\nKembali: ...",
+          "expected": "Langkah rilis dapat dijalankan berurutan dan rencana kembali sudah jelas.",
+          "stretch": "Tambahkan pemeriksaan otomatis bahwa versi baru berjalan sehat.",
+          "hints": [
+            "Pemeriksaan mendahului penerbitan.",
+            "Pemantauan menyusul setelah terbit.",
+            "Rencana kembali disiapkan sebelum dibutuhkan."
+          ],
+          "verification": {
+            "command": "Jalankan urutan pada lingkungan uji lalu uji rencana kembalinya.",
+            "expected": "Urutan berjalan berurutan dan pengembalian versi berhasil.",
+            "evidence": "Simpan langkah rilis dan catatan hasil pelaksanaannya."
+          }
+        }
+      ],
+      "verification": {
+        "mode": "manual",
+        "command": "Jalankan alur pemeriksaan pada perubahan lulus dan gagal, lalu uji penerbitan serta pengembalian versi.",
+        "expected": "Pemeriksaan berjalan otomatis pada setiap perubahan, penerbitan hanya terjadi setelah lulus, dan versi sebelumnya dapat dipakai kembali.",
+        "evidence": "Simpan berkas alur dan catatan hasil setiap pengujian."
+      },
+      "troubleshooting": [
+        {
+          "symptom": "Perubahan bermasalah lolos sampai produksi.",
+          "cause": "Pemeriksaan tidak dijalankan otomatis pada setiap perubahan.",
+          "fix": "Jalankan pemeriksaan dan pengujian otomatis pada setiap usulan perubahan."
+        },
+        {
+          "symptom": "Sulit mengetahui langkah mana yang gagal pada alur otomatis.",
+          "cause": "Semua langkah digabung dalam satu pekerjaan panjang.",
+          "fix": "Pisahkan langkah menjadi pekerjaan tersendiri agar letak kegagalan mudah ditemukan."
+        },
+        {
+          "symptom": "Versi baru bermasalah dan sulit dikembalikan.",
+          "cause": "Tidak ada rencana kembali yang diuji sebelumnya.",
+          "fix": "Siapkan dan uji cara mengembalikan versi sebelumnya sebelum dibutuhkan."
+        },
+        {
+          "symptom": "Pemeriksaan otomatis jarang dijalankan karena lambat.",
+          "cause": "Terlalu banyak langkah berat dijalankan pada setiap perubahan.",
+          "fix": "Pisahkan pemeriksaan cepat pada setiap perubahan dan pemeriksaan berat pada tahap yang lebih jarang."
+        }
+      ],
       "quiz": {
-        "question": "Apa prinsip yang paling tepat untuk topik “CI/CD dan release discipline”?",
-        "options": [
-          "Rilis hanya dari commit yang sudah diuji dan bisa dilacak.",
-          "Gunakan solusi paling rumit sejak awal, meski kebutuhan belum jelas.",
-          "Lewati pengujian karena contoh kecil pasti benar."
-        ],
-        "answer": 0,
-        "explanation": "Rilis hanya dari commit yang sudah diuji dan bisa dilacak."
-      }
+        "questions": [
+          {
+            "id": "q1",
+            "type": "recall",
+            "question": "Apa maksud integrasi berkelanjutan?",
+            "options": [
+              "Menerbitkan setiap perubahan tanpa pemeriksaan",
+              "Menjalankan pemeriksaan dan pengujian otomatis pada setiap perubahan kode",
+              "Menggabungkan semua perubahan sekaligus"
+            ],
+            "answer": 1,
+            "explanation": "Integrasi berkelanjutan menjalankan pemeriksaan otomatis pada setiap perubahan."
+          },
+          {
+            "id": "q2",
+            "type": "code-reading",
+            "question": "Kapan penerbitan dijalankan pada alur yang benar?",
+            "options": [
+              "Bersamaan dengan pemeriksaan",
+              "Setelah seluruh pemeriksaan lulus",
+              "Sebelum pemeriksaan dimulai"
+            ],
+            "answer": 1,
+            "explanation": "Penerbitan menunggu seluruh pemeriksaan lulus agar versi bermasalah tidak terkirim."
+          },
+          {
+            "id": "q3",
+            "type": "scenario",
+            "question": "Versi baru diterbitkan dan ternyata bermasalah. Tindakan paling cepat...",
+            "options": [
+              "Menunggu perbaikan selesai",
+              "Mengembalikan ke versi sebelumnya",
+              "Mematikan seluruh layanan"
+            ],
+            "answer": 1,
+            "explanation": "Pengembalian ke versi sebelumnya memulihkan layanan tanpa menunggu perbaikan selesai."
+          }
+        ]
+      },
+      "resources": [
+        {
+          "sourceId": "github-actions",
+          "note": "Dokumentasi resmi alur kerja otomatis pada setiap perubahan."
+        },
+        {
+          "sourceId": "github-pr",
+          "note": "Dokumentasi alur usulan perubahan dan pemeriksaannya."
+        },
+        {
+          "sourceId": "twelve-factor",
+          "note": "Panduan pemisahan tahap pembangunan, penerbitan, dan menjalankan."
+        }
+      ],
+      "summary": [
+        "Integrasi berkelanjutan menjalankan pemeriksaan otomatis pada setiap perubahan.",
+        "Pemeriksaan yang terpisah memudahkan menemukan langkah yang gagal.",
+        "Penerbitan hanya dijalankan setelah seluruh pemeriksaan lulus.",
+        "Setiap terbitan perlu dapat dikembalikan dan dicatat perubahannya."
+      ],
+      "next": "Berikutnya: pemantauan, catatan, dan cadangan. Anda akan menjaga layanan tetap sehat setelah dirilis."
     },
     {
       "id": "m11-l07",
       "title": "Monitoring, log, dan backup",
-      "minutes": 45,
-      "level": "Lanjutan",
-      "intro": "Operasional membutuhkan metrics (CPU/RAM/latency), log terstruktur, error tracking, uptime checks, alerting, serta backup yang diuji.",
-      "explanation": "Log jangan berisi password, token, atau data pribadi tak perlu. Terapkan retensi; gunakan correlation/request ID agar request bisa ditelusuri. Ukur SLA/SLO jika layanan sudah kritikal.",
-      "code": "// Log ideal mencakup:\n// timestamp, level, request_id, endpoint, status, durasi\n// BUKAN password atau access token",
+      "minutes": 120,
+      "level": "Menengah",
+      "depth": "integrasi",
+      "schema": 3.1,
       "codeLanguage": "javascript",
-      "practice": [
-        "Definisikan tiga metrik dan dua alert untuk API layanan publik.",
-        "Ubah satu input atau asumsi pada contoh, catat hasil dan jelaskan alasannya."
+      "outcome": "Setelah pelajaran ini, Anda dapat memantau kesehatan layanan, mencatat kejadian yang berguna, serta menyiapkan cadangan dan pemulihan data.",
+      "objectives": [
+        "Menentukan hal yang perlu dipantau pada layanan.",
+        "Mencatat kejadian dengan keterangan yang berguna.",
+        "Menyusun cadangan dan menguji pemulihannya.",
+        "Menentukan tanggapan terhadap gangguan."
       ],
-      "bestPractice": "Uji restore berkala serta siapkan dashboard error dan uptime.",
-      "commonMistake": "Memantau hanya server hidup, tetapi endpoint aplikasi ternyata error.",
+      "prerequisites": [
+        {
+          "label": "CI/CD dan release discipline",
+          "lessonId": "m11-l06"
+        }
+      ],
+      "terms": [
+        {
+          "term": "Pemantauan",
+          "definition": "Pengamatan berkelanjutan atas kesehatan layanan agar gangguan diketahui lebih awal."
+        },
+        {
+          "term": "Catatan kejadian",
+          "definition": "Rekaman kejadian yang terjadi pada layanan, dipakai untuk menelusuri masalah."
+        },
+        {
+          "term": "Cadangan",
+          "definition": "Salinan data yang disimpan terpisah agar dapat dipulihkan bila data aslinya hilang."
+        },
+        {
+          "term": "Pemulihan",
+          "definition": "Proses mengembalikan data atau layanan ke keadaan berjalan setelah gangguan."
+        }
+      ],
+      "syntax": [
+        {
+          "token": "log({ tingkat: \"error\", pesan, jejak });",
+          "readAs": "Baca sebagai pencatatan kejadian dengan tingkat kepentingan dan keterangan pendukung.",
+          "meaning": "Catatan memuat keterangan yang cukup untuk menelusuri masalah, misalnya jejak permintaan yang menghubungkan beberapa catatan.",
+          "example": "log({ tingkat: \"error\", pesan, jejak });",
+          "output": "Kejadian tercatat dengan keterangan yang dapat ditelusuri.",
+          "pitfall": "Mencatat data sensitif seperti kata sandi atau token membahayakan keamanan."
+        },
+        {
+          "token": "metrik.permintaan.bertambah(1);",
+          "readAs": "Baca sebagai pencatatan angka kejadian yang dapat dipantau dari waktu ke waktu.",
+          "meaning": "Angka itu memperlihatkan seberapa sering sesuatu terjadi sehingga perubahan perilaku layanan dapat terlihat.",
+          "example": "metrik.permintaan.bertambah(1);",
+          "output": "Angka kejadian tersedia untuk pemantauan dan peringatan.",
+          "pitfall": "Memantau terlalu banyak angka tanpa fokus membuat peringatan berisik dan diabaikan."
+        },
+        {
+          "token": "if (data == null) kembalikanCadangan();",
+          "readAs": "Baca sebagai penggunaan salinan cadangan ketika data utama tidak tersedia.",
+          "meaning": "Cadangan dipakai untuk memulihkan layanan ketika data utama hilang atau rusak.",
+          "example": "if (data == null) kembalikanCadangan();",
+          "output": "Layanan dapat berjalan kembali memakai salinan cadangan.",
+          "pitfall": "Cadangan yang belum pernah diuji pemulihannya sering tidak dapat dipakai saat benar-benar dibutuhkan."
+        }
+      ],
+      "conventions": [
+        "Pantau hal yang mencerminkan kesehatan layanan, bukan semua hal.",
+        "Catat kejadian dengan keterangan yang cukup untuk penelusuran.",
+        "Jangan catat data sensitif seperti kata sandi atau token.",
+        "Buat cadangan secara berkala dan simpan terpisah dari data utama.",
+        "Uji pemulihan cadangan, bukan hanya pembuatannya."
+      ],
+      "sections": [
+        {
+          "id": "cara-membaca",
+          "title": "Cara membaca pencatatan kejadian",
+          "body": [
+            "Pencatatan dibaca sebagai pemisahan dua hal: keterangan untuk penelusuran dan pesan untuk pengguna. Keterangan teknis masuk catatan, sedangkan pesan untuk pengguna dibuat sederhana.",
+            "Pada contoh, kesalahan dicatat beserta jejak permintaan. Jejak itu menghubungkan catatan ini dengan catatan lain dari permintaan yang sama, sehingga penelusuran menjadi mungkin.",
+            "Untuk pengguna, pesannya cukup menyatakan bahwa terjadi kesalahan. Rincian teknis tidak ditampilkan karena membingungkan dan dapat membocorkan hal yang tidak perlu."
+          ],
+          "code": {
+            "language": "javascript",
+            "lab": false,
+            "code": "function tangani(error, req) {\n  log({\n    tingkat: \"error\",\n    pesan: error.message,\n    jejak: req.id,\n  });\n  return { status: 500, pesan: \"Terjadi kesalahan\" };\n}",
+            "output": "Kesalahan tercatat dengan jejak permintaan, sedangkan pengguna menerima pesan sederhana.",
+            "explain": "Keterangan teknis masuk catatan beserta jejak permintaan. Pengguna menerima pesan umum tanpa rincian teknis.",
+            "annotations": [
+              {
+                "line": 2,
+                "code": "log({",
+                "note": "Pencatatan memuat tingkat kepentingan kejadian."
+              },
+              {
+                "line": 4,
+                "code": "pesan: error.message,",
+                "note": "Pesan kesalahan dicatat untuk penelusuran."
+              },
+              {
+                "line": 5,
+                "code": "jejak: req.id,",
+                "note": "Jejak permintaan menghubungkan catatan yang berkaitan."
+              },
+              {
+                "line": 7,
+                "code": "return { status: 500, pesan: \"Terjadi kesalahan\" };",
+                "note": "Pengguna menerima pesan sederhana tanpa rincian teknis."
+              }
+            ]
+          },
+          "callouts": [
+            {
+              "tone": "warn",
+              "title": "Jangan catat data sensitif",
+              "body": "Pastikan catatan tidak memuat kata sandi, token, atau data pribadi. Catatan sering dibaca lebih banyak pihak daripada data utama."
+            }
+          ],
+          "checkpoint": {
+            "prompt": "Mengapa jejak permintaan penting pada pencatatan kejadian?",
+            "success": "Karena jejak itu menghubungkan catatan dari permintaan yang sama sehingga penelusuran masalah menjadi mungkin."
+          }
+        },
+        {
+          "id": "apa-yang-dipantau",
+          "title": "Menentukan hal yang perlu dipantau",
+          "body": [
+            "Pemantauan berguna bila mengamati hal yang mencerminkan kesehatan layanan. Contohnya tingkat keberhasilan permintaan, waktu tanggap, dan jumlah kegagalan.",
+            "Pantau hal yang berkaitan dengan pengalaman pengguna, bukan hanya kesehatan mesin. Mesin dapat tampak sehat sementara pengguna sebenarnya tidak dapat memakai layanan.",
+            "Batasi jumlah hal yang dipantau agar peringatan tetap bermakna. Terlalu banyak peringatan membuat tim mengabaikannya, sehingga peringatan yang penting ikut terlewat."
+          ],
+          "checkpoint": {
+            "prompt": "Mengapa memantau hanya kesehatan mesin tidak cukup?",
+            "success": "Karena mesin dapat tampak sehat sementara pengguna sebenarnya tidak dapat memakai layanan."
+          }
+        },
+        {
+          "id": "cadangan-pemulihan",
+          "title": "Menyiapkan cadangan dan pemulihan",
+          "body": [
+            "Cadangan melindungi data dari kehilangan. Salinan disimpan terpisah dari data utama agar gangguan pada satu tempat tidak menghilangkan keduanya.",
+            "Yang menentukan bukan pembuatan cadangan, melainkan keberhasilan pemulihannya. Cadangan yang belum pernah diuji sering tidak dapat dipakai saat benar-benar diperlukan.",
+            "Uji pemulihan secara berkala dan catat hasilnya. Uji itu memastikan salinan benar-benar utuh dan langkah pemulihannya masih sesuai keadaan sekarang."
+          ],
+          "callouts": [
+            {
+              "tone": "warn",
+              "title": "Uji pemulihan",
+              "body": "Cadangan yang belum diuji belum terbukti berguna. Uji pemulihannya secara berkala, bukan hanya pembuatannya."
+            }
+          ],
+          "checkpoint": {
+            "prompt": "Mengapa pemulihan cadangan perlu diuji, bukan hanya pembuatannya?",
+            "success": "Karena cadangan yang belum diuji sering tidak dapat dipakai atau tidak utuh saat benar-benar dibutuhkan."
+          }
+        },
+        {
+          "id": "tanggapan-gangguan",
+          "title": "Menanggapi gangguan",
+          "body": [
+            "Ketika gangguan terjadi, langkah pertama adalah memulihkan layanan. Penelusuran penyebab menyusul setelah layanan kembali berjalan.",
+            "Catat kejadian yang berkaitan selama gangguan. Catatan itu menjadi dasar penelusuran penyebab dan pencegahan agar gangguan serupa tidak terulang.",
+            "Tinjau gangguan setelah selesai. Tinjauan itu mencari penyebab mendasar, bukan menyalahkan orang, sehingga perbaikan yang dihasilkan benar-benar mencegah pengulangan."
+          ],
+          "checkpoint": {
+            "prompt": "Apa langkah pertama ketika gangguan terjadi?",
+            "success": "Memulihkan layanan lebih dulu, lalu menelusuri penyebabnya setelah layanan kembali berjalan."
+          }
+        }
+      ],
+      "practice": [
+        {
+          "id": "latihan-1",
+          "level": "guided",
+          "title": "Catat kejadian dengan jejak",
+          "task": "Tambah pencatatan pada penanganan kesalahan yang memuat tingkat, pesan, dan jejak permintaan.",
+          "steps": [
+            "Tentukan kejadian yang perlu dicatat.",
+            "Tambahkan pencatatan pada penanganan kesalahan.",
+            "Sertakan jejak yang menghubungkan catatan.",
+            "Pastikan tidak ada data sensitif pada catatan."
+          ],
+          "starterCode": "log({ tingkat: \"error\", pesan: error.message, jejak: req.id });",
+          "expected": "Kejadian tercatat dengan jejak yang dapat ditelusuri tanpa data sensitif.",
+          "stretch": "Tambahkan pencatatan pada jalur berhasil dengan tingkat yang lebih rendah.",
+          "hints": [
+            "Catatan memuat keterangan penelusuran.",
+            "Jejak menghubungkan catatan sepermintaan.",
+            "Data sensitif tidak dicatat."
+          ],
+          "verification": {
+            "command": "Picu kesalahan lalu periksa catatan yang dihasilkan.",
+            "expected": "Catatan memuat jejak dan tidak memuat data sensitif.",
+            "evidence": "Simpan kode dan contoh catatan yang dihasilkan."
+          }
+        },
+        {
+          "id": "latihan-2",
+          "level": "independent",
+          "title": "Pantau angka kesehatan",
+          "task": "Tambahkan pemantauan pada tingkat keberhasilan dan waktu tanggap permintaan.",
+          "steps": [
+            "Tentukan angka yang mencerminkan kesehatan layanan.",
+            "Catat angka itu pada setiap permintaan.",
+            "Tentukan ambang yang memicu peringatan.",
+            "Pastikan peringatan tidak terlalu berisik."
+          ],
+          "starterCode": "metrik.permintaan.bertambah(1);",
+          "expected": "Angka kesehatan terpantau dan peringatan muncul pada keadaan yang benar-benar perlu.",
+          "stretch": "Tambahkan pemantauan tingkat kegagalan menurut jenis kesalahan.",
+          "hints": [
+            "Pantau hal yang berkaitan pengalaman pengguna.",
+            "Ambang menentukan kapan peringatan muncul.",
+            "Batasi jumlah peringatan agar tetap bermakna."
+          ],
+          "verification": {
+            "command": "Bandingkan angka sebelum dan selama gangguan yang disengaja.",
+            "expected": "Angka berubah sesuai keadaan dan peringatan muncul pada gangguan.",
+            "evidence": "Simpan kode dan catatan angka kedua keadaan."
+          }
+        },
+        {
+          "id": "latihan-3",
+          "level": "transfer",
+          "title": "Rancang pemulihan data",
+          "task": "Rancang cara cadangan dan pemulihan data untuk aplikasi tugas, termasuk jadwal dan pengujiannya.",
+          "steps": [
+            "Tentukan data yang perlu dicadangkan.",
+            "Tentukan jadwal pencadangan dan tempat penyimpanannya.",
+            "Tentukan langkah pemulihan.",
+            "Tentukan jadwal pengujian pemulihannya."
+          ],
+          "starterCode": "Data: ...\nJadwal cadangan: ...\nUji pemulihan: ...",
+          "expected": "Rancangan memuat jadwal, tempat penyimpanan, dan pengujian pemulihan yang jelas.",
+          "stretch": "Perkirakan berapa lama pemulihan memakan waktu.",
+          "hints": [
+            "Salinan disimpan terpisah dari data utama.",
+            "Yang menentukan adalah keberhasilan pemulihan.",
+            "Pemulihan diuji secara berkala."
+          ],
+          "verification": {
+            "command": "Lakukan pemulihan dari cadangan pada lingkungan uji.",
+            "expected": "Data kembali utuh dan layanan berjalan setelah pemulihan.",
+            "evidence": "Simpan rancangan dan catatan hasil pengujian pemulihan."
+          }
+        }
+      ],
+      "verification": {
+        "mode": "manual",
+        "command": "Picu kesalahan yang disengaja, periksa catatan dan pemantauan, lalu uji pemulihan dari cadangan.",
+        "expected": "Catatan memuat keterangan penelusuran tanpa data sensitif, pemantauan menandai gangguan, dan data dapat dipulihkan.",
+        "evidence": "Simpan contoh catatan, angka pemantauan, dan catatan hasil pemulihan."
+      },
+      "troubleshooting": [
+        {
+          "symptom": "Masalah produksi sulit ditelusuri.",
+          "cause": "Catatan tidak memuat jejak yang menghubungkan kejadian sepermintaan.",
+          "fix": "Tambahkan jejak permintaan pada setiap catatan agar kejadian yang berkaitan dapat dihubungkan."
+        },
+        {
+          "symptom": "Peringatan pemantauan sering muncul tanpa masalah nyata.",
+          "cause": "Terlalu banyak hal dipantau atau ambangnya terlalu ketat.",
+          "fix": "Batasi pemantauan pada hal yang mencerminkan kesehatan dan sesuaikan ambangnya."
+        },
+        {
+          "symptom": "Cadangan tidak dapat dipakai saat dibutuhkan.",
+          "cause": "Pemulihan cadangan belum pernah diuji.",
+          "fix": "Uji pemulihan cadangan secara berkala dan perbaiki langkahnya bila gagal."
+        },
+        {
+          "symptom": "Data sensitif terbaca pada catatan.",
+          "cause": "Data sensitif ikut dicatat tanpa disaring.",
+          "fix": "Saring data sensitif sebelum dicatat dan ganti dengan penanda."
+        }
+      ],
       "quiz": {
-        "question": "Apa prinsip yang paling tepat untuk topik “Monitoring, log, dan backup”?",
-        "options": [
-          "Uji restore berkala serta siapkan dashboard error dan uptime.",
-          "Gunakan solusi paling rumit sejak awal, meski kebutuhan belum jelas.",
-          "Lewati pengujian karena contoh kecil pasti benar."
-        ],
-        "answer": 0,
-        "explanation": "Uji restore berkala serta siapkan dashboard error dan uptime."
-      }
+        "questions": [
+          {
+            "id": "q1",
+            "type": "recall",
+            "question": "Mengapa pemantauan sebaiknya fokus pada hal yang berkaitan dengan pengalaman pengguna?",
+            "options": [
+              "Agar tampilan lebih rapi",
+              "Karena mesin dapat tampak sehat sementara pengguna tidak dapat memakai layanan",
+              "Agar biaya lebih murah"
+            ],
+            "answer": 1,
+            "explanation": "Kesehatan mesin tidak selalu mencerminkan pengalaman pengguna, sehingga keduanya perlu dipantau."
+          },
+          {
+            "id": "q2",
+            "type": "code-reading",
+            "question": "Apa yang membuat catatan kejadian berguna untuk penelusuran?",
+            "options": [
+              "Jumlahnya banyak",
+              "Adanya jejak yang menghubungkan catatan dari permintaan yang sama",
+              "Pesan yang panjang"
+            ],
+            "answer": 1,
+            "explanation": "Jejak menghubungkan catatan dari permintaan yang sama sehingga penelusuran masalah menjadi mungkin."
+          },
+          {
+            "id": "q3",
+            "type": "scenario",
+            "question": "Cadangan dibuat berkala tetapi belum pernah diuji. Tindakan tepat...",
+            "options": [
+              "Membiarkannya",
+              "Menguji pemulihannya secara berkala",
+              "Membuat lebih banyak cadangan"
+            ],
+            "answer": 1,
+            "explanation": "Yang menentukan adalah keberhasilan pemulihan, sehingga cadangan perlu diuji pemulihannya."
+          }
+        ]
+      },
+      "resources": [
+        {
+          "sourceId": "sre-monitoring",
+          "note": "Panduan pemantauan sistem terdistribusi dan penyusunan peringatan."
+        },
+        {
+          "sourceId": "owasp-secrets",
+          "note": "Panduan agar data sensitif tidak ikut tercatat."
+        },
+        {
+          "sourceId": "postgresql-backup",
+          "note": "Panduan cadangan dan pemulihan data basis data."
+        }
+      ],
+      "summary": [
+        "Pemantauan berfokus pada hal yang mencerminkan kesehatan layanan dan pengalaman pengguna.",
+        "Catatan kejadian memuat keterangan penelusuran tanpa data sensitif.",
+        "Cadangan disimpan terpisah dan pemulihannya diuji secara berkala.",
+        "Tanggapan gangguan memulihkan layanan lebih dulu, lalu menelusuri penyebabnya."
+      ],
+      "next": "Berikutnya: kinerja dan aksesibilitas produksi. Anda akan menyiapkan layanan yang cepat dan dapat dipakai semua orang."
     },
     {
       "id": "m11-l08",
-      "title": "Performance & aksesibilitas produksi",
-      "minutes": 45,
-      "level": "Lanjutan",
-      "intro": "Optimasi berbasis pengukuran: respons server, query DB, ukuran asset, caching, dan UX. Kinerja buruk pada koneksi lambat adalah masalah aksesibilitas juga.",
-      "explanation": "Gunakan lazy loading dan pagination, kompresi asset, cache headers, audit Core Web Vitals untuk web. Jangan membuat indeks/cache sebelum menemukan bottleneck.",
-      "code": "// Checklist:\n// p95 latency API, query lambat, ukuran JS,\n// LCP/INP/CLS, uji koneksi lambat",
+      "title": "Performance dan aksesibilitas produksi",
+      "minutes": 120,
+      "level": "Menengah",
+      "depth": "integrasi",
+      "schema": 3.1,
       "codeLanguage": "javascript",
-      "practice": [
-        "Ukur halaman aplikasi pada simulasi jaringan lambat lalu pilih 2 optimasi berdasar data.",
-        "Ubah satu input atau asumsi pada contoh, catat hasil dan jelaskan alasannya."
+      "outcome": "Setelah pelajaran ini, Anda dapat menyiapkan aplikasi yang terasa cepat serta dapat dipakai oleh pengguna dengan berbagai kebutuhan.",
+      "objectives": [
+        "Menjelaskan ukuran yang mencerminkan kecepatan yang dirasakan pengguna.",
+        "Mengurangi hal yang memperlambat tampilan awal.",
+        "Menerapkan dasar aksesibilitas pada antarmuka.",
+        "Menguji kinerja dan aksesibilitas sebelum rilis."
       ],
-      "bestPractice": "Profiling sebelum optimasi dan uji dampak setelah perubahan.",
-      "commonMistake": "Mengurangi keterbacaan kode untuk optimasi mikro tanpa bukti.",
+      "prerequisites": [
+        {
+          "label": "Monitoring, log, dan backup",
+          "lessonId": "m11-l07"
+        }
+      ],
+      "terms": [
+        {
+          "term": "Kinerja yang dirasakan",
+          "definition": "Seberapa cepat aplikasi terasa bagi pengguna, bukan hanya seberapa cepat servernya."
+        },
+        {
+          "term": "Aksesibilitas",
+          "definition": "Keadaan antarmuka yang dapat dipakai pengguna dengan berbagai kemampuan dan alat bantu."
+        },
+        {
+          "term": "Beban awal",
+          "definition": "Jumlah data yang perlu diunduh sebelum halaman dapat dipakai."
+        },
+        {
+          "term": "Kontras",
+          "definition": "Perbedaan terang antara teks dan latarnya sehingga teks mudah dibaca."
+        }
+      ],
+      "syntax": [
+        {
+          "token": "<img src=\"...\" alt=\"Judul tugas\" loading=\"lazy\">",
+          "readAs": "Baca sebagai gambar dengan keterangan alternatif dan pemuatan yang ditunda.",
+          "meaning": "Keterangan alternatif membuat gambar bermakna bagi alat bantu, sedangkan pemuatan tertunda mengurangi beban awal halaman.",
+          "example": "<img src=\"...\" alt=\"Judul tugas\" loading=\"lazy\">",
+          "output": "Gambar bermakna bagi alat bantu dan tidak membebani pemuatan awal.",
+          "pitfall": "Gambar tanpa keterangan alternatif tidak bermakna bagi pengguna alat bantu."
+        },
+        {
+          "token": "<button aria-label=\"Hapus tugas\">X</button>",
+          "readAs": "Baca sebagai tombol dengan nama yang jelas bagi alat bantu.",
+          "meaning": "Nama yang jelas membuat tombol dapat dipahami meski lambangnya tidak bermakna bagi alat bantu.",
+          "example": "<button aria-label=\"Hapus tugas\">X</button>",
+          "output": "Alat bantu mengumumkan tombol beserta maksudnya dengan jelas.",
+          "pitfall": "Tombol berlambang tanpa nama membingungkan pengguna alat bantu."
+        },
+        {
+          "token": "color: #1f2937; background: #f8fafc;",
+          "readAs": "Baca sebagai pemilihan warna teks dan latar dengan kontras yang memadai.",
+          "meaning": "Kontras yang memadai membuat teks mudah dibaca, termasuk oleh pengguna dengan penglihatan terbatas.",
+          "example": "color: #1f2937; background: #f8fafc;",
+          "output": "Teks terbaca jelas di atas latarnya.",
+          "pitfall": "Kontras yang terlalu rendah membuat teks sulit dibaca dan merugikan sebagian pengguna."
+        }
+      ],
+      "conventions": [
+        "Ukur kecepatan dari sisi yang dirasakan pengguna, bukan hanya dari sisi server.",
+        "Kurangi beban awal dengan menunda pemuatan hal yang belum terlihat.",
+        "Sediakan keterangan alternatif untuk setiap media yang bermakna.",
+        "Pastikan teks memiliki kontras yang memadai terhadap latarnya.",
+        "Uji kinerja dan aksesibilitas sebelum setiap rilis."
+      ],
+      "sections": [
+        {
+          "id": "cara-membaca",
+          "title": "Cara membaca penanda yang ramah kinerja dan aksesibilitas",
+          "body": [
+            "Penanda dibaca dari keterangan yang dibawanya. Keterangan alternatif menjelaskan isi gambar bagi yang tidak dapat melihatnya, sedangkan ukuran dan pemuatan tertunda menjaga tata letak tetap stabil dan beban awal tetap ringan.",
+            "Pada contoh, gambar diberi keterangan alternatif yang menjelaskan isinya, ukuran tetap agar tata letak tidak bergeser, dan pemuatan tertunda agar tidak membebani halaman.",
+            "Ukuran tetap penting karena mencegah halaman bergeser ketika gambar selesai dimuat. Pergeseran itu mengganggu pengguna dan membuat halaman terasa lebih lambat."
+          ],
+          "code": {
+            "language": "javascript",
+            "lab": false,
+            "code": "<img\n  src=\"tugas.webp\"\n  alt=\"Tangkapan layar daftar tugas\"\n  width=\"320\"\n  height=\"180\"\n  loading=\"lazy\"\n>",
+            "output": "Gambar tampil dengan ukuran tetap, bermakna bagi alat bantu, dan tidak membebani pemuatan awal.",
+            "explain": "Keterangan alternatif menjelaskan isi gambar, ukuran tetap menjaga tata letak, dan pemuatan tertunda mengurangi beban awal.",
+            "annotations": [
+              {
+                "line": 3,
+                "code": "alt=\"Tangkapan layar daftar tugas\"",
+                "note": "Keterangan alternatif menjelaskan isi gambar bagi alat bantu."
+              },
+              {
+                "line": 4,
+                "code": "width=\"320\"",
+                "note": "Lebar ditentukan agar tata letak tidak bergeser."
+              },
+              {
+                "line": 5,
+                "code": "height=\"180\"",
+                "note": "Tinggi ditentukan agar ruang gambar sudah disediakan."
+              },
+              {
+                "line": 6,
+                "code": "loading=\"lazy\"",
+                "note": "Pemuatan ditunda agar tidak membebani halaman awal."
+              }
+            ]
+          },
+          "callouts": [
+            {
+              "tone": "good",
+              "title": "Cegah pergeseran tata letak",
+              "body": "Tentukan ukuran gambar agar ruangnya sudah disediakan. Pergeseran tata letak membuat halaman terasa lebih lambat dan mengganggu."
+            }
+          ],
+          "checkpoint": {
+            "prompt": "Mengapa ukuran gambar perlu ditentukan sejak awal?",
+            "success": "Agar ruangnya sudah disediakan sehingga tata letak tidak bergeser saat gambar selesai dimuat."
+          }
+        },
+        {
+          "id": "kinerja-dirasakan",
+          "title": "Kinerja yang dirasakan pengguna",
+          "body": [
+            "Kecepatan yang penting adalah kecepatan yang dirasakan pengguna. Server dapat menjawab cepat, tetapi halaman tetap terasa lambat bila beban awalnya berat atau tata letaknya bergeser.",
+            "Kurangi beban awal dengan memuat lebih dulu hal yang terlihat. Hal yang belum terlihat ditunda pemuatannya sehingga halaman dapat dipakai lebih cepat.",
+            "Berikan tanggapan segera atas tindakan pengguna. Penanda memuat dan tanggapan pada tombol membuat halaman terasa lebih responsif meski pekerjaannya belum selesai."
+          ],
+          "checkpoint": {
+            "prompt": "Mengapa kecepatan server yang baik belum tentu membuat halaman terasa cepat?",
+            "success": "Karena beban awal yang berat atau tata letak yang bergeser tetap membuat halaman terasa lambat bagi pengguna."
+          }
+        },
+        {
+          "id": "aksesibilitas",
+          "title": "Dasar aksesibilitas produksi",
+          "body": [
+            "Aksesibilitas membuat aplikasi dapat dipakai oleh orang dengan berbagai kemampuan dan alat bantu. Sebagian besar dasarnya sederhana dan bermanfaat bagi semua pengguna.",
+            "Sediakan keterangan alternatif untuk media yang bermakna, nama yang jelas untuk tombol, dan kontras yang memadai antara teks dan latarnya. Ketiganya menutup banyak hambatan umum.",
+            "Pastikan juga antarmuka dapat dipakai tanpa tetikus. Pengguna yang mengandalkan papan tik perlu dapat mencapai dan mengaktifkan setiap bagian penting."
+          ],
+          "callouts": [
+            {
+              "tone": "good",
+              "title": "Aksesibilitas menguntungkan semua",
+              "body": "Kontras yang baik, nama tombol yang jelas, dan navigasi papan tik berguna bagi semua pengguna, bukan hanya pengguna alat bantu."
+            }
+          ],
+          "checkpoint": {
+            "prompt": "Sebutkan tiga dasar aksesibilitas yang menutup banyak hambatan umum.",
+            "success": "Keterangan alternatif untuk media, nama yang jelas untuk tombol, dan kontras yang memadai."
+          }
+        },
+        {
+          "id": "menguji",
+          "title": "Menguji kinerja dan aksesibilitas",
+          "body": [
+            "Uji kinerja pada perangkat dan koneksi yang lambat, bukan hanya pada koneksi cepat. Sebagian besar pengguna mungkin memakai perangkat sederhana dengan koneksi terbatas.",
+            "Periksa ukuran beban awal dan pergeseran tata letak. Keduanya sering menjadi penyebab utama halaman terasa lambat meski servernya cepat.",
+            "Untuk aksesibilitas, periksa dengan alat pemeriksa dan dengan mencoba memakai halaman memakai papan tik saja. Alat menangkap masalah umum, sedangkan pemakaian nyata menangkap sisanya."
+          ],
+          "checkpoint": {
+            "prompt": "Mengapa kinerja perlu diuji pada perangkat dan koneksi yang lambat?",
+            "success": "Karena sebagian besar pengguna mungkin memakai perangkat sederhana dengan koneksi terbatas."
+          }
+        }
+      ],
+      "practice": [
+        {
+          "id": "latihan-1",
+          "level": "guided",
+          "title": "Gambar yang ramah aksesibilitas",
+          "task": "Tambahkan gambar pada halaman dengan keterangan alternatif, ukuran tetap, dan pemuatan tertunda.",
+          "steps": [
+            "Tambahkan gambar dengan keterangan alternatif.",
+            "Tentukan ukuran tetap untuk gambar.",
+            "Tambahkan pemuatan tertunda.",
+            "Periksa tata letak tidak bergeser saat gambar dimuat."
+          ],
+          "starterCode": "<img src=\"...\" alt=\"...\" width=\"320\" height=\"180\" loading=\"lazy\">",
+          "expected": "Gambar bermakna bagi alat bantu dan tata letak tetap stabil.",
+          "stretch": "Uji dengan alat bantu dan periksa keterangan gambar terbaca.",
+          "hints": [
+            "Keterangan alternatif menjelaskan isi gambar.",
+            "Ukuran tetap mencegah pergeseran tata letak.",
+            "Pemuatan tertunda mengurangi beban awal."
+          ],
+          "verification": {
+            "command": "Muat halaman lalu periksa keterangan gambar dan kestabilan tata letak.",
+            "expected": "Keterangan gambar terbaca alat bantu dan tata letak tidak bergeser.",
+            "evidence": "Simpan kode dan catatan hasil pemeriksaan."
+          }
+        },
+        {
+          "id": "latihan-2",
+          "level": "independent",
+          "title": "Nama tombol yang jelas",
+          "task": "Ubah tombol berlambang menjadi tombol dengan nama yang jelas bagi alat bantu.",
+          "steps": [
+            "Temukan tombol yang hanya berupa lambang.",
+            "Tambahkan nama yang menyatakan maksudnya.",
+            "Uji tombol itu dengan alat bantu.",
+            "Pastikan namanya sesuai tindakannya."
+          ],
+          "starterCode": "<button aria-label=\"Hapus tugas\">X</button>",
+          "expected": "Alat bantu mengumumkan tombol beserta maksudnya dengan jelas.",
+          "stretch": "Terapkan hal yang sama pada seluruh tombol berlambang.",
+          "hints": [
+            "Nama menyatakan maksud tombol.",
+            "Lambang saja tidak cukup bagi alat bantu.",
+            "Nama disesuaikan tindakannya."
+          ],
+          "verification": {
+            "command": "Uji tombol dengan alat bantu dan periksa nama yang diumumkan.",
+            "expected": "Nama yang diumumkan menyatakan maksud tombol dengan jelas.",
+            "evidence": "Simpan kode dan catatan hasil pengujian."
+          }
+        },
+        {
+          "id": "latihan-3",
+          "level": "transfer",
+          "title": "Periksa halaman sebelum rilis",
+          "task": "Susun daftar pemeriksaan kinerja dan aksesibilitas untuk halaman utama sebelum rilis.",
+          "steps": [
+            "Tentukan ukuran kinerja yang akan diperiksa.",
+            "Tentukan pemeriksaan aksesibilitas.",
+            "Tentukan perangkat dan koneksi pengujian.",
+            "Jalankan pemeriksaan dan catat hasilnya."
+          ],
+          "starterCode": "Kinerja: ...\nAksesibilitas: ...\nPerangkat uji: ...",
+          "expected": "Daftar pemeriksaan lengkap dan hasilnya tercatat sebelum rilis.",
+          "stretch": "Tambahkan pemeriksaan kontras warna.",
+          "hints": [
+            "Uji pada perangkat dan koneksi lambat.",
+            "Periksa keterangan media dan nama tombol.",
+            "Catat hasil untuk setiap rilis."
+          ],
+          "verification": {
+            "command": "Jalankan daftar pemeriksaan pada halaman utama.",
+            "expected": "Seluruh butir pemeriksaan dijalankan dan hasilnya tercatat.",
+            "evidence": "Simpan daftar pemeriksaan dan hasilnya."
+          }
+        }
+      ],
+      "verification": {
+        "mode": "manual",
+        "command": "Uji kinerja pada koneksi lambat dan aksesibilitas dengan alat bantu serta papan tik.",
+        "expected": "Halaman dapat dipakai cepat pada koneksi lambat, tidak bergeser tata letaknya, dan seluruh bagian penting dapat diakses dengan papan tik.",
+        "evidence": "Simpan catatan hasil pemeriksaan kinerja dan aksesibilitas."
+      },
+      "troubleshooting": [
+        {
+          "symptom": "Halaman terasa lambat meski server menjawab cepat.",
+          "cause": "Beban awal berat atau tata letak bergeser saat pemuatan.",
+          "fix": "Kurangi beban awal dengan pemuatan tertunda dan tentukan ukuran media agar tata letak stabil."
+        },
+        {
+          "symptom": "Alat bantu tidak dapat menjelaskan isi gambar.",
+          "cause": "Gambar tidak memiliki keterangan alternatif.",
+          "fix": "Tambahkan keterangan alternatif yang menjelaskan isi gambar bagi alat bantu."
+        },
+        {
+          "symptom": "Teks sulit dibaca pada sebagian layar.",
+          "cause": "Kontras antara teks dan latar terlalu rendah.",
+          "fix": "Sesuaikan warna agar kontras memadai di seluruh keadaan."
+        },
+        {
+          "symptom": "Sebagian bagian tidak dapat dicapai tanpa tetikus.",
+          "cause": "Urutan fokus atau penanda fokus tidak diperhatikan.",
+          "fix": "Pastikan seluruh bagian penting dapat dicapai dan diaktifkan dengan papan tik."
+        }
+      ],
       "quiz": {
-        "question": "Apa prinsip yang paling tepat untuk topik “Performance & aksesibilitas produksi”?",
-        "options": [
-          "Profiling sebelum optimasi dan uji dampak setelah perubahan.",
-          "Gunakan solusi paling rumit sejak awal, meski kebutuhan belum jelas.",
-          "Lewati pengujian karena contoh kecil pasti benar."
-        ],
-        "answer": 0,
-        "explanation": "Profiling sebelum optimasi dan uji dampak setelah perubahan."
-      }
+        "questions": [
+          {
+            "id": "q1",
+            "type": "recall",
+            "question": "Apa yang dimaksud kinerja yang dirasakan?",
+            "options": [
+              "Kecepatan mesin server",
+              "Seberapa cepat aplikasi terasa bagi pengguna",
+              "Jumlah pengguna yang terlayani"
+            ],
+            "answer": 1,
+            "explanation": "Kinerja yang dirasakan adalah seberapa cepat aplikasi terasa bagi pengguna, bukan hanya kecepatan servernya."
+          },
+          {
+            "id": "q2",
+            "type": "code-reading",
+            "question": "Mengapa ukuran gambar ditentukan sejak awal pada penanda?",
+            "options": [
+              "Agar gambar lebih besar",
+              "Agar ruangnya sudah disediakan sehingga tata letak tidak bergeser",
+              "Agar gambar lebih tajam"
+            ],
+            "answer": 1,
+            "explanation": "Ukuran yang ditentukan sejak awal mencegah pergeseran tata letak saat gambar selesai dimuat."
+          },
+          {
+            "id": "q3",
+            "type": "scenario",
+            "question": "Tombol hanya berupa lambang tanpa nama. Tindakan tepat...",
+            "options": [
+              "Membiarkannya",
+              "Menambahkan nama yang menyatakan maksudnya bagi alat bantu",
+              "Menghapus tombolnya"
+            ],
+            "answer": 1,
+            "explanation": "Nama yang jelas membuat tombol dapat dipahami oleh alat bantu."
+          }
+        ]
+      },
+      "resources": [
+        {
+          "sourceId": "webdev-vitals",
+          "note": "Panduan ukuran kinerja yang dirasakan pengguna."
+        },
+        {
+          "sourceId": "wcag-quickref",
+          "note": "Rujukan cepat kriteria aksesibilitas yang perlu dipenuhi."
+        },
+        {
+          "sourceId": "wcag22",
+          "note": "Standar aksesibilitas konten web versi 2.2."
+        }
+      ],
+      "summary": [
+        "Kinerja yang penting adalah yang dirasakan pengguna, bukan hanya kecepatan server.",
+        "Beban awal dikurangi dengan memuat lebih dulu hal yang terlihat dan menunda sisanya.",
+        "Dasar aksesibilitas meliputi keterangan media, nama tombol, dan kontras yang memadai.",
+        "Kinerja dan aksesibilitas diuji pada perangkat lambat serta dengan papan tik sebelum rilis."
+      ],
+      "next": "Materi berikutnya melanjutkan ke topik lanjutan. Anda akan memperluas keterampilan pada skala aplikasi yang lebih besar."
     }
   ]
 }
