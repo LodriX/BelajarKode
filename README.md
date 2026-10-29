@@ -2,7 +2,7 @@
 
 Ruang belajar pemrograman mandiri yang berjalan sebagai **satu berkas HTML**. React + Vite dipakai untuk membangun, tetapi hasil akhirnya tidak membutuhkan server, npm, atau internet.
 
-Isi saat ini: 14 modul, 97 pelajaran, roadmap 52 minggu (~4-5 jam/minggu), halaman **Mulai** dengan daftar persiapan instalasi, kuis, catatan, materi tersimpan, kamus, laboratorium kode, gamifikasi, dan buku offline dengan 5 blok pendalaman. Sebanyak 43 pelajaran memakai schema v3.1 penuh (**m00** 8, **m01** 6, **m02** 7, **m03** 8, **m04** 7, **m05** 7): outcome, kartu sintaks dengan cara baca, aturan penulisan, bagian **cara membaca** dengan kode beroutput dan bedah baris, latihan bertingkat, verifikasi, dan jembatan ke pelajaran berikutnya. Selebihnya masih schema v2 dan ditandai **Materi versi sebelumnya**. Tersedia tiga mode tampilan: **Nyaman**, **Terang**, dan **Malam**. Struktur target adalah 16 modul / 108 pelajaran; M14 (AI) dan M15 (deployment) menyusul.
+Isi saat ini: 14 modul, 97 pelajaran, roadmap 52 minggu (~4-5 jam/minggu), halaman **Mulai** dengan daftar persiapan instalasi, kuis, catatan, materi tersimpan, kamus, laboratorium kode, gamifikasi, dan buku offline dengan 5 blok pendalaman. Sebanyak 47 pelajaran memakai schema v3.1 penuh (**m00** 8, **m01** 6, **m02** 7, **m03** 8, **m04** 7, **m05** 7, **m06** 4): outcome, kartu sintaks dengan cara baca, aturan penulisan, bagian **cara membaca** dengan kode beroutput dan bedah baris, latihan bertingkat, verifikasi, dan jembatan ke pelajaran berikutnya. Selebihnya masih schema v2 dan ditandai **Materi versi sebelumnya**. Tersedia tiga mode tampilan: **Nyaman**, **Terang**, dan **Malam**. Struktur target adalah 16 modul / 108 pelajaran; M14 (AI) dan M15 (deployment) menyusul.
 
 ## Cara membuka
 
@@ -99,7 +99,7 @@ index.html                  # entry Vite
 content/
   index.json                # metadata, roadmap, tools, policy
   m00/ m01/ m02/            # modul dengan module.json + lesson-*.json
-  m03.json .. m13.json      # m00-m05 penuh 3.1; m06-m13 menyusul
+  m03.json .. m13.json      # m00-m06 penuh 3.1; m07-m13 menyusul
 data/curriculum.json        # hasil generate dari content/
 src/
   App.jsx                   # shell, router hash, guard login

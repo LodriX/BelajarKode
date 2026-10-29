@@ -1233,6 +1233,42 @@
       "tier": "official",
       "version": "rolling",
       "accessedAt": "2026-10-29"
+    },
+    {
+      "id": "git-book",
+      "title": "Pro Git (buku resmi Git)",
+      "publisher": "Git",
+      "url": "https://git-scm.com/book/en/v2",
+      "tier": "official",
+      "version": "2nd edition",
+      "accessedAt": "2026-10-29"
+    },
+    {
+      "id": "github-docs",
+      "title": "GitHub Docs",
+      "publisher": "GitHub",
+      "url": "https://docs.github.com/en",
+      "tier": "official",
+      "version": "rolling",
+      "accessedAt": "2026-10-29"
+    },
+    {
+      "id": "github-pr",
+      "title": "GitHub Docs: Pull requests",
+      "publisher": "GitHub",
+      "url": "https://docs.github.com/en/pull-requests",
+      "tier": "official",
+      "version": "rolling",
+      "accessedAt": "2026-10-29"
+    },
+    {
+      "id": "github-gitignore",
+      "title": "GitHub Docs: Ignoring files",
+      "publisher": "GitHub",
+      "url": "https://docs.github.com/en/get-started/git-basics/ignoring-files",
+      "tier": "official",
+      "version": "rolling",
+      "accessedAt": "2026-10-29"
     }
   ],
   "modules": [
@@ -1348,7 +1384,11 @@
       "m05-l04",
       "m05-l05",
       "m05-l06",
-      "m05-l07"
+      "m05-l07",
+      "m06-l01",
+      "m06-l02",
+      "m06-l03",
+      "m06-l04"
     ],
     "depthWordBands": {
       "fondasi": [
