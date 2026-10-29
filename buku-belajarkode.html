@@ -6485,342 +6485,897 @@ Perkiraan lama: ...</code></pre><p><em>Hasil: Rencana dapat diikuti dan memuat p
   <p class="subtitle">Backend utama untuk aplikasi web dan layanan API</p>
   <div class="panel"><b>Tujuan modul</b><p>Membuat aplikasi Laravel dengan validasi, autentikasi, otorisasi, dan test.</p></div>
   <article class="lesson" id="m08-l01">
-  <div class="lesson-meta">Pelajaran 01 · 45 menit · Menengah · PHP</div>
+  <div class="lesson-meta">Pelajaran 01 · 120 menit · Menengah · PHP</div>
   <h3>Dasar PHP modern</h3>
-  
-  
-  
-  
-  
-  
+  <div class="panel good"><b>Hasil belajar</b><p>Setelah pelajaran ini, Anda dapat menulis fungsi PHP dengan tipe yang jelas, memakai fitur bahasa modern seperti enum dan match, serta mengelola dependensi proyek memakai Composer.</p></div>
+  <h4>Tujuan</h4><ul><li>Mengaktifkan pemeriksaan tipe ketat dan memberi tipe pada parameter serta nilai kembalian.</li><li>Memakai fungsi panah dan operator penggabungan nol untuk kode yang ringkas.</li><li>Mendefinisikan enum untuk nilai yang terbatas dan memilih hasilnya dengan match.</li><li>Mengelola dependensi proyek memakai Composer dan berkas composer.json.</li></ul>
+  <div class="panel"><b>Prasyarat</b><p>Migrasi, backup, dan pemulihan</p></div>
+  <h4>Istilah kunci</h4><dl class="glossary"><div><dt>Strict types</dt><dd>Pengaturan yang membuat PHP menolak pemaksaan tipe secara diam-diam sehingga kesalahan tipe lebih cepat terlihat.</dd></div><div><dt>Fungsi panah</dt><dd>Bentuk fungsi singkat dengan fn yang menangkap nilai dari luar secara otomatis.</dd></div><div><dt>Enum</dt><dd>Tipe yang nilainya terbatas pada daftar kasus yang dideklarasikan.</dd></div><div><dt>match</dt><dd>Ekspresi pemilihan yang membandingkan nilai secara ketat dan mengembalikan hasil.</dd></div><div><dt>Composer</dt><dd>Pengelola dependensi PHP yang mencatat paket proyek dan memuatnya secara otomatis.</dd></div></dl>
+  <h4>Kartu sintaks</h4><div class="panel">
+  <b><code>declare(strict_types=1);</code></b>
+  <p><em>Dibaca: Baca sebagai pengaktifan pemeriksaan tipe ketat untuk seluruh berkas.</em></p>
+  <p>Dengan pemeriksaan ketat, PHP tidak mengubah tipe secara diam-diam. Nilai yang tipenya salah ditolak, bukan disesuaikan.</p>
+  <pre><code>declare(strict_types=1);</code></pre>
+  <p><em>Output: Pemanggilan fungsi dengan tipe yang salah menghasilkan kesalahan, bukan hasil yang menyesatkan.</em></p>
+  <p><em>Hati-hati: Menulis pengaturan ini bukan di baris pertama berkas membuatnya diabaikan.</em></p>
+</div><div class="panel">
+  <b><code>function hitungAktif(array $tugas): int { ... }</code></b>
+  <p><em>Dibaca: Baca sebagai fungsi yang menerima daftar tugas dan mengembalikan bilangan bulat.</em></p>
+  <p>Tipe ditulis pada parameter dan nilai kembalian. Pemeriksa tipe membantu menemukan kesalahan sebelum kode dijalankan.</p>
+  <pre><code>function jumlah(array $baris): int { return count($baris); }</code></pre>
+  <p><em>Output: Pemanggil tahu fungsi ini mengembalikan angka tanpa membaca isinya.</em></p>
+  <p><em>Hati-hati: Menulis tipe yang terlalu umum menghilangkan manfaat pemeriksaan pada pemanggil.</em></p>
+</div><div class="panel">
+  <b><code>enum Status: string { ... }</code></b>
+  <p><em>Dibaca: Baca sebagai pendefinisian tipe dengan daftar nilai yang sah beserta nilainya masing-masing.</em></p>
+  <p>Enum membatasi nilai pada kasus yang ada. Nilai di luar daftar itu tidak dapat dipakai.</p>
+  <pre><code>enum Status: string { case Aktif = &quot;aktif&quot;; }</code></pre>
+  <p><em>Output: Nilai status hanya dapat diisi dari daftar kasus yang dideklarasikan.</em></p>
+  <p><em>Hati-hati: Memakai teks bebas untuk nilai yang terbatas membuat salah tulis tidak terdeteksi.</em></p>
+</div>
+  <h4>Aturan penulisan</h4><ul><li>Tulis declare(strict_types=1) di baris pertama setiap berkas PHP.</li><li>Beri tipe pada parameter dan nilai kembalian fungsi.</li><li>Pakai enum untuk nilai yang jumlahnya terbatas, bukan teks bebas.</li><li>Pakai match ketika semua kemungkinan perlu ditangani.</li><li>Ikuti PSR-12 untuk gaya penulisan agar kode konsisten dengan ekosistem.</li></ul>
   <section class="lesson-section">
-  <h4>01 · Memahami konsepnya</h4>
-  <p>PHP berjalan di server untuk membuat respons HTTP. Pelajari variabel, array, function, class, type declarations, exception, dan dependency management Composer.</p><p>Gunakan versi PHP yang didukung framework. Aktifkan type hints saat memungkinkan, linting, dan jangan campur semua logika bisnis dengan HTML.</p>
-  
-  <div class="panel good"><b>Best practice</b><p>Gunakan type declaration dan pisahkan domain logic dari tampilan.</p></div><div class="panel bad"><b>Kesalahan umum</b><p>Mencampur query database, HTML, dan otorisasi dalam satu file.</p></div>
-  
-</section><section class="lesson-section">
-  <h4>02 · Contoh kode</h4>
-  <p>Perhatikan input, proses, dan output. Ketik ulang, lalu ubah satu nilai.</p>
+  <h4>01 · Cara membaca fungsi PHP bertipe</h4>
+  <p>Berkas PHP modern dibaca dari pengaturan di bagian atas, lalu daftar fungsinya. Pengaturan pemeriksaan tipe ketat memengaruhi seluruh isi berkas, sehingga kesalahan tipe tidak lewat begitu saja.</p><p>Setiap fungsi menyatakan tipe masukan dan tipe keluarannya. Pada contoh, fungsi menerima daftar tugas dan mengembalikan bilangan bulat. Dengan janji ini, pemanggil tidak perlu menebak bentuk hasilnya.</p><p>Di dalam fungsi, penyaringan memakai fungsi panah yang menangkap nilai tugas dari luar tanpa kata khusus. Hasil penyaringan dihitung panjangnya, lalu dikembalikan sebagai angka.</p>
   <pre><code>&lt;?php
 declare(strict_types=1);
-function total(int $harga, int $qty): int {
-    return $harga * $qty;
+
+function hitungAktif(array $tugas): int {
+    $aktif = array_filter($tugas, fn ($t) =&gt; ! $t[&quot;selesai&quot;]);
+    return count($aktif);
 }
-echo total(12000, 3);</code></pre>
+
+echo hitungAktif([
+    [&quot;judul&quot; =&gt; &quot;Belajar&quot;, &quot;selesai&quot; =&gt; false],
+    [&quot;judul&quot; =&gt; &quot;Olahraga&quot;, &quot;selesai&quot; =&gt; true],
+]);
+// 1</code></pre><div class="panel"><b>Output yang diharapkan</b><p>Skrip menampilkan angka 1 karena hanya satu dari dua tugas yang belum selesai.</p></div><p>Pemeriksaan tipe ketat diaktifkan lebih dulu. Fungsi menerima daftar tugas, menyaring yang belum selesai memakai fungsi panah, lalu mengembalikan jumlahnya sebagai angka.</p><div class="panel"><b>Bedah baris</b><ol><li>Baris 2 · <code>declare(strict_types=1);</code> — Pemeriksaan tipe ketat berlaku untuk seluruh berkas.</li><li>Baris 4 · <code>function hitungAktif(array $tugas): int {</code> — Fungsi menyatakan tipe masukan dan nilai kembalian.</li><li>Baris 5 · <code>$aktif = array_filter($tugas, fn ($t) =&gt; ! $t[&quot;selesai&quot;]);</code> — Fungsi panah memakai nilai selesai dari setiap tugas.</li><li>Baris 6 · <code>return count($aktif);</code> — Hasil penyaringan dihitung lalu dikembalikan.</li><li>Baris 9 · <code>echo hitungAktif([</code> — Pemanggilan mengirim daftar tugas berisi dua baris.</li></ol></div>
+  <div class="panel good"><b>Tipe di batas fungsi</b><p>Cukup beri tipe pada parameter dan nilai kembalian. Bagian dalam fungsi dapat disimpulkan sendiri oleh PHP.</p></div>
+  <div class="panel warn"><b>Cek pemahaman</b><p>Sebutkan tipe masukan dan tipe nilai kembalian fungsi pada contoh beserta baris tempat keduanya ditulis.</p><p>Kriteria berhasil: Masukan bertipe array pada baris deklarasi fungsi, dan nilai kembalian bertipe int pada baris yang sama.</p></div>
+</section><section class="lesson-section">
+  <h4>02 · Enum dan pemilihan dengan match</h4>
+  <p>Enum mendeklarasikan daftar nilai yang sah. Karena hanya dua kasus yang dideklarasikan, nilai lain tidak dapat masuk. Dengan begitu, salah tulis status tertangkap sebelum kode dijalankan.</p><p>match memilih hasil berdasarkan nilai yang diberikan. Ia membandingkan secara ketat dan, berbeda dari pemilihan biasa, memastikan setiap kemungkinan ditangani. Bila ada kasus yang terlewat, PHP melaporkannya.</p><p>Gabungan enum dan match membuat aturan tampilan terkumpul di satu tempat. Menambah satu kasus baru langsung menunjukkan bagian mana yang perlu disesuaikan.</p>
+  <pre><code>&lt;?php
+declare(strict_types=1);
+
+enum Status: string {
+    case Aktif = &quot;aktif&quot;;
+    case Selesai = &quot;selesai&quot;;
+}
+
+function label(Status $status): string {
+    return match ($status) {
+        Status::Aktif =&gt; &quot;Belum selesai&quot;,
+        Status::Selesai =&gt; &quot;Selesai&quot;,
+    };
+}</code></pre><div class="panel"><b>Output yang diharapkan</b><p>Fungsi mengembalikan label teks sesuai status yang diberikan.</p></div><p>Enum membatasi nilai pada dua kasus. Fungsi memakai match untuk memetakan setiap kasus ke label teksnya.</p><div class="panel"><b>Bedah baris</b><ol><li>Baris 4 · <code>enum Status: string {</code> — Enum dideklarasikan dengan nilai teks untuk setiap kasus.</li><li>Baris 5 · <code>case Aktif = &quot;aktif&quot;;</code> — Kasus pertama mewakili status aktif.</li><li>Baris 9 · <code>function label(Status $status): string {</code> — Parameter dibatasi pada tipe enum tersebut.</li><li>Baris 10 · <code>return match ($status) {</code> — match membandingkan nilai secara ketat.</li><li>Baris 11 · <code>Status::Aktif =&gt; &quot;Belum selesai&quot;,</code> — Setiap kasus dipetakan ke label yang sesuai.</li></ol></div>
   
   
+</section><section class="lesson-section">
+  <h4>03 · Fitur bahasa yang merapikan kode</h4>
+  <p>Operator penggabungan nol mengambil nilai cadangan ketika nilai pertama kosong. Ia berguna untuk masukan yang mungkin tidak ada, misalnya nilai dari parameter yang tidak selalu dikirim.</p><p>Fungsi panah mempersingkat fungsi pendek dan menangkap nilai sekitarnya secara otomatis. Untuk operasi seperti penyaringan dan pemetaan, bentuk ini jauh lebih ringkas daripada fungsi biasa tanpa kehilangan kejelasan.</p><p>Konstruktor dapat mempersingkat deklarasi properti dengan menuliskannya langsung pada parameter. Cara ini mengurangi penulisan berulang tanpa mengubah perilaku.</p>
+  
+  
+  <div class="panel warn"><b>Cek pemahaman</b><p>Sebutkan satu kegunaan operator penggabungan nol pada masukan yang mungkin kosong.</p><p>Kriteria berhasil: Memberi nilai cadangan ketika nilai utama kosong, misalnya nama tampilan atau halaman bawaan.</p></div>
+</section><section class="lesson-section">
+  <h4>04 · Mengelola dependensi dengan Composer</h4>
+  <p>Composer memasang paket pihak ketiga dan mencatatnya pada composer.json. Berkas itu juga menyimpan aturan pemuatan otomatis sehingga kelas dari paket dapat dipakai tanpa perintah pemuatan manual.</p><p>Setelah paket dipasang, berkas pemuatan otomatis dihasilkan. Sertakan berkas itu di bagian awal aplikasi agar seluruh kelas tersedia, lalu pakai kelasnya memakai ruang nama.</p><p>Periksa paket sebelum memasangnya. Lihat siapa yang menerbitkan, kapan terakhir diperbarui, dan apakah paket itu dirawat. Dependensi yang terbengkalai menjadi risiko keamanan dan pemeliharaan.</p>
+  
+  <div class="panel warn"><b>Catat dependensi</b><p>Jangan menyalin kode pustaka langsung ke proyek. Pasang lewat Composer agar versinya tercatat dan dapat diperbarui.</p></div>
+  <div class="panel warn"><b>Cek pemahaman</b><p>Apa dua hal yang dicatat berkas composer.json?</p><p>Kriteria berhasil: Daftar dependensi proyek dan aturan pemuatan otomatis kelasnya.</p></div>
 </section>
-  <h4>Latihan bertingkat</h4><ol><li><b>Latihan 1</b> <em>(Mandiri)</em><p>Buat fungsi PHP validasi dan perhitungan harga secara terpisah.</p></li><li><b>Latihan 2</b> <em>(Mandiri)</em><p>Ubah satu input atau asumsi pada contoh, catat hasil dan jelaskan alasannya.</p></li></ol>
-  
-  
+  <h4>Latihan bertingkat</h4><ol><li><b>Fungsi bertipe untuk daftar tugas</b> <em>(Terbimbing)</em><p>Tulis fungsi bertipe yang menerima daftar tugas dan mengembalikan jumlah tugas yang sudah selesai.</p><ol><li>Aktifkan pemeriksaan tipe ketat di baris pertama.</li><li>Tulis fungsi dengan tipe masukan array dan nilai kembalian int.</li><li>Saring tugas yang selesai memakai fungsi panah.</li><li>Kembalikan jumlah hasilnya.</li></ol><pre><code>&lt;?php
+declare(strict_types=1);
+
+function hitungSelesai(array $tugas): int {
+    // lengkapi
+}</code></pre><p><em>Hasil: Fungsi mengembalikan jumlah tugas selesai dan menolak masukan yang tipenya salah.</em></p><details><summary>Petunjuk bertahap</summary><ol><li>array_filter menyaring tanpa mengubah data asli.</li><li>Fungsi panah menuliskan kondisi setelah tanda panah.</li><li>count menghitung jumlah elemen hasil penyaringan.</li></ol></details><p><em>Tantangan: Tambahkan pemeriksaan agar setiap tugas wajib memuat kunci selesai.</em></p></li><li><b>Status sebagai enum</b> <em>(Mandiri)</em><p>Ubah nilai status dari teks bebas menjadi enum dengan tiga kasus, lalu tampilkan labelnya memakai match.</p><ol><li>Deklarasikan enum dengan tiga kasus dan nilai teksnya.</li><li>Beri tipe enum pada parameter fungsi label.</li><li>Petakan setiap kasus ke teks memakai match.</li><li>Pastikan nilai di luar daftar tidak dapat dipakai.</li></ol><pre><code>enum Status: string {
+    // lengkapi
+}
+
+function label(Status $status): string {
+    // lengkapi
+}</code></pre><p><em>Hasil: Setiap kasus memiliki label dan nilai di luar daftar ditolak.</em></p><details><summary>Petunjuk bertahap</summary><ol><li>Setiap kasus dapat diberi nilai teks.</li><li>match memastikan seluruh kasus ditangani.</li><li>Parameter bertipe enum hanya menerima kasus dari enum itu.</li></ol></details><p><em>Tantangan: Tambahkan kasus keempat dan periksa bagian mana yang perlu disesuaikan.</em></p></li><li><b>Susun proyek Composer kecil</b> <em>(Penerapan)</em><p>Buat proyek PHP kecil dengan composer.json, pasang satu paket utilitas, lalu pakai kelasnya dari paket itu.</p><ol><li>Buat composer.json dengan informasi proyek.</li><li>Pasang satu paket yang dirawat dengan baik.</li><li>Sertakan berkas pemuatan otomatis di skrip utama.</li><li>Pakai kelas dari paket tersebut dan tampilkan hasilnya.</li></ol><pre><code>{
+  &quot;name&quot;: &quot;contoh/tugas&quot;,
+  &quot;require&quot;: {}
+}</code></pre><p><em>Hasil: Paket terpasang, kelasnya dapat dipakai, dan dependensinya tercatat.</em></p><details><summary>Petunjuk bertahap</summary><ol><li>Jalankan perintah pemasangan dari Composer untuk paket yang dipilih.</li><li>Berkas pemuatan otomatis berada di folder vendor.</li><li>Pakai kelas lewat ruang namanya.</li></ol></details><p><em>Tantangan: Tambahkan skrip pada composer.json untuk menjalankan berkas utama.</em></p></li></ol>
+  <h4>Verifikasi</h4><div class="panel"><b>Mode: Manual</b><pre><code>Jalankan ketiga latihan pada terminal dan periksa keluaran serta pesan kesalahan tipe.</code></pre><p><em>Hasil yang diharapkan: Setiap fungsi mengembalikan hasil yang benar dan masukan bertipe salah dilaporkan sebagai kesalahan.</em></p><p><em>Bukti yang disimpan: Simpan berkas, composer.json, dan keluaran setiap perintah.</em></p></div>
+  <h4>Mengatasi masalah</h4><ul><li><b>Pemeriksaan tipe ketat tampak tidak berpengaruh.</b><br>Penyebab umum: Pengaturan ditulis bukan pada baris pertama berkas, sehingga diabaikan.<br>Perbaikan: Letakkan declare(strict_types=1) tepat setelah pembuka PHP di baris pertama.</li><li><b>Fungsi mengembalikan nilai dengan tipe yang tidak sesuai janji.</b><br>Penyebab umum: Nilai kembalian tidak diberi tipe sehingga pemeriksaan tidak berjalan.<br>Perbaikan: Tambahkan tipe nilai kembalian pada deklarasi fungsi.</li><li><b>Nilai status salah tulis tetapi program tetap berjalan.</b><br>Penyebab umum: Status disimpan sebagai teks bebas tanpa enum.<br>Perbaikan: Ubah status menjadi enum agar nilai di luar daftar ditolak.</li><li><b>Kelas dari paket tidak ditemukan saat dipakai.</b><br>Penyebab umum: Berkas pemuatan otomatis belum disertakan atau paket belum dipasang.<br>Perbaikan: Pasang paket lewat Composer lalu sertakan berkas pemuatan otomatis di bagian awal skrip.</li></ul>
   <div class="quiz"><strong>Uji pemahaman</strong><div class="quiz-question">
-    <b>1. Apa prinsip yang paling tepat untuk topik “Dasar PHP modern”?</b>
-    <ol type="A"><li>Gunakan type declaration dan pisahkan domain logic dari tampilan.</li><li>Gunakan solusi paling rumit sejak awal, meski kebutuhan belum jelas.</li><li>Lewati pengujian karena contoh kecil pasti benar.</li></ol>
-    <details><summary>Lihat pembahasan</summary><p class="answer">Jawaban: A. Gunakan type declaration dan pisahkan domain logic dari tampilan.</p></details>
+    <b>1. Apa pengaruh declare(strict_types=1) pada sebuah berkas PHP?</b>
+    <ol type="A"><li>Mengaktifkan pemeriksaan tipe ketat sehingga tipe yang salah ditolak</li><li>Menonaktifkan seluruh kesalahan</li><li>Mengubah tipe nilai secara otomatis</li></ol>
+    <details><summary>Lihat pembahasan</summary><p class="answer">Jawaban: A. Pengaturan itu membuat PHP menolak tipe yang salah alih-alih menyesuaikannya.</p></details>
+  </div><div class="quiz-question">
+    <b>2. Apa yang dilakukan ekspresi match pada contoh enum?</b>
+    <ol type="A"><li>Membandingkan nilai secara ketat dan mengembalikan hasil sesuai kasusnya</li><li>Mengurutkan daftar kasus</li><li>Mengubah nilai enum menjadi teks biasa</li></ol>
+    <details><summary>Lihat pembahasan</summary><p class="answer">Jawaban: A. match membandingkan secara ketat dan memastikan setiap kemungkinan ditangani.</p></details>
+  </div><div class="quiz-question">
+    <b>3. Sebuah nilai hanya boleh berisi salah satu dari empat status. Pilihan yang tepat...</b>
+    <ol type="A"><li>Menyimpannya sebagai teks bebas</li><li>Mendefinisikannya sebagai enum dengan empat kasus</li><li>Menyimpannya sebagai angka tanpa aturan</li></ol>
+    <details><summary>Lihat pembahasan</summary><p class="answer">Jawaban: B. Enum membatasi nilai pada daftar kasus yang sah sehingga salah tulis tertangkap.</p></details>
   </div></div>
-  
-  
-  
+  <h4>Ringkasan</h4><ul><li>Pemeriksaan tipe ketat dan anotasi tipe membuat kesalahan terlihat sebelum kode dijalankan.</li><li>Fungsi panah dan operator penggabungan nol merapikan kode tanpa menghilangkan kejelasan.</li><li>Enum membatasi nilai pada daftar kasus, dan match memastikan setiap kasus ditangani.</li><li>Composer memasang paket dan mencatatnya bersama aturan pemuatan otomatis kelas.</li></ul>
+  <div class="panel"><b>Berikutnya</b><p>Berikutnya: request lifecycle dan routing. Anda akan mengikuti perjalanan permintaan dari masuk sampai dijawab serta menghubungkannya dengan aksi pengendali.</p></div>
+  <h4>Sumber</h4><ul><li><a href="https://www.php.net/manual/en/" rel="noopener noreferrer">PHP Manual</a> <small>PHP Group · 8.5</small> — Manual resmi PHP tentang fungsi, tipe, dan fitur bahasa.</li><li><a href="https://www.php.net/manual/en/language.types.declarations.php" rel="noopener noreferrer">PHP Manual: Type Declarations</a> <small>PHP Group · current</small> — Penjelasan resmi deklarasi tipe dan pemeriksaan ketat.</li><li><a href="https://www.php-fig.org/psr/psr-12/" rel="noopener noreferrer">PHP-FIG: PSR-12 Extended Coding Style</a> <small>PHP Framework Interop Group · 1.0.0</small> — Standar gaya penulisan PHP yang dipakai ekosistem.</li><li><a href="https://getcomposer.org/doc/" rel="noopener noreferrer">Composer Documentation</a> <small>Composer · current</small> — Dokumentasi resmi Composer tentang dependensi dan pemuatan otomatis.</li></ul>
 </article>
 <article class="lesson" id="m08-l02">
-  <div class="lesson-meta">Pelajaran 02 · 45 menit · Menengah · PHP</div>
+  <div class="lesson-meta">Pelajaran 02 · 120 menit · Menengah · PHP</div>
   <h3>Request lifecycle dan routing</h3>
-  
-  
-  
-  
-  
-  
+  <div class="panel good"><b>Hasil belajar</b><p>Setelah pelajaran ini, Anda dapat menjelaskan perjalanan sebuah permintaan pada aplikasi Laravel dan mendaftarkan rute untuk halaman serta aksi API.</p></div>
+  <h4>Tujuan</h4><ul><li>Menjelaskan tahap perjalanan permintaan dari masuk sampai dijawab.</li><li>Mendaftarkan rute dengan method dan pola alamat yang benar.</li><li>Memakai pengikatan model dan nama rute.</li><li>Membatasi akses rute memakai middleware.</li></ul>
+  <div class="panel"><b>Prasyarat</b><p>Dasar PHP modern</p></div>
+  <h4>Istilah kunci</h4><dl class="glossary"><div><dt>Front controller</dt><dd>Satu berkas masuk yang menerima seluruh permintaan lalu menyerahkannya ke aplikasi.</dd></div><div><dt>Rute</dt><dd>Pemetaan antara method, pola alamat, dan aksi yang menanganinya.</dd></div><div><dt>Middleware</dt><dd>Lapisan pemeriksaan yang berjalan sebelum atau sesudah aksi, misalnya memeriksa sesi pengguna.</dd></div><div><dt>Pengikatan model</dt><dd>Kemampuan mengambil data berdasarkan nilai pada alamat secara otomatis dan memberi hasilnya ke aksi.</dd></div></dl>
+  <h4>Kartu sintaks</h4><div class="panel">
+  <b><code>Route::get(&quot;/tugas&quot;, [TugasController::class, &quot;index&quot;]);</code></b>
+  <p><em>Dibaca: Baca sebagai pendaftaran rute GET pada alamat /tugas yang ditangani method index pada pengendali tugas.</em></p>
+  <p>Rute memetakan method dan alamat ke aksi. Method menyatakan maksud permintaan, alamat menyatakan sumber dayanya.</p>
+  <pre><code>Route::get(&quot;/&quot;, [BerandaController::class, &quot;index&quot;]);</code></pre>
+  <p><em>Output: Permintaan GET ke alamat itu dijalankan oleh method yang didaftarkan.</em></p>
+  <p><em>Hati-hati: Mendaftarkan beberapa rute dengan pola sama membuat rute terakhir menimpa atau tidak terpakai.</em></p>
+</div><div class="panel">
+  <b><code>Route::get(&quot;/tugas/{tugas}&quot;, [TugasController::class, &quot;show&quot;]);</code></b>
+  <p><em>Dibaca: Baca sebagai rute dengan penanda nilai yang diambil dari alamat dan diisi otomatis ke pengendali.</em></p>
+  <p>Kurung kurawal menandai bagian alamat yang berubah. Nilainya dapat dipakai oleh aksi sebagai data.</p>
+  <pre><code>Route::get(&quot;/pengguna/{id}&quot;, [PenggunaController::class, &quot;show&quot;]);</code></pre>
+  <p><em>Output: Nilai dari alamat tersedia pada aksi tanpa penguraian manual.</em></p>
+  <p><em>Hati-hati: Membiarkan penanda tanpa aturan membuat nilai yang tidak sah langsung masuk ke aksi.</em></p>
+</div><div class="panel">
+  <b><code>-&gt;name(&quot;tugas.index&quot;)</code></b>
+  <p><em>Dibaca: Baca sebagai pemberian nama pada rute sehingga alamatnya dapat dipanggil lewat nama itu.</em></p>
+  <p>Nama rute membuat tautan tidak bergantung pada alamat yang ditulis langsung. Bila alamat berubah, cukup diubah di satu tempat.</p>
+  <pre><code>-&gt;name(&quot;tugas.index&quot;)</code></pre>
+  <p><em>Output: Alamat dapat dibentuk dari nama rute di seluruh tampilan.</em></p>
+  <p><em>Hati-hati: Menulis alamat langsung di banyak tempat menyulitkan perubahan alamat di kemudian hari.</em></p>
+</div>
+  <h4>Aturan penulisan</h4><ul><li>Kelompokkan rute menurut tanggung jawab, misalnya rute halaman dan rute API.</li><li>Beri nama rute agar tautan tidak bergantung pada alamat mentah.</li><li>Batasi akses rute memakai middleware, bukan pemeriksaan berulang di dalam aksi.</li><li>Pakai pengikatan model agar aksi menerima data, bukan sekadar pengenal.</li><li>Terapkan aturan pada penanda alamat agar nilai yang tidak sah ditolak lebih awal.</li></ul>
   <section class="lesson-section">
-  <h4>01 · Memahami konsepnya</h4>
-  <p>Laravel menerima request lewat entry point, middleware, routing, controller, lalu menghasilkan response. Route memetakan URL + method HTTP ke handler.</p><p>Gunakan GET untuk baca, POST untuk membuat, PUT/PATCH untuk mengubah, DELETE untuk menghapus. Pakai named route, route model binding, dan middleware pada area terlindungi.</p>
-  
-  <div class="panel good"><b>Best practice</b><p>Gunakan HTTP method dan nama route yang konsisten.</p></div><div class="panel bad"><b>Kesalahan umum</b><p>Menggunakan GET untuk aksi menghapus data.</p></div>
-  
+  <h4>01 · Cara membaca daftar rute</h4>
+  <p>Daftar rute dibaca sebagai tabel pemetaan. Setiap baris menyatakan method, alamat, dan aksi yang menanganinya. Membaca tabel ini menjelaskan seluruh alamat yang dikenali aplikasi beserta aksinya.</p><p>Pola alamat menentukan cara permintaan dicocokkan. Bagian dengan kurung kurawal adalah nilai yang berubah, sedangkan bagian lain harus sama persis. Rute yang lebih khusus sebaiknya didaftarkan lebih dulu.</p><p>Nama rute memberi cara memanggil alamat tanpa menulisnya langsung. Karena itu, tampilan cukup menyebut nama rute, dan perubahan alamat tidak menyebar ke seluruh berkas tampilan.</p>
+  <pre><code>&lt;?php
+use App\Http\Controllers\TugasController;
+use Illuminate\Support\Facades\Route;
+
+Route::get(&quot;/tugas&quot;, [TugasController::class, &quot;index&quot;])-&gt;name(&quot;tugas.index&quot;);
+Route::post(&quot;/tugas&quot;, [TugasController::class, &quot;store&quot;]);
+Route::get(&quot;/tugas/{tugas}&quot;, [TugasController::class, &quot;show&quot;]);</code></pre><div class="panel"><b>Output yang diharapkan</b><p>Tiga alamat dikenali: daftar tugas, penambahan tugas, dan satu tugas tertentu.</p></div><p>Setiap rute memetakan method dan alamat ke aksi pengendali. Rute daftar diberi nama sehingga dapat dipanggil lewat nama, dan rute terakhir memakai penanda nilai.</p><div class="panel"><b>Bedah baris</b><ol><li>Baris 2 · <code>use App\Http\Controllers\TugasController;</code> — Kelas pengendali diimpor agar dapat dipakai.</li><li>Baris 5 · <code>Route::get(&quot;/tugas&quot;, [TugasController::class, &quot;index&quot;])-&gt;name(&quot;tugas.index&quot;);</code> — Rute GET menampilkan daftar dan diberi nama.</li><li>Baris 6 · <code>Route::post(&quot;/tugas&quot;, [TugasController::class, &quot;store&quot;]);</code> — Rute POST menangani pengiriman data baru.</li><li>Baris 7 · <code>Route::get(&quot;/tugas/{tugas}&quot;, [TugasController::class, &quot;show&quot;]);</code> — Penanda kurung kurawal menyatakan nilai dari alamat.</li></ol></div>
+  <div class="panel good"><b>Tabel rute sebagai peta</b><p>Berkas rute adalah peta seluruh alamat aplikasi. Menjaganya tetap ringkas memudahkan pencarian alamat yang sudah ada.</p></div>
+  <div class="panel warn"><b>Cek pemahaman</b><p>Sebutkan method dan alamat yang dipakai untuk menampilkan daftar serta menambah tugas.</p><p>Kriteria berhasil: GET pada /tugas untuk menampilkan daftar, dan POST pada /tugas untuk menambah data.</p></div>
 </section><section class="lesson-section">
-  <h4>02 · Contoh kode</h4>
-  <p>Perhatikan input, proses, dan output. Ketik ulang, lalu ubah satu nilai.</p>
+  <h4>02 · Perjalanan sebuah permintaan</h4>
+  <p>Permintaan masuk lewat satu berkas di folder publik. Berkas itu menyiapkan aplikasi, menyertakan pemuatan otomatis kelas, lalu menyerahkan permintaan kepada penangan rute.</p><p>Sebelum mencapai aksi, permintaan melewati lapisan middleware. Lapisan ini memeriksa hal yang berlaku umum, misalnya keamanan sesi dan pembatasan permintaan, sehingga aksi tidak perlu memeriksanya sendiri.</p><p>Setelah aksi selesai, hasilnya dikembalikan melewati lapisan yang sama dalam urutan terbalik, lalu diubah menjadi tanggapan yang dikirim ke peramban. Setiap tahap dapat mengubah atau menghentikan permintaan.</p>
+  
+  
+  <div class="panel warn"><b>Cek pemahaman</b><p>Sebutkan urutan tahap yang dilalui permintaan dari masuk sampai dijawab.</p><p>Kriteria berhasil: Masuk lewat berkas publik, melewati middleware, dicocokkan ke rute, dijalankan oleh aksi, lalu diubah menjadi tanggapan.</p></div>
+</section><section class="lesson-section">
+  <h4>03 · Membatasi akses dengan middleware</h4>
+  <p>Middleware dapat dipasang pada satu rute atau sekelompok rute. Pada contoh, sekelompok rute dibungkus satu lapisan pemeriksaan sesi, sehingga seluruh rute di dalamnya hanya dapat diakses pengguna yang sudah masuk.</p><p>Memusatkan pemeriksaan pada middleware mencegah pengulangan. Tanpa itu, setiap aksi perlu memeriksa sendiri, dan satu kelalaian cukup untuk membuka akses yang seharusnya tertutup.</p><p>Urutan lapisan juga penting. Pemeriksaan identitas dijalankan sebelum pemeriksaan izin, karena izin baru bermakna setelah identitas diketahui.</p>
   <pre><code>&lt;?php
 use Illuminate\Support\Facades\Route;
-Route::get(&quot;/status&quot;, function () {
-    return response()-&gt;json([&quot;status&quot; =&gt; &quot;ok&quot;]);
-});</code></pre>
+
+Route::middleware([&quot;auth&quot;])-&gt;group(function () {
+    Route::get(&quot;/tugas&quot;, [TugasController::class, &quot;index&quot;]);
+    Route::post(&quot;/tugas&quot;, [TugasController::class, &quot;store&quot;]);
+});</code></pre><div class="panel"><b>Output yang diharapkan</b><p>Kedua rute hanya dapat diakses pengguna yang sudah masuk.</p></div><p>Lapisan pemeriksaan sesi dipasang pada sekelompok rute. Seluruh rute di dalam kelompok itu mewarisi pemeriksaan tersebut tanpa menuliskannya berulang.</p><div class="panel"><b>Bedah baris</b><ol><li>Baris 4 · <code>Route::middleware([&quot;auth&quot;])-&gt;group(function () {</code> — Lapisan middleware dipasang untuk sekelompok rute.</li><li>Baris 5 · <code>Route::get(&quot;/tugas&quot;, [TugasController::class, &quot;index&quot;]);</code> — Rute di dalam kelompok mewarisi pemeriksaan identitas.</li><li>Baris 6 · <code>Route::post(&quot;/tugas&quot;, [TugasController::class, &quot;store&quot;]);</code> — Rute pengiriman data juga berada di dalam kelompok itu.</li></ol></div>
+  <div class="panel warn"><b>Jangan lupa batasi akses</b><p>Rute yang mengubah data tanpa pembatasan akses adalah celah keamanan. Pasang middleware sejak awal.</p></div>
+  
+</section><section class="lesson-section">
+  <h4>04 · Pengikatan model dan penamaan rute</h4>
+  <p>Pengikatan model mengubah nilai pada alamat menjadi data lengkap secara otomatis. Bila data dengan pengenal itu tidak ada, aplikasi mengembalikan tanggapan tidak ditemukan tanpa kode pemeriksaan tambahan.</p><p>Penamaan rute membuat pembentukan alamat terkumpul di satu sumber. Tautan pada tampilan dan pengalihan pada aksi menyebut nama rute, sehingga perubahan alamat cukup dilakukan sekali.</p><p>Gabungan keduanya membuat pengendali lebih ringkas: aksi menerima data yang sudah diambil, dan tautan dibentuk dari nama yang stabil.</p>
   
   
+  <div class="panel warn"><b>Cek pemahaman</b><p>Apa keuntungan pengikatan model dibanding aksi menerima pengenal lalu mencarinya sendiri?</p><p>Kriteria berhasil: Data diambil otomatis dan nilai yang tidak ada langsung menghasilkan tanggapan tidak ditemukan tanpa kode tambahan.</p></div>
 </section>
-  <h4>Latihan bertingkat</h4><ol><li><b>Latihan 1</b> <em>(Mandiri)</em><p>Rancang route list/get/create/update/delete untuk resource tasks.</p></li><li><b>Latihan 2</b> <em>(Mandiri)</em><p>Ubah satu input atau asumsi pada contoh, catat hasil dan jelaskan alasannya.</p></li></ol>
-  
-  
+  <h4>Latihan bertingkat</h4><ol><li><b>Daftarkan rute daftar tugas</b> <em>(Terbimbing)</em><p>Daftarkan rute untuk menampilkan daftar tugas, menambah tugas, dan menampilkan satu tugas.</p><ol><li>Impor pengendali yang dipakai.</li><li>Daftarkan rute GET untuk daftar dan beri nama.</li><li>Daftarkan rute POST untuk penambahan.</li><li>Daftarkan rute GET dengan penanda nilai untuk satu tugas.</li></ol><pre><code>Route::get(&quot;/tugas&quot;, ...);
+Route::post(&quot;/tugas&quot;, ...);
+Route::get(&quot;/tugas/{tugas}&quot;, ...);</code></pre><p><em>Hasil: Ketiga alamat dikenali dan memanggil aksi yang benar.</em></p><details><summary>Petunjuk bertahap</summary><ol><li>Method menyatakan maksud permintaan.</li><li>Nama rute diberikan lewat pemanggilan berantai.</li><li>Penanda nilai ditulis dengan kurung kurawal.</li></ol></details><p><em>Tantangan: Tambahkan aturan bahwa penanda nilai harus berupa angka.</em></p></li><li><b>Batasi rute dengan middleware</b> <em>(Mandiri)</em><p>Batasi rute penambahan tugas agar hanya dapat diakses pengguna yang sudah masuk.</p><ol><li>Tentukan rute yang perlu dibatasi.</li><li>Bungkus rute itu dengan lapisan pemeriksaan sesi.</li><li>Uji akses sebelum dan sesudah masuk.</li></ol><pre><code>Route::middleware([&quot;auth&quot;])-&gt;group(function () {
+    // rute yang dibatasi
+});</code></pre><p><em>Hasil: Pengguna yang belum masuk dialihkan, sedangkan yang sudah masuk dapat mengakses rute.</em></p><details><summary>Petunjuk bertahap</summary><ol><li>Middleware dapat dipasang pada satu rute atau kelompok.</li><li>Pemeriksaan sesi memakai nama auth.</li><li>Uji kedua keadaan akses.</li></ol></details><p><em>Tantangan: Tambahkan pembatasan jumlah permintaan pada rute yang sama.</em></p></li><li><b>Peta rute aplikasi tugas</b> <em>(Penerapan)</em><p>Susun peta rute lengkap untuk aplikasi catatan tugas: daftar, tambah, ubah, hapus, dan satu tugas, dengan penamaan yang konsisten.</p><ol><li>Tentukan setiap alamat beserta methodnya.</li><li>Tulis nama rute yang konsisten untuk semuanya.</li><li>Pisahkan rute yang memerlukan sesi.</li><li>Jelaskan alasan susunan yang dipilih.</li></ol><pre><code>Route::get(...)-&gt;name(...);
+Route::post(...);
+Route::patch(...);
+Route::delete(...);</code></pre><p><em>Hasil: Peta memuat seluruh operasi dengan method dan nama yang tepat serta pembatasan akses yang jelas.</em></p><details><summary>Petunjuk bertahap</summary><ol><li>Setiap operasi data punya method yang sesuai.</li><li>Nama rute menggambarkan sumber daya dan aksinya.</li><li>Rute yang mengubah data memerlukan sesi.</li></ol></details><p><em>Tantangan: Kelompokkan rute API pada berkas terpisah.</em></p></li></ol>
+  <h4>Verifikasi</h4><div class="panel"><b>Mode: Manual</b><pre><code>Buka setiap alamat yang didaftarkan dan periksa aksi serta pembatasan aksesnya.</code></pre><p><em>Hasil yang diharapkan: Setiap alamat menjalankan aksi yang benar dan rute yang dibatasi hanya dapat diakses pengguna yang sudah masuk.</em></p><p><em>Bukti yang disimpan: Simpan berkas rute dan catatan hasil setiap pengujian alamat.</em></p></div>
+  <h4>Mengatasi masalah</h4><ul><li><b>Alamat mengembalikan tanggapan tidak ditemukan meski rute sudah didaftarkan.</b><br>Penyebab umum: Method atau pola alamat tidak cocok dengan permintaan yang dikirim.<br>Perbaikan: Periksa method dan pola alamat, lalu pastikan urutan rute tidak menutupi rute lain.</li><li><b>Nilai dari alamat sampai ke aksi dalam bentuk yang salah.</b><br>Penyebab umum: Penanda alamat tidak diberi aturan sehingga nilai apa pun diterima.<br>Perbaikan: Tambahkan aturan pada penanda alamat agar nilai yang tidak sah ditolak lebih awal.</li><li><b>Tautan rusak setelah alamat diubah.</b><br>Penyebab umum: Alamat ditulis langsung di banyak berkas alih-alih memakai nama rute.<br>Perbaikan: Ganti penulisan alamat langsung dengan nama rute.</li><li><b>Rute yang seharusnya tertutup dapat diakses.</b><br>Penyebab umum: Middleware tidak dipasang pada rute atau kelompok yang tepat.<br>Perbaikan: Pasang middleware pada seluruh rute yang memerlukan pembatasan dan uji kedua keadaan akses.</li></ul>
   <div class="quiz"><strong>Uji pemahaman</strong><div class="quiz-question">
-    <b>1. Apa prinsip yang paling tepat untuk topik “Request lifecycle dan routing”?</b>
-    <ol type="A"><li>Gunakan HTTP method dan nama route yang konsisten.</li><li>Gunakan solusi paling rumit sejak awal, meski kebutuhan belum jelas.</li><li>Lewati pengujian karena contoh kecil pasti benar.</li></ol>
-    <details><summary>Lihat pembahasan</summary><p class="answer">Jawaban: A. Gunakan HTTP method dan nama route yang konsisten.</p></details>
+    <b>1. Apa fungsi middleware pada perjalanan permintaan?</b>
+    <ol type="A"><li>Menyimpan data ke basis data</li><li>Menjalankan pemeriksaan sebelum atau sesudah aksi</li><li>Membuat berkas tampilan</li></ol>
+    <details><summary>Lihat pembahasan</summary><p class="answer">Jawaban: B. Middleware berjalan sebagai lapisan pemeriksaan sebelum atau sesudah aksi dijalankan.</p></details>
+  </div><div class="quiz-question">
+    <b>2. Apa arti penanda {tugas} pada pola alamat rute?</b>
+    <ol type="A"><li>Alamat tetap yang tidak berubah</li><li>Bagian alamat yang nilainya diambil sebagai data</li><li>Komentar pada rute</li></ol>
+    <details><summary>Lihat pembahasan</summary><p class="answer">Jawaban: B. Kurung kurawal menandai bagian alamat yang berubah dan nilainya diteruskan ke aksi.</p></details>
+  </div><div class="quiz-question">
+    <b>3. Anda ingin tautan tidak rusak ketika alamat berubah. Tindakan tepat...</b>
+    <ol type="A"><li>Menulis alamat langsung di seluruh tampilan</li><li>Memberi nama rute lalu memakai nama itu untuk tautan</li><li>Menyalin alamat ke berkas terpisah</li></ol>
+    <details><summary>Lihat pembahasan</summary><p class="answer">Jawaban: B. Nama rute memusatkan pembentukan alamat sehingga perubahan cukup dilakukan sekali.</p></details>
   </div></div>
-  
-  
-  
+  <h4>Ringkasan</h4><ul><li>Permintaan masuk lewat satu berkas publik, melewati middleware, lalu dicocokkan ke rute.</li><li>Rute memetakan method dan alamat ke aksi pengendali.</li><li>Nama rute memusatkan pembentukan alamat sehingga perubahan tidak menyebar.</li><li>Middleware membatasi akses secara terpusat, dan pengikatan model mengambil data dari alamat secara otomatis.</li></ul>
+  <div class="panel"><b>Berikutnya</b><p>Berikutnya: MVC, service, dan dependency injection. Anda akan memisahkan tampilan, logika, dan akses data agar aplikasi mudah diuji.</p></div>
+  <h4>Sumber</h4><ul><li><a href="https://laravel.com/docs/13.x/routing" rel="noopener noreferrer">Laravel Docs: Routing</a> <small>Laravel · 13.x</small> — Dokumentasi resmi Laravel tentang rute, nama rute, dan middleware.</li><li><a href="https://laravel.com/docs/13.x" rel="noopener noreferrer">Laravel Documentation</a> <small>Laravel · 13.x</small> — Dokumentasi resmi Laravel tentang siklus hidup permintaan.</li><li><a href="https://www.php.net/manual/en/" rel="noopener noreferrer">PHP Manual</a> <small>PHP Group · 8.5</small> — Manual PHP sebagai dasar pemahaman berkas masuk dan autoloading.</li></ul>
 </article>
 <article class="lesson" id="m08-l03">
-  <div class="lesson-meta">Pelajaran 03 · 45 menit · Menengah · PHP</div>
+  <div class="lesson-meta">Pelajaran 03 · 120 menit · Menengah · PHP</div>
   <h3>MVC, service, dan dependency injection</h3>
-  
-  
-  
-  
-  
-  
+  <div class="panel good"><b>Hasil belajar</b><p>Setelah pelajaran ini, Anda dapat memisahkan tanggung jawab model, tampilan, dan pengendali serta memakai service dan dependency injection agar kode mudah diuji dan diubah.</p></div>
+  <h4>Tujuan</h4><ul><li>Menjelaskan pembagian tanggung jawab pada pola MVC.</li><li>Memindahkan logika aplikasi ke kelas service.</li><li>Memakai dependency injection untuk menyediakan kebutuhan kelas.</li><li>Mengikat antarmuka ke implementasi pada wadah layanan.</li></ul>
+  <div class="panel"><b>Prasyarat</b><p>Request lifecycle dan routing</p></div>
+  <h4>Istilah kunci</h4><dl class="glossary"><div><dt>MVC</dt><dd>Pola pembagian peran: model mengelola data, tampilan menyajikan, dan pengendali mengatur alur permintaan.</dd></div><div><dt>Service</dt><dd>Kelas yang memuat logika aplikasi agar tidak menumpuk di pengendali.</dd></div><div><dt>Dependency injection</dt><dd>Penyediaan kebutuhan sebuah kelas dari luar, bukan dibuat sendiri di dalam kelas itu.</dd></div><div><dt>Wadah layanan</dt><dd>Tempat pendaftaran cara membangun kelas dan mengikat antarmuka ke implementasinya.</dd></div></dl>
+  <h4>Kartu sintaks</h4><div class="panel">
+  <b><code>public function __construct(private PenyimpananTugas $penyimpanan) {}</code></b>
+  <p><em>Dibaca: Baca sebagai deklarasi ketergantungan yang disediakan dari luar dan disimpan sebagai properti.</em></p>
+  <p>Kelas menyatakan kebutuhannya melalui parameter konstruktor. Penyediaan diserahkan ke luar sehingga kelas mudah diuji dengan pengganti.</p>
+  <pre><code>public function __construct(private PenyimpananTugas $penyimpanan) {}</code></pre>
+  <p><em>Output: Kelas menerima ketergantungannya saat dibangun, bukan membuatnya sendiri.</em></p>
+  <p><em>Hati-hati: Membuat ketergantungan langsung di dalam kelas menyulitkan pengujian dan mengunci implementasinya.</em></p>
+</div><div class="panel">
+  <b><code>interface PenyimpananTugas { public function semua(): array; }</code></b>
+  <p><em>Dibaca: Baca sebagai janji kemampuan yang harus dipenuhi setiap implementasi penyimpanan.</em></p>
+  <p>Antarmuka memisahkan kebutuhan dari implementasi. Kelas yang memakainya tidak bergantung pada cara penyimpanan tertentu.</p>
+  <pre><code>interface PenyimpananTugas { public function semua(): array; }</code></pre>
+  <p><em>Output: Implementasi apa pun yang memenuhi janji itu dapat dipakai bergantian.</em></p>
+  <p><em>Hati-hati: Membuat antarmuka yang terlalu besar memaksa setiap implementasi memenuhi method yang tidak selalu dipakai.</em></p>
+</div><div class="panel">
+  <b><code>$this-&gt;app-&gt;bind(PenyimpananTugas::class, PenyimpananDatabase::class);</code></b>
+  <p><em>Dibaca: Baca sebagai pendaftaran bahwa permintaan antarmuka itu dipenuhi oleh implementasi tertentu.</em></p>
+  <p>Wadah layanan menghubungkan antarmuka dengan implementasi, sehingga kelas yang meminta antarmuka menerima implementasi yang didaftarkan.</p>
+  <pre><code>$this-&gt;app-&gt;bind(PenyimpananTugas::class, PenyimpananDatabase::class);</code></pre>
+  <p><em>Output: Kelas yang meminta antarmuka itu dibangun dengan implementasi yang terdaftar.</em></p>
+  <p><em>Hati-hati: Lupa mendaftarkan ikatan membuat permintaan antarmuka gagal dibangun.</em></p>
+</div>
+  <h4>Aturan penulisan</h4><ul><li>Jaga pengendali tetap tipis; pindahkan logika ke service.</li><li>Satakan kebutuhan kelas lewat konstruktor, bukan dibuat di dalam.</li><li>Bergantung pada antarmuka, bukan implementasi tertentu.</li><li>Daftarkan ikatan antarmuka pada satu tempat penyedia layanan.</li><li>Beri nama kelas sesuai tanggung jawabnya agar batas peran jelas.</li></ul>
   <section class="lesson-section">
-  <h4>01 · Memahami konsepnya</h4>
-  <p>MVC memisahkan model, view, controller. Controller sebaiknya mengorkestrasi request; business rule yang kompleks dipindahkan ke service/domain layer.</p><p>Dependency injection membuat ketergantungan eksplisit dan memudahkan test. Hindari abstraksi berlebihan sebelum ada kebutuhan nyata.</p>
-  
-  <div class="panel good"><b>Best practice</b><p>Tempatkan aturan bisnis di lokasi yang bisa digunakan ulang dan dites.</p></div><div class="panel bad"><b>Kesalahan umum</b><p>Fat controller yang melakukan validasi, query, email, dan formatting sekaligus.</p></div>
-  
-</section><section class="lesson-section">
-  <h4>02 · Contoh kode</h4>
-  <p>Perhatikan input, proses, dan output. Ketik ulang, lalu ubah satu nilai.</p>
+  <h4>01 · Cara membaca pemisahan peran</h4>
+  <p>Bacalah kelas dari ketergantungannya. Antarmuka menyatakan kemampuan yang dibutuhkan, sedangkan service menyatakan cara memakainya. Implementasi detail diserahkan pada kelas lain yang memenuhi antarmuka itu.</p><p>Service pada contoh tidak tahu dari mana data berasal. Ia hanya meminta penyimpanan yang memenuhi janji. Karena itu, service dapat diuji dengan penyimpanan tiruan tanpa menyentuh basis data.</p><p>Pengendali memanggil service ini dan menyerahkan hasilnya ke tampilan. Dengan begitu, pengendali hanya mengatur alur, service memuat logika, dan tampilan menyajikan hasil.</p>
   <pre><code>&lt;?php
-// Contoh tanggung jawab controller:
-// 1 validasi -&gt; 2 panggil service -&gt; 3 response
-// Jangan taruh ratusan baris logika bisnis di controller.</code></pre>
+declare(strict_types=1);
+
+interface PenyimpananTugas {
+    public function semua(): array;
+}
+
+class TugasService {
+    public function __construct(private PenyimpananTugas $penyimpanan) {}
+
+    public function daftar(): array {
+        return $this-&gt;penyimpanan-&gt;semua();
+    }
+}</code></pre><div class="panel"><b>Output yang diharapkan</b><p>Service mengembalikan daftar tugas dari penyimpanan yang disediakan tanpa mengetahui cara penyimpanannya.</p></div><p>Antarmuka menyatakan satu kemampuan yang dibutuhkan. Service menerima implementasi apa pun yang memenuhi janji itu, sehingga detail penyimpanan terpisah dari logika.</p><div class="panel"><b>Bedah baris</b><ol><li>Baris 4 · <code>interface PenyimpananTugas {</code> — Antarmuka menyatakan kebutuhan service.</li><li>Baris 5 · <code>public function semua(): array;</code> — Janji yang harus dipenuhi setiap implementasi.</li><li>Baris 9 · <code>public function __construct(private PenyimpananTugas $penyimpanan) {}</code> — Ketergantungan disediakan dari luar melalui konstruktor.</li><li>Baris 12 · <code>return $this-&gt;penyimpanan-&gt;semua();</code> — Service memakai penyimpanan tanpa mengetahui implementasinya.</li></ol></div>
+  <div class="panel good"><b>Bergantung pada janji</b><p>Bila service bergantung pada antarmuka, implementasi dapat diganti kapan saja, termasuk dengan tiruan saat pengujian.</p></div>
+  <div class="panel warn"><b>Cek pemahaman</b><p>Mengapa service pada contoh mudah diuji tanpa basis data?</p><p>Kriteria berhasil: Karena ia hanya bergantung pada antarmuka, sehingga dapat diberi penyimpanan tiruan saat pengujian.</p></div>
+</section><section class="lesson-section">
+  <h4>02 · Pembagian peran MVC</h4>
+  <p>Model mengurus data dan aturannya. Tampilan menyajikan hasil kepada pengguna. Pengendali menerima permintaan, memanggil model atau service, lalu memilih tampilan yang sesuai.</p><p>Ketika pengendali mulai memuat aturan bisnis, itu tanda logika perlu dipindahkan. Pengendali yang tipis lebih mudah dibaca karena hanya memperlihatkan alur permintaan.</p><p>Pembagian ini memudahkan pengujian. Logika pada service diuji tanpa tampilan, sedangkan tampilan diuji dengan data yang sudah disiapkan.</p>
   
   
+  <div class="panel warn"><b>Cek pemahaman</b><p>Sebutkan peran model, tampilan, dan pengendali pada pola MVC.</p><p>Kriteria berhasil: Model mengelola data, tampilan menyajikan hasil, pengendali mengatur alur permintaan.</p></div>
+</section><section class="lesson-section">
+  <h4>03 · Logika pada service</h4>
+  <p>Service adalah tempat logika aplikasi berkumpul. Ia dapat dipanggil dari beberapa pengendali, sehingga aturan yang sama tidak perlu ditulis ulang di setiap tempat.</p><p>Beri service satu tanggung jawab yang jelas. Service yang mengurus terlalu banyak hal akan sulit diuji dan sering berubah karena berbagai alasan.</p><p>Service mengembalikan data, bukan tampilan. Keputusan tentang cara menampilkan hasil tetap berada pada lapisan tampilan.</p>
+  
+  <div class="panel warn"><b>Hindari pengendali gemuk</b><p>Pengendali yang memuat puluhan baris logika sulit diuji dan mudah rusak. Pindahkan aturannya ke service.</p></div>
+  <div class="panel warn"><b>Cek pemahaman</b><p>Mengapa service sebaiknya mengembalikan data, bukan tampilan?</p><p>Kriteria berhasil: Agar logika tetap terpisah dari cara penyajian dan dapat dipakai ulang oleh tampilan atau API.</p></div>
+</section><section class="lesson-section">
+  <h4>04 · Dependency injection dan wadah layanan</h4>
+  <p>Dependency injection membuat kelas menyatakan kebutuhannya di konstruktor. Penyediaan diserahkan ke wadah layanan yang tahu cara membangun setiap kelas.</p><p>Dengan mengikat antarmuka ke implementasi, Anda dapat mengganti implementasi tanpa mengubah kelas yang memakainya. Saat pengujian, implementasi tiruan didaftarkan sebagai gantinya.</p><p>Wadah layanan juga membangun ketergantungan secara berantai. Bila sebuah kelas membutuhkan kelas lain, wadah membangun keduanya dalam urutan yang benar.</p>
+  
+  <div class="panel warn"><b>Daftarkan ikatan</b><p>Bila sebuah antarmuka belum diikat ke implementasi, permintaan terhadap antarmuka itu gagal dibangun. Daftarkan pada penyedia layanan.</p></div>
+  <div class="panel warn"><b>Cek pemahaman</b><p>Apa yang terjadi bila sebuah antarmuka tidak diikat ke implementasi pada wadah layanan?</p><p>Kriteria berhasil: Permintaan terhadap antarmuka itu gagal dibangun karena wadah tidak tahu implementasi mana yang dipakai.</p></div>
 </section>
-  <h4>Latihan bertingkat</h4><ol><li><b>Latihan 1</b> <em>(Mandiri)</em><p>Pecah rancangan controller pesanan menjadi validasi, layanan checkout, dan response.</p></li><li><b>Latihan 2</b> <em>(Mandiri)</em><p>Ubah satu input atau asumsi pada contoh, catat hasil dan jelaskan alasannya.</p></li></ol>
-  
-  
+  <h4>Latihan bertingkat</h4><ol><li><b>Pindahkan logika ke service</b> <em>(Terbimbing)</em><p>Pindahkan perhitungan statistik tugas dari pengendali ke sebuah service dengan satu method.</p><ol><li>Tentukan masukan dan keluaran service.</li><li>Tulis kelas service dengan satu method.</li><li>Panggil service dari pengendali.</li><li>Pastikan hasilnya sama seperti sebelumnya.</li></ol><pre><code>class StatistikService {
+    public function hitung(array $tugas): array {
+        // lengkapi
+    }
+}</code></pre><p><em>Hasil: Pengendali tipis memanggil service dan hasilnya tidak berubah.</em></p><details><summary>Petunjuk bertahap</summary><ol><li>Service menerima data, bukan permintaan mentah.</li><li>Pengendali hanya mengatur alur.</li><li>Bandingkan hasil sebelum dan sesudah pemindahan.</li></ol></details><p><em>Tantangan: Tambahkan method kedua dan pastikan hanya berkaitan dengan tanggung jawab service itu.</em></p></li><li><b>Bergantung pada antarmuka</b> <em>(Mandiri)</em><p>Ubah service agar bergantung pada antarmuka penyimpanan, lalu sediakan dua implementasi berbeda.</p><ol><li>Tulis antarmuka dengan method yang dibutuhkan.</li><li>Ubah service agar menerima antarmuka itu.</li><li>Buat dua implementasi, misalnya basis data dan memori.</li><li>Uji service dengan kedua implementasi.</li></ol><pre><code>interface Penyimpanan { ... }
+class TugasService {
+    public function __construct(private Penyimpanan $p) {}
+}</code></pre><p><em>Hasil: Service berjalan dengan kedua implementasi tanpa perubahan pada kelas service.</em></p><details><summary>Petunjuk bertahap</summary><ol><li>Antarmuka hanya memuat method yang benar-benar dipakai.</li><li>Implementasi wajib memenuhi seluruh method antarmuka.</li><li>Service tidak boleh menyebut kelas implementasi tertentu.</li></ol></details><p><em>Tantangan: Buat implementasi tiruan untuk pengujian.</em></p></li><li><b>Rancang batas lapisan aplikasi tugas</b> <em>(Penerapan)</em><p>Rancang pembagian lapisan untuk aplikasi catatan tugas: pengendali, service, dan penyimpanan, beserta tanggung jawab dan ketergantungan masing-masing.</p><ol><li>Sebutkan tanggung jawab setiap lapisan.</li><li>Tentukan method pada setiap lapisan.</li><li>Tentukan arah ketergantungan antar lapisan.</li><li>Periksa tidak ada logika bisnis di pengendali.</li></ol><pre><code>Pengendali: ...
+Service: ...
+Penyimpanan: ...</code></pre><p><em>Hasil: Setiap lapisan punya tanggung jawab jelas dan arah ketergantungan satu arah.</em></p><details><summary>Petunjuk bertahap</summary><ol><li>Pengendali hanya mengatur alur permintaan.</li><li>Service memuat aturan aplikasi.</li><li>Penyimpanan menangani akses data.</li></ol></details><p><em>Tantangan: Terapkan rancangan itu pada satu fitur lengkap.</em></p></li></ol>
+  <h4>Verifikasi</h4><div class="panel"><b>Mode: Manual</b><pre><code>Jalankan aplikasi dan uji service secara langsung dengan dua implementasi penyimpanan.</code></pre><p><em>Hasil yang diharapkan: Pengendali hanya mengatur alur, service mengembalikan hasil yang benar, dan implementasi dapat diganti tanpa mengubah service.</em></p><p><em>Bukti yang disimpan: Simpan berkas service, implementasi, dan catatan hasil pengujian.</em></p></div>
+  <h4>Mengatasi masalah</h4><ul><li><b>Permintaan terhadap sebuah antarmuka gagal dibangun.</b><br>Penyebab umum: Antarmuka belum diikat ke implementasinya pada wadah layanan.<br>Perbaikan: Daftarkan ikatan antarmuka ke implementasi pada penyedia layanan.</li><li><b>Service sulit diuji karena selalu menyentuh basis data.</b><br>Penyebab umum: Service membuat koneksi basis data sendiri alih-alih menerima penyimpanan dari luar.<br>Perbaikan: Satakan penyimpanan pada konstruktor dan bergantunglah pada antarmuka.</li><li><b>Pengendali membengkak dan sulit dibaca.</b><br>Penyebab umum: Aturan aplikasi ditulis langsung di pengendali.<br>Perbaikan: Pindahkan aturan itu ke service dan biarkan pengendali hanya mengatur alur.</li><li><b>Perubahan satu kelas memaksa perubahan di banyak tempat.</b><br>Penyebab umum: Kelas bergantung pada implementasi tertentu, bukan pada antarmuka.<br>Perbaikan: Perkenalkan antarmuka dan bergantunglah padanya.</li></ul>
   <div class="quiz"><strong>Uji pemahaman</strong><div class="quiz-question">
-    <b>1. Apa prinsip yang paling tepat untuk topik “MVC, service, dan dependency injection”?</b>
-    <ol type="A"><li>Tempatkan aturan bisnis di lokasi yang bisa digunakan ulang dan dites.</li><li>Gunakan solusi paling rumit sejak awal, meski kebutuhan belum jelas.</li><li>Lewati pengujian karena contoh kecil pasti benar.</li></ol>
-    <details><summary>Lihat pembahasan</summary><p class="answer">Jawaban: A. Tempatkan aturan bisnis di lokasi yang bisa digunakan ulang dan dites.</p></details>
+    <b>1. Apa peran pengendali pada pola MVC?</b>
+    <ol type="A"><li>Menyimpan data ke basis data</li><li>Mengatur alur permintaan dengan memanggil service dan memilih tampilan</li><li>Menyusun tampilan halaman</li></ol>
+    <details><summary>Lihat pembahasan</summary><p class="answer">Jawaban: B. Pengendali tipis mengatur alur, sedangkan logika dan penyajian berada di lapisan lain.</p></details>
+  </div><div class="quiz-question">
+    <b>2. Apa keuntungan service bergantung pada antarmuka penyimpanan?</b>
+    <ol type="A"><li>Implementasi penyimpanan dapat diganti tanpa mengubah service</li><li>Service menjadi lebih cepat</li><li>Data tersimpan otomatis</li></ol>
+    <details><summary>Lihat pembahasan</summary><p class="answer">Jawaban: A. Dengan bergantung pada antarmuka, implementasi dapat ditukar termasuk dengan tiruan saat pengujian.</p></details>
+  </div><div class="quiz-question">
+    <b>3. Wadah layanan tidak tahu implementasi untuk sebuah antarmuka. Tindakan tepat...</b>
+    <ol type="A"><li>Membuat ketergantungan itu di dalam kelas</li><li>Mendaftarkan ikatan antarmuka ke implementasi pada penyedia layanan</li><li>Menghapus antarmuka</li></ol>
+    <details><summary>Lihat pembahasan</summary><p class="answer">Jawaban: B. Ikatan antarmuka ke implementasi didaftarkan pada penyedia layanan agar wadah dapat membangunnya.</p></details>
   </div></div>
-  
-  
-  
+  <h4>Ringkasan</h4><ul><li>MVC memisahkan pengelolaan data, penyajian, dan pengaturan alur permintaan.</li><li>Logika aplikasi ditempatkan pada service agar pengendali tetap tipis dan mudah diuji.</li><li>Dependency injection menyatakan kebutuhan kelas di konstruktor dan menyediakannya dari luar.</li><li>Wadah layanan mengikat antarmuka ke implementasi sehingga implementasi mudah diganti.</li></ul>
+  <div class="panel"><b>Berikutnya</b><p>Berikutnya: migration, Eloquent, dan relationship. Anda akan mengelola skema database dan memodelkan relasi data pada aplikasi.</p></div>
+  <h4>Sumber</h4><ul><li><a href="https://laravel.com/docs/13.x" rel="noopener noreferrer">Laravel Documentation</a> <small>Laravel · 13.x</small> — Dokumentasi resmi Laravel tentang wadah layanan dan dependency injection.</li><li><a href="https://www.php.net/manual/en/language.oop5.php" rel="noopener noreferrer">PHP Manual: Classes and Objects</a> <small>PHP Group · current</small> — Manual PHP tentang kelas, antarmuka, dan objek.</li><li><a href="https://www.php-fig.org/psr/psr-12/" rel="noopener noreferrer">PHP-FIG: PSR-12 Extended Coding Style</a> <small>PHP Framework Interop Group · 1.0.0</small> — Standar gaya penulisan yang dipakai untuk struktur kelas.</li></ul>
 </article>
 <article class="lesson" id="m08-l04">
-  <div class="lesson-meta">Pelajaran 04 · 45 menit · Menengah · PHP</div>
+  <div class="lesson-meta">Pelajaran 04 · 120 menit · Menengah · PHP</div>
   <h3>Migration, Eloquent, dan relationship</h3>
-  
-  
-  
-  
-  
-  
+  <div class="panel good"><b>Hasil belajar</b><p>Setelah pelajaran ini, Anda dapat mengelola struktur database lewat migration dan memodelkan relasi antar data memakai Eloquent.</p></div>
+  <h4>Tujuan</h4><ul><li>Menulis migration untuk membuat dan mengubah tabel.</li><li>Menjelaskan cara migration menjaga struktur tetap dapat dilacak.</li><li>Mendefinisikan model Eloquent untuk sebuah tabel.</li><li>Menyatakan relasi satu ke banyak memakai method pada model.</li></ul>
+  <div class="panel"><b>Prasyarat</b><p>MVC, service, dan dependency injection</p></div>
+  <h4>Istilah kunci</h4><dl class="glossary"><div><dt>Migration</dt><dd>Berkas yang mendeskripsikan perubahan struktur tabel sehingga dapat dijalankan berurutan pada setiap lingkungan.</dd></div><div><dt>Eloquent</dt><dd>Cara Laravel memetakan tabel basis data menjadi kelas model beserta relasinya.</dd></div><div><dt>Model</dt><dd>Kelas yang mewakili satu tabel dan menjadi tempat aturan serta relasinya.</dd></div><div><dt>Eager loading</dt><dd>Pengambilan relasi sekaligus dalam satu query agar tidak menimbulkan banyak query berulang.</dd></div></dl>
+  <h4>Kartu sintaks</h4><div class="panel">
+  <b><code>Schema::create(&quot;tugas&quot;, function (Blueprint $table) { ... });</code></b>
+  <p><em>Dibaca: Baca sebagai pendefinisian struktur tabel tugas melalui kode, bukan melalui alat grafik.</em></p>
+  <p>Setiap perintah pada blok itu menambahkan satu kolom. Struktur tabel tersimpan sebagai berkas sehingga dapat dijalankan ulang pada lingkungan lain.</p>
+  <pre><code>Schema::create(&quot;pengguna&quot;, function (Blueprint $table) { $table-&gt;id(); });</code></pre>
+  <p><em>Output: Tabel dibuat sesuai urutan perintah kolomnya.</em></p>
+  <p><em>Hati-hati: Mengubah struktur tabel langsung di basis data tanpa migration membuat lingkungan berbeda diam-diam.</em></p>
+</div><div class="panel">
+  <b><code>public function tugas(): HasMany { return $this-&gt;hasMany(Tugas::class); }</code></b>
+  <p><em>Dibaca: Baca sebagai deklarasi bahwa satu daftar memiliki banyak tugas.</em></p>
+  <p>Method relasi mengembalikan objek hubungan. Nama methodnya dipakai untuk mengambil data terkait.</p>
+  <pre><code>public function tugas(): HasMany { return $this-&gt;hasMany(Tugas::class); }</code></pre>
+  <p><em>Output: Relasi dapat dipanggil seperti properti dan menghasilkan kumpulan data terkait.</em></p>
+  <p><em>Hati-hati: Lupa mendeklarasikan relasi balik membuat pengambilan dari sisi sebaliknya tidak tersedia.</em></p>
+</div><div class="panel">
+  <b><code>Daftar::with(&quot;tugas&quot;)-&gt;get();</code></b>
+  <p><em>Dibaca: Baca sebagai permintaan mengambil daftar bersama tugasnya sekaligus dalam satu langkah.</em></p>
+  <p>with memuat relasi lebih awal sehingga jumlah query tetap sedikit meski datanya banyak.</p>
+  <pre><code>Daftar::with(&quot;tugas&quot;)-&gt;get();</code></pre>
+  <p><em>Output: Setiap daftar sudah memuat tugasnya tanpa query tambahan per baris.</em></p>
+  <p><em>Hati-hati: Meminta relasi di dalam perulangan menimbulkan banyak query dan memperlambat halaman.</em></p>
+</div>
+  <h4>Aturan penulisan</h4><ul><li>Ubah struktur database hanya lewat migration, bukan langsung di basis data.</li><li>Beri nama berkas migration yang menjelaskan perubahannya.</li><li>Deklarasikan relasi dari kedua sisi agar keduanya dapat dipakai.</li><li>Pakai eager loading untuk relasi yang akan dipakai bersama data induknya.</li><li>Jangan menaruh logika bisnis di dalam model; batasi model pada data dan relasi.</li></ul>
   <section class="lesson-section">
-  <h4>01 · Memahami konsepnya</h4>
-  <p>Migration membuat skema berversi. Eloquent ORM memetakan tabel ke model dan relasi hasMany/belongsTo; gunakan eager loading untuk menghindari N+1.</p><p>Sebelum melakukan query masif, pelajari SQL yang dihasilkan. Gunakan pagination untuk koleksi besar; hindari Model::all() pada tabel besar.</p>
+  <h4>01 · Cara membaca migration</h4>
+  <p>Migration dibaca sebagai daftar perintah kolom di dalam pendefinisian tabel. Setiap baris menambahkan satu kolom beserta tipenya. Urutan dan aturannya menentukan bentuk tabel yang dihasilkan.</p><p>Pada contoh, kolom pengenal dibuat lebih dulu, diikuti penunjuk ke tabel induk. Penunjuk itu juga memasang kunci asing sehingga relasi terjaga database. Setelah kolom teks dan status, kolom waktu ditambahkan sekaligus.</p><p>Karena struktur didefinisikan sebagai berkas, lingkungan pengembangan dan produksi dapat dibentuk dari rangkaian migration yang sama. Perbedaan struktur karena perubahan manual dapat dihindari.</p>
+  <pre><code>&lt;?php
+// database/migrations/xxxx_create_tugas_table.php
+Schema::create(&quot;tugas&quot;, function (Blueprint $table) {
+    $table-&gt;id();
+    $table-&gt;foreignId(&quot;daftar_id&quot;)-&gt;constrained();
+    $table-&gt;string(&quot;judul&quot;);
+    $table-&gt;boolean(&quot;selesai&quot;)-&gt;default(false);
+    $table-&gt;timestamps();
+});</code></pre><div class="panel"><b>Output yang diharapkan</b><p>Tabel tugas dibuat dengan pengenal, penunjuk daftar, judul, status selesai, dan kolom waktu.</p></div><p>Setiap perintah menambahkan satu kolom. foreignId memasang kunci asing ke tabel daftar, sedangkan default memberi nilai awal untuk kolom status.</p><div class="panel"><b>Bedah baris</b><ol><li>Baris 3 · <code>Schema::create(&quot;tugas&quot;, function (Blueprint $table) {</code> — Tabel tugas didefinisikan lewat kode migration.</li><li>Baris 4 · <code>$table-&gt;id();</code> — Kolom pengenal utama ditambahkan.</li><li>Baris 5 · <code>$table-&gt;foreignId(&quot;daftar_id&quot;)-&gt;constrained();</code> — Kolom penunjuk ke tabel daftar sekaligus memasang kunci asing.</li><li>Baris 6 · <code>$table-&gt;string(&quot;judul&quot;);</code> — Kolom judul bertipe teks.</li><li>Baris 7 · <code>$table-&gt;boolean(&quot;selesai&quot;)-&gt;default(false);</code> — Kolom status selesai diberi nilai awal salah.</li></ol></div>
+  <div class="panel good"><b>Struktur sebagai berkas</b><p>Dengan migration, struktur tabel dapat dilacak seperti kode lain: dapat ditinjau, diubah, dan diulang pada lingkungan berbeda.</p></div>
+  <div class="panel warn"><b>Cek pemahaman</b><p>Mengapa struktur tabel lebih baik didefinisikan lewat migration daripada diubah langsung di basis data?</p><p>Kriteria berhasil: Karena perubahannya tercatat sebagai berkas yang dapat dijalankan ulang sehingga semua lingkungan tetap sama.</p></div>
+</section><section class="lesson-section">
+  <h4>02 · Menyatakan relasi pada model</h4>
+  <p>Relasi dideklarasikan sebagai method pada model. Sisi yang memiliki banyak menuliskan hubungan satu ke banyak, sedangkan sisi yang dimiliki menuliskan hubungan milik ke satu.</p><p>Bila kedua sisi dideklarasikan, data dapat ditelusuri dari arah mana pun. Dari daftar Anda dapat mengambil tugasnya, dan dari tugas Anda dapat mengambil daftarnya. Keduanya memakai kunci asing yang sudah dipasang migration.</p><p>Relasi yang akan dipakai bersama data induknya sebaiknya dimuat lebih awal. Cara ini menggantikan banyak query kecil dengan satu query, sehingga halaman tetap cepat ketika jumlah data bertambah.</p>
+  <pre><code>&lt;?php
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+
+class Daftar extends Model {
+    public function tugas(): HasMany {
+        return $this-&gt;hasMany(Tugas::class);
+    }
+}
+
+class Tugas extends Model {
+    public function daftar(): BelongsTo {
+        return $this-&gt;belongsTo(Daftar::class);
+    }
+}</code></pre><div class="panel"><b>Output yang diharapkan</b><p>Dua model saling terhubung sehingga tugas dan daftarnya dapat diambil dari kedua arah.</p></div><p>Model daftar menyatakan hubungan satu ke banyak ke tugas, dan model tugas menyatakan hubungan milik ke satu ke daftar.</p><div class="panel"><b>Bedah baris</b><ol><li>Baris 8 · <code>class Daftar extends Model {</code> — Model daftar mewakili tabel daftar.</li><li>Baris 9 · <code>public function tugas(): HasMany {</code> — Hubungan satu ke banyak dideklarasikan sebagai method.</li><li>Baris 10 · <code>return $this-&gt;hasMany(Tugas::class);</code> — Relasi mengembalikan objek hubungan ke model tugas.</li><li>Baris 15 · <code>public function daftar(): BelongsTo {</code> — Sisi tugas menuliskan hubungan milik ke satu.</li><li>Baris 16 · <code>return $this-&gt;belongsTo(Daftar::class);</code> — Relasi mengembalikan objek hubungan ke model daftar.</li></ol></div>
   
-  <div class="panel good"><b>Best practice</b><p>Gunakan eager loading ketika relasi dipakai pada daftar.</p></div><div class="panel bad"><b>Kesalahan umum</b><p>Query tambahan per baris (N+1) di halaman daftar.</p></div>
   
 </section><section class="lesson-section">
-  <h4>02 · Contoh kode</h4>
-  <p>Perhatikan input, proses, dan output. Ketik ulang, lalu ubah satu nilai.</p>
-  <pre><code>&lt;?php
-// App\Models\User.php
-public function tasks() {
-    return $this-&gt;hasMany(Task::class);
-}
-// User::with(&quot;tasks&quot;)-&gt;paginate(20);</code></pre>
+  <h4>03 · Menjaga migration tetap aman</h4>
+  <p>Setiap perubahan struktur ditulis sebagai migration baru, bukan dengan mengubah berkas lama yang sudah dijalankan. Berkas lama tetap menjadi catatan sejarah struktur yang sudah diterapkan.</p><p>Perubahan yang menambah sesuatu lebih aman daripada yang menghapus. Tambahkan kolom baru, isi datanya, pindahkan pemakaian, baru hapus kolom lama bila sudah tidak ada yang memakainya.</p><p>Migration yang sudah dijalankan pada lingkungan bersama sebaiknya tidak diubah lagi. Bila ada kekeliruan, perbaikannya dilakukan lewat migration baru agar seluruh lingkungan tetap berpijak pada urutan yang sama.</p>
+  
+  <div class="panel warn"><b>Jangan ubah migration lama</b><p>Mengubah migration yang sudah dijalankan membuat lingkungan berbeda tidak sinkron. Tambahkan migration baru untuk perbaikannya.</p></div>
+  <div class="panel warn"><b>Cek pemahaman</b><p>Mengapa migration yang sudah dijalankan tidak boleh diubah lagi?</p><p>Kriteria berhasil: Karena lingkungan lain sudah menjalankannya sehingga perubahannya tidak akan diterapkan di sana dan struktur menjadi berbeda.</p></div>
+</section><section class="lesson-section">
+  <h4>04 · Query dan relasi pada praktik</h4>
+  <p>Model menyediakan cara mengambil data tanpa menulis SQL langsung. Anda memanggil method untuk menyaring dan mengambil, sedangkan Laravel menyusun query yang sesuai.</p><p>Hati-hati terhadap pengambilan relasi di dalam perulangan. Setiap perulangan dapat memicu query baru sehingga jumlahnya bertambah cepat. Muat relasinya lebih awal bersama data induknya.</p><p>Untuk operasi yang perlu efisien, periksa jumlah query yang dijalankan. Alat pengembang query dapat menunjukkan hal ini dan membantu menemukan query yang berulang tanpa perlu.</p>
   
   
+  <div class="panel warn"><b>Cek pemahaman</b><p>Apa masalah mengambil relasi di dalam perulangan, dan bagaimana menghindarinya?</p><p>Kriteria berhasil: Setiap perulangan memicu query baru sehingga jumlahnya membengkak; hindari dengan memuat relasi lebih awal memakai with.</p></div>
 </section>
-  <h4>Latihan bertingkat</h4><ol><li><b>Latihan 1</b> <em>(Mandiri)</em><p>Rancang model User–Task, migration, dan relasi dua arah.</p></li><li><b>Latihan 2</b> <em>(Mandiri)</em><p>Ubah satu input atau asumsi pada contoh, catat hasil dan jelaskan alasannya.</p></li></ol>
-  
-  
+  <h4>Latihan bertingkat</h4><ol><li><b>Migration dan model tugas</b> <em>(Terbimbing)</em><p>Buat migration tabel tugas dengan penunjuk ke daftar, lalu buat modelnya beserta relasi ke daftar.</p><ol><li>Tulis migration dengan kolom pengenal, penunjuk, judul, dan status.</li><li>Jalankan migration untuk membentuk tabel.</li><li>Buat model tugas yang mewakili tabel itu.</li><li>Deklarasikan relasi milik ke satu ke daftar.</li></ol><pre><code>Schema::create(&quot;tugas&quot;, function (Blueprint $table) {
+    // lengkapi
+});</code></pre><p><em>Hasil: Tabel terbentuk dan model dapat mengambil daftar dari sebuah tugas.</em></p><details><summary>Petunjuk bertahap</summary><ol><li>Kolom penunjuk sekaligus dapat memasang kunci asing.</li><li>Nama model mengikuti nama tabelnya.</li><li>Relasi milik ke satu memakai belongsTo.</li></ol></details><p><em>Tantangan: Tambahkan kolom waktu dibuat dan diperbarui.</em></p></li><li><b>Relasi dua arah</b> <em>(Mandiri)</em><p>Lengkapi relasi pada kedua model sehingga daftar dapat mengambil tugasnya dan tugas dapat mengambil daftarnya.</p><ol><li>Deklarasikan relasi satu ke banyak pada model daftar.</li><li>Deklarasikan relasi milik ke satu pada model tugas.</li><li>Ambil satu daftar beserta tugasnya.</li><li>Ambil satu tugas beserta daftarnya.</li></ol><pre><code>class Daftar extends Model { /* relasi */ }
+class Tugas extends Model { /* relasi */ }</code></pre><p><em>Hasil: Kedua arah relasi dapat dipakai dan hasilnya sesuai data.</em></p><details><summary>Petunjuk bertahap</summary><ol><li>Setiap sisi memakai jenis hubungan yang berbeda.</li><li>Nama method relasi dipakai saat memanggilnya.</li><li>Uji kedua arah pengambilan data.</li></ol></details><p><em>Tantangan: Hitung jumlah tugas setiap daftar memakai relasi.</em></p></li><li><b>Hindari query berulang</b> <em>(Penerapan)</em><p>Diberikan halaman yang menampilkan banyak daftar beserta tugasnya, hilangkan query berulang dengan memuat relasi lebih awal, lalu jelaskan perbedaannya.</p><ol><li>Tampilkan daftar beserta tugasnya seperti biasa.</li><li>Catat jumlah query yang dijalankan.</li><li>Muat relasi lebih awal bersama data induknya.</li><li>Bandingkan jumlah query sebelum dan sesudah.</li></ol><pre><code>Daftar::with(&quot;tugas&quot;)-&gt;get();</code></pre><p><em>Hasil: Jumlah query berkurang dan halaman tetap menampilkan hasil yang sama.</em></p><details><summary>Petunjuk bertahap</summary><ol><li>Eager loading memuat relasi sekaligus.</li><li>Jumlah query dapat diperiksa lewat alat pengembang.</li><li>Hasil tampilan tidak boleh berubah setelah optimasi.</li></ol></details><p><em>Tantangan: Uji pada data yang lebih banyak dan bandingkan waktunya.</em></p></li></ol>
+  <h4>Verifikasi</h4><div class="panel"><b>Mode: Manual</b><pre><code>Jalankan migration, uji relasi dari kedua arah, dan bandingkan jumlah query pada halaman daftar.</code></pre><p><em>Hasil yang diharapkan: Tabel terbentuk dari migration, relasi bekerja dua arah, dan jumlah query berkurang setelah memuat relasi lebih awal.</em></p><p><em>Bukti yang disimpan: Simpan berkas migration, model, dan catatan jumlah query.</em></p></div>
+  <h4>Mengatasi masalah</h4><ul><li><b>Struktur tabel berbeda antara dua lingkungan.</b><br>Penyebab umum: Ada perubahan langsung di basis data yang tidak tercatat sebagai migration.<br>Perbaikan: Tulis perubahan itu sebagai migration baru dan jalankan pada seluruh lingkungan.</li><li><b>Pengambilan data terkait lambat ketika datanya banyak.</b><br>Penyebab umum: Relasi diambil di dalam perulangan sehingga menimbulkan banyak query.<br>Perbaikan: Muat relasi lebih awal bersama data induknya memakai with.</li><li><b>Relasi mengembalikan nilai kosong.</b><br>Penyebab umum: Nama kolom penunjuk tidak sesuai dengan yang diasumsikan relasi.<br>Perbaikan: Periksa nama kunci asing dan sebutkan secara eksplisit bila berbeda dari kebiasaan.</li><li><b>Migration gagal karena kolom sudah ada.</b><br>Penyebab umum: Perubahan ditambahkan pada migration yang sudah pernah dijalankan.<br>Perbaikan: Buat migration baru untuk perubahan itu alih-alih mengubah yang sudah dijalankan.</li></ul>
   <div class="quiz"><strong>Uji pemahaman</strong><div class="quiz-question">
-    <b>1. Apa prinsip yang paling tepat untuk topik “Migration, Eloquent, dan relationship”?</b>
-    <ol type="A"><li>Gunakan eager loading ketika relasi dipakai pada daftar.</li><li>Gunakan solusi paling rumit sejak awal, meski kebutuhan belum jelas.</li><li>Lewati pengujian karena contoh kecil pasti benar.</li></ol>
-    <details><summary>Lihat pembahasan</summary><p class="answer">Jawaban: A. Gunakan eager loading ketika relasi dipakai pada daftar.</p></details>
+    <b>1. Apa fungsi migration pada pengelolaan struktur database?</b>
+    <ol type="A"><li>Menyimpan data pengguna</li><li>Mendeskripsikan perubahan struktur tabel sebagai berkas yang dapat dijalankan berurutan</li><li>Menghapus tabel secara otomatis</li></ol>
+    <details><summary>Lihat pembahasan</summary><p class="answer">Jawaban: B. Migration mencatat perubahan struktur sebagai berkas sehingga dapat diterapkan pada setiap lingkungan.</p></details>
+  </div><div class="quiz-question">
+    <b>2. Apa yang dilakukan pemanggilan with(&quot;tugas&quot;) pada sebuah query model?</b>
+    <ol type="A"><li>Mengambil relasi tugas sekaligus bersama data induknya</li><li>Menyaring daftar yang tidak punya tugas</li><li>Menghapus tugas terkait</li></ol>
+    <details><summary>Lihat pembahasan</summary><p class="answer">Jawaban: A. with memuat relasi lebih awal sehingga menggantikan banyak query terpisah.</p></details>
+  </div><div class="quiz-question">
+    <b>3. Kedua arah relasi perlu dipakai. Tindakan tepat...</b>
+    <ol type="A"><li>Mendeklarasikan relasi hanya pada satu model</li><li>Mendeklarasikan relasi pada kedua model</li><li>Menyimpan relasi sebagai tabel teks</li></ol>
+    <details><summary>Lihat pembahasan</summary><p class="answer">Jawaban: B. Kedua sisi relasi dideklarasikan agar data dapat ditelusuri dari arah mana pun.</p></details>
   </div></div>
-  
-  
-  
+  <h4>Ringkasan</h4><ul><li>Migration mendeskripsikan perubahan struktur tabel sebagai berkas yang dapat dijalankan berurutan.</li><li>Model Eloquent mewakili sebuah tabel dan menjadi tempat relasinya dideklarasikan.</li><li>Relasi dideklarasikan dari kedua sisi sehingga data dapat ditelusuri dari arah mana pun.</li><li>Eager loading memuat relasi lebih awal untuk menghindari banyak query berulang.</li></ul>
+  <div class="panel"><b>Berikutnya</b><p>Berikutnya: validation dan Form Request. Anda akan memisahkan aturan masukan dari pengendali dan menampilkan pesan kesalahan yang jelas.</p></div>
+  <h4>Sumber</h4><ul><li><a href="https://laravel.com/docs/13.x/eloquent" rel="noopener noreferrer">Laravel Docs: Eloquent ORM</a> <small>Laravel · 13.x</small> — Dokumentasi resmi Eloquent tentang model dan relasi.</li><li><a href="https://laravel.com/docs/13.x" rel="noopener noreferrer">Laravel Documentation</a> <small>Laravel · 13.x</small> — Dokumentasi resmi Laravel tentang migration.</li><li><a href="https://www.postgresql.org/docs/18/" rel="noopener noreferrer">PostgreSQL Documentation</a> <small>PostgreSQL Global Development Group · 18.6</small> — Referensi basis data yang mendasari struktur tabel dan kunci asing.</li></ul>
 </article>
 <article class="lesson" id="m08-l05">
-  <div class="lesson-meta">Pelajaran 05 · 45 menit · Menengah · PHP</div>
+  <div class="lesson-meta">Pelajaran 05 · 120 menit · Menengah · PHP</div>
   <h3>Validation dan Form Request</h3>
-  
-  
-  
-  
-  
-  
+  <div class="panel good"><b>Hasil belajar</b><p>Setelah pelajaran ini, Anda dapat memisahkan aturan validasi ke kelas tersendiri dan memakai hasil yang sudah diperiksa di dalam pengendali.</p></div>
+  <h4>Tujuan</h4><ul><li>Menulis aturan validasi untuk masukan dari pengguna.</li><li>Menjelaskan alasan validasi harus berada di sisi server.</li><li>Memisahkan aturan ke kelas Form Request.</li><li>Memakai data yang sudah divalidasi di dalam pengendali.</li></ul>
+  <div class="panel"><b>Prasyarat</b><p>Migration, Eloquent, dan relationship</p></div>
+  <h4>Istilah kunci</h4><dl class="glossary"><div><dt>Validasi</dt><dd>Pemeriksaan masukan sebelum dipakai, memastikan bentuk dan nilainya sesuai harapan.</dd></div><div><dt>Form Request</dt><dd>Kelas yang memuat aturan validasi sehingga pengendali tidak dipenuhi pemeriksaan masukan.</dd></div><div><dt>Pesan kesalahan</dt><dd>Keterangan yang menjelaskan masukan mana yang tidak sah dan mengapa.</dd></div><div><dt>Aturan bersyarat</dt><dd>Aturan yang hanya berlaku pada kondisi tertentu, misalnya kolom wajib hanya bila kolom lain diisi.</dd></div></dl>
+  <h4>Kartu sintaks</h4><div class="panel">
+  <b><code>&quot;judul&quot; =&gt; [&quot;required&quot;, &quot;string&quot;, &quot;max:255&quot;],</code></b>
+  <p><em>Dibaca: Baca sebagai aturan bahwa judul wajib diisi, berupa teks, dan panjangnya paling banyak 255 karakter.</em></p>
+  <p>Setiap aturan disebut sebagai daftar. Bila salah satu tidak terpenuhi, permintaan ditolak dengan pesan yang sesuai.</p>
+  <pre><code>&quot;nama&quot; =&gt; [&quot;required&quot;, &quot;string&quot;],</code></pre>
+  <p><em>Output: Masukan yang tidak memenuhi aturan ditolak sebelum sampai ke logika aplikasi.</em></p>
+  <p><em>Hati-hati: Mengandalkan pemeriksaan di sisi tampilan saja tidak cukup karena permintaan dapat dikirim tanpa peramban.</em></p>
+</div><div class="panel">
+  <b><code>&quot;daftar_id&quot; =&gt; [&quot;required&quot;, &quot;exists:daftar,id&quot;],</code></b>
+  <p><em>Dibaca: Baca sebagai aturan bahwa penunjuk daftar wajib ada di tabel daftar.</em></p>
+  <p>Aturan keberadaan memeriksa nilai terhadap isi tabel, sehingga data yang menunjuk baris tidak ada ditolak.</p>
+  <pre><code>&quot;daftar_id&quot; =&gt; [&quot;required&quot;, &quot;exists:daftar,id&quot;],</code></pre>
+  <p><em>Output: Penunjuk ke baris yang tidak ada ditolak sebelum disimpan.</em></p>
+  <p><em>Hati-hati: Memeriksa keberadaan hanya di aplikasi tidak menjamin data masih ada saat disimpan.</em></p>
+</div><div class="panel">
+  <b><code>$data = $request-&gt;validated();</code></b>
+  <p><em>Dibaca: Baca sebagai pengambilan hanya nilai yang sudah lolos aturan validasi.</em></p>
+  <p>Metode ini mengembalikan data yang sudah diperiksa saja, sehingga nilai tambahan yang tidak diharapkan tidak ikut terpakai.</p>
+  <pre><code>$data = $request-&gt;validated();</code></pre>
+  <p><em>Output: Pengendali menerima data bersih sesuai aturan yang ditetapkan.</em></p>
+  <p><em>Hati-hati: Memakai seluruh masukan mentah membuka risiko nilai yang tidak diharapkan ikut tersimpan.</em></p>
+</div>
+  <h4>Aturan penulisan</h4><ul><li>Letakkan aturan validasi pada kelas Form Request, bukan di dalam pengendali.</li><li>Selalu validasi di sisi server meski tampilan sudah memeriksa masukan.</li><li>Ambil data memakai hasil validasi, bukan seluruh masukan mentah.</li><li>Tulis pesan kesalahan yang menyebut kolom dan penyebabnya dengan jelas.</li><li>Uji aturan dengan masukan yang sah dan yang melanggar.</li></ul>
   <section class="lesson-section">
-  <h4>01 · Memahami konsepnya</h4>
-  <p>Laravel Request validation memeriksa format, panjang, tipe, dan aturan bisnis sebelum pemrosesan. Form Request menampung aturan serta otorisasi untuk request kompleks.</p><p>Validasi semua data dari internet dan integrasi; batas upload, tipe file yang benar, dan unique rules sesuai kebutuhan. Jangan percaya validasi JavaScript saja.</p>
+  <h4>01 · Cara membaca aturan validasi</h4>
+  <p>Kelas Form Request dibaca sebagai daftar aturan per kolom. Setiap kunci menyebut nama masukan, dan nilainya adalah daftar aturan yang harus dipenuhi. Membaca daftar ini menjelaskan bentuk masukan yang diterima aplikasi.</p><p>Pada contoh, judul wajib berupa teks dengan panjang terbatas, penunjuk daftar wajib menunjuk baris yang ada, dan status selesai harus berupa nilai benar atau salah. Aturan ini ditegakkan sebelum pengendali dijalankan.</p><p>Bila aturan tidak terpenuhi, permintaan ditolak dan pesan kesalahan dikembalikan. Pengendali tidak perlu lagi memeriksa satu per satu, karena masukan yang sampai ke sana sudah lolos aturan.</p>
+  <pre><code>&lt;?php
+namespace App\Http\Requests;
+
+use Illuminate\Foundation\Http\FormRequest;
+
+class SimpanTugasRequest extends FormRequest {
+    public function rules(): array {
+        return [
+            &quot;judul&quot; =&gt; [&quot;required&quot;, &quot;string&quot;, &quot;max:255&quot;],
+            &quot;daftar_id&quot; =&gt; [&quot;required&quot;, &quot;exists:daftar,id&quot;],
+            &quot;selesai&quot; =&gt; [&quot;boolean&quot;],
+        ];
+    }
+}</code></pre><div class="panel"><b>Output yang diharapkan</b><p>Permintaan dengan masukan tidak sah ditolak sebelum pengendali dijalankan.</p></div><p>Setiap kolom diberi daftar aturan. Aturan required memastikan nilai ada, max membatasi panjang, dan exists memeriksa nilai terhadap isi tabel.</p><div class="panel"><b>Bedah baris</b><ol><li>Baris 7 · <code>public function rules(): array {</code> — Aturan didefinisikan sebagai method yang mengembalikan daftar.</li><li>Baris 9 · <code>&quot;judul&quot; =&gt; [&quot;required&quot;, &quot;string&quot;, &quot;max:255&quot;],</code> — Judul wajib, berupa teks, dan panjangnya dibatasi.</li><li>Baris 10 · <code>&quot;daftar_id&quot; =&gt; [&quot;required&quot;, &quot;exists:daftar,id&quot;],</code> — Penunjuk daftar wajib menunjuk baris yang ada.</li><li>Baris 11 · <code>&quot;selesai&quot; =&gt; [&quot;boolean&quot;],</code> — Status selesai harus berupa nilai benar atau salah.</li></ol></div>
+  <div class="panel warn"><b>Validasi di server</b><p>Pemeriksaan di tampilan hanya mempermudah pengguna. Permintaan tetap dapat dikirim langsung, sehingga validasi di server wajib ada.</p></div>
+  <div class="panel warn"><b>Cek pemahaman</b><p>Mengapa validasi di sisi tampilan tidak cukup?</p><p>Kriteria berhasil: Karena permintaan dapat dikirim tanpa melalui tampilan, sehingga pemeriksaan di server tetap diperlukan.</p></div>
+</section><section class="lesson-section">
+  <h4>02 · Memakai data yang sudah divalidasi</h4>
+  <p>Pengendali pada contoh menerima permintaan yang sudah divalidasi. Karena kelas permintaan menangani aturannya, pengendali dapat langsung memakai hasilnya tanpa pemeriksaan tambahan.</p><p>Pengambilan hasil validasi memastikan hanya nilai yang diatur yang dipakai. Nilai lain yang kebetulan dikirim tidak ikut tersimpan, sehingga data yang masuk ke basis data tetap sesuai rencana.</p><p>Setelah data tersimpan, pengendali mengalihkan ke halaman daftar. Pola ini mengembalikan pengguna ke halaman yang bermakna setelah tindakan selesai.</p>
+  <pre><code>public function store(SimpanTugasRequest $request) {
+    $data = $request-&gt;validated();
+    $tugas = Tugas::create($data);
+    return redirect()-&gt;route(&quot;tugas.index&quot;);
+}</code></pre><div class="panel"><b>Output yang diharapkan</b><p>Data yang lolos validasi tersimpan, lalu pengguna dialihkan ke halaman daftar.</p></div><p>Pengendali menerima permintaan yang sudah diperiksa, mengambil hanya nilai yang divalidasi, menyimpannya, lalu mengalihkan ke halaman daftar.</p><div class="panel"><b>Bedah baris</b><ol><li>Baris 1 · <code>public function store(SimpanTugasRequest $request) {</code> — Parameter bertipe permintaan menjalankan aturan validasi lebih dulu.</li><li>Baris 2 · <code>$data = $request-&gt;validated();</code> — Hanya nilai yang lolos validasi yang diambil.</li></ol></div>
   
-  <div class="panel good"><b>Best practice</b><p>Validasi di server dan gunakan pesan kesalahan yang dapat dipahami pengguna.</p></div><div class="panel bad"><b>Kesalahan umum</b><p>Hanya memeriksa isian di browser, tidak di backend.</p></div>
   
 </section><section class="lesson-section">
-  <h4>02 · Contoh kode</h4>
-  <p>Perhatikan input, proses, dan output. Ketik ulang, lalu ubah satu nilai.</p>
-  <pre><code>&lt;?php
-$data = $request-&gt;validate([
-  &quot;title&quot; =&gt; [&quot;required&quot;, &quot;string&quot;, &quot;max:150&quot;],
-  &quot;done&quot; =&gt; [&quot;sometimes&quot;, &quot;boolean&quot;],
-]);</code></pre>
+  <h4>03 · Aturan bersyarat dan pesan kesalahan</h4>
+  <p>Sebagian aturan hanya berlaku pada kondisi tertentu. Misalnya, sebuah kolom wajib diisi hanya bila kolom lain berisi nilai tertentu. Aturan bersyarat menyatakan hal itu tanpa menulis pemeriksaan manual di pengendali.</p><p>Pesan kesalahan yang jelas membantu pengguna memperbaiki masukan. Sebut kolom yang bermasalah dan alasannya, bukan hanya menyatakan bahwa masukan tidak sah.</p><p>Untuk masukan berbentuk daftar, aturan dapat diterapkan pada setiap elemen. Dengan begitu, satu aturan mewakili pemeriksaan seluruh anggotanya.</p>
   
+  
+  <div class="panel warn"><b>Cek pemahaman</b><p>Sebutkan dua hal yang membuat pesan kesalahan mudah ditindaklanjuti.</p><p>Kriteria berhasil: Menyebut kolom yang bermasalah dan menjelaskan alasannya.</p></div>
+</section><section class="lesson-section">
+  <h4>04 · Jebakan yang sering terjadi</h4>
+  <p>Mengambil seluruh masukan mentah membuat nilai yang tidak diharapkan ikut tersimpan. Biasakan mengambil hasil validasi saja, sehingga daftar nilai yang dipakai sudah pasti.</p><p>Aturan yang terlalu longgar membiarkan data bermasalah masuk. Aturan yang terlalu ketat menolak masukan yang sebenarnya sah. Uji keduanya dengan contoh yang realistis.</p><p>Mengubah aturan tanpa menyesuaikan pesan kesalahan membuat pengguna menerima keterangan yang tidak sesuai. Perbarui keduanya bersamaan.</p>
+  
+  <div class="panel bad"><b>Kesalahan umum</b><p>Menyimpan seluruh masukan mentah padahal hanya sebagian yang divalidasi. Pakai hasil validasi agar daftar nilainya pasti.</p></div>
   
 </section>
-  <h4>Latihan bertingkat</h4><ol><li><b>Latihan 1</b> <em>(Mandiri)</em><p>Definisikan aturan createTask dan updateTask (judul, status, prioritas).</p></li><li><b>Latihan 2</b> <em>(Mandiri)</em><p>Ubah satu input atau asumsi pada contoh, catat hasil dan jelaskan alasannya.</p></li></ol>
-  
-  
+  <h4>Latihan bertingkat</h4><ol><li><b>Aturan validasi tugas</b> <em>(Terbimbing)</em><p>Tulis kelas permintaan dengan aturan untuk judul wajib, penunjuk daftar yang ada, dan status selesai berupa nilai benar atau salah.</p><ol><li>Buat kelas permintaan dengan method aturan.</li><li>Tulis aturan keberadaan untuk penunjuk daftar.</li><li>Tulis aturan tipe untuk status selesai.</li><li>Uji dengan masukan sah dan tidak sah.</li></ol><pre><code>class SimpanTugasRequest extends FormRequest {
+    public function rules(): array {
+        return [];
+    }
+}</code></pre><p><em>Hasil: Masukan tidak sah ditolak sebelum pengendali dijalankan.</em></p><details><summary>Petunjuk bertahap</summary><ol><li>Setiap kolom memakai daftar aturan.</li><li>Aturan keberadaan memeriksa nilai terhadap isi tabel.</li><li>Setiap aturan tidak terpenuhi menghasilkan pesan kesalahan.</li></ol></details><p><em>Tantangan: Tambahkan aturan panjang maksimum pada judul.</em></p></li><li><b>Aturan bersyarat</b> <em>(Mandiri)</em><p>Tambahkan aturan bahwa kolom tenggat wajib diisi hanya bila status tugas ditandai selesai.</p><ol><li>Tentukan kolom yang memicu aturan.</li><li>Tulis aturan bersyarat untuk kolom tenggat.</li><li>Uji dengan status selesai dan belum selesai.</li></ol><pre><code>&quot;tenggat&quot; =&gt; [&quot;nullable&quot;, &quot;date&quot;, /* bersyarat */],</code></pre><p><em>Hasil: Tenggat wajib hanya ketika status selesai; pada kasus lain boleh kosong.</em></p><details><summary>Petunjuk bertahap</summary><ol><li>Aturan bersyarat menggabungkan syarat dan aturan wajib.</li><li>Kolom yang tidak wajib diberi penanda boleh kosong.</li><li>Uji kedua skenario secara terpisah.</li></ol></details><p><em>Tantangan: Tambahkan pesan kesalahan khusus untuk aturan itu.</em></p></li><li><b>Aturan untuk seluruh aplikasi tugas</b> <em>(Penerapan)</em><p>Rancang aturan validasi untuk seluruh operasi aplikasi catatan tugas (tambah dan ubah), lalu jelaskan perbedaan aturan antar operasi.</p><ol><li>Daftar kolom yang divalidasi setiap operasi.</li><li>Tentukan aturan setiap kolom.</li><li>Jelaskan mengapa sebagian aturan berbeda antar operasi.</li><li>Uji seluruh aturan dengan masukan yang sah dan tidak sah.</li></ol><pre><code>Tambah: ...
+Ubah: ...</code></pre><p><em>Hasil: Setiap operasi punya aturan yang sesuai dan perbedaannya dapat dijelaskan.</em></p><details><summary>Petunjuk bertahap</summary><ol><li>Operasi ubah sering membuat kolom tertentu menjadi opsional.</li><li>Aturan yang sama sebaiknya tidak ditulis dua kali.</li><li>Uji setiap aturan dengan contoh nyata.</li></ol></details><p><em>Tantangan: Pisahkan aturan bersama ke kelas dasar agar tidak terduplikasi.</em></p></li></ol>
+  <h4>Verifikasi</h4><div class="panel"><b>Mode: Manual</b><pre><code>Kirim masukan sah dan tidak sah pada kedua operasi, lalu periksa pesan kesalahan serta data yang tersimpan.</code></pre><p><em>Hasil yang diharapkan: Masukan tidak sah ditolak dengan pesan yang jelas dan hanya data yang divalidasi yang tersimpan.</em></p><p><em>Bukti yang disimpan: Simpan kelas permintaan dan catatan hasil setiap pengujian.</em></p></div>
+  <h4>Mengatasi masalah</h4><ul><li><b>Nilai yang tidak diharapkan ikut tersimpan.</b><br>Penyebab umum: Pengendali memakai seluruh masukan mentah alih-alih hasil validasi.<br>Perbaikan: Ambil data memakai hasil validasi sehingga hanya nilai yang diatur yang dipakai.</li><li><b>Masukan sah ditolak tanpa alasan yang jelas.</b><br>Penyebab umum: Aturan terlalu ketat atau tidak sesuai bentuk data yang sebenarnya.<br>Perbaikan: Uji aturan dengan data nyata dan longgarkan bagian yang keliru.</li><li><b>Pesan kesalahan tidak menyebut kolom yang bermasalah.</b><br>Penyebab umum: Pesan bawaan tidak disesuaikan untuk kolom tersebut.<br>Perbaikan: Tulis pesan khusus yang menyebut kolom dan penyebabnya.</li><li><b>Aturan bersyarat tidak berjalan sesuai harapan.</b><br>Penyebab umum: Syarat pengaktif aturan tidak sesuai dengan nilai yang dikirim.<br>Perbaikan: Periksa nilai pemicu dan sesuaikan syaratnya, lalu uji kedua keadaan.</li></ul>
   <div class="quiz"><strong>Uji pemahaman</strong><div class="quiz-question">
-    <b>1. Apa prinsip yang paling tepat untuk topik “Validation dan Form Request”?</b>
-    <ol type="A"><li>Validasi di server dan gunakan pesan kesalahan yang dapat dipahami pengguna.</li><li>Gunakan solusi paling rumit sejak awal, meski kebutuhan belum jelas.</li><li>Lewati pengujian karena contoh kecil pasti benar.</li></ol>
-    <details><summary>Lihat pembahasan</summary><p class="answer">Jawaban: A. Validasi di server dan gunakan pesan kesalahan yang dapat dipahami pengguna.</p></details>
+    <b>1. Mengapa validasi harus ada di sisi server?</b>
+    <ol type="A"><li>Agar tampilan lebih cepat</li><li>Karena permintaan dapat dikirim tanpa melalui tampilan</li><li>Agar data tersimpan otomatis</li></ol>
+    <details><summary>Lihat pembahasan</summary><p class="answer">Jawaban: B. Permintaan dapat dikirim langsung tanpa peramban, sehingga pemeriksaan di server wajib ada.</p></details>
+  </div><div class="quiz-question">
+    <b>2. Apa yang dikembalikan $request-&gt;validated()?</b>
+    <ol type="A"><li>Seluruh masukan mentah</li><li>Hanya nilai yang sudah lolos aturan validasi</li><li>Daftar aturan validasi</li></ol>
+    <details><summary>Lihat pembahasan</summary><p class="answer">Jawaban: B. validated mengembalikan nilai yang sudah diperiksa saja sehingga nilai lain tidak ikut terpakai.</p></details>
+  </div><div class="quiz-question">
+    <b>3. Sebuah kolom hanya wajib bila kolom lain berisi nilai tertentu. Cara yang tepat...</b>
+    <ol type="A"><li>Menulis pemeriksaan manual di pengendali</li><li>Memakai aturan bersyarat pada kelas permintaan</li><li>Menghapus kolom itu</li></ol>
+    <details><summary>Lihat pembahasan</summary><p class="answer">Jawaban: B. Aturan bersyarat menyatakan ketergantungan antar kolom tanpa pemeriksaan manual di pengendali.</p></details>
   </div></div>
-  
-  
-  
+  <h4>Ringkasan</h4><ul><li>Validasi memastikan masukan sesuai bentuk dan nilainya sebelum dipakai.</li><li>Validasi ditegakkan di server meski tampilan juga memeriksa masukan.</li><li>Form Request memisahkan aturan validasi dari pengendali.</li><li>Pengendali memakai hasil validasi sehingga hanya nilai yang diatur yang dipakai.</li></ul>
+  <div class="panel"><b>Berikutnya</b><p>Berikutnya: authentication dan authorization. Anda akan membedakan siapa pengguna dan apa yang boleh dilakukannya.</p></div>
+  <h4>Sumber</h4><ul><li><a href="https://laravel.com/docs/13.x/validation" rel="noopener noreferrer">Laravel Docs: Validation</a> <small>Laravel · 13.x</small> — Dokumentasi resmi Laravel tentang aturan validasi dan Form Request.</li><li><a href="https://cheatsheetseries.owasp.org/cheatsheets/SQL_Injection_Prevention_Cheat_Sheet.html" rel="noopener noreferrer">OWASP: SQL Injection Prevention Cheat Sheet</a> <small>OWASP Foundation · rolling</small> — Panduan OWASP tentang menangani masukan pengguna dengan aman.</li><li><a href="https://laravel.com/docs/13.x" rel="noopener noreferrer">Laravel Documentation</a> <small>Laravel · 13.x</small> — Dokumentasi resmi Laravel tentang pengendali dan permintaan.</li></ul>
 </article>
 <article class="lesson" id="m08-l06">
-  <div class="lesson-meta">Pelajaran 06 · 45 menit · Menengah · PHP</div>
+  <div class="lesson-meta">Pelajaran 06 · 120 menit · Menengah · PHP</div>
   <h3>Authentication vs authorization</h3>
-  
-  
-  
-  
-  
-  
+  <div class="panel good"><b>Hasil belajar</b><p>Setelah pelajaran ini, Anda dapat membedakan proses mengenali pengguna dan proses menentukan apa yang boleh dilakukannya, serta menerapkan keduanya pada aplikasi.</p></div>
+  <h4>Tujuan</h4><ul><li>Membedakan authentication dan authorization.</li><li>Menjelaskan mengapa identitas saja tidak cukup untuk mengizinkan tindakan.</li><li>Menulis aturan izin pada kelas policy.</li><li>Menerapkan pemeriksaan izin pada aksi pengendali.</li></ul>
+  <div class="panel"><b>Prasyarat</b><p>Validation dan Form Request</p></div>
+  <h4>Istilah kunci</h4><dl class="glossary"><div><dt>Authentication</dt><dd>Proses mengenali siapa pengguna yang sedang mengakses aplikasi.</dd></div><div><dt>Authorization</dt><dd>Proses menentukan tindakan apa yang boleh dilakukan pengguna tersebut.</dd></div><div><dt>Policy</dt><dd>Kelas yang memuat aturan izin untuk sebuah jenis data.</dd></div><div><dt>Kebocoran izin</dt><dd>Keadaan ketika pengguna dapat mengakses atau mengubah data yang bukan miliknya karena pemeriksaan izin terlewat.</dd></div></dl>
+  <h4>Kartu sintaks</h4><div class="panel">
+  <b><code>Route::middleware(&quot;auth&quot;)-&gt;group(function () { ... });</code></b>
+  <p><em>Dibaca: Baca sebagai pembatasan bahwa rute di dalamnya hanya dapat diakses pengguna yang sudah dikenali.</em></p>
+  <p>Middleware ini menegakkan authentication: pengguna yang belum masuk dialihkan sebelum mencapai aksi.</p>
+  <pre><code>Route::middleware(&quot;auth&quot;)-&gt;group(function () { ... });</code></pre>
+  <p><em>Output: Akses tanpa sesi ditolak sebelum aksi dijalankan.</em></p>
+  <p><em>Hati-hati: Memasang middleware ini hanya memastikan pengguna dikenal, belum memastikan ia boleh mengakses data tertentu.</em></p>
+</div><div class="panel">
+  <b><code>public function update(User $user, Tugas $tugas): bool { ... }</code></b>
+  <p><em>Dibaca: Baca sebagai aturan yang menerima pengguna dan data, lalu mengembalikan boleh atau tidak.</em></p>
+  <p>Kelas policy memusatkan aturan izin untuk satu jenis data sehingga tidak tersebar di banyak aksi.</p>
+  <pre><code>public function update(User $user, Tugas $tugas): bool { return $user-&gt;id === $tugas-&gt;user_id; }</code></pre>
+  <p><em>Output: Aturan mengembalikan nilai benar hanya bagi pemilik data.</em></p>
+  <p><em>Hati-hati: Menulis pemeriksaan izin langsung di setiap aksi membuat satu kelalaian cukup untuk membuka akses.</em></p>
+</div><div class="panel">
+  <b><code>$this-&gt;authorize(&quot;update&quot;, $tugas);</code></b>
+  <p><em>Dibaca: Baca sebagai pemeriksaan izin sebelum tindakan pengubahan dijalankan.</em></p>
+  <p>Pemeriksaan ini menegakkan authorization: bila aturan tidak terpenuhi, tindakan ditolak.</p>
+  <pre><code>$this-&gt;authorize(&quot;update&quot;, $tugas);</code></pre>
+  <p><em>Output: Aksi hanya berlanjut bila pengguna berhak atas data itu.</em></p>
+  <p><em>Hati-hati: Memeriksa izin setelah data diubah membuat perubahan sudah terlanjur tersimpan.</em></p>
+</div>
+  <h4>Aturan penulisan</h4><ul><li>Perlakukan authentication dan authorization sebagai dua pemeriksaan terpisah.</li><li>Pakai middleware untuk mengenali pengguna pada seluruh rute yang memerlukan sesi.</li><li>Letakkan aturan izin pada kelas policy sesuai jenis datanya.</li><li>Periksa izin sebelum melakukan perubahan, bukan sesudahnya.</li><li>Uji akses dari sisi pemilik dan bukan pemilik untuk setiap tindakan.</li></ul>
   <section class="lesson-section">
-  <h4>01 · Memahami konsepnya</h4>
-  <p>Authentication membuktikan siapa pengguna; authorization menentukan apa yang boleh mereka lakukan. Policies dan Gates memeriksa hak akses per aksi/resource.</p><p>Jangan hanya menyembunyikan tombol edit di frontend: endpoint backend wajib memverifikasi hak untuk objek yang diminta. Session cocok untuk web; token yang dikelola tepat cocok untuk API.</p>
+  <h4>01 · Cara membaca aturan izin</h4>
+  <p>Kelas policy dibaca sebagai kumpulan aturan untuk satu jenis data. Setiap method mewakili satu tindakan, misalnya mengubah atau menghapus, dan mengembalikan boleh atau tidak boleh.</p><p>Pada contoh, aturan mengubah tugas membandingkan pengguna yang sedang mengakses dengan pemilik data. Bila keduanya sama, tindakan diizinkan. Aturan ini berlaku seragam di seluruh bagian aplikasi yang memakainya.</p><p>Setiap method menerima pengguna dan data yang dituju. Bentuk ini membuat aturan dapat diuji langsung tanpa melibatkan permintaan HTTP.</p>
+  <pre><code>&lt;?php
+namespace App\Policies;
+
+use App\Models\Tugas;
+use App\Models\User;
+
+class TugasPolicy {
+    public function update(User $user, Tugas $tugas): bool {
+        return $user-&gt;id === $tugas-&gt;user_id;
+    }
+}</code></pre><div class="panel"><b>Output yang diharapkan</b><p>Aturan mengembalikan benar hanya bila pengguna adalah pemilik tugas tersebut.</p></div><p>Kelas policy memuat aturan izin. Method update membandingkan pengenal pengguna dengan pemilik data dan mengembalikan hasil perbandingannya.</p><div class="panel"><b>Bedah baris</b><ol><li>Baris 7 · <code>class TugasPolicy {</code> — Kelas policy menampung aturan izin untuk data tugas.</li><li>Baris 8 · <code>public function update(User $user, Tugas $tugas): bool {</code> — Method mewakili tindakan mengubah dan menerima pengguna serta data.</li><li>Baris 9 · <code>return $user-&gt;id === $tugas-&gt;user_id;</code> — Aturan mengizinkan hanya bila pengguna adalah pemilik data.</li></ol></div>
+  <div class="panel good"><b>Aturan di satu tempat</b><p>Dengan policy, aturan izin terkumpul di satu kelas. Aplikasi bagian lain cukup memanggilnya tanpa menyalin pemeriksaan.</p></div>
+  <div class="panel warn"><b>Cek pemahaman</b><p>Apa yang dibandingkan aturan pada contoh, dan apa hasilnya bila pengguna bukan pemilik data?</p><p>Kriteria berhasil: Pengenal pengguna dibandingkan dengan pemilik data; bila berbeda, aturan mengembalikan tidak boleh.</p></div>
+</section><section class="lesson-section">
+  <h4>02 · Dua pemeriksaan yang berbeda</h4>
+  <p>Authentication menjawab siapa pengguna. Authorization menjawab apa yang boleh dilakukannya. Keduanya terpisah, dan menyelesaikan yang pertama tidak berarti menyelesaikan yang kedua.</p><p>Pengguna yang sudah masuk tetap tidak boleh mengubah data milik orang lain. Karena itu, setiap tindakan yang menyentuh data tertentu perlu memeriksa kepemilikan atau izinnya.</p><p>Kesalahan umum adalah memasang middleware identitas lalu menganggap keamanan selesai. Akibatnya, pemilik data dapat dibedakan, tetapi data orang lain tetap dapat diubah.</p>
   
-  <div class="panel good"><b>Best practice</b><p>Selalu lakukan otorisasi server-side pada tiap resource sensitif.</p></div><div class="panel bad"><b>Kesalahan umum</b><p>Menampilkan tombol hanya untuk admin tetapi endpoint tetap bisa diakses semua orang.</p></div>
+  <div class="panel warn"><b>Identitas bukan izin</b><p>Sudah masuk hanya berarti pengguna dikenal. Pastikan setiap tindakan juga memeriksa apakah ia berhak atas data itu.</p></div>
+  <div class="panel warn"><b>Cek pemahaman</b><p>Mengapa memasang middleware identitas saja belum menjamin keamanan data?</p><p>Kriteria berhasil: Karena middleware hanya memastikan pengguna dikenal, bukan memastikan ia berhak atas data tertentu.</p></div>
+</section><section class="lesson-section">
+  <h4>03 · Menerapkan pemeriksaan izin</h4>
+  <p>Pengendali pada contoh memeriksa izin sebelum mengubah data. Urutan ini penting: bila pemeriksaan dilakukan setelah perubahan, datanya sudah terlanjur berubah.</p><p>Pemeriksaan izin memakai nama tindakan dan data yang dituju. Aplikasi mencari aturan yang sesuai dan menolak tindakan bila aturan tidak terpenuhi.</p><p>Setelah izin terpenuhi, baru data diperbarui memakai nilai yang sudah divalidasi. Dengan urutan ini, hanya pengguna berhak yang dapat mengubah, dan hanya dengan nilai yang sah.</p>
+  <pre><code>public function update(SimpanTugasRequest $request, Tugas $tugas) {
+    $this-&gt;authorize(&quot;update&quot;, $tugas);
+    $tugas-&gt;update($request-&gt;validated());
+    return redirect()-&gt;route(&quot;tugas.index&quot;);
+}</code></pre><div class="panel"><b>Output yang diharapkan</b><p>Perubahan hanya tersimpan bila pengguna berhak atas data itu.</p></div><p>Pengendali memeriksa izin lebih dulu, lalu memperbarui data dengan nilai yang sudah divalidasi, kemudian mengalihkan ke halaman daftar.</p><div class="panel"><b>Bedah baris</b><ol><li>Baris 2 · <code>$this-&gt;authorize(&quot;update&quot;, $tugas);</code> — Pemeriksaan izin dilakukan sebelum perubahan.</li><li>Baris 3 · <code>$tugas-&gt;update($request-&gt;validated());</code> — Data diperbarui memakai hasil validasi.</li></ol></div>
+  
   
 </section><section class="lesson-section">
-  <h4>02 · Contoh kode</h4>
-  <p>Perhatikan input, proses, dan output. Ketik ulang, lalu ubah satu nilai.</p>
-  <pre><code>&lt;?php
-// Contoh otorisasi pada controller
-$this-&gt;authorize(&quot;update&quot;, $task);
-// Policy memastikan pemilik atau admin berhak mengubah.</code></pre>
+  <h4>04 · Menguji akses dari kedua sisi</h4>
+  <p>Setiap tindakan yang menyentuh data tertentu sebaiknya diuji dari dua sisi: pemilik yang berhak dan pengguna lain yang tidak berhak. Kedua pengujian itu memastikan aturan benar-benar berjalan.</p><p>Uji juga permintaan tanpa sesi. Bila tanpa sesi tetap dapat mengakses, berarti lapisan identitas belum dipasang dengan benar.</p><p>Kebocoran izin sering tidak terlihat pada pemakaian normal karena pengguna biasanya mengakses data miliknya sendiri. Karena itu, pengujian dari sisi bukan pemilik justru yang paling penting.</p>
   
   
+  <div class="panel warn"><b>Cek pemahaman</b><p>Mengapa pengujian dari sisi bukan pemilik penting meski pemakaian normal terlihat aman?</p><p>Kriteria berhasil: Karena kebocoran izin biasanya tidak muncul saat pengguna mengakses data miliknya sendiri, sehingga perlu diuji secara khusus.</p></div>
 </section>
-  <h4>Latihan bertingkat</h4><ol><li><b>Latihan 1</b> <em>(Mandiri)</em><p>Definisikan 3 role dan izin terhadap tasks milik pengguna lain.</p></li><li><b>Latihan 2</b> <em>(Mandiri)</em><p>Ubah satu input atau asumsi pada contoh, catat hasil dan jelaskan alasannya.</p></li></ol>
-  
-  
+  <h4>Latihan bertingkat</h4><ol><li><b>Policy untuk mengubah tugas</b> <em>(Terbimbing)</em><p>Buat policy yang mengizinkan pengubahan tugas hanya oleh pemiliknya, lalu terapkan pada aksi pengendali.</p><ol><li>Buat kelas policy dengan method untuk mengubah.</li><li>Bandingkan pengguna dengan pemilik data.</li><li>Panggil pemeriksaan izin pada aksi pengendali.</li><li>Uji dengan pemilik dan bukan pemilik.</li></ol><pre><code>class TugasPolicy {
+    public function update(User $user, Tugas $tugas): bool {
+        // lengkapi
+    }
+}</code></pre><p><em>Hasil: Pemilik dapat mengubah; pengguna lain ditolak.</em></p><details><summary>Petunjuk bertahap</summary><ol><li>Aturan menerima pengguna dan data.</li><li>Bandingkan pengenal pemilik data.</li><li>Periksa izin sebelum perubahan.</li></ol></details><p><em>Tantangan: Tambahkan aturan untuk tindakan menghapus.</em></p></li><li><b>Pisahkan identitas dan izin</b> <em>(Mandiri)</em><p>Batasi sebuah rute dengan pemeriksaan identitas, lalu pastikan tindakan pada data tetap memeriksa izin kepemilikan.</p><ol><li>Pasang pemeriksaan identitas pada rute.</li><li>Tambahkan pemeriksaan izin pada aksinya.</li><li>Uji akses tanpa sesi.</li><li>Uji akses dengan sesi milik pengguna lain.</li></ol><pre><code>Route::middleware(&quot;auth&quot;)-&gt;group(function () { ... });</code></pre><p><em>Hasil: Tanpa sesi ditolak, dan dengan sesi pengguna lain tetap ditolak pada data yang bukan miliknya.</em></p><details><summary>Petunjuk bertahap</summary><ol><li>Identitas memastikan pengguna dikenal.</li><li>Izin memastikan pengguna berhak atas data.</li><li>Uji kedua lapisan secara terpisah.</li></ol></details><p><em>Tantangan: Tambahkan pesan kesalahan yang berbeda untuk kedua kasus.</em></p></li><li><b>Peta izin aplikasi tugas</b> <em>(Penerapan)</em><p>Susun peta izin untuk seluruh tindakan pada aplikasi catatan tugas beserta peran yang berhak, lalu terapkan pada policy.</p><ol><li>Daftar seluruh tindakan pada data tugas.</li><li>Tentukan siapa yang berhak untuk setiap tindakan.</li><li>Tulis method policy untuk setiap tindakan.</li><li>Uji setiap tindakan dari sisi berhak dan tidak berhak.</li></ol><pre><code>Melihat: ...
+Mengubah: ...
+Menghapus: ...</code></pre><p><em>Hasil: Setiap tindakan punya aturan izin yang jelas dan teruji dari kedua sisi.</em></p><details><summary>Petunjuk bertahap</summary><ol><li>Beberapa tindakan mungkin berlaku untuk semua pemilik data.</li><li>Setiap aturan sebaiknya berupa method tersendiri.</li><li>Uji kedua sisi untuk setiap tindakan.</li></ol></details><p><em>Tantangan: Tambahkan peran admin yang boleh mengubah semua data.</em></p></li></ol>
+  <h4>Verifikasi</h4><div class="panel"><b>Mode: Manual</b><pre><code>Uji setiap tindakan dari sisi pemilik, bukan pemilik, dan tanpa sesi.</code></pre><p><em>Hasil yang diharapkan: Tanpa sesi ditolak, pemilik diizinkan sesuai aturannya, dan bukan pemilik selalu ditolak tanpa mengubah data.</em></p><p><em>Bukti yang disimpan: Simpan policy, pengendali, dan catatan hasil seluruh pengujian.</em></p></div>
+  <h4>Mengatasi masalah</h4><ul><li><b>Pengguna dapat mengubah data milik orang lain.</b><br>Penyebab umum: Pemeriksaan izin tidak dilakukan meski identitas sudah diperiksa.<br>Perbaikan: Tambahkan pemeriksaan izin pada setiap tindakan yang menyentuh data tertentu.</li><li><b>Perubahan sudah tersimpan meski izin ditolak.</b><br>Penyebab umum: Pemeriksaan izin dijalankan setelah data diubah.<br>Perbaikan: Pindahkan pemeriksaan izin ke awal aksi, sebelum perubahan dijalankan.</li><li><b>Akses tanpa sesi tetap berhasil.</b><br>Penyebab umum: Pemeriksaan identitas tidak dipasang pada rute yang bersangkutan.<br>Perbaikan: Pasang middleware identitas pada seluruh rute yang memerlukan sesi, lalu uji tanpa sesi.</li><li><b>Aturan izin berbeda-beda pada beberapa aksi.</b><br>Penyebab umum: Pemeriksaan ditulis langsung di setiap aksi alih-alih dipusatkan pada policy.<br>Perbaikan: Pindahkan seluruh aturan izin ke kelas policy dan panggil dari aksi.</li></ul>
   <div class="quiz"><strong>Uji pemahaman</strong><div class="quiz-question">
-    <b>1. Apa prinsip yang paling tepat untuk topik “Authentication vs authorization”?</b>
-    <ol type="A"><li>Selalu lakukan otorisasi server-side pada tiap resource sensitif.</li><li>Gunakan solusi paling rumit sejak awal, meski kebutuhan belum jelas.</li><li>Lewati pengujian karena contoh kecil pasti benar.</li></ol>
-    <details><summary>Lihat pembahasan</summary><p class="answer">Jawaban: A. Selalu lakukan otorisasi server-side pada tiap resource sensitif.</p></details>
+    <b>1. Apa perbedaan authentication dan authorization?</b>
+    <ol type="A"><li>Authentication mengenali pengguna; authorization menentukan tindakan yang boleh dilakukan</li><li>Keduanya sama saja</li><li>Authentication mengatur data; authorization mengenali pengguna</li></ol>
+    <details><summary>Lihat pembahasan</summary><p class="answer">Jawaban: A. Authentication menjawab siapa pengguna, authorization menjawab apa yang boleh dilakukannya.</p></details>
+  </div><div class="quiz-question">
+    <b>2. Mengapa pemeriksaan izin harus dijalankan sebelum data diubah?</b>
+    <ol type="A"><li>Agar lebih cepat</li><li>Agar perubahan tidak terlanjur tersimpan ketika izin ternyata ditolak</li><li>Agar data tersimpan otomatis</li></ol>
+    <details><summary>Lihat pembahasan</summary><p class="answer">Jawaban: B. Bila diperiksa setelah perubahan, data sudah terlanjur berubah meski izinnya ditolak.</p></details>
+  </div><div class="quiz-question">
+    <b>3. Middleware identitas sudah dipasang, tetapi pengguna masih dapat mengubah data orang lain. Penyebab paling mungkin...</b>
+    <ol type="A"><li>Middleware identitas salah pasang</li><li>Pemeriksaan izin kepemilikan belum dilakukan</li><li>Basis data terlalu lambat</li></ol>
+    <details><summary>Lihat pembahasan</summary><p class="answer">Jawaban: B. Identitas hanya mengenali pengguna; izin kepemilikan tetap perlu diperiksa terpisah.</p></details>
   </div></div>
-  
-  
-  
+  <h4>Ringkasan</h4><ul><li>Authentication mengenali pengguna, sedangkan authorization menentukan tindakan yang boleh dilakukan.</li><li>Memasang middleware identitas belum cukup; setiap tindakan perlu memeriksa izin.</li><li>Aturan izin dipusatkan pada kelas policy sesuai jenis data.</li><li>Pemeriksaan izin dijalankan sebelum perubahan, dan akses diuji dari sisi berhak serta tidak berhak.</li></ul>
+  <div class="panel"><b>Berikutnya</b><p>Berikutnya: REST API dan Resource. Anda akan menyediakan data untuk aplikasi lain dengan bentuk tanggapan yang konsisten.</p></div>
+  <h4>Sumber</h4><ul><li><a href="https://laravel.com/docs/13.x/authorization" rel="noopener noreferrer">Laravel Docs: Authorization</a> <small>Laravel · 13.x</small> — Dokumentasi resmi Laravel tentang policy dan pemeriksaan izin.</li><li><a href="https://laravel.com/docs/13.x" rel="noopener noreferrer">Laravel Documentation</a> <small>Laravel · 13.x</small> — Dokumentasi resmi Laravel tentang authentication dan middleware.</li><li><a href="https://cheatsheetseries.owasp.org/cheatsheets/SQL_Injection_Prevention_Cheat_Sheet.html" rel="noopener noreferrer">OWASP: SQL Injection Prevention Cheat Sheet</a> <small>OWASP Foundation · rolling</small> — Panduan OWASP tentang pengendalian akses dan penanganan masukan.</li></ul>
 </article>
 <article class="lesson" id="m08-l07">
-  <div class="lesson-meta">Pelajaran 07 · 45 menit · Menengah · PHP</div>
+  <div class="lesson-meta">Pelajaran 07 · 120 menit · Menengah · PHP</div>
   <h3>REST API Laravel dan Resource</h3>
-  
-  
-  
-  
-  
-  
+  <div class="panel good"><b>Hasil belajar</b><p>Setelah pelajaran ini, Anda dapat menyediakan data untuk aplikasi lain lewat API dengan alamat dan bentuk tanggapan yang konsisten.</p></div>
+  <h4>Tujuan</h4><ul><li>Menjelaskan prinsip dasar API yang mengikuti gaya REST.</li><li>Mendaftarkan rute API untuk operasi data.</li><li>Mengembalikan tanggapan dengan status yang tepat.</li><li>Menyusun bentuk tanggapan memakai kelas resource.</li></ul>
+  <div class="panel"><b>Prasyarat</b><p>Authentication vs authorization</p></div>
+  <h4>Istilah kunci</h4><dl class="glossary"><div><dt>API</dt><dd>Antarmuka yang memungkinkan aplikasi lain memakai fungsi atau data sebuah layanan.</dd></div><div><dt>REST</dt><dd>Gaya perancangan API yang memakai method HTTP dan alamat untuk mewakili operasi pada sumber daya.</dd></div><div><dt>Status code</dt><dd>Angka pada tanggapan HTTP yang menyatakan hasil permintaan.</dd></div><div><dt>Resource</dt><dd>Kelas yang menyusun bentuk data sebelum dikirim sebagai tanggapan JSON.</dd></div></dl>
+  <h4>Kartu sintaks</h4><div class="panel">
+  <b><code>Route::apiResource(&quot;tugas&quot;, TugasController::class);</code></b>
+  <p><em>Dibaca: Baca sebagai pendaftaran seluruh rute operasi data untuk sumber daya tugas sekaligus.</em></p>
+  <p>Satu perintah mendaftarkan rute daftar, tambah, tampil, ubah, dan hapus dengan alamat dan method yang konsisten.</p>
+  <pre><code>Route::apiResource(&quot;tugas&quot;, TugasController::class);</code></pre>
+  <p><em>Output: Seluruh operasi data tersedia dengan pola alamat yang seragam.</em></p>
+  <p><em>Hati-hati: Menulis setiap rute satu per satu membuat pola mudah berbeda antar sumber daya.</em></p>
+</div><div class="panel">
+  <b><code>return (new TugasResource($tugas))-&gt;response()-&gt;setStatusCode(201);</code></b>
+  <p><em>Dibaca: Baca sebagai pengiriman data tugas dengan status yang menyatakan data baru dibuat.</em></p>
+  <p>Status memengaruhi cara klien menanggapi. Untuk pembuatan data, status yang tepat memberi tahu bahwa sumber daya baru tersedia.</p>
+  <pre><code>return new TugasResource($tugas);</code></pre>
+  <p><em>Output: Klien menerima data dan status yang sesuai hasil operasinya.</em></p>
+  <p><em>Hati-hati: Selalu mengembalikan status berhasil membuat klien tidak dapat membedakan hasil operasi.</em></p>
+</div><div class="panel">
+  <b><code>&quot;judul&quot; =&gt; $this-&gt;judul,</code></b>
+  <p><em>Dibaca: Baca sebagai pemetaan kolom data ke nama pada tanggapan JSON.</em></p>
+  <p>Kelas resource menyusun bentuk tanggapan secara eksplisit, sehingga kolom yang tidak perlu tidak ikut terkirim.</p>
+  <pre><code>&quot;id&quot; =&gt; $this-&gt;id,</code></pre>
+  <p><em>Output: Tanggapan hanya memuat kolom yang ditentukan.</em></p>
+  <p><em>Hati-hati: Mengirim data mentah dari model dapat membocorkan kolom internal yang tidak seharusnya dibagikan.</em></p>
+</div>
+  <h4>Aturan penulisan</h4><ul><li>Pakai alamat yang mewakili sumber daya dan method yang menyatakan operasinya.</li><li>Kembalikan status yang sesuai dengan hasil operasi.</li><li>Susun tanggapan lewat kelas resource agar bentuknya konsisten.</li><li>Jangan membocorkan kolom internal atau data sensitif pada tanggapan.</li><li>Pertahankan bentuk tanggapan yang sama antarversi agar klien tidak rusak.</li></ul>
   <section class="lesson-section">
-  <h4>01 · Memahami konsepnya</h4>
-  <p>API mengirim JSON dengan status HTTP yang tepat. API Resource menata bentuk payload dan mencegah pembocoran field internal. Gunakan pagination, filter, dan dokumentasi.</p><p>Pilih struktur error yang konsisten, misalnya message, errors, code. Jangan mengembalikan password hash, secret atau data yang tidak diperlukan.</p>
+  <h4>01 · Cara membaca rute API</h4>
+  <p>Rute API dibaca sebagai pemetaan sumber daya ke sekumpulan operasi. Satu sumber daya menghasilkan beberapa alamat, masing-masing dengan method yang menyatakan operasinya.</p><p>Pada contoh, satu perintah mendaftarkan seluruh operasi untuk sumber daya tugas. Alamatnya mengikuti pola yang sama, sehingga urutan pendaftaran tidak lagi mudah menimbulkan tabrakan.</p><p>Konsistensi ini mempermudah pemakaian. Klien cukup memahami pola alamat dan method untuk memakai seluruh operasi, bukan menghafal alamat satu per satu.</p>
+  <pre><code>&lt;?php
+// routes/api.php
+use App\Http\Controllers\TugasController;
+
+Route::apiResource(&quot;tugas&quot;, TugasController::class);</code></pre><div class="panel"><b>Output yang diharapkan</b><p>Seluruh operasi data untuk tugas tersedia dengan pola alamat dan method yang seragam.</p></div><p>Satu perintah mendaftarkan rute untuk daftar, tambah, tampil, ubah, dan hapus. Pengendali menangani masing-masing operasi.</p><div class="panel"><b>Bedah baris</b><ol><li>Baris 2 · <code>// routes/api.php</code> — Berkas rute API terpisah dari rute halaman.</li><li>Baris 3 · <code>use App\Http\Controllers\TugasController;</code> — Pengendali yang menangani operasi diimpor.</li><li>Baris 5 · <code>Route::apiResource(&quot;tugas&quot;, TugasController::class);</code> — Pendaftaran tunggal mencakup seluruh operasi sumber daya.</li></ol></div>
+  <div class="panel good"><b>Pola yang konsisten</b><p>Satu sumber daya dengan pola alamat yang seragam membuat API mudah dipelajari dan dipakai klien.</p></div>
+  <div class="panel warn"><b>Cek pemahaman</b><p>Sebutkan dua operasi yang didaftarkan oleh perintah rute sumber daya itu.</p><p>Kriteria berhasil: Misalnya menampilkan daftar dan menambah data, selain menampilkan, mengubah, dan menghapus satu data.</p></div>
+</section><section class="lesson-section">
+  <h4>02 · Menyusun tanggapan dengan resource</h4>
+  <p>Kelas resource dibaca sebagai daftar kolom yang dikirim ke klien. Setiap baris memetakan satu nilai dari data ke nama pada tanggapan. Kolom yang tidak disebut tidak ikut terkirim.</p><p>Pada contoh, hanya tiga kolom yang dibagikan. Kolom internal seperti waktu pembuatan atau penunjuk pemilik tidak ikut, sehingga tanggapan tetap ringkas dan aman.</p><p>Nilai juga dapat disesuaikan bentuknya saat dipetakan. Contohnya, nilai status diubah menjadi tipe yang jelas bagi klien. Penyesuaian ini terkumpul di satu kelas sehingga seragam di seluruh tanggapan.</p>
+  <pre><code>&lt;?php
+namespace App\Http\Resources;
+
+use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\JsonResource;
+
+class TugasResource extends JsonResource {
+    public function toArray(Request $request): array {
+        return [
+            &quot;id&quot; =&gt; $this-&gt;id,
+            &quot;judul&quot; =&gt; $this-&gt;judul,
+            &quot;selesai&quot; =&gt; (bool) $this-&gt;selesai,
+        ];
+    }
+}</code></pre><div class="panel"><b>Output yang diharapkan</b><p>Tanggapan JSON hanya memuat kolom id, judul, dan selesai untuk setiap tugas.</p></div><p>Kelas resource mendefinisikan bentuk tanggapan. Setiap baris memetakan satu nilai dari data dan menyesuaikan bentuknya bila perlu.</p><div class="panel"><b>Bedah baris</b><ol><li>Baris 7 · <code>class TugasResource extends JsonResource {</code> — Kelas resource menyusun bentuk tanggapan untuk data tugas.</li><li>Baris 8 · <code>public function toArray(Request $request): array {</code> — Bentuk ditentukan sebagai daftar kolom.</li><li>Baris 10 · <code>&quot;id&quot; =&gt; $this-&gt;id,</code> — Kolom pengenal dibagikan.</li><li>Baris 11 · <code>&quot;judul&quot; =&gt; $this-&gt;judul,</code> — Kolom judul dibagikan.</li><li>Baris 12 · <code>&quot;selesai&quot; =&gt; (bool) $this-&gt;selesai,</code> — Kolom status disesuaikan menjadi tipe yang jelas bagi klien.</li></ol></div>
   
-  <div class="panel good"><b>Best practice</b><p>Tetapkan kontrak respons yang stabil dan minim field sensitif.</p></div><div class="panel bad"><b>Kesalahan umum</b><p>Mengembalikan seluruh kolom database apa adanya ke mobile.</p></div>
   
 </section><section class="lesson-section">
-  <h4>02 · Contoh kode</h4>
-  <p>Perhatikan input, proses, dan output. Ketik ulang, lalu ubah satu nilai.</p>
-  <pre><code>&lt;?php
-return response()-&gt;json([
-  &quot;data&quot; =&gt; [&quot;id&quot; =&gt; 1, &quot;title&quot; =&gt; &quot;Belajar API&quot;],
-], 200);</code></pre>
+  <h4>03 · Status yang tepat untuk setiap operasi</h4>
+  <p>Setiap operasi memiliki status yang paling sesuai. Membaca berhasil memakai status berhasil biasa, membuat data baru memakai status dibuat, dan masukan yang tidak sah memakai status kesalahan dari sisi pengirim.</p><p>Status bukan sekadar hiasan. Klien memakainya untuk memutuskan langkah berikutnya: menampilkan data, menampilkan kesalahan, atau mencoba lagi.</p><p>Menjaga status tetap konsisten antaroperasi memudahkan klien. Bila status tidak sesuai, klien akan menebak-nebak dan menangani hasil yang salah.</p>
+  
+  <div class="panel warn"><b>Jangan selalu 200</b><p>Mengembalikan status berhasil untuk semua hasil menyulitkan klien membedakan sukses dan gagal.</p></div>
+  <div class="panel warn"><b>Cek pemahaman</b><p>Status apa yang tepat untuk berhasil membuat data baru dan untuk masukan yang tidak sah?</p><p>Kriteria berhasil: Status dibuat untuk data baru yang berhasil, dan status kesalahan sisi pengirim untuk masukan yang tidak sah.</p></div>
+</section><section class="lesson-section">
+  <h4>04 · Menjaga bentuk tanggapan tetap stabil</h4>
+  <p>Klien bergantung pada bentuk tanggapan. Mengubah nama kolom atau menghapusnya tanpa peringatan dapat merusak aplikasi yang memakai API Anda.</p><p>Menambahkan kolom baru umumnya aman karena klien dapat mengabaikannya. Menghapus atau mengganti nama kolom perlu direncanakan dan diberitahukan lebih dulu.</p><p>Dokumentasikan bentuk tanggapan setiap alamat. Dokumentasi ini menjadi rujukan bersama sehingga perubahan bentuk dapat dinilai dampaknya sebelum dilakukan.</p>
   
   
+  <div class="panel warn"><b>Cek pemahaman</b><p>Perubahan bentuk tanggapan seperti apa yang relatif aman, dan mana yang perlu direncanakan?</p><p>Kriteria berhasil: Menambah kolom baru relatif aman; menghapus atau mengganti nama kolom perlu direncanakan karena dapat merusak klien.</p></div>
 </section>
-  <h4>Latihan bertingkat</h4><ol><li><b>Latihan 1</b> <em>(Mandiri)</em><p>Tentukan kontrak JSON untuk list, detail, create, dan error validasi tasks.</p></li><li><b>Latihan 2</b> <em>(Mandiri)</em><p>Ubah satu input atau asumsi pada contoh, catat hasil dan jelaskan alasannya.</p></li></ol>
-  
-  
+  <h4>Latihan bertingkat</h4><ol><li><b>Rute API untuk tugas</b> <em>(Terbimbing)</em><p>Daftarkan seluruh operasi API untuk sumber daya tugas, lalu pastikan setiap alamat memanggil aksi yang benar.</p><ol><li>Daftarkan rute sumber daya untuk tugas.</li><li>Periksa setiap alamat yang dihasilkan.</li><li>Pastikan setiap aksi mengembalikan status yang sesuai.</li></ol><pre><code>Route::apiResource(&quot;tugas&quot;, TugasController::class);</code></pre><p><em>Hasil: Seluruh operasi tersedia dengan pola alamat dan status yang sesuai.</em></p><details><summary>Petunjuk bertahap</summary><ol><li>Satu perintah mendaftarkan seluruh operasi sumber daya.</li><li>Method menyatakan jenis operasi.</li><li>Status disesuaikan dengan hasil setiap operasi.</li></ol></details><p><em>Tantangan: Tambahkan pembatasan akses pada operasi yang mengubah data.</em></p></li><li><b>Bentuk tanggapan dengan resource</b> <em>(Mandiri)</em><p>Buat kelas resource yang hanya membagikan kolom id, judul, dan selesai, lalu terapkan pada aksi daftar.</p><ol><li>Buat kelas resource untuk data tugas.</li><li>Tentukan kolom yang dibagikan.</li><li>Sesuaikan bentuk nilai yang perlu, misalnya status.</li><li>Terapkan pada aksi daftar dan periksa tanggapannya.</li></ol><pre><code>class TugasResource extends JsonResource {
+    public function toArray(Request $request): array {
+        return [];
+    }
+}</code></pre><p><em>Hasil: Tanggapan hanya memuat kolom yang ditentukan dan bentuk nilainya konsisten.</em></p><details><summary>Petunjuk bertahap</summary><ol><li>Setiap baris memetakan satu nilai ke nama pada tanggapan.</li><li>Kolom yang tidak disebut tidak ikut terkirim.</li><li>Bentuk nilai dapat disesuaikan saat dipetakan.</li></ol></details><p><em>Tantangan: Tambahkan kolom waktu dibuat dengan format yang jelas.</em></p></li><li><b>Bentuk tanggapan untuk seluruh operasi</b> <em>(Penerapan)</em><p>Rancang bentuk tanggapan yang konsisten untuk seluruh operasi tugas, termasuk tanggapan kesalahan validasi, lalu jelaskan alasannya.</p><ol><li>Tentukan bentuk tanggapan data tunggal.</li><li>Tentukan bentuk tanggapan daftar.</li><li>Tentukan bentuk tanggapan kesalahan yang konsisten.</li><li>Jelaskan alasan keseragaman bentuk itu.</li></ol><pre><code>Data tunggal: ...
+Daftar: ...
+Kesalahan: ...</code></pre><p><em>Hasil: Bentuk tanggapan seragam dan mudah ditangani klien, termasuk pada kasus gagal.</em></p><details><summary>Petunjuk bertahap</summary><ol><li>Konsistensi membantu klien menangani hasil.</li><li>Bentuk kesalahan sebaiknya sama di seluruh alamat.</li><li>Dokumentasikan bentuk yang ditetapkan.</li></ol></details><p><em>Tantangan: Tambahkan penomoran halaman pada tanggapan daftar.</em></p></li></ol>
+  <h4>Verifikasi</h4><div class="panel"><b>Mode: Manual</b><pre><code>Panggil seluruh alamat API dan periksa data, status, serta bentuk tanggapannya.</code></pre><p><em>Hasil yang diharapkan: Setiap operasi mengembalikan data dan status yang sesuai, dengan bentuk tanggapan yang konsisten dan tanpa kolom internal.</em></p><p><em>Bukti yang disimpan: Simpan berkas rute, resource, dan catatan hasil setiap pemanggilan.</em></p></div>
+  <h4>Mengatasi masalah</h4><ul><li><b>Klien tidak dapat membedakan berhasil dan gagal.</b><br>Penyebab umum: Semua hasil dikembalikan dengan status berhasil yang sama.<br>Perbaikan: Kembalikan status yang sesuai dengan hasil setiap operasi.</li><li><b>Tanggapan memuat kolom yang tidak seharusnya dibagikan.</b><br>Penyebab umum: Data mentah dari model dikirim langsung tanpa kelas resource.<br>Perbaikan: Susun bentuk tanggapan lewat kelas resource yang menyebut kolom yang dibagikan saja.</li><li><b>Aplikasi klien rusak setelah API diperbarui.</b><br>Penyebab umum: Nama atau keberadaan kolom pada tanggapan berubah tanpa peringatan.<br>Perbaikan: Rencanakan perubahan bentuk tanggapan dan dokumentasikan agar klien dapat menyesuaikan.</li><li><b>Alamat API bertabrakan sehingga sebagian permintaan salah arah.</b><br>Penyebab umum: Rute didaftarkan satu per satu dengan pola yang tidak seragam.<br>Perbaikan: Gunakan pendaftaran sumber daya agar pola alamat konsisten dan tidak bertabrakan.</li></ul>
   <div class="quiz"><strong>Uji pemahaman</strong><div class="quiz-question">
-    <b>1. Apa prinsip yang paling tepat untuk topik “REST API Laravel dan Resource”?</b>
-    <ol type="A"><li>Tetapkan kontrak respons yang stabil dan minim field sensitif.</li><li>Gunakan solusi paling rumit sejak awal, meski kebutuhan belum jelas.</li><li>Lewati pengujian karena contoh kecil pasti benar.</li></ol>
-    <details><summary>Lihat pembahasan</summary><p class="answer">Jawaban: A. Tetapkan kontrak respons yang stabil dan minim field sensitif.</p></details>
+    <b>1. Apa keuntungan mendaftarkan rute lewat sumber daya?</b>
+    <ol type="A"><li>API menjadi lebih cepat</li><li>Seluruh operasi data tersedia dengan pola alamat dan method yang seragam</li><li>Data tersimpan otomatis</li></ol>
+    <details><summary>Lihat pembahasan</summary><p class="answer">Jawaban: B. Pendaftaran sumber daya menghasilkan pola alamat dan method yang konsisten untuk seluruh operasi.</p></details>
+  </div><div class="quiz-question">
+    <b>2. Apa fungsi kelas resource pada tanggapan API?</b>
+    <ol type="A"><li>Menyimpan data ke basis data</li><li>Menyusun bentuk tanggapan sehingga hanya kolom yang ditentukan yang dikirim</li><li>Mengurutkan data</li></ol>
+    <details><summary>Lihat pembahasan</summary><p class="answer">Jawaban: B. Kelas resource memetakan data ke bentuk tanggapan yang eksplisit dan aman.</p></details>
+  </div><div class="quiz-question">
+    <b>3. Berhasil membuat data baru. Status tanggapan yang tepat...</b>
+    <ol type="A"><li>Status berhasil biasa</li><li>Status dibuat</li><li>Status kesalahan sisi pengirim</li></ol>
+    <details><summary>Lihat pembahasan</summary><p class="answer">Jawaban: B. Pembuatan data baru sebaiknya memakai status yang menandakan sumber daya baru dibuat.</p></details>
   </div></div>
-  
-  
-  
+  <h4>Ringkasan</h4><ul><li>API gaya REST memakai alamat untuk mewakili sumber daya dan method untuk menyatakan operasinya.</li><li>Pendaftaran sumber daya menghasilkan pola alamat dan method yang konsisten.</li><li>Setiap operasi mengembalikan status yang sesuai hasilnya.</li><li>Kelas resource menyusun bentuk tanggapan sehingga hanya kolom yang ditentukan yang dikirim.</li></ul>
+  <div class="panel"><b>Berikutnya</b><p>Berikutnya: queue, jobs, caching, dan file. Anda akan memindahkan pekerjaan berat ke luar permintaan serta menyimpan berkas dengan aman.</p></div>
+  <h4>Sumber</h4><ul><li><a href="https://laravel.com/docs/13.x/eloquent-resources" rel="noopener noreferrer">Laravel Docs: Eloquent API Resources</a> <small>Laravel · 13.x</small> — Dokumentasi resmi Laravel tentang kelas resource dan bentuk tanggapan.</li><li><a href="https://laravel.com/docs/13.x/routing" rel="noopener noreferrer">Laravel Docs: Routing</a> <small>Laravel · 13.x</small> — Dokumentasi resmi Laravel tentang rute sumber daya API.</li><li><a href="https://www.rfc-editor.org/rfc/rfc9110.html" rel="noopener noreferrer">RFC 9110: HTTP Semantics</a> <small>IETF · 9110</small> — Standar HTTP tentang method dan status code.</li></ul>
 </article>
 <article class="lesson" id="m08-l08">
-  <div class="lesson-meta">Pelajaran 08 · 45 menit · Menengah · PHP</div>
+  <div class="lesson-meta">Pelajaran 08 · 120 menit · Menengah · PHP</div>
   <h3>Queue, jobs, caching, dan file</h3>
-  
-  
-  
-  
-  
-  
+  <div class="panel good"><b>Hasil belajar</b><p>Setelah pelajaran ini, Anda dapat memindahkan pekerjaan berat ke antrean, memakai singgahan untuk mempercepat pembacaan, dan mengelola berkas unggahan dengan aman.</p></div>
+  <h4>Tujuan</h4><ul><li>Menjelaskan kapan pekerjaan sebaiknya dipindahkan ke antrean.</li><li>Menulis job yang dijalankan oleh pekerja antrean.</li><li>Memakai singgahan untuk hasil perhitungan yang sering diminta.</li><li>Menyimpan berkas unggahan dengan nama dan lokasi yang aman.</li></ul>
+  <div class="panel"><b>Prasyarat</b><p>REST API Laravel dan Resource</p></div>
+  <h4>Istilah kunci</h4><dl class="glossary"><div><dt>Antrean</dt><dd>Daftar pekerjaan yang dijalankan terpisah dari permintaan pengguna sehingga permintaan cepat selesai.</dd></div><div><dt>Job</dt><dd>Satuan pekerjaan yang diletakkan pada antrean untuk dijalankan oleh pekerja.</dd></div><div><dt>Singgahan</dt><dd>Penyimpanan sementara hasil yang mahal dihitung agar pemanggilan berikutnya lebih cepat.</dd></div><div><dt>Unggahan</dt><dd>Berkas yang dikirim pengguna lewat permintaan dan perlu disimpan serta diperiksa.</dd></div></dl>
+  <h4>Kartu sintaks</h4><div class="panel">
+  <b><code>class KirimPengingat implements ShouldQueue { ... }</code></b>
+  <p><em>Dibaca: Baca sebagai deklarasi pekerjaan yang akan dijalankan pada antrean, bukan di dalam permintaan.</em></p>
+  <p>Dengan menandai job, pekerjaan itu dipisahkan dari permintaan sehingga pengguna tidak menunggu prosesnya selesai.</p>
+  <pre><code>class KirimPengingat implements ShouldQueue { ... }</code></pre>
+  <p><em>Output: Job dijalankan oleh pekerja antrean di luar permintaan pengguna.</em></p>
+  <p><em>Hati-hati: Menjalankan pekerjaan berat di dalam permintaan membuat halaman lambat dan mudah waktu habis.</em></p>
+</div><div class="panel">
+  <b><code>Cache::remember(&quot;tugas.aktif&quot;, 60, fn () =&gt; Tugas::where(&quot;selesai&quot;, false)-&gt;count());</code></b>
+  <p><em>Dibaca: Baca sebagai pengambilan nilai dari singgahan, atau penghitungan ulang bila belum ada atau sudah kedaluwarsa.</em></p>
+  <p>remember menyimpan hasil selama jangka waktu tertentu dan memakainya kembali pada pemanggilan berikutnya.</p>
+  <pre><code>Cache::remember(&quot;tugas.aktif&quot;, 60, fn () =&gt; Tugas::count());</code></pre>
+  <p><em>Output: Pemanggilan berikutnya dalam rentang waktu itu tidak menghitung ulang.</em></p>
+  <p><em>Hati-hati: Menyimpan data dengan masa berlaku terlalu panjang membuat tampilan menampilkan nilai yang sudah usang.</em></p>
+</div><div class="panel">
+  <b><code>$path = $request-&gt;file(&quot;lampiran&quot;)-&gt;store(&quot;lampiran&quot;);</code></b>
+  <p><em>Dibaca: Baca sebagai penyimpanan berkas unggahan dan pengambilan lokasi hasil simpanannya.</em></p>
+  <p>Berkas disimpan dengan nama yang dihasilkan sistem di lokasi tertentu, bukan memakai nama dari pengguna apa adanya.</p>
+  <pre><code>$path = $request-&gt;file(&quot;lampiran&quot;)-&gt;store(&quot;lampiran&quot;);</code></pre>
+  <p><em>Output: Berkas tersimpan dan lokasinya dapat dicatat untuk diambil kembali.</em></p>
+  <p><em>Hati-hati: Memakai nama berkas dari pengguna apa adanya membuka risiko nama yang berbahaya atau bertabrakan.</em></p>
+</div>
+  <h4>Aturan penulisan</h4><ul><li>Pindahkan pekerjaan berat ke antrean agar permintaan tetap cepat.</li><li>Pastikan job dapat dijalankan ulang tanpa menimbulkan efek ganda.</li><li>Simpan hasil yang mahal dihitung pada singgahan dengan masa berlaku yang wajar.</li><li>Periksa jenis dan ukuran berkas unggahan sebelum disimpan.</li><li>Simpan berkas dengan nama yang dihasilkan sistem, bukan nama dari pengguna.</li></ul>
   <section class="lesson-section">
-  <h4>01 · Memahami konsepnya</h4>
-  <p>Pekerjaan lambat (email, laporan besar) sebaiknya memakai queue bila memerlukan respons cepat. Cache mempercepat data yang dapat digunakan ulang tetapi butuh strategi invalidasi.</p><p>File upload harus divalidasi tipe/ukuran dan disimpan di disk sesuai kebutuhan. Jangan mempercayai nama file dari pengguna. Jalankan worker dengan pengelolaan proses pada produksi.</p>
-  
-  <div class="panel good"><b>Best practice</b><p>Gunakan queue untuk beban lambat dan pantau retry serta kegagalannya.</p></div><div class="panel bad"><b>Kesalahan umum</b><p>Mengirim laporan berat pada satu request hingga timeout.</p></div>
+  <h4>01 · Cara membaca job antrean</h4>
+  <p>Job dibaca sebagai kelas yang menyatakan pekerjaannya pada method utama. Penanda antrean memberitahu aplikasi bahwa kelas ini tidak dijalankan di dalam permintaan, melainkan diserahkan kepada pekerja.</p><p>Pada contoh, kelas menyatakan dirinya sebagai pekerjaan antrean, lalu menuliskan langkah pekerjaannya. Karena dijalankan terpisah, pengguna tidak menunggu proses pengiriman surel selesai.</p><p>Job sebaiknya dirancang agar dapat dijalankan ulang. Pekerja dapat mengulang job yang gagal, sehingga efek ganda harus dihindari dengan pemeriksaan yang tepat.</p>
+  <pre><code>&lt;?php
+namespace App\Jobs;
+
+use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Foundation\Queue\Queueable;
+
+class KirimPengingat implements ShouldQueue {
+    use Queueable;
+
+    public function handle(): void {
+        // kirim surel pengingat
+    }
+}</code></pre><div class="panel"><b>Output yang diharapkan</b><p>Job dikirim ke antrean dan dijalankan oleh pekerja terpisah dari permintaan pengguna.</p></div><p>Kelas menyatakan dirinya sebagai pekerjaan antrean, lalu menuliskan langkah pekerjaannya pada method utama.</p><div class="panel"><b>Bedah baris</b><ol><li>Baris 7 · <code>class KirimPengingat implements ShouldQueue {</code> — Kelas menyatakan dirinya sebagai pekerjaan antrean.</li><li>Baris 8 · <code>use Queueable;</code> — Penanda menyediakan kemampuan pengelolaan antrean.</li><li>Baris 10 · <code>public function handle(): void {</code> — Method ini memuat langkah pekerjaan yang dijalankan pekerja.</li></ol></div>
+  <div class="panel good"><b>Permintaan tetap cepat</b><p>Pekerjaan berat dilempar ke antrean sehingga pengguna tidak menunggu. Pekerja antrean menjalankannya di belakang.</p></div>
+  <div class="panel warn"><b>Cek pemahaman</b><p>Apa keuntungan menjalankan pekerjaan berat lewat antrean alih-alih di dalam permintaan?</p><p>Kriteria berhasil: Permintaan tetap cepat karena pengguna tidak menunggu pekerjaan berat selesai.</p></div>
+</section><section class="lesson-section">
+  <h4>02 · Memakai singgahan dengan bijak</h4>
+  <p>Singgahan dibaca sebagai penyimpanan hasil sementara. Permintaan pertama menghitung nilainya lalu menyimpannya. Permintaan berikutnya dalam masa berlaku mendapat nilai yang sama tanpa menghitung ulang.</p><p>Masa berlaku menentukan keseimbangan. Terlalu panjang membuat data usang, terlalu pendek membuat hitungan mahal terulang. Pilih masa yang sesuai seberapa cepat data berubah.</p><p>Singgahan juga perlu dibersihkan ketika data berubah. Bila ada penambahan tugas, nilai lama yang tersimpan menjadi tidak sesuai. Pastikan nilai yang bergantung pada data dihapus saat data itu berubah.</p>
+  <pre><code>Cache::remember(&quot;tugas.aktif&quot;, 60, function () {
+    return Tugas::where(&quot;selesai&quot;, false)-&gt;count();
+});</code></pre><div class="panel"><b>Output yang diharapkan</b><p>Hitungan tugas aktif disimpan selama 60 detik dan dipakai kembali selama rentang itu.</p></div><p>Pemanggilan pertama menghitung jumlah lalu menyimpannya pada kunci tertentu. Pemanggilan berikutnya memakai nilai tersimpan sampai masa berlakunya habis.</p><div class="panel"><b>Bedah baris</b><ol><li>Baris 1 · <code>Cache::remember(&quot;tugas.aktif&quot;, 60, function () {</code> — Kunci singgahan dan masa berlaku ditentukan.</li><li>Baris 2 · <code>return Tugas::where(&quot;selesai&quot;, false)-&gt;count();</code> — Nilai dihitung dari basis data saat belum ada di singgahan.</li></ol></div>
+  <div class="panel warn"><b>Bersihkan saat data berubah</b><p>Nilai tersimpan yang bergantung pada data harus dihapus saat data itu berubah. Jika tidak, tampilan menampilkan nilai usang.</p></div>
   
 </section><section class="lesson-section">
-  <h4>02 · Contoh kode</h4>
-  <p>Perhatikan input, proses, dan output. Ketik ulang, lalu ubah satu nilai.</p>
-  <pre><code>&lt;?php
-// Contoh konsep:
-// ReportJob::dispatch($reportId);
-// Respons HTTP tidak harus menunggu laporan selesai.</code></pre>
+  <h4>03 · Mengelola berkas unggahan</h4>
+  <p>Berkas unggahan berasal dari luar, sehingga diperlakukan sebagai masukan yang tidak tepercaya. Periksa jenis, ukuran, dan isinya sebelum disimpan.</p><p>Simpan berkas dengan nama yang dihasilkan sistem. Nama dari pengguna dapat memuat karakter berbahaya atau bertabrakan dengan berkas lain.</p><p>Simpan berkas di lokasi yang tidak dapat dijalankan langsung sebagai program. Berkas yang dibagikan sebaiknya diakses lewat jalur terkendali agar pemeriksaan izin tetap berlaku.</p>
+  
+  <div class="panel bad"><b>Kesalahan umum</b><p>Menyimpan berkas dengan nama dari pengguna apa adanya. Nama itu dapat memuat karakter berbahaya atau menimpa berkas lain.</p></div>
+  <div class="panel warn"><b>Cek pemahaman</b><p>Sebutkan dua pemeriksaan yang perlu dilakukan pada berkas unggahan sebelum disimpan.</p><p>Kriteria berhasil: Memeriksa jenis berkas dan ukurannya, serta menyimpannya dengan nama yang dihasilkan sistem.</p></div>
+</section><section class="lesson-section">
+  <h4>04 · Memilih kapan memakai antrean dan singgahan</h4>
+  <p>Antrean cocok untuk pekerjaan yang tidak dibutuhkan jawabannya saat itu, misalnya mengirim surel, membuat laporan, atau memproses gambar. Pengguna tidak perlu menunggu hasilnya.</p><p>Singgahan cocok untuk hasil yang mahal dihitung dan sering diminta, serta dapat ditoleransi sedikit usang. Contohnya jumlah ringkasan atau daftar yang jarang berubah.</p><p>Keduanya bukan pengganti perbaikan yang mendasar. Bila query atau logika memang lambat, perbaiki sumbernya lebih dulu sebelum menutupinya dengan singgahan.</p>
   
   
+  <div class="panel warn"><b>Cek pemahaman</b><p>Sebutkan satu contoh pekerjaan yang cocok masuk antrean dan satu yang cocok disinggahkan.</p><p>Kriteria berhasil: Mengirim surel cocok masuk antrean; ringkasan jumlah yang sering diminta cocok disinggahkan.</p></div>
 </section>
-  <h4>Latihan bertingkat</h4><ol><li><b>Latihan 1</b> <em>(Mandiri)</em><p>Pilih proses yang perlu background job, lalu jelaskan bagaimana melacak sukses/gagal.</p></li><li><b>Latihan 2</b> <em>(Mandiri)</em><p>Ubah satu input atau asumsi pada contoh, catat hasil dan jelaskan alasannya.</p></li></ol>
-  
-  
+  <h4>Latihan bertingkat</h4><ol><li><b>Pindahkan pengiriman surel ke antrean</b> <em>(Terbimbing)</em><p>Buat job untuk mengirim surel pengingat dan panggil dari pengendali agar tidak dijalankan di dalam permintaan.</p><ol><li>Buat kelas job dengan penanda antrean.</li><li>Tulis langkah pengiriman pada method utamanya.</li><li>Panggil job itu dari pengendali.</li><li>Periksa pengguna tidak menunggu proses pengiriman.</li></ol><pre><code>class KirimPengingat implements ShouldQueue {
+    public function handle(): void {
+        // lengkapi
+    }
+}</code></pre><p><em>Hasil: Permintaan selesai cepat dan job dijalankan terpisah oleh pekerja antrean.</em></p><details><summary>Petunjuk bertahap</summary><ol><li>Penanda antrean memisahkan job dari permintaan.</li><li>Langkah pekerjaan ditulis pada method utama.</li><li>Job dipanggil dari pengendali setelah data tersimpan.</li></ol></details><p><em>Tantangan: Tambahkan percobaan ulang bila pengiriman gagal.</em></p></li><li><b>Singgahkan ringkasan yang mahal</b> <em>(Mandiri)</em><p>Singgahkan hasil hitungan ringkasan yang mahal dengan masa berlaku yang wajar, lalu pastikan nilainya dibersihkan saat data berubah.</p><ol><li>Tentukan kunci dan masa berlaku singgahan.</li><li>Simpan hasil hitungan memakai mekanisme singgahan.</li><li>Hapus nilai tersimpan saat data terkait berubah.</li><li>Uji hitungan pertama dan pemanggilan berikutnya.</li></ol><pre><code>Cache::remember(&quot;kunci&quot;, 60, fn () =&gt; /* hitung */);</code></pre><p><em>Hasil: Pemanggilan berikutnya memakai nilai tersimpan dan tidak usang setelah data berubah.</em></p><details><summary>Petunjuk bertahap</summary><ol><li>Masa berlaku menyeimbangkan kesegaran dan kecepatan.</li><li>Nilainya harus dihapus saat sumbernya berubah.</li><li>Uji setelah ada perubahan data.</li></ol></details><p><em>Tantangan: Bandingkan waktu sebelum dan sesudah singgahan.</em></p></li><li><b>Rancang alur unggahan yang aman</b> <em>(Penerapan)</em><p>Rancang alur unggahan lampiran tugas: pemeriksaan, penyimpanan, dan akses kembali oleh pemiliknya saja.</p><ol><li>Tentukan pemeriksaan yang dilakukan sebelum menyimpan.</li><li>Tentukan cara penamaan dan lokasi penyimpanan.</li><li>Tentukan cara mengakses kembali dengan pemeriksaan izin.</li><li>Uji berkas sah dan berkas yang tidak sesuai.</li></ol><pre><code>Pemeriksaan: ...
+Penyimpanan: ...
+Akses: ...</code></pre><p><em>Hasil: Hanya berkas sah yang tersimpan, diberi nama sistem, dan hanya pemiliknya dapat mengaksesnya.</em></p><details><summary>Petunjuk bertahap</summary><ol><li>Berkas dari pengguna diperlakukan sebagai masukan tidak tepercaya.</li><li>Nama berkas dihasilkan sistem.</li><li>Akses berkas memakai jalur terkendali agar izin berlaku.</li></ol></details><p><em>Tantangan: Batasi ukuran berkas dan tampilkan pesan bila melebihi.</em></p></li></ol>
+  <h4>Verifikasi</h4><div class="panel"><b>Mode: Manual</b><pre><code>Jalankan job antrean, uji singgahan sebelum dan sesudah perubahan data, serta uji unggahan berkas.</code></pre><p><em>Hasil yang diharapkan: Job dijalankan terpisah, singgahan menampilkan nilai yang tidak usang, dan hanya berkas sah yang tersimpan dan dapat diakses pemiliknya.</em></p><p><em>Bukti yang disimpan: Simpan kelas job, kode singgahan, dan catatan hasil pengujian berkas.</em></p></div>
+  <h4>Mengatasi masalah</h4><ul><li><b>Halaman lambat karena menunggu proses panjang.</b><br>Penyebab umum: Pekerjaan berat dijalankan di dalam permintaan alih-alih dilempar ke antrean.<br>Perbaikan: Pindahkan pekerjaan itu ke job antrean agar permintaan cepat selesai.</li><li><b>Tampilan menampilkan nilai yang sudah usang.</b><br>Penyebab umum: Nilai singgahan tidak dihapus saat data sumbernya berubah.<br>Perbaikan: Hapus nilai singgahan terkait setiap kali data yang mendasarinya berubah.</li><li><b>Berkas unggahan bertabrakan atau berbahaya.</b><br>Penyebab umum: Berkas disimpan memakai nama dari pengguna apa adanya.<br>Perbaikan: Simpan dengan nama yang dihasilkan sistem dan periksa jenis serta ukurannya.</li><li><b>Job yang sama menimbulkan efek ganda saat diulang.</b><br>Penyebab umum: Job tidak dirancang untuk dapat dijalankan ulang dengan aman.<br>Perbaikan: Tambahkan pemeriksaan sehingga mengulang job tidak menimbulkan efek yang terduplikasi.</li></ul>
   <div class="quiz"><strong>Uji pemahaman</strong><div class="quiz-question">
-    <b>1. Apa prinsip yang paling tepat untuk topik “Queue, jobs, caching, dan file”?</b>
-    <ol type="A"><li>Gunakan queue untuk beban lambat dan pantau retry serta kegagalannya.</li><li>Gunakan solusi paling rumit sejak awal, meski kebutuhan belum jelas.</li><li>Lewati pengujian karena contoh kecil pasti benar.</li></ol>
-    <details><summary>Lihat pembahasan</summary><p class="answer">Jawaban: A. Gunakan queue untuk beban lambat dan pantau retry serta kegagalannya.</p></details>
+    <b>1. Kapan pekerjaan sebaiknya dipindahkan ke antrean?</b>
+    <ol type="A"><li>Ketika pekerjaan berat dan jawabannya tidak dibutuhkan segera</li><li>Ketika halaman sudah cepat</li><li>Ketika data berubah setiap detik</li></ol>
+    <details><summary>Lihat pembahasan</summary><p class="answer">Jawaban: A. Antrean cocok untuk pekerjaan berat yang tidak perlu menghambat permintaan pengguna.</p></details>
+  </div><div class="quiz-question">
+    <b>2. Apa yang dilakukan Cache::remember dengan masa berlaku tertentu?</b>
+    <ol type="A"><li>Menghitung ulang setiap kali dipanggil</li><li>Menyimpan hasil dan memakainya kembali sampai masa berlakunya habis</li><li>Menghapus data dari basis data</li></ol>
+    <details><summary>Lihat pembahasan</summary><p class="answer">Jawaban: B. remember menyimpan hasil selama masa berlaku dan memakainya kembali pada pemanggilan berikutnya.</p></details>
+  </div><div class="quiz-question">
+    <b>3. Menyimpan berkas unggahan dengan nama dari pengguna apa adanya. Risikonya...</b>
+    <ol type="A"><li>Tidak ada risiko</li><li>Nama berbahaya atau bertabrakan dengan berkas lain</li><li>Berkas menjadi lebih kecil</li></ol>
+    <details><summary>Lihat pembahasan</summary><p class="answer">Jawaban: B. Nama dari pengguna dapat memuat karakter berbahaya atau menimpa berkas lain, sehingga nama dihasilkan sistem.</p></details>
   </div></div>
-  
-  
-  
+  <h4>Ringkasan</h4><ul><li>Antrean memindahkan pekerjaan berat keluar dari permintaan sehingga pengguna tidak menunggu.</li><li>Job sebaiknya dapat dijalankan ulang tanpa menimbulkan efek ganda.</li><li>Singgahan menyimpan hasil yang mahal dihitung, dengan masa berlaku yang sesuai kesegaran data.</li><li>Berkas unggahan diperiksa dan disimpan dengan nama yang dihasilkan sistem.</li></ul>
+  <div class="panel"><b>Berikutnya</b><p>Berikutnya: testing Laravel dan deployment. Anda akan menguji perilaku aplikasi dan menyiapkan peluncuran yang dapat diulang.</p></div>
+  <h4>Sumber</h4><ul><li><a href="https://laravel.com/docs/13.x/queues" rel="noopener noreferrer">Laravel Docs: Queues</a> <small>Laravel · 13.x</small> — Dokumentasi resmi Laravel tentang antrean dan job.</li><li><a href="https://laravel.com/docs/13.x" rel="noopener noreferrer">Laravel Documentation</a> <small>Laravel · 13.x</small> — Dokumentasi resmi Laravel tentang singgahan dan penyimpanan berkas.</li><li><a href="https://www.php.net/manual/en/" rel="noopener noreferrer">PHP Manual</a> <small>PHP Group · 8.5</small> — Manual PHP tentang penanganan berkas dan fungsi terkait.</li></ul>
 </article>
 <article class="lesson" id="m08-l09">
-  <div class="lesson-meta">Pelajaran 09 · 45 menit · Menengah · Bash</div>
+  <div class="lesson-meta">Pelajaran 09 · 120 menit · Menengah · Bash</div>
   <h3>Testing Laravel dan deployment</h3>
-  
-  
-  
-  
-  
-  
+  <div class="panel good"><b>Hasil belajar</b><p>Setelah pelajaran ini, Anda dapat menulis test yang memeriksa perilaku aplikasi serta menyiapkan langkah peluncuran yang dapat diulang.</p></div>
+  <h4>Tujuan</h4><ul><li>Menulis test fitur yang memeriksa tanggapan alamat.</li><li>Menyiapkan data uji secara terpisah dari data nyata.</li><li>Menjelaskan perbedaan test fitur dan test unit.</li><li>Menyusun langkah peluncuran yang dapat diulang.</li></ul>
+  <div class="panel"><b>Prasyarat</b><p>Queue, jobs, caching, dan file</p></div>
+  <h4>Istilah kunci</h4><dl class="glossary"><div><dt>Test fitur</dt><dd>Test yang menjalankan permintaan ke alamat dan memeriksa tanggapan beserta efeknya.</dd></div><div><dt>Test unit</dt><dd>Test yang memeriksa satu bagian kode secara terpisah tanpa permintaan HTTP.</dd></div><div><dt>Data uji</dt><dd>Data yang disiapkan khusus untuk pengujian dan dipisahkan dari data nyata.</dd></div><div><dt>Peluncuran</dt><dd>Rangkaian langkah yang dijalankan berurutan untuk menerbitkan versi aplikasi.</dd></div></dl>
+  <h4>Kartu sintaks</h4><div class="panel">
+  <b><code>Tugas::factory()-&gt;count(3)-&gt;create();</code></b>
+  <p><em>Dibaca: Baca sebagai penyiapan tiga data tugas uji dengan nilai yang dihasilkan otomatis.</em></p>
+  <p>Factory membuat data uji yang konsisten sehingga test tidak bergantung pada data nyata.</p>
+  <pre><code>Tugas::factory()-&gt;count(3)-&gt;create();</code></pre>
+  <p><em>Output: Tiga baris data uji tersedia untuk pengujian.</em></p>
+  <p><em>Hati-hati: Mengandalkan data nyata membuat test tidak stabil karena isinya berubah di luar kendali.</em></p>
+</div><div class="panel">
+  <b><code>$this-&gt;get(&quot;/tugas&quot;);</code></b>
+  <p><em>Dibaca: Baca sebagai pengiriman permintaan ke alamat itu di dalam test.</em></p>
+  <p>Test fitur menjalankan permintaan seperti pengguna lalu mengembalikan tanggapan yang dapat diperiksa.</p>
+  <pre><code>$this-&gt;get(&quot;/tugas&quot;);</code></pre>
+  <p><em>Output: Tanggapan berisi status dan isi yang dapat diperiksa test.</em></p>
+  <p><em>Hati-hati: Memeriksa isi halaman yang terlalu rinci membuat test mudah rusak saat tampilan berubah.</em></p>
+</div><div class="panel">
+  <b><code>$response-&gt;assertStatus(200);</code></b>
+  <p><em>Dibaca: Baca sebagai pemeriksaan bahwa tanggapan berhasil.</em></p>
+  <p>Pemeriksaan menyatakan harapan test. Bila tidak terpenuhi, test gagal dan menunjukkan bagian yang bermasalah.</p>
+  <pre><code>$response-&gt;assertStatus(200);</code></pre>
+  <p><em>Output: Test lulus bila status tanggapan sesuai harapan.</em></p>
+  <p><em>Hati-hati: Hanya memeriksa status tanpa memeriksa isi membuat test tidak membuktikan data yang benar tampil.</em></p>
+</div>
+  <h4>Aturan penulisan</h4><ul><li>Beri nama test yang menyatakan perilaku yang diperiksa.</li><li>Siapkan data uji lewat factory, bukan memakai data nyata.</li><li>Periksa perilaku yang dapat diamati, bukan detail tampilan yang mudah berubah.</li><li>Uji jalur berhasil dan jalur gagal, termasuk kasus tanpa izin.</li><li>Jalankan test sebagai bagian dari langkah peluncuran.</li></ul>
   <section class="lesson-section">
-  <h4>01 · Memahami konsepnya</h4>
-  <p>Feature test menguji endpoint, database, autentikasi, dan kebijakan akses. Unit test menguji fungsi/domain. Deployment memerlukan env, APP_KEY, migrate, cache, worker, log, backup.</p><p>Jalankan test sebelum merilis perubahan. Bedakan development/staging/production, jangan mengaktifkan debug di publik, dan pastikan prosedur rollback.</p>
+  <h4>01 · Cara membaca test fitur</h4>
+  <p>Test dibaca dalam tiga bagian: persiapan, tindakan, dan pemeriksaan. Bagian persiapan menyiapkan data, tindakan mengirim permintaan, dan pemeriksaan menyatakan harapan atas hasilnya.</p><p>Pada contoh, tiga data uji dibuat lebih dulu, lalu permintaan dikirim ke alamat daftar, dan hasilnya diperiksa. Karena data disiapkan oleh test sendiri, hasilnya tidak bergantung pada isi basis data nyata.</p><p>Nama test menyatakan perilaku yang diperiksa. Ketika test gagal, nama itu langsung memberi tahu bagian mana yang tidak sesuai harapan, tanpa perlu membaca isi testnya.</p>
+  <pre><code>&lt;?php
+namespace Tests\Feature;
+
+use App\Models\Tugas;
+use Tests\TestCase;
+
+class TugasTest extends TestCase {
+    public function test_menampilkan_daftar_tugas(): void {
+        Tugas::factory()-&gt;count(3)-&gt;create();
+
+        $response = $this-&gt;get(&quot;/tugas&quot;);
+
+        $response-&gt;assertStatus(200);
+    }
+}</code></pre><div class="panel"><b>Output yang diharapkan</b><p>Test lulus karena alamat daftar mengembalikan status berhasil.</p></div><p>Test menyiapkan tiga data, mengirim permintaan ke alamat daftar, lalu memeriksa status tanggapannya.</p><div class="panel"><b>Bedah baris</b><ol><li>Baris 8 · <code>public function test_menampilkan_daftar_tugas(): void {</code> — Nama test menyatakan perilaku yang diperiksa.</li><li>Baris 9 · <code>Tugas::factory()-&gt;count(3)-&gt;create();</code> — Data uji disiapkan lewat factory.</li><li>Baris 11 · <code>$response = $this-&gt;get(&quot;/tugas&quot;);</code> — Permintaan dikirim seperti pengguna mengakses alamat.</li><li>Baris 13 · <code>$response-&gt;assertStatus(200);</code> — Pemeriksaan menyatakan harapan atas status tanggapan.</li></ol></div>
+  <div class="panel good"><b>Data uji milik test</b><p>Setiap test menyiapkan datanya sendiri. Dengan begitu, urutan menjalankan test tidak memengaruhi hasilnya.</p></div>
+  <div class="panel warn"><b>Cek pemahaman</b><p>Sebutkan tiga bagian test pada contoh dan baris yang mewakili masing-masing.</p><p>Kriteria berhasil: Persiapan pada pembuatan data uji, tindakan pada pengiriman permintaan, dan pemeriksaan pada assertStatus.</p></div>
+</section><section class="lesson-section">
+  <h4>02 · Test fitur dan test unit</h4>
+  <p>Test fitur memeriksa perilaku dari sisi pengguna: permintaan dikirim dan tanggapan diperiksa. Ia menguji rute, pengendali, dan tampilan secara bersama.</p><p>Test unit memeriksa satu bagian kode secara terpisah, misalnya sebuah service atau aturan izin. Ia lebih cepat dan lebih tepat menunjukkan letak kesalahan.</p><p>Pembagian yang sehat memakai banyak test unit untuk logika dan sejumlah test fitur untuk alur penting. Gabungan keduanya memberi perlindungan tanpa membuat pengujian lambat.</p>
   
-  <div class="panel good"><b>Best practice</b><p>Otomatisasi test dan verifikasi migrasi sebelum deployment.</p></div><div class="panel bad"><b>Kesalahan umum</b><p>Menjalankan migration destruktif di produksi tanpa backup/rollback.</p></div>
+  
+  <div class="panel warn"><b>Cek pemahaman</b><p>Apa perbedaan test fitur dan test unit pada aplikasi web?</p><p>Kriteria berhasil: Test fitur mengirim permintaan dan memeriksa tanggapan; test unit memeriksa satu bagian kode secara terpisah.</p></div>
+</section><section class="lesson-section">
+  <h4>03 · Langkah peluncuran yang dapat diulang</h4>
+  <p>Peluncuran dibaca sebagai urutan langkah yang dijalankan berurutan. Setiap langkah menyiapkan satu hal, dari struktur basis data sampai pengujian sebelum versi diterbitkan.</p><p>Urutan penting: struktur disiapkan lebih dulu, lalu pengaturan dan rute dioptimalkan, dan pengujian dijalankan sebelum aplikasi dipakai pengguna. Bila satu langkah gagal, peluncuran dihentikan.</p><p>Menyimpan langkah-langkah ini dalam urutan yang tercatat membuat peluncuran dapat diulang. Hasil yang sama dapat diperoleh setiap kali tanpa mengandalkan ingatan.</p>
+  <pre><code>php artisan migrate --force
+php artisan config:cache
+php artisan route:cache
+php artisan test</code></pre><div class="panel"><b>Output yang diharapkan</b><p>Struktur basis data diperbarui, pengaturan dioptimalkan, lalu pengujian dijalankan sebelum versi diterbitkan.</p></div><p>Perintah pertama menjalankan migration tanpa konfirmasi, dua berikutnya menyiapkan singgahan pengaturan dan rute, dan perintah terakhir menjalankan pengujian.</p><div class="panel"><b>Bedah baris</b><ol><li>Baris 1 · <code>php artisan migrate --force</code> — Migration dijalankan untuk memperbarui struktur basis data.</li><li>Baris 2 · <code>php artisan config:cache</code> — Pengaturan disinggahkan agar pemuatan lebih cepat.</li><li>Baris 3 · <code>php artisan route:cache</code> — Rute disinggahkan agar pencocokan lebih cepat.</li><li>Baris 4 · <code>php artisan test</code> — Pengujian dijalankan sebelum versi diterbitkan.</li></ol></div>
+  <div class="panel warn"><b>Uji sebelum terbit</b><p>Jalankan pengujian sebagai bagian dari peluncuran. Versi yang gagal diuji sebaiknya tidak diterbitkan.</p></div>
   
 </section><section class="lesson-section">
-  <h4>02 · Contoh kode</h4>
-  <p>Perhatikan input, proses, dan output. Ketik ulang, lalu ubah satu nilai.</p>
-  <pre><code>php artisan test
-php artisan migrate --force
-# jalankan di lingkungan yang sudah diverifikasi</code></pre>
+  <h4>04 · Kesiapan sebelum terbit</h4>
+  <p>Sebelum menerbitkan, periksa pengaturan produksi: kunci aplikasi sudah diatur, mode pengembangan dimatikan, dan alamat yang dipakai sesuai lingkungan.</p><p>Periksa juga hal yang bergantung pada lingkungan lain, misalnya koneksi basis data dan antrean. Ketergantungan yang belum siap adalah sumber kegagalan paling umum saat peluncuran.</p><p>Siapkan cara kembali ke versi sebelumnya bila terjadi masalah. Rencana kembali yang sudah diuji membuat kegagalan peluncuran tidak berlarut-larut.</p>
   
   
+  <div class="panel warn"><b>Cek pemahaman</b><p>Sebutkan dua hal yang perlu diperiksa pada pengaturan produksi sebelum terbit.</p><p>Kriteria berhasil: Kunci aplikasi sudah diatur dan mode pengembangan dimatikan, selain kesiapan koneksi basis data serta antrean.</p></div>
 </section>
-  <h4>Latihan bertingkat</h4><ol><li><b>Latihan 1</b> <em>(Mandiri)</em><p>Rancang test API: guest tidak boleh edit, owner boleh edit, non-owner ditolak.</p></li><li><b>Latihan 2</b> <em>(Mandiri)</em><p>Ubah satu input atau asumsi pada contoh, catat hasil dan jelaskan alasannya.</p></li></ol>
-  
-  
+  <h4>Latihan bertingkat</h4><ol><li><b>Test fitur halaman tugas</b> <em>(Terbimbing)</em><p>Tulis test fitur yang menyiapkan data uji, mengirim permintaan ke halaman daftar, dan memeriksa hasilnya.</p><ol><li>Siapkan data uji lewat factory.</li><li>Kirim permintaan ke alamat daftar.</li><li>Periksa status tanggapan.</li><li>Tambahkan pemeriksaan bahwa data tampil pada tanggapan.</li></ol><pre><code>public function test_menampilkan_daftar(): void {
+    // siapkan data, kirim permintaan, periksa
+}</code></pre><p><em>Hasil: Test lulus dan memeriksa data uji tampil pada tanggapan.</em></p><details><summary>Petunjuk bertahap</summary><ol><li>Factory membuat data uji secara konsisten.</li><li>Permintaan dikirim seperti pengguna mengakses alamat.</li><li>Periksa status sebelum memeriksa isi.</li></ol></details><p><em>Tantangan: Tambahkan test untuk alamat detail satu tugas.</em></p></li><li><b>Test jalur tanpa izin</b> <em>(Mandiri)</em><p>Tulis test yang memastikan pengguna bukan pemilik tidak dapat mengubah tugas milik orang lain.</p><ol><li>Siapkan dua pengguna dan satu tugas milik pengguna pertama.</li><li>Masuk sebagai pengguna kedua.</li><li>Kirim permintaan ubah pada tugas itu.</li><li>Periksa permintaan ditolak dan data tidak berubah.</li></ol><pre><code>public function test_bukan_pemilik_ditolak(): void {
+    // siapkan, akses, periksa
+}</code></pre><p><em>Hasil: Permintaan ditolak dan data tetap tidak berubah.</em></p><details><summary>Petunjuk bertahap</summary><ol><li>Siapkan dua pengguna agar kepemilikan jelas.</li><li>Periksa status tanggapan yang menyatakan penolakan.</li><li>Periksa data setelah permintaan untuk memastikan tidak berubah.</li></ol></details><p><em>Tantangan: Tambahkan test bahwa pemilik diizinkan mengubah.</em></p></li><li><b>Susun langkah peluncuran</b> <em>(Penerapan)</em><p>Tulis urutan langkah peluncuran untuk aplikasi tugas, memuat pembaruan struktur, penyiapan pengaturan, pengujian, dan langkah kembali bila gagal.</p><ol><li>Tentukan urutan langkah dari awal sampai terbit.</li><li>Sertakan pengujian sebelum terbit.</li><li>Tentukan cara kembali ke versi sebelumnya.</li><li>Jalankan seluruh urutan pada lingkungan uji.</li></ol><pre><code>1. ...
+2. ...
+3. ...
+Kembali bila gagal: ...</code></pre><p><em>Hasil: Urutan dapat dijalankan dan menghasilkan versi siap pakai, dengan langkah kembali yang jelas.</em></p><details><summary>Petunjuk bertahap</summary><ol><li>Struktur disiapkan sebelum aplikasi dipakai.</li><li>Pengujian dijalankan sebelum terbit.</li><li>Rencana kembali dibuat sebelum dibutuhkan.</li></ol></details><p><em>Tantangan: Bungkus seluruh langkah dalam satu perintah yang dapat diulang.</em></p></li></ol>
+  <h4>Verifikasi</h4><div class="panel"><b>Mode: Manual</b><pre><code>Jalankan seluruh test lalu jalankan urutan langkah peluncuran pada lingkungan uji.</code></pre><p><em>Hasil yang diharapkan: Seluruh test lulus dan langkah peluncuran berjalan berurutan tanpa kegagalan hingga aplikasi siap dipakai.</em></p><p><em>Bukti yang disimpan: Simpan berkas test, keluaran pengujian, dan catatan pelaksanaan peluncuran.</em></p></div>
+  <h4>Mengatasi masalah</h4><ul><li><b>Test gagal hanya kadang-kadang.</b><br>Penyebab umum: Test bergantung pada data nyata atau urutan menjalankan test.<br>Perbaikan: Siapkan data uji di dalam setiap test agar test berdiri sendiri.</li><li><b>Test lulus tetapi bug tetap terjadi pada pengguna.</b><br>Penyebab umum: Test hanya memeriksa status tanpa memeriksa isi atau efeknya.<br>Perbaikan: Tambahkan pemeriksaan atas data yang tampil dan efek perubahan datanya.</li><li><b>Halaman error setelah diterbitkan meski berjalan baik di pengembangan.</b><br>Penyebab umum: Pengaturan produksi atau ketergantungan lingkungan belum siap.<br>Perbaikan: Periksa pengaturan produksi, koneksi basis data, dan antrean sebelum terbit.</li><li><b>Peluncuran gagal separuh jalan dan sulit dikembalikan.</b><br>Penyebab umum: Tidak ada urutan langkah yang tercatat atau rencana kembali.<br>Perbaikan: Susun urutan langkah peluncuran yang dapat diulang beserta rencana kembali yang sudah diuji.</li></ul>
   <div class="quiz"><strong>Uji pemahaman</strong><div class="quiz-question">
-    <b>1. Apa prinsip yang paling tepat untuk topik “Testing Laravel dan deployment”?</b>
-    <ol type="A"><li>Otomatisasi test dan verifikasi migrasi sebelum deployment.</li><li>Gunakan solusi paling rumit sejak awal, meski kebutuhan belum jelas.</li><li>Lewati pengujian karena contoh kecil pasti benar.</li></ol>
-    <details><summary>Lihat pembahasan</summary><p class="answer">Jawaban: A. Otomatisasi test dan verifikasi migrasi sebelum deployment.</p></details>
+    <b>1. Apa perbedaan test fitur dan test unit?</b>
+    <ol type="A"><li>Test fitur memeriksa perilaku lewat permintaan; test unit memeriksa satu bagian kode secara terpisah</li><li>Keduanya sama saja</li><li>Test fitur hanya untuk tampilan; test unit hanya untuk basis data</li></ol>
+    <details><summary>Lihat pembahasan</summary><p class="answer">Jawaban: A. Test fitur mengirim permintaan dan memeriksa tanggapan; test unit menguji satu bagian kode terpisah.</p></details>
+  </div><div class="quiz-question">
+    <b>2. Mengapa data uji sebaiknya dibuat lewat factory?</b>
+    <ol type="A"><li>Agar lebih cepat</li><li>Agar test tidak bergantung pada data nyata dan hasilnya konsisten</li><li>Agar data lama terhapus</li></ol>
+    <details><summary>Lihat pembahasan</summary><p class="answer">Jawaban: B. Factory menyiapkan data uji yang konsisten sehingga test tidak bergantung pada data nyata.</p></details>
+  </div><div class="quiz-question">
+    <b>3. Sebelum menerbitkan versi baru, langkah yang tepat...</b>
+    <ol type="A"><li>Menerbitkan lebih dulu lalu menguji di produksi</li><li>Menjalankan pengujian sebagai bagian dari langkah peluncuran</li><li>Melewati pengujian bila perubahan kecil</li></ol>
+    <details><summary>Lihat pembahasan</summary><p class="answer">Jawaban: B. Pengujian dijalankan sebelum versi diterbitkan agar kegagalan tidak sampai ke pengguna.</p></details>
   </div></div>
-  
-  
-  
+  <h4>Ringkasan</h4><ul><li>Test fitur mengirim permintaan dan memeriksa tanggapan; test unit memeriksa satu bagian kode terpisah.</li><li>Data uji disiapkan lewat factory agar test tidak bergantung pada data nyata.</li><li>Pengujian menjadi bagian dari langkah peluncuran sebelum versi diterbitkan.</li><li>Peluncuran yang dapat diulang memuat kesiapan pengaturan dan rencana kembali bila gagal.</li></ul>
+  <div class="panel"><b>Berikutnya</b><p>Materi berikutnya melanjutkan ke pengujian perangkat lunak secara umum. Anda akan menyusun strategi pengujian untuk aplikasi yang lebih besar.</p></div>
+  <h4>Sumber</h4><ul><li><a href="https://docs.phpunit.de/en/11.5/" rel="noopener noreferrer">PHPUnit Documentation</a> <small>PHPUnit · 11.5</small> — Dokumentasi resmi PHPUnit tentang penulisan test dan pemeriksaan hasil.</li><li><a href="https://laravel.com/docs/13.x" rel="noopener noreferrer">Laravel Documentation</a> <small>Laravel · 13.x</small> — Dokumentasi resmi Laravel tentang test dan peluncuran aplikasi.</li><li><a href="https://getcomposer.org/doc/" rel="noopener noreferrer">Composer Documentation</a> <small>Composer · current</small> — Dokumentasi Composer tentang pemasangan ketergantungan produksi.</li></ul>
 </article>
 </section>
 <section class="module" id="m09">
@@ -8166,7 +8721,7 @@ function Counter(){
     <section class="module" id="referensi">
       <div class="module-head"><h2>Sumber resmi</h2></div>
       <p class="subtitle">Versi teknologi berubah; periksa dokumentasi resmi dan tanggal pemeriksaan saat membuat proyek baru.</p>
-      <ul><li><a href="https://developer.mozilla.org/en-US/docs/Learn_web_development" rel="noopener noreferrer">MDN: Learn web development</a> <small>Mozilla · rolling</small></li><li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide" rel="noopener noreferrer">MDN: JavaScript Guide</a> <small>Mozilla · rolling</small></li><li><a href="https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/Scripting/What_is_JavaScript" rel="noopener noreferrer">MDN: What is JavaScript?</a> <small>Mozilla · rolling</small></li><li><a href="https://web.dev/learn/javascript" rel="noopener noreferrer">web.dev: Learn JavaScript</a> <small>Google · rolling</small></li><li><a href="https://www.typescriptlang.org/docs/handbook/" rel="noopener noreferrer">TypeScript Handbook</a> <small>Microsoft · rolling</small></li><li><a href="https://developer.mozilla.org/en-US/docs/Learn_web_development/Getting_started/Environment_setup/Command_line" rel="noopener noreferrer">MDN: Command line crash course</a> <small>Mozilla · rolling</small></li><li><a href="https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/windows-commands" rel="noopener noreferrer">Microsoft Learn: Windows commands</a> <small>Microsoft · Windows 11</small></li><li><a href="https://www.microsoft.com/en-us/windows/windows-11-specifications" rel="noopener noreferrer">Microsoft: Windows 11 specs and system requirements</a> <small>Microsoft · Windows 11</small></li><li><a href="https://learn.microsoft.com/en-us/windows/whats-new/windows-11-requirements" rel="noopener noreferrer">Microsoft Learn: Windows 11 requirements</a> <small>Microsoft · 2026</small></li><li><a href="https://support.microsoft.com/en-us/windows" rel="noopener noreferrer">Microsoft Support: Windows</a> <small>Microsoft · rolling</small></li><li><a href="https://developer.mozilla.org/en-US/docs/Learn_web_development/Getting_started/Web_standards/How_the_web_works" rel="noopener noreferrer">MDN: How the web works</a> <small>Mozilla · rolling</small></li><li><a href="https://developer.mozilla.org/en-US/docs/Learn_web_development/Extensions/Server-side/First_steps/Client-Server_overview" rel="noopener noreferrer">MDN: Client-server overview</a> <small>Mozilla · rolling</small></li><li><a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/Overview" rel="noopener noreferrer">MDN: HTTP overview</a> <small>Mozilla · rolling</small></li><li><a href="https://www.rfc-editor.org/rfc/rfc9110.html" rel="noopener noreferrer">RFC 9110: HTTP Semantics</a> <small>IETF · 9110</small></li><li><a href="https://developer.chrome.com/docs/devtools/" rel="noopener noreferrer">Chrome DevTools: Documentation</a> <small>Google · rolling</small></li><li><a href="https://developer.chrome.com/docs/devtools/javascript/" rel="noopener noreferrer">Chrome DevTools: Debug JavaScript</a> <small>Google · rolling</small></li><li><a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/Caching" rel="noopener noreferrer">MDN: HTTP caching</a> <small>Mozilla · rolling</small></li><li><a href="https://www.cisa.gov/secure-our-world/use-strong-passwords" rel="noopener noreferrer">CISA: Use strong passwords</a> <small>CISA · rolling</small></li><li><a href="https://support.google.com/accounts/answer/185839" rel="noopener noreferrer">Google: Turn on 2-Step Verification</a> <small>Google · rolling</small></li><li><a href="https://www.cisa.gov/secure-our-world/recognize-and-report-phishing" rel="noopener noreferrer">CISA: Recognize and report phishing</a> <small>CISA · rolling</small></li><li><a href="https://support.google.com/mail/answer/8253" rel="noopener noreferrer">Google: Avoid and report phishing emails</a> <small>Google · rolling</small></li><li><a href="https://peraturan.bpk.go.id/Details/229798/uu-no-27-tahun-2022" rel="noopener noreferrer">JDIH BPK: UU No. 27 Tahun 2022 tentang Pelindungan Data Pribadi</a> <small>BPK RI · 2022</small></li><li><a href="https://www.nist.gov/privacy-framework" rel="noopener noreferrer">NIST: Privacy Framework</a> <small>NIST · 1.1 IPD</small></li><li><a href="https://www.cisa.gov/stopransomware" rel="noopener noreferrer">CISA: StopRansomware</a> <small>CISA · rolling</small></li><li><a href="https://git-scm.com/docs" rel="noopener noreferrer">Git: Reference</a> <small>Git · rolling</small></li><li><a href="https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/Scripting/Debugging_JavaScript" rel="noopener noreferrer">MDN: Debugging JavaScript</a> <small>Mozilla · rolling</small></li><li><a href="https://lsc.cornell.edu/how-to-study/studying-for-and-taking-exams/effective-study-strategies/" rel="noopener noreferrer">Cornell Learning Strategies Center: Effective Study Strategies</a> <small>Cornell University · rolling</small></li><li><a href="https://lsc.cornell.edu/how-to-study/studying-for-and-taking-exams/guidelines-for-creating-a-study-schedule/" rel="noopener noreferrer">Cornell Learning Strategies Center: Creating a Study Schedule</a> <small>Cornell University · rolling</small></li><li><a href="https://www.nist.gov/itl/ai-risk-management-framework" rel="noopener noreferrer">NIST: AI Risk Management Framework</a> <small>NIST · 1.0</small></li><li><a href="https://lsc.cornell.edu/find-your-academic-groove/using-gai-for-learning/" rel="noopener noreferrer">Cornell Learning Strategies Center: Using GAI for Learning</a> <small>Cornell University · rolling</small></li><li><a href="https://www.php.net/manual/en/" rel="noopener noreferrer">PHP Manual</a> <small>PHP Group · 8.5</small></li><li><a href="https://laravel.com/docs/13.x" rel="noopener noreferrer">Laravel Documentation</a> <small>Laravel · 13.x</small></li><li><a href="https://www.postgresql.org/docs/18/" rel="noopener noreferrer">PostgreSQL Documentation</a> <small>PostgreSQL Global Development Group · 18.6</small></li><li><a href="https://docs.flutter.dev/" rel="noopener noreferrer">Flutter Documentation</a> <small>Google · stable</small></li><li><a href="https://dart.dev/language" rel="noopener noreferrer">Dart Language Tour</a> <small>Google · stable</small></li><li><a href="https://top10.owasp.org/2025/" rel="noopener noreferrer">OWASP Top 10:2025</a> <small>OWASP · 2025</small></li><li><a href="https://www.w3.org/TR/WCAG22/" rel="noopener noreferrer">WCAG 2.2</a> <small>W3C · 2.2</small></li><li><a href="https://developer.mozilla.org/en-US/docs/Web/API/Window/localStorage" rel="noopener noreferrer">MDN: Window.localStorage</a> <small>Mozilla · rolling</small></li><li><a href="https://developer.mozilla.org/en-US/docs/Web/API/Storage" rel="noopener noreferrer">MDN: Storage</a> <small>Mozilla · rolling</small></li><li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON" rel="noopener noreferrer">MDN: JSON</a> <small>Mozilla · rolling</small></li><li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/try...catch" rel="noopener noreferrer">MDN: try...catch</a> <small>Mozilla · rolling</small></li><li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Control_flow_and_error_handling" rel="noopener noreferrer">MDN: Control flow and error handling</a> <small>Mozilla · rolling</small></li><li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Loops_and_iteration" rel="noopener noreferrer">MDN: Loops and iteration</a> <small>Mozilla · rolling</small></li><li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Indexed_collections" rel="noopener noreferrer">MDN: Indexed collections</a> <small>Mozilla · rolling</small></li><li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Working_with_objects" rel="noopener noreferrer">MDN: Working with objects</a> <small>Mozilla · rolling</small></li><li><a href="https://developer.mozilla.org/en-US/docs/Glossary/Truthy" rel="noopener noreferrer">MDN: Truthy</a> <small>Mozilla · rolling</small></li><li><a href="https://developer.mozilla.org/en-US/docs/Glossary/Algorithm" rel="noopener noreferrer">MDN: Algorithm</a> <small>Mozilla · rolling</small></li><li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/let" rel="noopener noreferrer">MDN: let</a> <small>Mozilla · rolling</small></li><li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/const" rel="noopener noreferrer">MDN: const</a> <small>Mozilla · rolling</small></li><li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Expressions_and_operators" rel="noopener noreferrer">MDN: Expressions and operators</a> <small>Mozilla · rolling</small></li><li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/typeof" rel="noopener noreferrer">MDN: typeof</a> <small>Mozilla · rolling</small></li><li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Functions" rel="noopener noreferrer">MDN: Functions</a> <small>Mozilla · rolling</small></li><li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array" rel="noopener noreferrer">MDN: Array</a> <small>Mozilla · rolling</small></li><li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Closures" rel="noopener noreferrer">MDN: Closures</a> <small>Mozilla · rolling</small></li><li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Modules" rel="noopener noreferrer">MDN: JavaScript modules</a> <small>Mozilla · rolling</small></li><li><a href="https://developer.mozilla.org/en-US/docs/Web/HTML" rel="noopener noreferrer">MDN: HTML elements reference</a> <small>Mozilla · rolling</small></li><li><a href="https://developer.mozilla.org/en-US/docs/Web/CSS" rel="noopener noreferrer">MDN: CSS reference</a> <small>Mozilla · rolling</small></li><li><a href="https://developer.mozilla.org/en-US/docs/Learn_web_development/Extensions/Forms" rel="noopener noreferrer">MDN: Web forms</a> <small>Mozilla · rolling</small></li><li><a href="https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/CSS_layout" rel="noopener noreferrer">MDN: CSS layout</a> <small>Mozilla · rolling</small></li><li><a href="https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/Accessibility" rel="noopener noreferrer">MDN: Accessibility</a> <small>Mozilla · rolling</small></li><li><a href="https://developer.mozilla.org/en-US/docs/Web/API/Document_Object_Model" rel="noopener noreferrer">MDN: Document Object Model (DOM)</a> <small>Mozilla · rolling</small></li><li><a href="https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/Scripting/Events" rel="noopener noreferrer">MDN: Introduction to events</a> <small>Mozilla · rolling</small></li><li><a href="https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API" rel="noopener noreferrer">MDN: Fetch API</a> <small>Mozilla · rolling</small></li><li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise" rel="noopener noreferrer">MDN: Promise</a> <small>Mozilla · rolling</small></li><li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/async_function" rel="noopener noreferrer">MDN: async function</a> <small>Mozilla · rolling</small></li><li><a href="https://docs.npmjs.com/" rel="noopener noreferrer">npm Docs</a> <small>npm, Inc. · rolling</small></li><li><a href="https://vitest.dev/guide/" rel="noopener noreferrer">Vitest: Getting Started</a> <small>Vitest · rolling</small></li><li><a href="https://git-scm.com/book/en/v2" rel="noopener noreferrer">Pro Git (buku resmi Git)</a> <small>Git · 2nd edition</small></li><li><a href="https://docs.github.com/en" rel="noopener noreferrer">GitHub Docs</a> <small>GitHub · rolling</small></li><li><a href="https://docs.github.com/en/pull-requests" rel="noopener noreferrer">GitHub Docs: Pull requests</a> <small>GitHub · rolling</small></li><li><a href="https://docs.github.com/en/get-started/git-basics/ignoring-files" rel="noopener noreferrer">GitHub Docs: Ignoring files</a> <small>GitHub · rolling</small></li><li><a href="https://www.postgresql.org/docs/current/tutorial.html" rel="noopener noreferrer">PostgreSQL Tutorial</a> <small>PostgreSQL Global Development Group · current</small></li><li><a href="https://www.postgresql.org/docs/current/ddl-constraints.html" rel="noopener noreferrer">PostgreSQL: Constraints</a> <small>PostgreSQL Global Development Group · current</small></li><li><a href="https://www.postgresql.org/docs/current/indexes.html" rel="noopener noreferrer">PostgreSQL: Indexes</a> <small>PostgreSQL Global Development Group · current</small></li><li><a href="https://www.postgresql.org/docs/current/tutorial-transactions.html" rel="noopener noreferrer">PostgreSQL: Transactions</a> <small>PostgreSQL Global Development Group · current</small></li><li><a href="https://www.postgresql.org/docs/current/backup.html" rel="noopener noreferrer">PostgreSQL: Backup and Restore</a> <small>PostgreSQL Global Development Group · current</small></li><li><a href="https://cheatsheetseries.owasp.org/cheatsheets/SQL_Injection_Prevention_Cheat_Sheet.html" rel="noopener noreferrer">OWASP: SQL Injection Prevention Cheat Sheet</a> <small>OWASP Foundation · rolling</small></li></ul>
+      <ul><li><a href="https://developer.mozilla.org/en-US/docs/Learn_web_development" rel="noopener noreferrer">MDN: Learn web development</a> <small>Mozilla · rolling</small></li><li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide" rel="noopener noreferrer">MDN: JavaScript Guide</a> <small>Mozilla · rolling</small></li><li><a href="https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/Scripting/What_is_JavaScript" rel="noopener noreferrer">MDN: What is JavaScript?</a> <small>Mozilla · rolling</small></li><li><a href="https://web.dev/learn/javascript" rel="noopener noreferrer">web.dev: Learn JavaScript</a> <small>Google · rolling</small></li><li><a href="https://www.typescriptlang.org/docs/handbook/" rel="noopener noreferrer">TypeScript Handbook</a> <small>Microsoft · rolling</small></li><li><a href="https://developer.mozilla.org/en-US/docs/Learn_web_development/Getting_started/Environment_setup/Command_line" rel="noopener noreferrer">MDN: Command line crash course</a> <small>Mozilla · rolling</small></li><li><a href="https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/windows-commands" rel="noopener noreferrer">Microsoft Learn: Windows commands</a> <small>Microsoft · Windows 11</small></li><li><a href="https://www.microsoft.com/en-us/windows/windows-11-specifications" rel="noopener noreferrer">Microsoft: Windows 11 specs and system requirements</a> <small>Microsoft · Windows 11</small></li><li><a href="https://learn.microsoft.com/en-us/windows/whats-new/windows-11-requirements" rel="noopener noreferrer">Microsoft Learn: Windows 11 requirements</a> <small>Microsoft · 2026</small></li><li><a href="https://support.microsoft.com/en-us/windows" rel="noopener noreferrer">Microsoft Support: Windows</a> <small>Microsoft · rolling</small></li><li><a href="https://developer.mozilla.org/en-US/docs/Learn_web_development/Getting_started/Web_standards/How_the_web_works" rel="noopener noreferrer">MDN: How the web works</a> <small>Mozilla · rolling</small></li><li><a href="https://developer.mozilla.org/en-US/docs/Learn_web_development/Extensions/Server-side/First_steps/Client-Server_overview" rel="noopener noreferrer">MDN: Client-server overview</a> <small>Mozilla · rolling</small></li><li><a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/Overview" rel="noopener noreferrer">MDN: HTTP overview</a> <small>Mozilla · rolling</small></li><li><a href="https://www.rfc-editor.org/rfc/rfc9110.html" rel="noopener noreferrer">RFC 9110: HTTP Semantics</a> <small>IETF · 9110</small></li><li><a href="https://developer.chrome.com/docs/devtools/" rel="noopener noreferrer">Chrome DevTools: Documentation</a> <small>Google · rolling</small></li><li><a href="https://developer.chrome.com/docs/devtools/javascript/" rel="noopener noreferrer">Chrome DevTools: Debug JavaScript</a> <small>Google · rolling</small></li><li><a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/Caching" rel="noopener noreferrer">MDN: HTTP caching</a> <small>Mozilla · rolling</small></li><li><a href="https://www.cisa.gov/secure-our-world/use-strong-passwords" rel="noopener noreferrer">CISA: Use strong passwords</a> <small>CISA · rolling</small></li><li><a href="https://support.google.com/accounts/answer/185839" rel="noopener noreferrer">Google: Turn on 2-Step Verification</a> <small>Google · rolling</small></li><li><a href="https://www.cisa.gov/secure-our-world/recognize-and-report-phishing" rel="noopener noreferrer">CISA: Recognize and report phishing</a> <small>CISA · rolling</small></li><li><a href="https://support.google.com/mail/answer/8253" rel="noopener noreferrer">Google: Avoid and report phishing emails</a> <small>Google · rolling</small></li><li><a href="https://peraturan.bpk.go.id/Details/229798/uu-no-27-tahun-2022" rel="noopener noreferrer">JDIH BPK: UU No. 27 Tahun 2022 tentang Pelindungan Data Pribadi</a> <small>BPK RI · 2022</small></li><li><a href="https://www.nist.gov/privacy-framework" rel="noopener noreferrer">NIST: Privacy Framework</a> <small>NIST · 1.1 IPD</small></li><li><a href="https://www.cisa.gov/stopransomware" rel="noopener noreferrer">CISA: StopRansomware</a> <small>CISA · rolling</small></li><li><a href="https://git-scm.com/docs" rel="noopener noreferrer">Git: Reference</a> <small>Git · rolling</small></li><li><a href="https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/Scripting/Debugging_JavaScript" rel="noopener noreferrer">MDN: Debugging JavaScript</a> <small>Mozilla · rolling</small></li><li><a href="https://lsc.cornell.edu/how-to-study/studying-for-and-taking-exams/effective-study-strategies/" rel="noopener noreferrer">Cornell Learning Strategies Center: Effective Study Strategies</a> <small>Cornell University · rolling</small></li><li><a href="https://lsc.cornell.edu/how-to-study/studying-for-and-taking-exams/guidelines-for-creating-a-study-schedule/" rel="noopener noreferrer">Cornell Learning Strategies Center: Creating a Study Schedule</a> <small>Cornell University · rolling</small></li><li><a href="https://www.nist.gov/itl/ai-risk-management-framework" rel="noopener noreferrer">NIST: AI Risk Management Framework</a> <small>NIST · 1.0</small></li><li><a href="https://lsc.cornell.edu/find-your-academic-groove/using-gai-for-learning/" rel="noopener noreferrer">Cornell Learning Strategies Center: Using GAI for Learning</a> <small>Cornell University · rolling</small></li><li><a href="https://www.php.net/manual/en/" rel="noopener noreferrer">PHP Manual</a> <small>PHP Group · 8.5</small></li><li><a href="https://laravel.com/docs/13.x" rel="noopener noreferrer">Laravel Documentation</a> <small>Laravel · 13.x</small></li><li><a href="https://www.postgresql.org/docs/18/" rel="noopener noreferrer">PostgreSQL Documentation</a> <small>PostgreSQL Global Development Group · 18.6</small></li><li><a href="https://docs.flutter.dev/" rel="noopener noreferrer">Flutter Documentation</a> <small>Google · stable</small></li><li><a href="https://dart.dev/language" rel="noopener noreferrer">Dart Language Tour</a> <small>Google · stable</small></li><li><a href="https://top10.owasp.org/2025/" rel="noopener noreferrer">OWASP Top 10:2025</a> <small>OWASP · 2025</small></li><li><a href="https://www.w3.org/TR/WCAG22/" rel="noopener noreferrer">WCAG 2.2</a> <small>W3C · 2.2</small></li><li><a href="https://developer.mozilla.org/en-US/docs/Web/API/Window/localStorage" rel="noopener noreferrer">MDN: Window.localStorage</a> <small>Mozilla · rolling</small></li><li><a href="https://developer.mozilla.org/en-US/docs/Web/API/Storage" rel="noopener noreferrer">MDN: Storage</a> <small>Mozilla · rolling</small></li><li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON" rel="noopener noreferrer">MDN: JSON</a> <small>Mozilla · rolling</small></li><li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/try...catch" rel="noopener noreferrer">MDN: try...catch</a> <small>Mozilla · rolling</small></li><li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Control_flow_and_error_handling" rel="noopener noreferrer">MDN: Control flow and error handling</a> <small>Mozilla · rolling</small></li><li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Loops_and_iteration" rel="noopener noreferrer">MDN: Loops and iteration</a> <small>Mozilla · rolling</small></li><li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Indexed_collections" rel="noopener noreferrer">MDN: Indexed collections</a> <small>Mozilla · rolling</small></li><li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Working_with_objects" rel="noopener noreferrer">MDN: Working with objects</a> <small>Mozilla · rolling</small></li><li><a href="https://developer.mozilla.org/en-US/docs/Glossary/Truthy" rel="noopener noreferrer">MDN: Truthy</a> <small>Mozilla · rolling</small></li><li><a href="https://developer.mozilla.org/en-US/docs/Glossary/Algorithm" rel="noopener noreferrer">MDN: Algorithm</a> <small>Mozilla · rolling</small></li><li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/let" rel="noopener noreferrer">MDN: let</a> <small>Mozilla · rolling</small></li><li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/const" rel="noopener noreferrer">MDN: const</a> <small>Mozilla · rolling</small></li><li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Expressions_and_operators" rel="noopener noreferrer">MDN: Expressions and operators</a> <small>Mozilla · rolling</small></li><li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/typeof" rel="noopener noreferrer">MDN: typeof</a> <small>Mozilla · rolling</small></li><li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Functions" rel="noopener noreferrer">MDN: Functions</a> <small>Mozilla · rolling</small></li><li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array" rel="noopener noreferrer">MDN: Array</a> <small>Mozilla · rolling</small></li><li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Closures" rel="noopener noreferrer">MDN: Closures</a> <small>Mozilla · rolling</small></li><li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Modules" rel="noopener noreferrer">MDN: JavaScript modules</a> <small>Mozilla · rolling</small></li><li><a href="https://developer.mozilla.org/en-US/docs/Web/HTML" rel="noopener noreferrer">MDN: HTML elements reference</a> <small>Mozilla · rolling</small></li><li><a href="https://developer.mozilla.org/en-US/docs/Web/CSS" rel="noopener noreferrer">MDN: CSS reference</a> <small>Mozilla · rolling</small></li><li><a href="https://developer.mozilla.org/en-US/docs/Learn_web_development/Extensions/Forms" rel="noopener noreferrer">MDN: Web forms</a> <small>Mozilla · rolling</small></li><li><a href="https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/CSS_layout" rel="noopener noreferrer">MDN: CSS layout</a> <small>Mozilla · rolling</small></li><li><a href="https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/Accessibility" rel="noopener noreferrer">MDN: Accessibility</a> <small>Mozilla · rolling</small></li><li><a href="https://developer.mozilla.org/en-US/docs/Web/API/Document_Object_Model" rel="noopener noreferrer">MDN: Document Object Model (DOM)</a> <small>Mozilla · rolling</small></li><li><a href="https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/Scripting/Events" rel="noopener noreferrer">MDN: Introduction to events</a> <small>Mozilla · rolling</small></li><li><a href="https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API" rel="noopener noreferrer">MDN: Fetch API</a> <small>Mozilla · rolling</small></li><li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise" rel="noopener noreferrer">MDN: Promise</a> <small>Mozilla · rolling</small></li><li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/async_function" rel="noopener noreferrer">MDN: async function</a> <small>Mozilla · rolling</small></li><li><a href="https://docs.npmjs.com/" rel="noopener noreferrer">npm Docs</a> <small>npm, Inc. · rolling</small></li><li><a href="https://vitest.dev/guide/" rel="noopener noreferrer">Vitest: Getting Started</a> <small>Vitest · rolling</small></li><li><a href="https://git-scm.com/book/en/v2" rel="noopener noreferrer">Pro Git (buku resmi Git)</a> <small>Git · 2nd edition</small></li><li><a href="https://docs.github.com/en" rel="noopener noreferrer">GitHub Docs</a> <small>GitHub · rolling</small></li><li><a href="https://docs.github.com/en/pull-requests" rel="noopener noreferrer">GitHub Docs: Pull requests</a> <small>GitHub · rolling</small></li><li><a href="https://docs.github.com/en/get-started/git-basics/ignoring-files" rel="noopener noreferrer">GitHub Docs: Ignoring files</a> <small>GitHub · rolling</small></li><li><a href="https://www.postgresql.org/docs/current/tutorial.html" rel="noopener noreferrer">PostgreSQL Tutorial</a> <small>PostgreSQL Global Development Group · current</small></li><li><a href="https://www.postgresql.org/docs/current/ddl-constraints.html" rel="noopener noreferrer">PostgreSQL: Constraints</a> <small>PostgreSQL Global Development Group · current</small></li><li><a href="https://www.postgresql.org/docs/current/indexes.html" rel="noopener noreferrer">PostgreSQL: Indexes</a> <small>PostgreSQL Global Development Group · current</small></li><li><a href="https://www.postgresql.org/docs/current/tutorial-transactions.html" rel="noopener noreferrer">PostgreSQL: Transactions</a> <small>PostgreSQL Global Development Group · current</small></li><li><a href="https://www.postgresql.org/docs/current/backup.html" rel="noopener noreferrer">PostgreSQL: Backup and Restore</a> <small>PostgreSQL Global Development Group · current</small></li><li><a href="https://cheatsheetseries.owasp.org/cheatsheets/SQL_Injection_Prevention_Cheat_Sheet.html" rel="noopener noreferrer">OWASP: SQL Injection Prevention Cheat Sheet</a> <small>OWASP Foundation · rolling</small></li><li><a href="https://laravel.com/docs/13.x/routing" rel="noopener noreferrer">Laravel Docs: Routing</a> <small>Laravel · 13.x</small></li><li><a href="https://laravel.com/docs/13.x/eloquent" rel="noopener noreferrer">Laravel Docs: Eloquent ORM</a> <small>Laravel · 13.x</small></li><li><a href="https://laravel.com/docs/13.x/validation" rel="noopener noreferrer">Laravel Docs: Validation</a> <small>Laravel · 13.x</small></li><li><a href="https://laravel.com/docs/13.x/authorization" rel="noopener noreferrer">Laravel Docs: Authorization</a> <small>Laravel · 13.x</small></li><li><a href="https://laravel.com/docs/13.x/eloquent-resources" rel="noopener noreferrer">Laravel Docs: Eloquent API Resources</a> <small>Laravel · 13.x</small></li><li><a href="https://laravel.com/docs/13.x/queues" rel="noopener noreferrer">Laravel Docs: Queues</a> <small>Laravel · 13.x</small></li><li><a href="https://www.php.net/manual/en/language.types.declarations.php" rel="noopener noreferrer">PHP Manual: Type Declarations</a> <small>PHP Group · current</small></li><li><a href="https://www.php.net/manual/en/language.oop5.php" rel="noopener noreferrer">PHP Manual: Classes and Objects</a> <small>PHP Group · current</small></li><li><a href="https://www.php-fig.org/psr/psr-12/" rel="noopener noreferrer">PHP-FIG: PSR-12 Extended Coding Style</a> <small>PHP Framework Interop Group · 1.0.0</small></li><li><a href="https://getcomposer.org/doc/" rel="noopener noreferrer">Composer Documentation</a> <small>Composer · current</small></li><li><a href="https://docs.phpunit.de/en/11.5/" rel="noopener noreferrer">PHPUnit Documentation</a> <small>PHPUnit · 11.5</small></li></ul>
     </section>
 
     <section class="appendix" id="mendalam">

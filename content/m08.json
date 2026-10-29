@@ -12,236 +12,3216 @@
     {
       "id": "m08-l01",
       "title": "Dasar PHP modern",
-      "minutes": 45,
+      "minutes": 120,
       "level": "Menengah",
-      "intro": "PHP berjalan di server untuk membuat respons HTTP. Pelajari variabel, array, function, class, type declarations, exception, dan dependency management Composer.",
-      "explanation": "Gunakan versi PHP yang didukung framework. Aktifkan type hints saat memungkinkan, linting, dan jangan campur semua logika bisnis dengan HTML.",
-      "code": "<?php\ndeclare(strict_types=1);\nfunction total(int $harga, int $qty): int {\n    return $harga * $qty;\n}\necho total(12000, 3);",
+      "depth": "integrasi",
+      "schema": 3.1,
       "codeLanguage": "php",
-      "practice": [
-        "Buat fungsi PHP validasi dan perhitungan harga secara terpisah.",
-        "Ubah satu input atau asumsi pada contoh, catat hasil dan jelaskan alasannya."
+      "outcome": "Setelah pelajaran ini, Anda dapat menulis fungsi PHP dengan tipe yang jelas, memakai fitur bahasa modern seperti enum dan match, serta mengelola dependensi proyek memakai Composer.",
+      "objectives": [
+        "Mengaktifkan pemeriksaan tipe ketat dan memberi tipe pada parameter serta nilai kembalian.",
+        "Memakai fungsi panah dan operator penggabungan nol untuk kode yang ringkas.",
+        "Mendefinisikan enum untuk nilai yang terbatas dan memilih hasilnya dengan match.",
+        "Mengelola dependensi proyek memakai Composer dan berkas composer.json."
       ],
-      "bestPractice": "Gunakan type declaration dan pisahkan domain logic dari tampilan.",
-      "commonMistake": "Mencampur query database, HTML, dan otorisasi dalam satu file.",
+      "prerequisites": [
+        {
+          "label": "Migrasi, backup, dan pemulihan",
+          "lessonId": "m07-l07"
+        }
+      ],
+      "terms": [
+        {
+          "term": "Strict types",
+          "definition": "Pengaturan yang membuat PHP menolak pemaksaan tipe secara diam-diam sehingga kesalahan tipe lebih cepat terlihat."
+        },
+        {
+          "term": "Fungsi panah",
+          "definition": "Bentuk fungsi singkat dengan fn yang menangkap nilai dari luar secara otomatis."
+        },
+        {
+          "term": "Enum",
+          "definition": "Tipe yang nilainya terbatas pada daftar kasus yang dideklarasikan."
+        },
+        {
+          "term": "match",
+          "definition": "Ekspresi pemilihan yang membandingkan nilai secara ketat dan mengembalikan hasil."
+        },
+        {
+          "term": "Composer",
+          "definition": "Pengelola dependensi PHP yang mencatat paket proyek dan memuatnya secara otomatis."
+        }
+      ],
+      "syntax": [
+        {
+          "token": "declare(strict_types=1);",
+          "readAs": "Baca sebagai pengaktifan pemeriksaan tipe ketat untuk seluruh berkas.",
+          "meaning": "Dengan pemeriksaan ketat, PHP tidak mengubah tipe secara diam-diam. Nilai yang tipenya salah ditolak, bukan disesuaikan.",
+          "example": "declare(strict_types=1);",
+          "output": "Pemanggilan fungsi dengan tipe yang salah menghasilkan kesalahan, bukan hasil yang menyesatkan.",
+          "pitfall": "Menulis pengaturan ini bukan di baris pertama berkas membuatnya diabaikan."
+        },
+        {
+          "token": "function hitungAktif(array $tugas): int { ... }",
+          "readAs": "Baca sebagai fungsi yang menerima daftar tugas dan mengembalikan bilangan bulat.",
+          "meaning": "Tipe ditulis pada parameter dan nilai kembalian. Pemeriksa tipe membantu menemukan kesalahan sebelum kode dijalankan.",
+          "example": "function jumlah(array $baris): int { return count($baris); }",
+          "output": "Pemanggil tahu fungsi ini mengembalikan angka tanpa membaca isinya.",
+          "pitfall": "Menulis tipe yang terlalu umum menghilangkan manfaat pemeriksaan pada pemanggil."
+        },
+        {
+          "token": "enum Status: string { ... }",
+          "readAs": "Baca sebagai pendefinisian tipe dengan daftar nilai yang sah beserta nilainya masing-masing.",
+          "meaning": "Enum membatasi nilai pada kasus yang ada. Nilai di luar daftar itu tidak dapat dipakai.",
+          "example": "enum Status: string { case Aktif = \"aktif\"; }",
+          "output": "Nilai status hanya dapat diisi dari daftar kasus yang dideklarasikan.",
+          "pitfall": "Memakai teks bebas untuk nilai yang terbatas membuat salah tulis tidak terdeteksi."
+        }
+      ],
+      "conventions": [
+        "Tulis declare(strict_types=1) di baris pertama setiap berkas PHP.",
+        "Beri tipe pada parameter dan nilai kembalian fungsi.",
+        "Pakai enum untuk nilai yang jumlahnya terbatas, bukan teks bebas.",
+        "Pakai match ketika semua kemungkinan perlu ditangani.",
+        "Ikuti PSR-12 untuk gaya penulisan agar kode konsisten dengan ekosistem."
+      ],
+      "sections": [
+        {
+          "id": "cara-membaca",
+          "title": "Cara membaca fungsi PHP bertipe",
+          "body": [
+            "Berkas PHP modern dibaca dari pengaturan di bagian atas, lalu daftar fungsinya. Pengaturan pemeriksaan tipe ketat memengaruhi seluruh isi berkas, sehingga kesalahan tipe tidak lewat begitu saja.",
+            "Setiap fungsi menyatakan tipe masukan dan tipe keluarannya. Pada contoh, fungsi menerima daftar tugas dan mengembalikan bilangan bulat. Dengan janji ini, pemanggil tidak perlu menebak bentuk hasilnya.",
+            "Di dalam fungsi, penyaringan memakai fungsi panah yang menangkap nilai tugas dari luar tanpa kata khusus. Hasil penyaringan dihitung panjangnya, lalu dikembalikan sebagai angka."
+          ],
+          "code": {
+            "language": "php",
+            "lab": false,
+            "code": "<?php\ndeclare(strict_types=1);\n\nfunction hitungAktif(array $tugas): int {\n    $aktif = array_filter($tugas, fn ($t) => ! $t[\"selesai\"]);\n    return count($aktif);\n}\n\necho hitungAktif([\n    [\"judul\" => \"Belajar\", \"selesai\" => false],\n    [\"judul\" => \"Olahraga\", \"selesai\" => true],\n]);\n// 1",
+            "output": "Skrip menampilkan angka 1 karena hanya satu dari dua tugas yang belum selesai.",
+            "explain": "Pemeriksaan tipe ketat diaktifkan lebih dulu. Fungsi menerima daftar tugas, menyaring yang belum selesai memakai fungsi panah, lalu mengembalikan jumlahnya sebagai angka.",
+            "annotations": [
+              {
+                "line": 2,
+                "code": "declare(strict_types=1);",
+                "note": "Pemeriksaan tipe ketat berlaku untuk seluruh berkas."
+              },
+              {
+                "line": 4,
+                "code": "function hitungAktif(array $tugas): int {",
+                "note": "Fungsi menyatakan tipe masukan dan nilai kembalian."
+              },
+              {
+                "line": 5,
+                "code": "$aktif = array_filter($tugas, fn ($t) => ! $t[\"selesai\"]);",
+                "note": "Fungsi panah memakai nilai selesai dari setiap tugas."
+              },
+              {
+                "line": 6,
+                "code": "return count($aktif);",
+                "note": "Hasil penyaringan dihitung lalu dikembalikan."
+              },
+              {
+                "line": 9,
+                "code": "echo hitungAktif([",
+                "note": "Pemanggilan mengirim daftar tugas berisi dua baris."
+              }
+            ]
+          },
+          "callouts": [
+            {
+              "tone": "good",
+              "title": "Tipe di batas fungsi",
+              "body": "Cukup beri tipe pada parameter dan nilai kembalian. Bagian dalam fungsi dapat disimpulkan sendiri oleh PHP."
+            }
+          ],
+          "checkpoint": {
+            "prompt": "Sebutkan tipe masukan dan tipe nilai kembalian fungsi pada contoh beserta baris tempat keduanya ditulis.",
+            "success": "Masukan bertipe array pada baris deklarasi fungsi, dan nilai kembalian bertipe int pada baris yang sama."
+          }
+        },
+        {
+          "id": "enum-dan-match",
+          "title": "Enum dan pemilihan dengan match",
+          "body": [
+            "Enum mendeklarasikan daftar nilai yang sah. Karena hanya dua kasus yang dideklarasikan, nilai lain tidak dapat masuk. Dengan begitu, salah tulis status tertangkap sebelum kode dijalankan.",
+            "match memilih hasil berdasarkan nilai yang diberikan. Ia membandingkan secara ketat dan, berbeda dari pemilihan biasa, memastikan setiap kemungkinan ditangani. Bila ada kasus yang terlewat, PHP melaporkannya.",
+            "Gabungan enum dan match membuat aturan tampilan terkumpul di satu tempat. Menambah satu kasus baru langsung menunjukkan bagian mana yang perlu disesuaikan."
+          ],
+          "code": {
+            "language": "php",
+            "lab": false,
+            "code": "<?php\ndeclare(strict_types=1);\n\nenum Status: string {\n    case Aktif = \"aktif\";\n    case Selesai = \"selesai\";\n}\n\nfunction label(Status $status): string {\n    return match ($status) {\n        Status::Aktif => \"Belum selesai\",\n        Status::Selesai => \"Selesai\",\n    };\n}",
+            "output": "Fungsi mengembalikan label teks sesuai status yang diberikan.",
+            "explain": "Enum membatasi nilai pada dua kasus. Fungsi memakai match untuk memetakan setiap kasus ke label teksnya.",
+            "annotations": [
+              {
+                "line": 4,
+                "code": "enum Status: string {",
+                "note": "Enum dideklarasikan dengan nilai teks untuk setiap kasus."
+              },
+              {
+                "line": 5,
+                "code": "case Aktif = \"aktif\";",
+                "note": "Kasus pertama mewakili status aktif."
+              },
+              {
+                "line": 9,
+                "code": "function label(Status $status): string {",
+                "note": "Parameter dibatasi pada tipe enum tersebut."
+              },
+              {
+                "line": 10,
+                "code": "return match ($status) {",
+                "note": "match membandingkan nilai secara ketat."
+              },
+              {
+                "line": 11,
+                "code": "Status::Aktif => \"Belum selesai\",",
+                "note": "Setiap kasus dipetakan ke label yang sesuai."
+              }
+            ]
+          }
+        },
+        {
+          "id": "fitur-ringkas",
+          "title": "Fitur bahasa yang merapikan kode",
+          "body": [
+            "Operator penggabungan nol mengambil nilai cadangan ketika nilai pertama kosong. Ia berguna untuk masukan yang mungkin tidak ada, misalnya nilai dari parameter yang tidak selalu dikirim.",
+            "Fungsi panah mempersingkat fungsi pendek dan menangkap nilai sekitarnya secara otomatis. Untuk operasi seperti penyaringan dan pemetaan, bentuk ini jauh lebih ringkas daripada fungsi biasa tanpa kehilangan kejelasan.",
+            "Konstruktor dapat mempersingkat deklarasi properti dengan menuliskannya langsung pada parameter. Cara ini mengurangi penulisan berulang tanpa mengubah perilaku."
+          ],
+          "checkpoint": {
+            "prompt": "Sebutkan satu kegunaan operator penggabungan nol pada masukan yang mungkin kosong.",
+            "success": "Memberi nilai cadangan ketika nilai utama kosong, misalnya nama tampilan atau halaman bawaan."
+          }
+        },
+        {
+          "id": "composer",
+          "title": "Mengelola dependensi dengan Composer",
+          "body": [
+            "Composer memasang paket pihak ketiga dan mencatatnya pada composer.json. Berkas itu juga menyimpan aturan pemuatan otomatis sehingga kelas dari paket dapat dipakai tanpa perintah pemuatan manual.",
+            "Setelah paket dipasang, berkas pemuatan otomatis dihasilkan. Sertakan berkas itu di bagian awal aplikasi agar seluruh kelas tersedia, lalu pakai kelasnya memakai ruang nama.",
+            "Periksa paket sebelum memasangnya. Lihat siapa yang menerbitkan, kapan terakhir diperbarui, dan apakah paket itu dirawat. Dependensi yang terbengkalai menjadi risiko keamanan dan pemeliharaan."
+          ],
+          "callouts": [
+            {
+              "tone": "warn",
+              "title": "Catat dependensi",
+              "body": "Jangan menyalin kode pustaka langsung ke proyek. Pasang lewat Composer agar versinya tercatat dan dapat diperbarui."
+            }
+          ],
+          "checkpoint": {
+            "prompt": "Apa dua hal yang dicatat berkas composer.json?",
+            "success": "Daftar dependensi proyek dan aturan pemuatan otomatis kelasnya."
+          }
+        }
+      ],
+      "practice": [
+        {
+          "id": "latihan-1",
+          "level": "guided",
+          "title": "Fungsi bertipe untuk daftar tugas",
+          "task": "Tulis fungsi bertipe yang menerima daftar tugas dan mengembalikan jumlah tugas yang sudah selesai.",
+          "steps": [
+            "Aktifkan pemeriksaan tipe ketat di baris pertama.",
+            "Tulis fungsi dengan tipe masukan array dan nilai kembalian int.",
+            "Saring tugas yang selesai memakai fungsi panah.",
+            "Kembalikan jumlah hasilnya."
+          ],
+          "starterCode": "<?php\ndeclare(strict_types=1);\n\nfunction hitungSelesai(array $tugas): int {\n    // lengkapi\n}",
+          "expected": "Fungsi mengembalikan jumlah tugas selesai dan menolak masukan yang tipenya salah.",
+          "stretch": "Tambahkan pemeriksaan agar setiap tugas wajib memuat kunci selesai.",
+          "hints": [
+            "array_filter menyaring tanpa mengubah data asli.",
+            "Fungsi panah menuliskan kondisi setelah tanda panah.",
+            "count menghitung jumlah elemen hasil penyaringan."
+          ],
+          "verification": {
+            "command": "Panggil fungsi dengan daftar campuran dan dengan masukan bertipe salah.",
+            "expected": "Hitungan benar untuk daftar valid, dan masukan bertipe salah dilaporkan sebagai kesalahan.",
+            "evidence": "Simpan berkas dan keluaran setiap pemanggilan."
+          }
+        },
+        {
+          "id": "latihan-2",
+          "level": "independent",
+          "title": "Status sebagai enum",
+          "task": "Ubah nilai status dari teks bebas menjadi enum dengan tiga kasus, lalu tampilkan labelnya memakai match.",
+          "steps": [
+            "Deklarasikan enum dengan tiga kasus dan nilai teksnya.",
+            "Beri tipe enum pada parameter fungsi label.",
+            "Petakan setiap kasus ke teks memakai match.",
+            "Pastikan nilai di luar daftar tidak dapat dipakai."
+          ],
+          "starterCode": "enum Status: string {\n    // lengkapi\n}\n\nfunction label(Status $status): string {\n    // lengkapi\n}",
+          "expected": "Setiap kasus memiliki label dan nilai di luar daftar ditolak.",
+          "stretch": "Tambahkan kasus keempat dan periksa bagian mana yang perlu disesuaikan.",
+          "hints": [
+            "Setiap kasus dapat diberi nilai teks.",
+            "match memastikan seluruh kasus ditangani.",
+            "Parameter bertipe enum hanya menerima kasus dari enum itu."
+          ],
+          "verification": {
+            "command": "Panggil label dengan setiap kasus dan dengan sebuah teks.",
+            "expected": "Setiap kasus menghasilkan label; teks biasa dilaporkan sebagai kesalahan tipe.",
+            "evidence": "Simpan berkas dan keluaran pengujian."
+          }
+        },
+        {
+          "id": "latihan-3",
+          "level": "transfer",
+          "title": "Susun proyek Composer kecil",
+          "task": "Buat proyek PHP kecil dengan composer.json, pasang satu paket utilitas, lalu pakai kelasnya dari paket itu.",
+          "steps": [
+            "Buat composer.json dengan informasi proyek.",
+            "Pasang satu paket yang dirawat dengan baik.",
+            "Sertakan berkas pemuatan otomatis di skrip utama.",
+            "Pakai kelas dari paket tersebut dan tampilkan hasilnya."
+          ],
+          "starterCode": "{\n  \"name\": \"contoh/tugas\",\n  \"require\": {}\n}",
+          "expected": "Paket terpasang, kelasnya dapat dipakai, dan dependensinya tercatat.",
+          "stretch": "Tambahkan skrip pada composer.json untuk menjalankan berkas utama.",
+          "hints": [
+            "Jalankan perintah pemasangan dari Composer untuk paket yang dipilih.",
+            "Berkas pemuatan otomatis berada di folder vendor.",
+            "Pakai kelas lewat ruang namanya."
+          ],
+          "verification": {
+            "command": "Jalankan skrip utama dan periksa keluaran serta isi composer.json.",
+            "expected": "Skrip berjalan memakai kelas dari paket dan paket itu tercatat sebagai dependensi.",
+            "evidence": "Simpan composer.json dan keluaran skrip."
+          }
+        }
+      ],
+      "verification": {
+        "mode": "manual",
+        "command": "Jalankan ketiga latihan pada terminal dan periksa keluaran serta pesan kesalahan tipe.",
+        "expected": "Setiap fungsi mengembalikan hasil yang benar dan masukan bertipe salah dilaporkan sebagai kesalahan.",
+        "evidence": "Simpan berkas, composer.json, dan keluaran setiap perintah."
+      },
+      "troubleshooting": [
+        {
+          "symptom": "Pemeriksaan tipe ketat tampak tidak berpengaruh.",
+          "cause": "Pengaturan ditulis bukan pada baris pertama berkas, sehingga diabaikan.",
+          "fix": "Letakkan declare(strict_types=1) tepat setelah pembuka PHP di baris pertama."
+        },
+        {
+          "symptom": "Fungsi mengembalikan nilai dengan tipe yang tidak sesuai janji.",
+          "cause": "Nilai kembalian tidak diberi tipe sehingga pemeriksaan tidak berjalan.",
+          "fix": "Tambahkan tipe nilai kembalian pada deklarasi fungsi."
+        },
+        {
+          "symptom": "Nilai status salah tulis tetapi program tetap berjalan.",
+          "cause": "Status disimpan sebagai teks bebas tanpa enum.",
+          "fix": "Ubah status menjadi enum agar nilai di luar daftar ditolak."
+        },
+        {
+          "symptom": "Kelas dari paket tidak ditemukan saat dipakai.",
+          "cause": "Berkas pemuatan otomatis belum disertakan atau paket belum dipasang.",
+          "fix": "Pasang paket lewat Composer lalu sertakan berkas pemuatan otomatis di bagian awal skrip."
+        }
+      ],
       "quiz": {
-        "question": "Apa prinsip yang paling tepat untuk topik “Dasar PHP modern”?",
-        "options": [
-          "Gunakan type declaration dan pisahkan domain logic dari tampilan.",
-          "Gunakan solusi paling rumit sejak awal, meski kebutuhan belum jelas.",
-          "Lewati pengujian karena contoh kecil pasti benar."
-        ],
-        "answer": 0,
-        "explanation": "Gunakan type declaration dan pisahkan domain logic dari tampilan."
-      }
+        "questions": [
+          {
+            "id": "q1",
+            "type": "recall",
+            "question": "Apa pengaruh declare(strict_types=1) pada sebuah berkas PHP?",
+            "options": [
+              "Mengaktifkan pemeriksaan tipe ketat sehingga tipe yang salah ditolak",
+              "Menonaktifkan seluruh kesalahan",
+              "Mengubah tipe nilai secara otomatis"
+            ],
+            "answer": 0,
+            "explanation": "Pengaturan itu membuat PHP menolak tipe yang salah alih-alih menyesuaikannya."
+          },
+          {
+            "id": "q2",
+            "type": "code-reading",
+            "question": "Apa yang dilakukan ekspresi match pada contoh enum?",
+            "options": [
+              "Membandingkan nilai secara ketat dan mengembalikan hasil sesuai kasusnya",
+              "Mengurutkan daftar kasus",
+              "Mengubah nilai enum menjadi teks biasa"
+            ],
+            "answer": 0,
+            "explanation": "match membandingkan secara ketat dan memastikan setiap kemungkinan ditangani."
+          },
+          {
+            "id": "q3",
+            "type": "scenario",
+            "question": "Sebuah nilai hanya boleh berisi salah satu dari empat status. Pilihan yang tepat...",
+            "options": [
+              "Menyimpannya sebagai teks bebas",
+              "Mendefinisikannya sebagai enum dengan empat kasus",
+              "Menyimpannya sebagai angka tanpa aturan"
+            ],
+            "answer": 1,
+            "explanation": "Enum membatasi nilai pada daftar kasus yang sah sehingga salah tulis tertangkap."
+          }
+        ]
+      },
+      "resources": [
+        {
+          "sourceId": "php-manual",
+          "note": "Manual resmi PHP tentang fungsi, tipe, dan fitur bahasa."
+        },
+        {
+          "sourceId": "php-types",
+          "note": "Penjelasan resmi deklarasi tipe dan pemeriksaan ketat."
+        },
+        {
+          "sourceId": "psr-12",
+          "note": "Standar gaya penulisan PHP yang dipakai ekosistem."
+        },
+        {
+          "sourceId": "composer-docs",
+          "note": "Dokumentasi resmi Composer tentang dependensi dan pemuatan otomatis."
+        }
+      ],
+      "summary": [
+        "Pemeriksaan tipe ketat dan anotasi tipe membuat kesalahan terlihat sebelum kode dijalankan.",
+        "Fungsi panah dan operator penggabungan nol merapikan kode tanpa menghilangkan kejelasan.",
+        "Enum membatasi nilai pada daftar kasus, dan match memastikan setiap kasus ditangani.",
+        "Composer memasang paket dan mencatatnya bersama aturan pemuatan otomatis kelas."
+      ],
+      "next": "Berikutnya: request lifecycle dan routing. Anda akan mengikuti perjalanan permintaan dari masuk sampai dijawab serta menghubungkannya dengan aksi pengendali."
     },
     {
       "id": "m08-l02",
       "title": "Request lifecycle dan routing",
-      "minutes": 45,
+      "minutes": 120,
       "level": "Menengah",
-      "intro": "Laravel menerima request lewat entry point, middleware, routing, controller, lalu menghasilkan response. Route memetakan URL + method HTTP ke handler.",
-      "explanation": "Gunakan GET untuk baca, POST untuk membuat, PUT/PATCH untuk mengubah, DELETE untuk menghapus. Pakai named route, route model binding, dan middleware pada area terlindungi.",
-      "code": "<?php\nuse Illuminate\\Support\\Facades\\Route;\nRoute::get(\"/status\", function () {\n    return response()->json([\"status\" => \"ok\"]);\n});",
+      "depth": "integrasi",
+      "schema": 3.1,
       "codeLanguage": "php",
-      "practice": [
-        "Rancang route list/get/create/update/delete untuk resource tasks.",
-        "Ubah satu input atau asumsi pada contoh, catat hasil dan jelaskan alasannya."
+      "outcome": "Setelah pelajaran ini, Anda dapat menjelaskan perjalanan sebuah permintaan pada aplikasi Laravel dan mendaftarkan rute untuk halaman serta aksi API.",
+      "objectives": [
+        "Menjelaskan tahap perjalanan permintaan dari masuk sampai dijawab.",
+        "Mendaftarkan rute dengan method dan pola alamat yang benar.",
+        "Memakai pengikatan model dan nama rute.",
+        "Membatasi akses rute memakai middleware."
       ],
-      "bestPractice": "Gunakan HTTP method dan nama route yang konsisten.",
-      "commonMistake": "Menggunakan GET untuk aksi menghapus data.",
+      "prerequisites": [
+        {
+          "label": "Dasar PHP modern",
+          "lessonId": "m08-l01"
+        }
+      ],
+      "terms": [
+        {
+          "term": "Front controller",
+          "definition": "Satu berkas masuk yang menerima seluruh permintaan lalu menyerahkannya ke aplikasi."
+        },
+        {
+          "term": "Rute",
+          "definition": "Pemetaan antara method, pola alamat, dan aksi yang menanganinya."
+        },
+        {
+          "term": "Middleware",
+          "definition": "Lapisan pemeriksaan yang berjalan sebelum atau sesudah aksi, misalnya memeriksa sesi pengguna."
+        },
+        {
+          "term": "Pengikatan model",
+          "definition": "Kemampuan mengambil data berdasarkan nilai pada alamat secara otomatis dan memberi hasilnya ke aksi."
+        }
+      ],
+      "syntax": [
+        {
+          "token": "Route::get(\"/tugas\", [TugasController::class, \"index\"]);",
+          "readAs": "Baca sebagai pendaftaran rute GET pada alamat /tugas yang ditangani method index pada pengendali tugas.",
+          "meaning": "Rute memetakan method dan alamat ke aksi. Method menyatakan maksud permintaan, alamat menyatakan sumber dayanya.",
+          "example": "Route::get(\"/\", [BerandaController::class, \"index\"]);",
+          "output": "Permintaan GET ke alamat itu dijalankan oleh method yang didaftarkan.",
+          "pitfall": "Mendaftarkan beberapa rute dengan pola sama membuat rute terakhir menimpa atau tidak terpakai."
+        },
+        {
+          "token": "Route::get(\"/tugas/{tugas}\", [TugasController::class, \"show\"]);",
+          "readAs": "Baca sebagai rute dengan penanda nilai yang diambil dari alamat dan diisi otomatis ke pengendali.",
+          "meaning": "Kurung kurawal menandai bagian alamat yang berubah. Nilainya dapat dipakai oleh aksi sebagai data.",
+          "example": "Route::get(\"/pengguna/{id}\", [PenggunaController::class, \"show\"]);",
+          "output": "Nilai dari alamat tersedia pada aksi tanpa penguraian manual.",
+          "pitfall": "Membiarkan penanda tanpa aturan membuat nilai yang tidak sah langsung masuk ke aksi."
+        },
+        {
+          "token": "->name(\"tugas.index\")",
+          "readAs": "Baca sebagai pemberian nama pada rute sehingga alamatnya dapat dipanggil lewat nama itu.",
+          "meaning": "Nama rute membuat tautan tidak bergantung pada alamat yang ditulis langsung. Bila alamat berubah, cukup diubah di satu tempat.",
+          "example": "->name(\"tugas.index\")",
+          "output": "Alamat dapat dibentuk dari nama rute di seluruh tampilan.",
+          "pitfall": "Menulis alamat langsung di banyak tempat menyulitkan perubahan alamat di kemudian hari."
+        }
+      ],
+      "conventions": [
+        "Kelompokkan rute menurut tanggung jawab, misalnya rute halaman dan rute API.",
+        "Beri nama rute agar tautan tidak bergantung pada alamat mentah.",
+        "Batasi akses rute memakai middleware, bukan pemeriksaan berulang di dalam aksi.",
+        "Pakai pengikatan model agar aksi menerima data, bukan sekadar pengenal.",
+        "Terapkan aturan pada penanda alamat agar nilai yang tidak sah ditolak lebih awal."
+      ],
+      "sections": [
+        {
+          "id": "cara-membaca",
+          "title": "Cara membaca daftar rute",
+          "body": [
+            "Daftar rute dibaca sebagai tabel pemetaan. Setiap baris menyatakan method, alamat, dan aksi yang menanganinya. Membaca tabel ini menjelaskan seluruh alamat yang dikenali aplikasi beserta aksinya.",
+            "Pola alamat menentukan cara permintaan dicocokkan. Bagian dengan kurung kurawal adalah nilai yang berubah, sedangkan bagian lain harus sama persis. Rute yang lebih khusus sebaiknya didaftarkan lebih dulu.",
+            "Nama rute memberi cara memanggil alamat tanpa menulisnya langsung. Karena itu, tampilan cukup menyebut nama rute, dan perubahan alamat tidak menyebar ke seluruh berkas tampilan."
+          ],
+          "code": {
+            "language": "php",
+            "lab": false,
+            "code": "<?php\nuse App\\Http\\Controllers\\TugasController;\nuse Illuminate\\Support\\Facades\\Route;\n\nRoute::get(\"/tugas\", [TugasController::class, \"index\"])->name(\"tugas.index\");\nRoute::post(\"/tugas\", [TugasController::class, \"store\"]);\nRoute::get(\"/tugas/{tugas}\", [TugasController::class, \"show\"]);",
+            "output": "Tiga alamat dikenali: daftar tugas, penambahan tugas, dan satu tugas tertentu.",
+            "explain": "Setiap rute memetakan method dan alamat ke aksi pengendali. Rute daftar diberi nama sehingga dapat dipanggil lewat nama, dan rute terakhir memakai penanda nilai.",
+            "annotations": [
+              {
+                "line": 2,
+                "code": "use App\\Http\\Controllers\\TugasController;",
+                "note": "Kelas pengendali diimpor agar dapat dipakai."
+              },
+              {
+                "line": 5,
+                "code": "Route::get(\"/tugas\", [TugasController::class, \"index\"])->name(\"tugas.index\");",
+                "note": "Rute GET menampilkan daftar dan diberi nama."
+              },
+              {
+                "line": 6,
+                "code": "Route::post(\"/tugas\", [TugasController::class, \"store\"]);",
+                "note": "Rute POST menangani pengiriman data baru."
+              },
+              {
+                "line": 7,
+                "code": "Route::get(\"/tugas/{tugas}\", [TugasController::class, \"show\"]);",
+                "note": "Penanda kurung kurawal menyatakan nilai dari alamat."
+              }
+            ]
+          },
+          "callouts": [
+            {
+              "tone": "good",
+              "title": "Tabel rute sebagai peta",
+              "body": "Berkas rute adalah peta seluruh alamat aplikasi. Menjaganya tetap ringkas memudahkan pencarian alamat yang sudah ada."
+            }
+          ],
+          "checkpoint": {
+            "prompt": "Sebutkan method dan alamat yang dipakai untuk menampilkan daftar serta menambah tugas.",
+            "success": "GET pada /tugas untuk menampilkan daftar, dan POST pada /tugas untuk menambah data."
+          }
+        },
+        {
+          "id": "perjalanan-permintaan",
+          "title": "Perjalanan sebuah permintaan",
+          "body": [
+            "Permintaan masuk lewat satu berkas di folder publik. Berkas itu menyiapkan aplikasi, menyertakan pemuatan otomatis kelas, lalu menyerahkan permintaan kepada penangan rute.",
+            "Sebelum mencapai aksi, permintaan melewati lapisan middleware. Lapisan ini memeriksa hal yang berlaku umum, misalnya keamanan sesi dan pembatasan permintaan, sehingga aksi tidak perlu memeriksanya sendiri.",
+            "Setelah aksi selesai, hasilnya dikembalikan melewati lapisan yang sama dalam urutan terbalik, lalu diubah menjadi tanggapan yang dikirim ke peramban. Setiap tahap dapat mengubah atau menghentikan permintaan."
+          ],
+          "checkpoint": {
+            "prompt": "Sebutkan urutan tahap yang dilalui permintaan dari masuk sampai dijawab.",
+            "success": "Masuk lewat berkas publik, melewati middleware, dicocokkan ke rute, dijalankan oleh aksi, lalu diubah menjadi tanggapan."
+          }
+        },
+        {
+          "id": "middleware",
+          "title": "Membatasi akses dengan middleware",
+          "body": [
+            "Middleware dapat dipasang pada satu rute atau sekelompok rute. Pada contoh, sekelompok rute dibungkus satu lapisan pemeriksaan sesi, sehingga seluruh rute di dalamnya hanya dapat diakses pengguna yang sudah masuk.",
+            "Memusatkan pemeriksaan pada middleware mencegah pengulangan. Tanpa itu, setiap aksi perlu memeriksa sendiri, dan satu kelalaian cukup untuk membuka akses yang seharusnya tertutup.",
+            "Urutan lapisan juga penting. Pemeriksaan identitas dijalankan sebelum pemeriksaan izin, karena izin baru bermakna setelah identitas diketahui."
+          ],
+          "code": {
+            "language": "php",
+            "lab": false,
+            "code": "<?php\nuse Illuminate\\Support\\Facades\\Route;\n\nRoute::middleware([\"auth\"])->group(function () {\n    Route::get(\"/tugas\", [TugasController::class, \"index\"]);\n    Route::post(\"/tugas\", [TugasController::class, \"store\"]);\n});",
+            "output": "Kedua rute hanya dapat diakses pengguna yang sudah masuk.",
+            "explain": "Lapisan pemeriksaan sesi dipasang pada sekelompok rute. Seluruh rute di dalam kelompok itu mewarisi pemeriksaan tersebut tanpa menuliskannya berulang.",
+            "annotations": [
+              {
+                "line": 4,
+                "code": "Route::middleware([\"auth\"])->group(function () {",
+                "note": "Lapisan middleware dipasang untuk sekelompok rute."
+              },
+              {
+                "line": 5,
+                "code": "Route::get(\"/tugas\", [TugasController::class, \"index\"]);",
+                "note": "Rute di dalam kelompok mewarisi pemeriksaan identitas."
+              },
+              {
+                "line": 6,
+                "code": "Route::post(\"/tugas\", [TugasController::class, \"store\"]);",
+                "note": "Rute pengiriman data juga berada di dalam kelompok itu."
+              }
+            ]
+          },
+          "callouts": [
+            {
+              "tone": "warn",
+              "title": "Jangan lupa batasi akses",
+              "body": "Rute yang mengubah data tanpa pembatasan akses adalah celah keamanan. Pasang middleware sejak awal."
+            }
+          ]
+        },
+        {
+          "id": "pengikatan-model",
+          "title": "Pengikatan model dan penamaan rute",
+          "body": [
+            "Pengikatan model mengubah nilai pada alamat menjadi data lengkap secara otomatis. Bila data dengan pengenal itu tidak ada, aplikasi mengembalikan tanggapan tidak ditemukan tanpa kode pemeriksaan tambahan.",
+            "Penamaan rute membuat pembentukan alamat terkumpul di satu sumber. Tautan pada tampilan dan pengalihan pada aksi menyebut nama rute, sehingga perubahan alamat cukup dilakukan sekali.",
+            "Gabungan keduanya membuat pengendali lebih ringkas: aksi menerima data yang sudah diambil, dan tautan dibentuk dari nama yang stabil."
+          ],
+          "checkpoint": {
+            "prompt": "Apa keuntungan pengikatan model dibanding aksi menerima pengenal lalu mencarinya sendiri?",
+            "success": "Data diambil otomatis dan nilai yang tidak ada langsung menghasilkan tanggapan tidak ditemukan tanpa kode tambahan."
+          }
+        }
+      ],
+      "practice": [
+        {
+          "id": "latihan-1",
+          "level": "guided",
+          "title": "Daftarkan rute daftar tugas",
+          "task": "Daftarkan rute untuk menampilkan daftar tugas, menambah tugas, dan menampilkan satu tugas.",
+          "steps": [
+            "Impor pengendali yang dipakai.",
+            "Daftarkan rute GET untuk daftar dan beri nama.",
+            "Daftarkan rute POST untuk penambahan.",
+            "Daftarkan rute GET dengan penanda nilai untuk satu tugas."
+          ],
+          "starterCode": "Route::get(\"/tugas\", ...);\nRoute::post(\"/tugas\", ...);\nRoute::get(\"/tugas/{tugas}\", ...);",
+          "expected": "Ketiga alamat dikenali dan memanggil aksi yang benar.",
+          "stretch": "Tambahkan aturan bahwa penanda nilai harus berupa angka.",
+          "hints": [
+            "Method menyatakan maksud permintaan.",
+            "Nama rute diberikan lewat pemanggilan berantai.",
+            "Penanda nilai ditulis dengan kurung kurawal."
+          ],
+          "verification": {
+            "command": "Buka setiap alamat dan periksa aksi yang dijalankan.",
+            "expected": "Setiap alamat menjalankan aksi yang didaftarkan.",
+            "evidence": "Simpan berkas rute dan catatan hasil setiap alamat."
+          }
+        },
+        {
+          "id": "latihan-2",
+          "level": "independent",
+          "title": "Batasi rute dengan middleware",
+          "task": "Batasi rute penambahan tugas agar hanya dapat diakses pengguna yang sudah masuk.",
+          "steps": [
+            "Tentukan rute yang perlu dibatasi.",
+            "Bungkus rute itu dengan lapisan pemeriksaan sesi.",
+            "Uji akses sebelum dan sesudah masuk."
+          ],
+          "starterCode": "Route::middleware([\"auth\"])->group(function () {\n    // rute yang dibatasi\n});",
+          "expected": "Pengguna yang belum masuk dialihkan, sedangkan yang sudah masuk dapat mengakses rute.",
+          "stretch": "Tambahkan pembatasan jumlah permintaan pada rute yang sama.",
+          "hints": [
+            "Middleware dapat dipasang pada satu rute atau kelompok.",
+            "Pemeriksaan sesi memakai nama auth.",
+            "Uji kedua keadaan akses."
+          ],
+          "verification": {
+            "command": "Akses rute tanpa sesi dan dengan sesi aktif.",
+            "expected": "Akses tanpa sesi ditolak atau dialihkan; dengan sesi diizinkan.",
+            "evidence": "Simpan berkas rute dan catatan hasil kedua pengujian."
+          }
+        },
+        {
+          "id": "latihan-3",
+          "level": "transfer",
+          "title": "Peta rute aplikasi tugas",
+          "task": "Susun peta rute lengkap untuk aplikasi catatan tugas: daftar, tambah, ubah, hapus, dan satu tugas, dengan penamaan yang konsisten.",
+          "steps": [
+            "Tentukan setiap alamat beserta methodnya.",
+            "Tulis nama rute yang konsisten untuk semuanya.",
+            "Pisahkan rute yang memerlukan sesi.",
+            "Jelaskan alasan susunan yang dipilih."
+          ],
+          "starterCode": "Route::get(...)->name(...);\nRoute::post(...);\nRoute::patch(...);\nRoute::delete(...);",
+          "expected": "Peta memuat seluruh operasi dengan method dan nama yang tepat serta pembatasan akses yang jelas.",
+          "stretch": "Kelompokkan rute API pada berkas terpisah.",
+          "hints": [
+            "Setiap operasi data punya method yang sesuai.",
+            "Nama rute menggambarkan sumber daya dan aksinya.",
+            "Rute yang mengubah data memerlukan sesi."
+          ],
+          "verification": {
+            "command": "Periksa setiap rute memanggil aksi yang berbeda dan dapat dibentuk dari namanya.",
+            "expected": "Tidak ada alamat atau nama yang bertabrakan, dan seluruh operasi terwakili.",
+            "evidence": "Simpan berkas rute dan daftar nama yang dipakai."
+          }
+        }
+      ],
+      "verification": {
+        "mode": "manual",
+        "command": "Buka setiap alamat yang didaftarkan dan periksa aksi serta pembatasan aksesnya.",
+        "expected": "Setiap alamat menjalankan aksi yang benar dan rute yang dibatasi hanya dapat diakses pengguna yang sudah masuk.",
+        "evidence": "Simpan berkas rute dan catatan hasil setiap pengujian alamat."
+      },
+      "troubleshooting": [
+        {
+          "symptom": "Alamat mengembalikan tanggapan tidak ditemukan meski rute sudah didaftarkan.",
+          "cause": "Method atau pola alamat tidak cocok dengan permintaan yang dikirim.",
+          "fix": "Periksa method dan pola alamat, lalu pastikan urutan rute tidak menutupi rute lain."
+        },
+        {
+          "symptom": "Nilai dari alamat sampai ke aksi dalam bentuk yang salah.",
+          "cause": "Penanda alamat tidak diberi aturan sehingga nilai apa pun diterima.",
+          "fix": "Tambahkan aturan pada penanda alamat agar nilai yang tidak sah ditolak lebih awal."
+        },
+        {
+          "symptom": "Tautan rusak setelah alamat diubah.",
+          "cause": "Alamat ditulis langsung di banyak berkas alih-alih memakai nama rute.",
+          "fix": "Ganti penulisan alamat langsung dengan nama rute."
+        },
+        {
+          "symptom": "Rute yang seharusnya tertutup dapat diakses.",
+          "cause": "Middleware tidak dipasang pada rute atau kelompok yang tepat.",
+          "fix": "Pasang middleware pada seluruh rute yang memerlukan pembatasan dan uji kedua keadaan akses."
+        }
+      ],
       "quiz": {
-        "question": "Apa prinsip yang paling tepat untuk topik “Request lifecycle dan routing”?",
-        "options": [
-          "Gunakan HTTP method dan nama route yang konsisten.",
-          "Gunakan solusi paling rumit sejak awal, meski kebutuhan belum jelas.",
-          "Lewati pengujian karena contoh kecil pasti benar."
-        ],
-        "answer": 0,
-        "explanation": "Gunakan HTTP method dan nama route yang konsisten."
-      }
+        "questions": [
+          {
+            "id": "q1",
+            "type": "recall",
+            "question": "Apa fungsi middleware pada perjalanan permintaan?",
+            "options": [
+              "Menyimpan data ke basis data",
+              "Menjalankan pemeriksaan sebelum atau sesudah aksi",
+              "Membuat berkas tampilan"
+            ],
+            "answer": 1,
+            "explanation": "Middleware berjalan sebagai lapisan pemeriksaan sebelum atau sesudah aksi dijalankan."
+          },
+          {
+            "id": "q2",
+            "type": "code-reading",
+            "question": "Apa arti penanda {tugas} pada pola alamat rute?",
+            "options": [
+              "Alamat tetap yang tidak berubah",
+              "Bagian alamat yang nilainya diambil sebagai data",
+              "Komentar pada rute"
+            ],
+            "answer": 1,
+            "explanation": "Kurung kurawal menandai bagian alamat yang berubah dan nilainya diteruskan ke aksi."
+          },
+          {
+            "id": "q3",
+            "type": "scenario",
+            "question": "Anda ingin tautan tidak rusak ketika alamat berubah. Tindakan tepat...",
+            "options": [
+              "Menulis alamat langsung di seluruh tampilan",
+              "Memberi nama rute lalu memakai nama itu untuk tautan",
+              "Menyalin alamat ke berkas terpisah"
+            ],
+            "answer": 1,
+            "explanation": "Nama rute memusatkan pembentukan alamat sehingga perubahan cukup dilakukan sekali."
+          }
+        ]
+      },
+      "resources": [
+        {
+          "sourceId": "laravel-routing",
+          "note": "Dokumentasi resmi Laravel tentang rute, nama rute, dan middleware."
+        },
+        {
+          "sourceId": "laravel-docs",
+          "note": "Dokumentasi resmi Laravel tentang siklus hidup permintaan."
+        },
+        {
+          "sourceId": "php-manual",
+          "note": "Manual PHP sebagai dasar pemahaman berkas masuk dan autoloading."
+        }
+      ],
+      "summary": [
+        "Permintaan masuk lewat satu berkas publik, melewati middleware, lalu dicocokkan ke rute.",
+        "Rute memetakan method dan alamat ke aksi pengendali.",
+        "Nama rute memusatkan pembentukan alamat sehingga perubahan tidak menyebar.",
+        "Middleware membatasi akses secara terpusat, dan pengikatan model mengambil data dari alamat secara otomatis."
+      ],
+      "next": "Berikutnya: MVC, service, dan dependency injection. Anda akan memisahkan tampilan, logika, dan akses data agar aplikasi mudah diuji."
     },
     {
       "id": "m08-l03",
       "title": "MVC, service, dan dependency injection",
-      "minutes": 45,
+      "minutes": 120,
       "level": "Menengah",
-      "intro": "MVC memisahkan model, view, controller. Controller sebaiknya mengorkestrasi request; business rule yang kompleks dipindahkan ke service/domain layer.",
-      "explanation": "Dependency injection membuat ketergantungan eksplisit dan memudahkan test. Hindari abstraksi berlebihan sebelum ada kebutuhan nyata.",
-      "code": "<?php\n// Contoh tanggung jawab controller:\n// 1 validasi -> 2 panggil service -> 3 response\n// Jangan taruh ratusan baris logika bisnis di controller.",
+      "depth": "integrasi",
+      "schema": 3.1,
       "codeLanguage": "php",
-      "practice": [
-        "Pecah rancangan controller pesanan menjadi validasi, layanan checkout, dan response.",
-        "Ubah satu input atau asumsi pada contoh, catat hasil dan jelaskan alasannya."
+      "outcome": "Setelah pelajaran ini, Anda dapat memisahkan tanggung jawab model, tampilan, dan pengendali serta memakai service dan dependency injection agar kode mudah diuji dan diubah.",
+      "objectives": [
+        "Menjelaskan pembagian tanggung jawab pada pola MVC.",
+        "Memindahkan logika aplikasi ke kelas service.",
+        "Memakai dependency injection untuk menyediakan kebutuhan kelas.",
+        "Mengikat antarmuka ke implementasi pada wadah layanan."
       ],
-      "bestPractice": "Tempatkan aturan bisnis di lokasi yang bisa digunakan ulang dan dites.",
-      "commonMistake": "Fat controller yang melakukan validasi, query, email, dan formatting sekaligus.",
+      "prerequisites": [
+        {
+          "label": "Request lifecycle dan routing",
+          "lessonId": "m08-l02"
+        }
+      ],
+      "terms": [
+        {
+          "term": "MVC",
+          "definition": "Pola pembagian peran: model mengelola data, tampilan menyajikan, dan pengendali mengatur alur permintaan."
+        },
+        {
+          "term": "Service",
+          "definition": "Kelas yang memuat logika aplikasi agar tidak menumpuk di pengendali."
+        },
+        {
+          "term": "Dependency injection",
+          "definition": "Penyediaan kebutuhan sebuah kelas dari luar, bukan dibuat sendiri di dalam kelas itu."
+        },
+        {
+          "term": "Wadah layanan",
+          "definition": "Tempat pendaftaran cara membangun kelas dan mengikat antarmuka ke implementasinya."
+        }
+      ],
+      "syntax": [
+        {
+          "token": "public function __construct(private PenyimpananTugas $penyimpanan) {}",
+          "readAs": "Baca sebagai deklarasi ketergantungan yang disediakan dari luar dan disimpan sebagai properti.",
+          "meaning": "Kelas menyatakan kebutuhannya melalui parameter konstruktor. Penyediaan diserahkan ke luar sehingga kelas mudah diuji dengan pengganti.",
+          "example": "public function __construct(private PenyimpananTugas $penyimpanan) {}",
+          "output": "Kelas menerima ketergantungannya saat dibangun, bukan membuatnya sendiri.",
+          "pitfall": "Membuat ketergantungan langsung di dalam kelas menyulitkan pengujian dan mengunci implementasinya."
+        },
+        {
+          "token": "interface PenyimpananTugas { public function semua(): array; }",
+          "readAs": "Baca sebagai janji kemampuan yang harus dipenuhi setiap implementasi penyimpanan.",
+          "meaning": "Antarmuka memisahkan kebutuhan dari implementasi. Kelas yang memakainya tidak bergantung pada cara penyimpanan tertentu.",
+          "example": "interface PenyimpananTugas { public function semua(): array; }",
+          "output": "Implementasi apa pun yang memenuhi janji itu dapat dipakai bergantian.",
+          "pitfall": "Membuat antarmuka yang terlalu besar memaksa setiap implementasi memenuhi method yang tidak selalu dipakai."
+        },
+        {
+          "token": "$this->app->bind(PenyimpananTugas::class, PenyimpananDatabase::class);",
+          "readAs": "Baca sebagai pendaftaran bahwa permintaan antarmuka itu dipenuhi oleh implementasi tertentu.",
+          "meaning": "Wadah layanan menghubungkan antarmuka dengan implementasi, sehingga kelas yang meminta antarmuka menerima implementasi yang didaftarkan.",
+          "example": "$this->app->bind(PenyimpananTugas::class, PenyimpananDatabase::class);",
+          "output": "Kelas yang meminta antarmuka itu dibangun dengan implementasi yang terdaftar.",
+          "pitfall": "Lupa mendaftarkan ikatan membuat permintaan antarmuka gagal dibangun."
+        }
+      ],
+      "conventions": [
+        "Jaga pengendali tetap tipis; pindahkan logika ke service.",
+        "Satakan kebutuhan kelas lewat konstruktor, bukan dibuat di dalam.",
+        "Bergantung pada antarmuka, bukan implementasi tertentu.",
+        "Daftarkan ikatan antarmuka pada satu tempat penyedia layanan.",
+        "Beri nama kelas sesuai tanggung jawabnya agar batas peran jelas."
+      ],
+      "sections": [
+        {
+          "id": "cara-membaca",
+          "title": "Cara membaca pemisahan peran",
+          "body": [
+            "Bacalah kelas dari ketergantungannya. Antarmuka menyatakan kemampuan yang dibutuhkan, sedangkan service menyatakan cara memakainya. Implementasi detail diserahkan pada kelas lain yang memenuhi antarmuka itu.",
+            "Service pada contoh tidak tahu dari mana data berasal. Ia hanya meminta penyimpanan yang memenuhi janji. Karena itu, service dapat diuji dengan penyimpanan tiruan tanpa menyentuh basis data.",
+            "Pengendali memanggil service ini dan menyerahkan hasilnya ke tampilan. Dengan begitu, pengendali hanya mengatur alur, service memuat logika, dan tampilan menyajikan hasil."
+          ],
+          "code": {
+            "language": "php",
+            "lab": false,
+            "code": "<?php\ndeclare(strict_types=1);\n\ninterface PenyimpananTugas {\n    public function semua(): array;\n}\n\nclass TugasService {\n    public function __construct(private PenyimpananTugas $penyimpanan) {}\n\n    public function daftar(): array {\n        return $this->penyimpanan->semua();\n    }\n}",
+            "output": "Service mengembalikan daftar tugas dari penyimpanan yang disediakan tanpa mengetahui cara penyimpanannya.",
+            "explain": "Antarmuka menyatakan satu kemampuan yang dibutuhkan. Service menerima implementasi apa pun yang memenuhi janji itu, sehingga detail penyimpanan terpisah dari logika.",
+            "annotations": [
+              {
+                "line": 4,
+                "code": "interface PenyimpananTugas {",
+                "note": "Antarmuka menyatakan kebutuhan service."
+              },
+              {
+                "line": 5,
+                "code": "public function semua(): array;",
+                "note": "Janji yang harus dipenuhi setiap implementasi."
+              },
+              {
+                "line": 9,
+                "code": "public function __construct(private PenyimpananTugas $penyimpanan) {}",
+                "note": "Ketergantungan disediakan dari luar melalui konstruktor."
+              },
+              {
+                "line": 12,
+                "code": "return $this->penyimpanan->semua();",
+                "note": "Service memakai penyimpanan tanpa mengetahui implementasinya."
+              }
+            ]
+          },
+          "callouts": [
+            {
+              "tone": "good",
+              "title": "Bergantung pada janji",
+              "body": "Bila service bergantung pada antarmuka, implementasi dapat diganti kapan saja, termasuk dengan tiruan saat pengujian."
+            }
+          ],
+          "checkpoint": {
+            "prompt": "Mengapa service pada contoh mudah diuji tanpa basis data?",
+            "success": "Karena ia hanya bergantung pada antarmuka, sehingga dapat diberi penyimpanan tiruan saat pengujian."
+          }
+        },
+        {
+          "id": "mvc",
+          "title": "Pembagian peran MVC",
+          "body": [
+            "Model mengurus data dan aturannya. Tampilan menyajikan hasil kepada pengguna. Pengendali menerima permintaan, memanggil model atau service, lalu memilih tampilan yang sesuai.",
+            "Ketika pengendali mulai memuat aturan bisnis, itu tanda logika perlu dipindahkan. Pengendali yang tipis lebih mudah dibaca karena hanya memperlihatkan alur permintaan.",
+            "Pembagian ini memudahkan pengujian. Logika pada service diuji tanpa tampilan, sedangkan tampilan diuji dengan data yang sudah disiapkan."
+          ],
+          "checkpoint": {
+            "prompt": "Sebutkan peran model, tampilan, dan pengendali pada pola MVC.",
+            "success": "Model mengelola data, tampilan menyajikan hasil, pengendali mengatur alur permintaan."
+          }
+        },
+        {
+          "id": "service",
+          "title": "Logika pada service",
+          "body": [
+            "Service adalah tempat logika aplikasi berkumpul. Ia dapat dipanggil dari beberapa pengendali, sehingga aturan yang sama tidak perlu ditulis ulang di setiap tempat.",
+            "Beri service satu tanggung jawab yang jelas. Service yang mengurus terlalu banyak hal akan sulit diuji dan sering berubah karena berbagai alasan.",
+            "Service mengembalikan data, bukan tampilan. Keputusan tentang cara menampilkan hasil tetap berada pada lapisan tampilan."
+          ],
+          "callouts": [
+            {
+              "tone": "warn",
+              "title": "Hindari pengendali gemuk",
+              "body": "Pengendali yang memuat puluhan baris logika sulit diuji dan mudah rusak. Pindahkan aturannya ke service."
+            }
+          ],
+          "checkpoint": {
+            "prompt": "Mengapa service sebaiknya mengembalikan data, bukan tampilan?",
+            "success": "Agar logika tetap terpisah dari cara penyajian dan dapat dipakai ulang oleh tampilan atau API."
+          }
+        },
+        {
+          "id": "dependency-injection",
+          "title": "Dependency injection dan wadah layanan",
+          "body": [
+            "Dependency injection membuat kelas menyatakan kebutuhannya di konstruktor. Penyediaan diserahkan ke wadah layanan yang tahu cara membangun setiap kelas.",
+            "Dengan mengikat antarmuka ke implementasi, Anda dapat mengganti implementasi tanpa mengubah kelas yang memakainya. Saat pengujian, implementasi tiruan didaftarkan sebagai gantinya.",
+            "Wadah layanan juga membangun ketergantungan secara berantai. Bila sebuah kelas membutuhkan kelas lain, wadah membangun keduanya dalam urutan yang benar."
+          ],
+          "callouts": [
+            {
+              "tone": "warn",
+              "title": "Daftarkan ikatan",
+              "body": "Bila sebuah antarmuka belum diikat ke implementasi, permintaan terhadap antarmuka itu gagal dibangun. Daftarkan pada penyedia layanan."
+            }
+          ],
+          "checkpoint": {
+            "prompt": "Apa yang terjadi bila sebuah antarmuka tidak diikat ke implementasi pada wadah layanan?",
+            "success": "Permintaan terhadap antarmuka itu gagal dibangun karena wadah tidak tahu implementasi mana yang dipakai."
+          }
+        }
+      ],
+      "practice": [
+        {
+          "id": "latihan-1",
+          "level": "guided",
+          "title": "Pindahkan logika ke service",
+          "task": "Pindahkan perhitungan statistik tugas dari pengendali ke sebuah service dengan satu method.",
+          "steps": [
+            "Tentukan masukan dan keluaran service.",
+            "Tulis kelas service dengan satu method.",
+            "Panggil service dari pengendali.",
+            "Pastikan hasilnya sama seperti sebelumnya."
+          ],
+          "starterCode": "class StatistikService {\n    public function hitung(array $tugas): array {\n        // lengkapi\n    }\n}",
+          "expected": "Pengendali tipis memanggil service dan hasilnya tidak berubah.",
+          "stretch": "Tambahkan method kedua dan pastikan hanya berkaitan dengan tanggung jawab service itu.",
+          "hints": [
+            "Service menerima data, bukan permintaan mentah.",
+            "Pengendali hanya mengatur alur.",
+            "Bandingkan hasil sebelum dan sesudah pemindahan."
+          ],
+          "verification": {
+            "command": "Panggil service secara langsung dan bandingkan hasilnya dengan perilaku lama.",
+            "expected": "Hasil perhitungan sama untuk data yang sama.",
+            "evidence": "Simpan kelas service dan catatan perbandingan hasil."
+          }
+        },
+        {
+          "id": "latihan-2",
+          "level": "independent",
+          "title": "Bergantung pada antarmuka",
+          "task": "Ubah service agar bergantung pada antarmuka penyimpanan, lalu sediakan dua implementasi berbeda.",
+          "steps": [
+            "Tulis antarmuka dengan method yang dibutuhkan.",
+            "Ubah service agar menerima antarmuka itu.",
+            "Buat dua implementasi, misalnya basis data dan memori.",
+            "Uji service dengan kedua implementasi."
+          ],
+          "starterCode": "interface Penyimpanan { ... }\nclass TugasService {\n    public function __construct(private Penyimpanan $p) {}\n}",
+          "expected": "Service berjalan dengan kedua implementasi tanpa perubahan pada kelas service.",
+          "stretch": "Buat implementasi tiruan untuk pengujian.",
+          "hints": [
+            "Antarmuka hanya memuat method yang benar-benar dipakai.",
+            "Implementasi wajib memenuhi seluruh method antarmuka.",
+            "Service tidak boleh menyebut kelas implementasi tertentu."
+          ],
+          "verification": {
+            "command": "Jalankan service dengan implementasi basis data dan implementasi memori.",
+            "expected": "Kedua implementasi memberi perilaku yang sesuai tanpa mengubah service.",
+            "evidence": "Simpan kedua implementasi dan hasil pengujiannya."
+          }
+        },
+        {
+          "id": "latihan-3",
+          "level": "transfer",
+          "title": "Rancang batas lapisan aplikasi tugas",
+          "task": "Rancang pembagian lapisan untuk aplikasi catatan tugas: pengendali, service, dan penyimpanan, beserta tanggung jawab dan ketergantungan masing-masing.",
+          "steps": [
+            "Sebutkan tanggung jawab setiap lapisan.",
+            "Tentukan method pada setiap lapisan.",
+            "Tentukan arah ketergantungan antar lapisan.",
+            "Periksa tidak ada logika bisnis di pengendali."
+          ],
+          "starterCode": "Pengendali: ...\nService: ...\nPenyimpanan: ...",
+          "expected": "Setiap lapisan punya tanggung jawab jelas dan arah ketergantungan satu arah.",
+          "stretch": "Terapkan rancangan itu pada satu fitur lengkap.",
+          "hints": [
+            "Pengendali hanya mengatur alur permintaan.",
+            "Service memuat aturan aplikasi.",
+            "Penyimpanan menangani akses data."
+          ],
+          "verification": {
+            "command": "Periksa setiap pemanggilan hanya menuju satu arah tanpa ketergantungan melingkar.",
+            "expected": "Arah ketergantungan satu arah dan tidak ada aturan bisnis pada pengendali.",
+            "evidence": "Simpan rancangan lapisan dan daftar method tiap lapisan."
+          }
+        }
+      ],
+      "verification": {
+        "mode": "manual",
+        "command": "Jalankan aplikasi dan uji service secara langsung dengan dua implementasi penyimpanan.",
+        "expected": "Pengendali hanya mengatur alur, service mengembalikan hasil yang benar, dan implementasi dapat diganti tanpa mengubah service.",
+        "evidence": "Simpan berkas service, implementasi, dan catatan hasil pengujian."
+      },
+      "troubleshooting": [
+        {
+          "symptom": "Permintaan terhadap sebuah antarmuka gagal dibangun.",
+          "cause": "Antarmuka belum diikat ke implementasinya pada wadah layanan.",
+          "fix": "Daftarkan ikatan antarmuka ke implementasi pada penyedia layanan."
+        },
+        {
+          "symptom": "Service sulit diuji karena selalu menyentuh basis data.",
+          "cause": "Service membuat koneksi basis data sendiri alih-alih menerima penyimpanan dari luar.",
+          "fix": "Satakan penyimpanan pada konstruktor dan bergantunglah pada antarmuka."
+        },
+        {
+          "symptom": "Pengendali membengkak dan sulit dibaca.",
+          "cause": "Aturan aplikasi ditulis langsung di pengendali.",
+          "fix": "Pindahkan aturan itu ke service dan biarkan pengendali hanya mengatur alur."
+        },
+        {
+          "symptom": "Perubahan satu kelas memaksa perubahan di banyak tempat.",
+          "cause": "Kelas bergantung pada implementasi tertentu, bukan pada antarmuka.",
+          "fix": "Perkenalkan antarmuka dan bergantunglah padanya."
+        }
+      ],
       "quiz": {
-        "question": "Apa prinsip yang paling tepat untuk topik “MVC, service, dan dependency injection”?",
-        "options": [
-          "Tempatkan aturan bisnis di lokasi yang bisa digunakan ulang dan dites.",
-          "Gunakan solusi paling rumit sejak awal, meski kebutuhan belum jelas.",
-          "Lewati pengujian karena contoh kecil pasti benar."
-        ],
-        "answer": 0,
-        "explanation": "Tempatkan aturan bisnis di lokasi yang bisa digunakan ulang dan dites."
-      }
+        "questions": [
+          {
+            "id": "q1",
+            "type": "recall",
+            "question": "Apa peran pengendali pada pola MVC?",
+            "options": [
+              "Menyimpan data ke basis data",
+              "Mengatur alur permintaan dengan memanggil service dan memilih tampilan",
+              "Menyusun tampilan halaman"
+            ],
+            "answer": 1,
+            "explanation": "Pengendali tipis mengatur alur, sedangkan logika dan penyajian berada di lapisan lain."
+          },
+          {
+            "id": "q2",
+            "type": "code-reading",
+            "question": "Apa keuntungan service bergantung pada antarmuka penyimpanan?",
+            "options": [
+              "Implementasi penyimpanan dapat diganti tanpa mengubah service",
+              "Service menjadi lebih cepat",
+              "Data tersimpan otomatis"
+            ],
+            "answer": 0,
+            "explanation": "Dengan bergantung pada antarmuka, implementasi dapat ditukar termasuk dengan tiruan saat pengujian."
+          },
+          {
+            "id": "q3",
+            "type": "scenario",
+            "question": "Wadah layanan tidak tahu implementasi untuk sebuah antarmuka. Tindakan tepat...",
+            "options": [
+              "Membuat ketergantungan itu di dalam kelas",
+              "Mendaftarkan ikatan antarmuka ke implementasi pada penyedia layanan",
+              "Menghapus antarmuka"
+            ],
+            "answer": 1,
+            "explanation": "Ikatan antarmuka ke implementasi didaftarkan pada penyedia layanan agar wadah dapat membangunnya."
+          }
+        ]
+      },
+      "resources": [
+        {
+          "sourceId": "laravel-docs",
+          "note": "Dokumentasi resmi Laravel tentang wadah layanan dan dependency injection."
+        },
+        {
+          "sourceId": "php-oop",
+          "note": "Manual PHP tentang kelas, antarmuka, dan objek."
+        },
+        {
+          "sourceId": "psr-12",
+          "note": "Standar gaya penulisan yang dipakai untuk struktur kelas."
+        }
+      ],
+      "summary": [
+        "MVC memisahkan pengelolaan data, penyajian, dan pengaturan alur permintaan.",
+        "Logika aplikasi ditempatkan pada service agar pengendali tetap tipis dan mudah diuji.",
+        "Dependency injection menyatakan kebutuhan kelas di konstruktor dan menyediakannya dari luar.",
+        "Wadah layanan mengikat antarmuka ke implementasi sehingga implementasi mudah diganti."
+      ],
+      "next": "Berikutnya: migration, Eloquent, dan relationship. Anda akan mengelola skema database dan memodelkan relasi data pada aplikasi."
     },
     {
       "id": "m08-l04",
       "title": "Migration, Eloquent, dan relationship",
-      "minutes": 45,
+      "minutes": 120,
       "level": "Menengah",
-      "intro": "Migration membuat skema berversi. Eloquent ORM memetakan tabel ke model dan relasi hasMany/belongsTo; gunakan eager loading untuk menghindari N+1.",
-      "explanation": "Sebelum melakukan query masif, pelajari SQL yang dihasilkan. Gunakan pagination untuk koleksi besar; hindari Model::all() pada tabel besar.",
-      "code": "<?php\n// App\\Models\\User.php\npublic function tasks() {\n    return $this->hasMany(Task::class);\n}\n// User::with(\"tasks\")->paginate(20);",
+      "depth": "integrasi",
+      "schema": 3.1,
       "codeLanguage": "php",
-      "practice": [
-        "Rancang model User–Task, migration, dan relasi dua arah.",
-        "Ubah satu input atau asumsi pada contoh, catat hasil dan jelaskan alasannya."
+      "outcome": "Setelah pelajaran ini, Anda dapat mengelola struktur database lewat migration dan memodelkan relasi antar data memakai Eloquent.",
+      "objectives": [
+        "Menulis migration untuk membuat dan mengubah tabel.",
+        "Menjelaskan cara migration menjaga struktur tetap dapat dilacak.",
+        "Mendefinisikan model Eloquent untuk sebuah tabel.",
+        "Menyatakan relasi satu ke banyak memakai method pada model."
       ],
-      "bestPractice": "Gunakan eager loading ketika relasi dipakai pada daftar.",
-      "commonMistake": "Query tambahan per baris (N+1) di halaman daftar.",
+      "prerequisites": [
+        {
+          "label": "MVC, service, dan dependency injection",
+          "lessonId": "m08-l03"
+        }
+      ],
+      "terms": [
+        {
+          "term": "Migration",
+          "definition": "Berkas yang mendeskripsikan perubahan struktur tabel sehingga dapat dijalankan berurutan pada setiap lingkungan."
+        },
+        {
+          "term": "Eloquent",
+          "definition": "Cara Laravel memetakan tabel basis data menjadi kelas model beserta relasinya."
+        },
+        {
+          "term": "Model",
+          "definition": "Kelas yang mewakili satu tabel dan menjadi tempat aturan serta relasinya."
+        },
+        {
+          "term": "Eager loading",
+          "definition": "Pengambilan relasi sekaligus dalam satu query agar tidak menimbulkan banyak query berulang."
+        }
+      ],
+      "syntax": [
+        {
+          "token": "Schema::create(\"tugas\", function (Blueprint $table) { ... });",
+          "readAs": "Baca sebagai pendefinisian struktur tabel tugas melalui kode, bukan melalui alat grafik.",
+          "meaning": "Setiap perintah pada blok itu menambahkan satu kolom. Struktur tabel tersimpan sebagai berkas sehingga dapat dijalankan ulang pada lingkungan lain.",
+          "example": "Schema::create(\"pengguna\", function (Blueprint $table) { $table->id(); });",
+          "output": "Tabel dibuat sesuai urutan perintah kolomnya.",
+          "pitfall": "Mengubah struktur tabel langsung di basis data tanpa migration membuat lingkungan berbeda diam-diam."
+        },
+        {
+          "token": "public function tugas(): HasMany { return $this->hasMany(Tugas::class); }",
+          "readAs": "Baca sebagai deklarasi bahwa satu daftar memiliki banyak tugas.",
+          "meaning": "Method relasi mengembalikan objek hubungan. Nama methodnya dipakai untuk mengambil data terkait.",
+          "example": "public function tugas(): HasMany { return $this->hasMany(Tugas::class); }",
+          "output": "Relasi dapat dipanggil seperti properti dan menghasilkan kumpulan data terkait.",
+          "pitfall": "Lupa mendeklarasikan relasi balik membuat pengambilan dari sisi sebaliknya tidak tersedia."
+        },
+        {
+          "token": "Daftar::with(\"tugas\")->get();",
+          "readAs": "Baca sebagai permintaan mengambil daftar bersama tugasnya sekaligus dalam satu langkah.",
+          "meaning": "with memuat relasi lebih awal sehingga jumlah query tetap sedikit meski datanya banyak.",
+          "example": "Daftar::with(\"tugas\")->get();",
+          "output": "Setiap daftar sudah memuat tugasnya tanpa query tambahan per baris.",
+          "pitfall": "Meminta relasi di dalam perulangan menimbulkan banyak query dan memperlambat halaman."
+        }
+      ],
+      "conventions": [
+        "Ubah struktur database hanya lewat migration, bukan langsung di basis data.",
+        "Beri nama berkas migration yang menjelaskan perubahannya.",
+        "Deklarasikan relasi dari kedua sisi agar keduanya dapat dipakai.",
+        "Pakai eager loading untuk relasi yang akan dipakai bersama data induknya.",
+        "Jangan menaruh logika bisnis di dalam model; batasi model pada data dan relasi."
+      ],
+      "sections": [
+        {
+          "id": "cara-membaca",
+          "title": "Cara membaca migration",
+          "body": [
+            "Migration dibaca sebagai daftar perintah kolom di dalam pendefinisian tabel. Setiap baris menambahkan satu kolom beserta tipenya. Urutan dan aturannya menentukan bentuk tabel yang dihasilkan.",
+            "Pada contoh, kolom pengenal dibuat lebih dulu, diikuti penunjuk ke tabel induk. Penunjuk itu juga memasang kunci asing sehingga relasi terjaga database. Setelah kolom teks dan status, kolom waktu ditambahkan sekaligus.",
+            "Karena struktur didefinisikan sebagai berkas, lingkungan pengembangan dan produksi dapat dibentuk dari rangkaian migration yang sama. Perbedaan struktur karena perubahan manual dapat dihindari."
+          ],
+          "code": {
+            "language": "php",
+            "lab": false,
+            "code": "<?php\n// database/migrations/xxxx_create_tugas_table.php\nSchema::create(\"tugas\", function (Blueprint $table) {\n    $table->id();\n    $table->foreignId(\"daftar_id\")->constrained();\n    $table->string(\"judul\");\n    $table->boolean(\"selesai\")->default(false);\n    $table->timestamps();\n});",
+            "output": "Tabel tugas dibuat dengan pengenal, penunjuk daftar, judul, status selesai, dan kolom waktu.",
+            "explain": "Setiap perintah menambahkan satu kolom. foreignId memasang kunci asing ke tabel daftar, sedangkan default memberi nilai awal untuk kolom status.",
+            "annotations": [
+              {
+                "line": 3,
+                "code": "Schema::create(\"tugas\", function (Blueprint $table) {",
+                "note": "Tabel tugas didefinisikan lewat kode migration."
+              },
+              {
+                "line": 4,
+                "code": "$table->id();",
+                "note": "Kolom pengenal utama ditambahkan."
+              },
+              {
+                "line": 5,
+                "code": "$table->foreignId(\"daftar_id\")->constrained();",
+                "note": "Kolom penunjuk ke tabel daftar sekaligus memasang kunci asing."
+              },
+              {
+                "line": 6,
+                "code": "$table->string(\"judul\");",
+                "note": "Kolom judul bertipe teks."
+              },
+              {
+                "line": 7,
+                "code": "$table->boolean(\"selesai\")->default(false);",
+                "note": "Kolom status selesai diberi nilai awal salah."
+              }
+            ]
+          },
+          "callouts": [
+            {
+              "tone": "good",
+              "title": "Struktur sebagai berkas",
+              "body": "Dengan migration, struktur tabel dapat dilacak seperti kode lain: dapat ditinjau, diubah, dan diulang pada lingkungan berbeda."
+            }
+          ],
+          "checkpoint": {
+            "prompt": "Mengapa struktur tabel lebih baik didefinisikan lewat migration daripada diubah langsung di basis data?",
+            "success": "Karena perubahannya tercatat sebagai berkas yang dapat dijalankan ulang sehingga semua lingkungan tetap sama."
+          }
+        },
+        {
+          "id": "relasi-eloquent",
+          "title": "Menyatakan relasi pada model",
+          "body": [
+            "Relasi dideklarasikan sebagai method pada model. Sisi yang memiliki banyak menuliskan hubungan satu ke banyak, sedangkan sisi yang dimiliki menuliskan hubungan milik ke satu.",
+            "Bila kedua sisi dideklarasikan, data dapat ditelusuri dari arah mana pun. Dari daftar Anda dapat mengambil tugasnya, dan dari tugas Anda dapat mengambil daftarnya. Keduanya memakai kunci asing yang sudah dipasang migration.",
+            "Relasi yang akan dipakai bersama data induknya sebaiknya dimuat lebih awal. Cara ini menggantikan banyak query kecil dengan satu query, sehingga halaman tetap cepat ketika jumlah data bertambah."
+          ],
+          "code": {
+            "language": "php",
+            "lab": false,
+            "code": "<?php\nnamespace App\\Models;\n\nuse Illuminate\\Database\\Eloquent\\Model;\nuse Illuminate\\Database\\Eloquent\\Relations\\BelongsTo;\nuse Illuminate\\Database\\Eloquent\\Relations\\HasMany;\n\nclass Daftar extends Model {\n    public function tugas(): HasMany {\n        return $this->hasMany(Tugas::class);\n    }\n}\n\nclass Tugas extends Model {\n    public function daftar(): BelongsTo {\n        return $this->belongsTo(Daftar::class);\n    }\n}",
+            "output": "Dua model saling terhubung sehingga tugas dan daftarnya dapat diambil dari kedua arah.",
+            "explain": "Model daftar menyatakan hubungan satu ke banyak ke tugas, dan model tugas menyatakan hubungan milik ke satu ke daftar.",
+            "annotations": [
+              {
+                "line": 8,
+                "code": "class Daftar extends Model {",
+                "note": "Model daftar mewakili tabel daftar."
+              },
+              {
+                "line": 9,
+                "code": "public function tugas(): HasMany {",
+                "note": "Hubungan satu ke banyak dideklarasikan sebagai method."
+              },
+              {
+                "line": 10,
+                "code": "return $this->hasMany(Tugas::class);",
+                "note": "Relasi mengembalikan objek hubungan ke model tugas."
+              },
+              {
+                "line": 15,
+                "code": "public function daftar(): BelongsTo {",
+                "note": "Sisi tugas menuliskan hubungan milik ke satu."
+              },
+              {
+                "line": 16,
+                "code": "return $this->belongsTo(Daftar::class);",
+                "note": "Relasi mengembalikan objek hubungan ke model daftar."
+              }
+            ]
+          }
+        },
+        {
+          "id": "migration-bertahap",
+          "title": "Menjaga migration tetap aman",
+          "body": [
+            "Setiap perubahan struktur ditulis sebagai migration baru, bukan dengan mengubah berkas lama yang sudah dijalankan. Berkas lama tetap menjadi catatan sejarah struktur yang sudah diterapkan.",
+            "Perubahan yang menambah sesuatu lebih aman daripada yang menghapus. Tambahkan kolom baru, isi datanya, pindahkan pemakaian, baru hapus kolom lama bila sudah tidak ada yang memakainya.",
+            "Migration yang sudah dijalankan pada lingkungan bersama sebaiknya tidak diubah lagi. Bila ada kekeliruan, perbaikannya dilakukan lewat migration baru agar seluruh lingkungan tetap berpijak pada urutan yang sama."
+          ],
+          "callouts": [
+            {
+              "tone": "warn",
+              "title": "Jangan ubah migration lama",
+              "body": "Mengubah migration yang sudah dijalankan membuat lingkungan berbeda tidak sinkron. Tambahkan migration baru untuk perbaikannya."
+            }
+          ],
+          "checkpoint": {
+            "prompt": "Mengapa migration yang sudah dijalankan tidak boleh diubah lagi?",
+            "success": "Karena lingkungan lain sudah menjalankannya sehingga perubahannya tidak akan diterapkan di sana dan struktur menjadi berbeda."
+          }
+        },
+        {
+          "id": "query-eloquent",
+          "title": "Query dan relasi pada praktik",
+          "body": [
+            "Model menyediakan cara mengambil data tanpa menulis SQL langsung. Anda memanggil method untuk menyaring dan mengambil, sedangkan Laravel menyusun query yang sesuai.",
+            "Hati-hati terhadap pengambilan relasi di dalam perulangan. Setiap perulangan dapat memicu query baru sehingga jumlahnya bertambah cepat. Muat relasinya lebih awal bersama data induknya.",
+            "Untuk operasi yang perlu efisien, periksa jumlah query yang dijalankan. Alat pengembang query dapat menunjukkan hal ini dan membantu menemukan query yang berulang tanpa perlu."
+          ],
+          "checkpoint": {
+            "prompt": "Apa masalah mengambil relasi di dalam perulangan, dan bagaimana menghindarinya?",
+            "success": "Setiap perulangan memicu query baru sehingga jumlahnya membengkak; hindari dengan memuat relasi lebih awal memakai with."
+          }
+        }
+      ],
+      "practice": [
+        {
+          "id": "latihan-1",
+          "level": "guided",
+          "title": "Migration dan model tugas",
+          "task": "Buat migration tabel tugas dengan penunjuk ke daftar, lalu buat modelnya beserta relasi ke daftar.",
+          "steps": [
+            "Tulis migration dengan kolom pengenal, penunjuk, judul, dan status.",
+            "Jalankan migration untuk membentuk tabel.",
+            "Buat model tugas yang mewakili tabel itu.",
+            "Deklarasikan relasi milik ke satu ke daftar."
+          ],
+          "starterCode": "Schema::create(\"tugas\", function (Blueprint $table) {\n    // lengkapi\n});",
+          "expected": "Tabel terbentuk dan model dapat mengambil daftar dari sebuah tugas.",
+          "stretch": "Tambahkan kolom waktu dibuat dan diperbarui.",
+          "hints": [
+            "Kolom penunjuk sekaligus dapat memasang kunci asing.",
+            "Nama model mengikuti nama tabelnya.",
+            "Relasi milik ke satu memakai belongsTo."
+          ],
+          "verification": {
+            "command": "Ambil satu tugas dan tampilkan nama daftarnya lewat relasi.",
+            "expected": "Daftar yang ditampilkan cocok dengan penunjuk pada baris tugas.",
+            "evidence": "Simpan berkas migration, model, dan keluaran contoh."
+          }
+        },
+        {
+          "id": "latihan-2",
+          "level": "independent",
+          "title": "Relasi dua arah",
+          "task": "Lengkapi relasi pada kedua model sehingga daftar dapat mengambil tugasnya dan tugas dapat mengambil daftarnya.",
+          "steps": [
+            "Deklarasikan relasi satu ke banyak pada model daftar.",
+            "Deklarasikan relasi milik ke satu pada model tugas.",
+            "Ambil satu daftar beserta tugasnya.",
+            "Ambil satu tugas beserta daftarnya."
+          ],
+          "starterCode": "class Daftar extends Model { /* relasi */ }\nclass Tugas extends Model { /* relasi */ }",
+          "expected": "Kedua arah relasi dapat dipakai dan hasilnya sesuai data.",
+          "stretch": "Hitung jumlah tugas setiap daftar memakai relasi.",
+          "hints": [
+            "Setiap sisi memakai jenis hubungan yang berbeda.",
+            "Nama method relasi dipakai saat memanggilnya.",
+            "Uji kedua arah pengambilan data."
+          ],
+          "verification": {
+            "command": "Tampilkan daftar beserta tugasnya dan tugas beserta daftarnya.",
+            "expected": "Kedua hasil cocok dengan data pada tabel.",
+            "evidence": "Simpan kedua model dan catatan hasil pengujian."
+          }
+        },
+        {
+          "id": "latihan-3",
+          "level": "transfer",
+          "title": "Hindari query berulang",
+          "task": "Diberikan halaman yang menampilkan banyak daftar beserta tugasnya, hilangkan query berulang dengan memuat relasi lebih awal, lalu jelaskan perbedaannya.",
+          "steps": [
+            "Tampilkan daftar beserta tugasnya seperti biasa.",
+            "Catat jumlah query yang dijalankan.",
+            "Muat relasi lebih awal bersama data induknya.",
+            "Bandingkan jumlah query sebelum dan sesudah."
+          ],
+          "starterCode": "Daftar::with(\"tugas\")->get();",
+          "expected": "Jumlah query berkurang dan halaman tetap menampilkan hasil yang sama.",
+          "stretch": "Uji pada data yang lebih banyak dan bandingkan waktunya.",
+          "hints": [
+            "Eager loading memuat relasi sekaligus.",
+            "Jumlah query dapat diperiksa lewat alat pengembang.",
+            "Hasil tampilan tidak boleh berubah setelah optimasi."
+          ],
+          "verification": {
+            "command": "Bandingkan jumlah query sebelum dan sesudah pemuatan lebih awal.",
+            "expected": "Jumlah query jauh berkurang tanpa mengubah hasil tampilan.",
+            "evidence": "Simpan kode dan catatan jumlah query kedua versi."
+          }
+        }
+      ],
+      "verification": {
+        "mode": "manual",
+        "command": "Jalankan migration, uji relasi dari kedua arah, dan bandingkan jumlah query pada halaman daftar.",
+        "expected": "Tabel terbentuk dari migration, relasi bekerja dua arah, dan jumlah query berkurang setelah memuat relasi lebih awal.",
+        "evidence": "Simpan berkas migration, model, dan catatan jumlah query."
+      },
+      "troubleshooting": [
+        {
+          "symptom": "Struktur tabel berbeda antara dua lingkungan.",
+          "cause": "Ada perubahan langsung di basis data yang tidak tercatat sebagai migration.",
+          "fix": "Tulis perubahan itu sebagai migration baru dan jalankan pada seluruh lingkungan."
+        },
+        {
+          "symptom": "Pengambilan data terkait lambat ketika datanya banyak.",
+          "cause": "Relasi diambil di dalam perulangan sehingga menimbulkan banyak query.",
+          "fix": "Muat relasi lebih awal bersama data induknya memakai with."
+        },
+        {
+          "symptom": "Relasi mengembalikan nilai kosong.",
+          "cause": "Nama kolom penunjuk tidak sesuai dengan yang diasumsikan relasi.",
+          "fix": "Periksa nama kunci asing dan sebutkan secara eksplisit bila berbeda dari kebiasaan."
+        },
+        {
+          "symptom": "Migration gagal karena kolom sudah ada.",
+          "cause": "Perubahan ditambahkan pada migration yang sudah pernah dijalankan.",
+          "fix": "Buat migration baru untuk perubahan itu alih-alih mengubah yang sudah dijalankan."
+        }
+      ],
       "quiz": {
-        "question": "Apa prinsip yang paling tepat untuk topik “Migration, Eloquent, dan relationship”?",
-        "options": [
-          "Gunakan eager loading ketika relasi dipakai pada daftar.",
-          "Gunakan solusi paling rumit sejak awal, meski kebutuhan belum jelas.",
-          "Lewati pengujian karena contoh kecil pasti benar."
-        ],
-        "answer": 0,
-        "explanation": "Gunakan eager loading ketika relasi dipakai pada daftar."
-      }
+        "questions": [
+          {
+            "id": "q1",
+            "type": "recall",
+            "question": "Apa fungsi migration pada pengelolaan struktur database?",
+            "options": [
+              "Menyimpan data pengguna",
+              "Mendeskripsikan perubahan struktur tabel sebagai berkas yang dapat dijalankan berurutan",
+              "Menghapus tabel secara otomatis"
+            ],
+            "answer": 1,
+            "explanation": "Migration mencatat perubahan struktur sebagai berkas sehingga dapat diterapkan pada setiap lingkungan."
+          },
+          {
+            "id": "q2",
+            "type": "code-reading",
+            "question": "Apa yang dilakukan pemanggilan with(\"tugas\") pada sebuah query model?",
+            "options": [
+              "Mengambil relasi tugas sekaligus bersama data induknya",
+              "Menyaring daftar yang tidak punya tugas",
+              "Menghapus tugas terkait"
+            ],
+            "answer": 0,
+            "explanation": "with memuat relasi lebih awal sehingga menggantikan banyak query terpisah."
+          },
+          {
+            "id": "q3",
+            "type": "scenario",
+            "question": "Kedua arah relasi perlu dipakai. Tindakan tepat...",
+            "options": [
+              "Mendeklarasikan relasi hanya pada satu model",
+              "Mendeklarasikan relasi pada kedua model",
+              "Menyimpan relasi sebagai tabel teks"
+            ],
+            "answer": 1,
+            "explanation": "Kedua sisi relasi dideklarasikan agar data dapat ditelusuri dari arah mana pun."
+          }
+        ]
+      },
+      "resources": [
+        {
+          "sourceId": "laravel-eloquent",
+          "note": "Dokumentasi resmi Eloquent tentang model dan relasi."
+        },
+        {
+          "sourceId": "laravel-docs",
+          "note": "Dokumentasi resmi Laravel tentang migration."
+        },
+        {
+          "sourceId": "postgresql-docs",
+          "note": "Referensi basis data yang mendasari struktur tabel dan kunci asing."
+        }
+      ],
+      "summary": [
+        "Migration mendeskripsikan perubahan struktur tabel sebagai berkas yang dapat dijalankan berurutan.",
+        "Model Eloquent mewakili sebuah tabel dan menjadi tempat relasinya dideklarasikan.",
+        "Relasi dideklarasikan dari kedua sisi sehingga data dapat ditelusuri dari arah mana pun.",
+        "Eager loading memuat relasi lebih awal untuk menghindari banyak query berulang."
+      ],
+      "next": "Berikutnya: validation dan Form Request. Anda akan memisahkan aturan masukan dari pengendali dan menampilkan pesan kesalahan yang jelas."
     },
     {
       "id": "m08-l05",
       "title": "Validation dan Form Request",
-      "minutes": 45,
+      "minutes": 120,
       "level": "Menengah",
-      "intro": "Laravel Request validation memeriksa format, panjang, tipe, dan aturan bisnis sebelum pemrosesan. Form Request menampung aturan serta otorisasi untuk request kompleks.",
-      "explanation": "Validasi semua data dari internet dan integrasi; batas upload, tipe file yang benar, dan unique rules sesuai kebutuhan. Jangan percaya validasi JavaScript saja.",
-      "code": "<?php\n$data = $request->validate([\n  \"title\" => [\"required\", \"string\", \"max:150\"],\n  \"done\" => [\"sometimes\", \"boolean\"],\n]);",
+      "depth": "integrasi",
+      "schema": 3.1,
       "codeLanguage": "php",
-      "practice": [
-        "Definisikan aturan createTask dan updateTask (judul, status, prioritas).",
-        "Ubah satu input atau asumsi pada contoh, catat hasil dan jelaskan alasannya."
+      "outcome": "Setelah pelajaran ini, Anda dapat memisahkan aturan validasi ke kelas tersendiri dan memakai hasil yang sudah diperiksa di dalam pengendali.",
+      "objectives": [
+        "Menulis aturan validasi untuk masukan dari pengguna.",
+        "Menjelaskan alasan validasi harus berada di sisi server.",
+        "Memisahkan aturan ke kelas Form Request.",
+        "Memakai data yang sudah divalidasi di dalam pengendali."
       ],
-      "bestPractice": "Validasi di server dan gunakan pesan kesalahan yang dapat dipahami pengguna.",
-      "commonMistake": "Hanya memeriksa isian di browser, tidak di backend.",
+      "prerequisites": [
+        {
+          "label": "Migration, Eloquent, dan relationship",
+          "lessonId": "m08-l04"
+        }
+      ],
+      "terms": [
+        {
+          "term": "Validasi",
+          "definition": "Pemeriksaan masukan sebelum dipakai, memastikan bentuk dan nilainya sesuai harapan."
+        },
+        {
+          "term": "Form Request",
+          "definition": "Kelas yang memuat aturan validasi sehingga pengendali tidak dipenuhi pemeriksaan masukan."
+        },
+        {
+          "term": "Pesan kesalahan",
+          "definition": "Keterangan yang menjelaskan masukan mana yang tidak sah dan mengapa."
+        },
+        {
+          "term": "Aturan bersyarat",
+          "definition": "Aturan yang hanya berlaku pada kondisi tertentu, misalnya kolom wajib hanya bila kolom lain diisi."
+        }
+      ],
+      "syntax": [
+        {
+          "token": "\"judul\" => [\"required\", \"string\", \"max:255\"],",
+          "readAs": "Baca sebagai aturan bahwa judul wajib diisi, berupa teks, dan panjangnya paling banyak 255 karakter.",
+          "meaning": "Setiap aturan disebut sebagai daftar. Bila salah satu tidak terpenuhi, permintaan ditolak dengan pesan yang sesuai.",
+          "example": "\"nama\" => [\"required\", \"string\"],",
+          "output": "Masukan yang tidak memenuhi aturan ditolak sebelum sampai ke logika aplikasi.",
+          "pitfall": "Mengandalkan pemeriksaan di sisi tampilan saja tidak cukup karena permintaan dapat dikirim tanpa peramban."
+        },
+        {
+          "token": "\"daftar_id\" => [\"required\", \"exists:daftar,id\"],",
+          "readAs": "Baca sebagai aturan bahwa penunjuk daftar wajib ada di tabel daftar.",
+          "meaning": "Aturan keberadaan memeriksa nilai terhadap isi tabel, sehingga data yang menunjuk baris tidak ada ditolak.",
+          "example": "\"daftar_id\" => [\"required\", \"exists:daftar,id\"],",
+          "output": "Penunjuk ke baris yang tidak ada ditolak sebelum disimpan.",
+          "pitfall": "Memeriksa keberadaan hanya di aplikasi tidak menjamin data masih ada saat disimpan."
+        },
+        {
+          "token": "$data = $request->validated();",
+          "readAs": "Baca sebagai pengambilan hanya nilai yang sudah lolos aturan validasi.",
+          "meaning": "Metode ini mengembalikan data yang sudah diperiksa saja, sehingga nilai tambahan yang tidak diharapkan tidak ikut terpakai.",
+          "example": "$data = $request->validated();",
+          "output": "Pengendali menerima data bersih sesuai aturan yang ditetapkan.",
+          "pitfall": "Memakai seluruh masukan mentah membuka risiko nilai yang tidak diharapkan ikut tersimpan."
+        }
+      ],
+      "conventions": [
+        "Letakkan aturan validasi pada kelas Form Request, bukan di dalam pengendali.",
+        "Selalu validasi di sisi server meski tampilan sudah memeriksa masukan.",
+        "Ambil data memakai hasil validasi, bukan seluruh masukan mentah.",
+        "Tulis pesan kesalahan yang menyebut kolom dan penyebabnya dengan jelas.",
+        "Uji aturan dengan masukan yang sah dan yang melanggar."
+      ],
+      "sections": [
+        {
+          "id": "cara-membaca",
+          "title": "Cara membaca aturan validasi",
+          "body": [
+            "Kelas Form Request dibaca sebagai daftar aturan per kolom. Setiap kunci menyebut nama masukan, dan nilainya adalah daftar aturan yang harus dipenuhi. Membaca daftar ini menjelaskan bentuk masukan yang diterima aplikasi.",
+            "Pada contoh, judul wajib berupa teks dengan panjang terbatas, penunjuk daftar wajib menunjuk baris yang ada, dan status selesai harus berupa nilai benar atau salah. Aturan ini ditegakkan sebelum pengendali dijalankan.",
+            "Bila aturan tidak terpenuhi, permintaan ditolak dan pesan kesalahan dikembalikan. Pengendali tidak perlu lagi memeriksa satu per satu, karena masukan yang sampai ke sana sudah lolos aturan."
+          ],
+          "code": {
+            "language": "php",
+            "lab": false,
+            "code": "<?php\nnamespace App\\Http\\Requests;\n\nuse Illuminate\\Foundation\\Http\\FormRequest;\n\nclass SimpanTugasRequest extends FormRequest {\n    public function rules(): array {\n        return [\n            \"judul\" => [\"required\", \"string\", \"max:255\"],\n            \"daftar_id\" => [\"required\", \"exists:daftar,id\"],\n            \"selesai\" => [\"boolean\"],\n        ];\n    }\n}",
+            "output": "Permintaan dengan masukan tidak sah ditolak sebelum pengendali dijalankan.",
+            "explain": "Setiap kolom diberi daftar aturan. Aturan required memastikan nilai ada, max membatasi panjang, dan exists memeriksa nilai terhadap isi tabel.",
+            "annotations": [
+              {
+                "line": 7,
+                "code": "public function rules(): array {",
+                "note": "Aturan didefinisikan sebagai method yang mengembalikan daftar."
+              },
+              {
+                "line": 9,
+                "code": "\"judul\" => [\"required\", \"string\", \"max:255\"],",
+                "note": "Judul wajib, berupa teks, dan panjangnya dibatasi."
+              },
+              {
+                "line": 10,
+                "code": "\"daftar_id\" => [\"required\", \"exists:daftar,id\"],",
+                "note": "Penunjuk daftar wajib menunjuk baris yang ada."
+              },
+              {
+                "line": 11,
+                "code": "\"selesai\" => [\"boolean\"],",
+                "note": "Status selesai harus berupa nilai benar atau salah."
+              }
+            ]
+          },
+          "callouts": [
+            {
+              "tone": "warn",
+              "title": "Validasi di server",
+              "body": "Pemeriksaan di tampilan hanya mempermudah pengguna. Permintaan tetap dapat dikirim langsung, sehingga validasi di server wajib ada."
+            }
+          ],
+          "checkpoint": {
+            "prompt": "Mengapa validasi di sisi tampilan tidak cukup?",
+            "success": "Karena permintaan dapat dikirim tanpa melalui tampilan, sehingga pemeriksaan di server tetap diperlukan."
+          }
+        },
+        {
+          "id": "memakai-hasil-validasi",
+          "title": "Memakai data yang sudah divalidasi",
+          "body": [
+            "Pengendali pada contoh menerima permintaan yang sudah divalidasi. Karena kelas permintaan menangani aturannya, pengendali dapat langsung memakai hasilnya tanpa pemeriksaan tambahan.",
+            "Pengambilan hasil validasi memastikan hanya nilai yang diatur yang dipakai. Nilai lain yang kebetulan dikirim tidak ikut tersimpan, sehingga data yang masuk ke basis data tetap sesuai rencana.",
+            "Setelah data tersimpan, pengendali mengalihkan ke halaman daftar. Pola ini mengembalikan pengguna ke halaman yang bermakna setelah tindakan selesai."
+          ],
+          "code": {
+            "language": "php",
+            "lab": false,
+            "code": "public function store(SimpanTugasRequest $request) {\n    $data = $request->validated();\n    $tugas = Tugas::create($data);\n    return redirect()->route(\"tugas.index\");\n}",
+            "output": "Data yang lolos validasi tersimpan, lalu pengguna dialihkan ke halaman daftar.",
+            "explain": "Pengendali menerima permintaan yang sudah diperiksa, mengambil hanya nilai yang divalidasi, menyimpannya, lalu mengalihkan ke halaman daftar.",
+            "annotations": [
+              {
+                "line": 1,
+                "code": "public function store(SimpanTugasRequest $request) {",
+                "note": "Parameter bertipe permintaan menjalankan aturan validasi lebih dulu."
+              },
+              {
+                "line": 2,
+                "code": "$data = $request->validated();",
+                "note": "Hanya nilai yang lolos validasi yang diambil."
+              }
+            ]
+          }
+        },
+        {
+          "id": "aturan-bersyarat",
+          "title": "Aturan bersyarat dan pesan kesalahan",
+          "body": [
+            "Sebagian aturan hanya berlaku pada kondisi tertentu. Misalnya, sebuah kolom wajib diisi hanya bila kolom lain berisi nilai tertentu. Aturan bersyarat menyatakan hal itu tanpa menulis pemeriksaan manual di pengendali.",
+            "Pesan kesalahan yang jelas membantu pengguna memperbaiki masukan. Sebut kolom yang bermasalah dan alasannya, bukan hanya menyatakan bahwa masukan tidak sah.",
+            "Untuk masukan berbentuk daftar, aturan dapat diterapkan pada setiap elemen. Dengan begitu, satu aturan mewakili pemeriksaan seluruh anggotanya."
+          ],
+          "checkpoint": {
+            "prompt": "Sebutkan dua hal yang membuat pesan kesalahan mudah ditindaklanjuti.",
+            "success": "Menyebut kolom yang bermasalah dan menjelaskan alasannya."
+          }
+        },
+        {
+          "id": "menghindari-jebakan",
+          "title": "Jebakan yang sering terjadi",
+          "body": [
+            "Mengambil seluruh masukan mentah membuat nilai yang tidak diharapkan ikut tersimpan. Biasakan mengambil hasil validasi saja, sehingga daftar nilai yang dipakai sudah pasti.",
+            "Aturan yang terlalu longgar membiarkan data bermasalah masuk. Aturan yang terlalu ketat menolak masukan yang sebenarnya sah. Uji keduanya dengan contoh yang realistis.",
+            "Mengubah aturan tanpa menyesuaikan pesan kesalahan membuat pengguna menerima keterangan yang tidak sesuai. Perbarui keduanya bersamaan."
+          ],
+          "callouts": [
+            {
+              "tone": "bad",
+              "title": "Kesalahan umum",
+              "body": "Menyimpan seluruh masukan mentah padahal hanya sebagian yang divalidasi. Pakai hasil validasi agar daftar nilainya pasti."
+            }
+          ]
+        }
+      ],
+      "practice": [
+        {
+          "id": "latihan-1",
+          "level": "guided",
+          "title": "Aturan validasi tugas",
+          "task": "Tulis kelas permintaan dengan aturan untuk judul wajib, penunjuk daftar yang ada, dan status selesai berupa nilai benar atau salah.",
+          "steps": [
+            "Buat kelas permintaan dengan method aturan.",
+            "Tulis aturan keberadaan untuk penunjuk daftar.",
+            "Tulis aturan tipe untuk status selesai.",
+            "Uji dengan masukan sah dan tidak sah."
+          ],
+          "starterCode": "class SimpanTugasRequest extends FormRequest {\n    public function rules(): array {\n        return [];\n    }\n}",
+          "expected": "Masukan tidak sah ditolak sebelum pengendali dijalankan.",
+          "stretch": "Tambahkan aturan panjang maksimum pada judul.",
+          "hints": [
+            "Setiap kolom memakai daftar aturan.",
+            "Aturan keberadaan memeriksa nilai terhadap isi tabel.",
+            "Setiap aturan tidak terpenuhi menghasilkan pesan kesalahan."
+          ],
+          "verification": {
+            "command": "Kirim masukan kosong, penunjuk yang tidak ada, dan masukan yang sah.",
+            "expected": "Dua kasus pertama ditolak, kasus ketiga diterima.",
+            "evidence": "Simpan kelas permintaan dan catatan hasil setiap kasus."
+          }
+        },
+        {
+          "id": "latihan-2",
+          "level": "independent",
+          "title": "Aturan bersyarat",
+          "task": "Tambahkan aturan bahwa kolom tenggat wajib diisi hanya bila status tugas ditandai selesai.",
+          "steps": [
+            "Tentukan kolom yang memicu aturan.",
+            "Tulis aturan bersyarat untuk kolom tenggat.",
+            "Uji dengan status selesai dan belum selesai."
+          ],
+          "starterCode": "\"tenggat\" => [\"nullable\", \"date\", /* bersyarat */],",
+          "expected": "Tenggat wajib hanya ketika status selesai; pada kasus lain boleh kosong.",
+          "stretch": "Tambahkan pesan kesalahan khusus untuk aturan itu.",
+          "hints": [
+            "Aturan bersyarat menggabungkan syarat dan aturan wajib.",
+            "Kolom yang tidak wajib diberi penanda boleh kosong.",
+            "Uji kedua skenario secara terpisah."
+          ],
+          "verification": {
+            "command": "Kirim dua permintaan dengan status berbeda.",
+            "expected": "Aturan berlaku tepat sesuai kondisi yang ditetapkan.",
+            "evidence": "Simpan aturan dan catatan hasil kedua permintaan."
+          }
+        },
+        {
+          "id": "latihan-3",
+          "level": "transfer",
+          "title": "Aturan untuk seluruh aplikasi tugas",
+          "task": "Rancang aturan validasi untuk seluruh operasi aplikasi catatan tugas (tambah dan ubah), lalu jelaskan perbedaan aturan antar operasi.",
+          "steps": [
+            "Daftar kolom yang divalidasi setiap operasi.",
+            "Tentukan aturan setiap kolom.",
+            "Jelaskan mengapa sebagian aturan berbeda antar operasi.",
+            "Uji seluruh aturan dengan masukan yang sah dan tidak sah."
+          ],
+          "starterCode": "Tambah: ...\nUbah: ...",
+          "expected": "Setiap operasi punya aturan yang sesuai dan perbedaannya dapat dijelaskan.",
+          "stretch": "Pisahkan aturan bersama ke kelas dasar agar tidak terduplikasi.",
+          "hints": [
+            "Operasi ubah sering membuat kolom tertentu menjadi opsional.",
+            "Aturan yang sama sebaiknya tidak ditulis dua kali.",
+            "Uji setiap aturan dengan contoh nyata."
+          ],
+          "verification": {
+            "command": "Kirim masukan untuk kedua operasi dan periksa pesan kesalahannya.",
+            "expected": "Setiap operasi menegakkan aturannya sendiri dengan pesan yang sesuai.",
+            "evidence": "Simpan daftar aturan dan catatan hasil pengujiannya."
+          }
+        }
+      ],
+      "verification": {
+        "mode": "manual",
+        "command": "Kirim masukan sah dan tidak sah pada kedua operasi, lalu periksa pesan kesalahan serta data yang tersimpan.",
+        "expected": "Masukan tidak sah ditolak dengan pesan yang jelas dan hanya data yang divalidasi yang tersimpan.",
+        "evidence": "Simpan kelas permintaan dan catatan hasil setiap pengujian."
+      },
+      "troubleshooting": [
+        {
+          "symptom": "Nilai yang tidak diharapkan ikut tersimpan.",
+          "cause": "Pengendali memakai seluruh masukan mentah alih-alih hasil validasi.",
+          "fix": "Ambil data memakai hasil validasi sehingga hanya nilai yang diatur yang dipakai."
+        },
+        {
+          "symptom": "Masukan sah ditolak tanpa alasan yang jelas.",
+          "cause": "Aturan terlalu ketat atau tidak sesuai bentuk data yang sebenarnya.",
+          "fix": "Uji aturan dengan data nyata dan longgarkan bagian yang keliru."
+        },
+        {
+          "symptom": "Pesan kesalahan tidak menyebut kolom yang bermasalah.",
+          "cause": "Pesan bawaan tidak disesuaikan untuk kolom tersebut.",
+          "fix": "Tulis pesan khusus yang menyebut kolom dan penyebabnya."
+        },
+        {
+          "symptom": "Aturan bersyarat tidak berjalan sesuai harapan.",
+          "cause": "Syarat pengaktif aturan tidak sesuai dengan nilai yang dikirim.",
+          "fix": "Periksa nilai pemicu dan sesuaikan syaratnya, lalu uji kedua keadaan."
+        }
+      ],
       "quiz": {
-        "question": "Apa prinsip yang paling tepat untuk topik “Validation dan Form Request”?",
-        "options": [
-          "Validasi di server dan gunakan pesan kesalahan yang dapat dipahami pengguna.",
-          "Gunakan solusi paling rumit sejak awal, meski kebutuhan belum jelas.",
-          "Lewati pengujian karena contoh kecil pasti benar."
-        ],
-        "answer": 0,
-        "explanation": "Validasi di server dan gunakan pesan kesalahan yang dapat dipahami pengguna."
-      }
+        "questions": [
+          {
+            "id": "q1",
+            "type": "recall",
+            "question": "Mengapa validasi harus ada di sisi server?",
+            "options": [
+              "Agar tampilan lebih cepat",
+              "Karena permintaan dapat dikirim tanpa melalui tampilan",
+              "Agar data tersimpan otomatis"
+            ],
+            "answer": 1,
+            "explanation": "Permintaan dapat dikirim langsung tanpa peramban, sehingga pemeriksaan di server wajib ada."
+          },
+          {
+            "id": "q2",
+            "type": "code-reading",
+            "question": "Apa yang dikembalikan $request->validated()?",
+            "options": [
+              "Seluruh masukan mentah",
+              "Hanya nilai yang sudah lolos aturan validasi",
+              "Daftar aturan validasi"
+            ],
+            "answer": 1,
+            "explanation": "validated mengembalikan nilai yang sudah diperiksa saja sehingga nilai lain tidak ikut terpakai."
+          },
+          {
+            "id": "q3",
+            "type": "scenario",
+            "question": "Sebuah kolom hanya wajib bila kolom lain berisi nilai tertentu. Cara yang tepat...",
+            "options": [
+              "Menulis pemeriksaan manual di pengendali",
+              "Memakai aturan bersyarat pada kelas permintaan",
+              "Menghapus kolom itu"
+            ],
+            "answer": 1,
+            "explanation": "Aturan bersyarat menyatakan ketergantungan antar kolom tanpa pemeriksaan manual di pengendali."
+          }
+        ]
+      },
+      "resources": [
+        {
+          "sourceId": "laravel-validation",
+          "note": "Dokumentasi resmi Laravel tentang aturan validasi dan Form Request."
+        },
+        {
+          "sourceId": "owasp-sqli",
+          "note": "Panduan OWASP tentang menangani masukan pengguna dengan aman."
+        },
+        {
+          "sourceId": "laravel-docs",
+          "note": "Dokumentasi resmi Laravel tentang pengendali dan permintaan."
+        }
+      ],
+      "summary": [
+        "Validasi memastikan masukan sesuai bentuk dan nilainya sebelum dipakai.",
+        "Validasi ditegakkan di server meski tampilan juga memeriksa masukan.",
+        "Form Request memisahkan aturan validasi dari pengendali.",
+        "Pengendali memakai hasil validasi sehingga hanya nilai yang diatur yang dipakai."
+      ],
+      "next": "Berikutnya: authentication dan authorization. Anda akan membedakan siapa pengguna dan apa yang boleh dilakukannya."
     },
     {
       "id": "m08-l06",
       "title": "Authentication vs authorization",
-      "minutes": 45,
+      "minutes": 120,
       "level": "Menengah",
-      "intro": "Authentication membuktikan siapa pengguna; authorization menentukan apa yang boleh mereka lakukan. Policies dan Gates memeriksa hak akses per aksi/resource.",
-      "explanation": "Jangan hanya menyembunyikan tombol edit di frontend: endpoint backend wajib memverifikasi hak untuk objek yang diminta. Session cocok untuk web; token yang dikelola tepat cocok untuk API.",
-      "code": "<?php\n// Contoh otorisasi pada controller\n$this->authorize(\"update\", $task);\n// Policy memastikan pemilik atau admin berhak mengubah.",
+      "depth": "integrasi",
+      "schema": 3.1,
       "codeLanguage": "php",
-      "practice": [
-        "Definisikan 3 role dan izin terhadap tasks milik pengguna lain.",
-        "Ubah satu input atau asumsi pada contoh, catat hasil dan jelaskan alasannya."
+      "outcome": "Setelah pelajaran ini, Anda dapat membedakan proses mengenali pengguna dan proses menentukan apa yang boleh dilakukannya, serta menerapkan keduanya pada aplikasi.",
+      "objectives": [
+        "Membedakan authentication dan authorization.",
+        "Menjelaskan mengapa identitas saja tidak cukup untuk mengizinkan tindakan.",
+        "Menulis aturan izin pada kelas policy.",
+        "Menerapkan pemeriksaan izin pada aksi pengendali."
       ],
-      "bestPractice": "Selalu lakukan otorisasi server-side pada tiap resource sensitif.",
-      "commonMistake": "Menampilkan tombol hanya untuk admin tetapi endpoint tetap bisa diakses semua orang.",
+      "prerequisites": [
+        {
+          "label": "Validation dan Form Request",
+          "lessonId": "m08-l05"
+        }
+      ],
+      "terms": [
+        {
+          "term": "Authentication",
+          "definition": "Proses mengenali siapa pengguna yang sedang mengakses aplikasi."
+        },
+        {
+          "term": "Authorization",
+          "definition": "Proses menentukan tindakan apa yang boleh dilakukan pengguna tersebut."
+        },
+        {
+          "term": "Policy",
+          "definition": "Kelas yang memuat aturan izin untuk sebuah jenis data."
+        },
+        {
+          "term": "Kebocoran izin",
+          "definition": "Keadaan ketika pengguna dapat mengakses atau mengubah data yang bukan miliknya karena pemeriksaan izin terlewat."
+        }
+      ],
+      "syntax": [
+        {
+          "token": "Route::middleware(\"auth\")->group(function () { ... });",
+          "readAs": "Baca sebagai pembatasan bahwa rute di dalamnya hanya dapat diakses pengguna yang sudah dikenali.",
+          "meaning": "Middleware ini menegakkan authentication: pengguna yang belum masuk dialihkan sebelum mencapai aksi.",
+          "example": "Route::middleware(\"auth\")->group(function () { ... });",
+          "output": "Akses tanpa sesi ditolak sebelum aksi dijalankan.",
+          "pitfall": "Memasang middleware ini hanya memastikan pengguna dikenal, belum memastikan ia boleh mengakses data tertentu."
+        },
+        {
+          "token": "public function update(User $user, Tugas $tugas): bool { ... }",
+          "readAs": "Baca sebagai aturan yang menerima pengguna dan data, lalu mengembalikan boleh atau tidak.",
+          "meaning": "Kelas policy memusatkan aturan izin untuk satu jenis data sehingga tidak tersebar di banyak aksi.",
+          "example": "public function update(User $user, Tugas $tugas): bool { return $user->id === $tugas->user_id; }",
+          "output": "Aturan mengembalikan nilai benar hanya bagi pemilik data.",
+          "pitfall": "Menulis pemeriksaan izin langsung di setiap aksi membuat satu kelalaian cukup untuk membuka akses."
+        },
+        {
+          "token": "$this->authorize(\"update\", $tugas);",
+          "readAs": "Baca sebagai pemeriksaan izin sebelum tindakan pengubahan dijalankan.",
+          "meaning": "Pemeriksaan ini menegakkan authorization: bila aturan tidak terpenuhi, tindakan ditolak.",
+          "example": "$this->authorize(\"update\", $tugas);",
+          "output": "Aksi hanya berlanjut bila pengguna berhak atas data itu.",
+          "pitfall": "Memeriksa izin setelah data diubah membuat perubahan sudah terlanjur tersimpan."
+        }
+      ],
+      "conventions": [
+        "Perlakukan authentication dan authorization sebagai dua pemeriksaan terpisah.",
+        "Pakai middleware untuk mengenali pengguna pada seluruh rute yang memerlukan sesi.",
+        "Letakkan aturan izin pada kelas policy sesuai jenis datanya.",
+        "Periksa izin sebelum melakukan perubahan, bukan sesudahnya.",
+        "Uji akses dari sisi pemilik dan bukan pemilik untuk setiap tindakan."
+      ],
+      "sections": [
+        {
+          "id": "cara-membaca",
+          "title": "Cara membaca aturan izin",
+          "body": [
+            "Kelas policy dibaca sebagai kumpulan aturan untuk satu jenis data. Setiap method mewakili satu tindakan, misalnya mengubah atau menghapus, dan mengembalikan boleh atau tidak boleh.",
+            "Pada contoh, aturan mengubah tugas membandingkan pengguna yang sedang mengakses dengan pemilik data. Bila keduanya sama, tindakan diizinkan. Aturan ini berlaku seragam di seluruh bagian aplikasi yang memakainya.",
+            "Setiap method menerima pengguna dan data yang dituju. Bentuk ini membuat aturan dapat diuji langsung tanpa melibatkan permintaan HTTP."
+          ],
+          "code": {
+            "language": "php",
+            "lab": false,
+            "code": "<?php\nnamespace App\\Policies;\n\nuse App\\Models\\Tugas;\nuse App\\Models\\User;\n\nclass TugasPolicy {\n    public function update(User $user, Tugas $tugas): bool {\n        return $user->id === $tugas->user_id;\n    }\n}",
+            "output": "Aturan mengembalikan benar hanya bila pengguna adalah pemilik tugas tersebut.",
+            "explain": "Kelas policy memuat aturan izin. Method update membandingkan pengenal pengguna dengan pemilik data dan mengembalikan hasil perbandingannya.",
+            "annotations": [
+              {
+                "line": 7,
+                "code": "class TugasPolicy {",
+                "note": "Kelas policy menampung aturan izin untuk data tugas."
+              },
+              {
+                "line": 8,
+                "code": "public function update(User $user, Tugas $tugas): bool {",
+                "note": "Method mewakili tindakan mengubah dan menerima pengguna serta data."
+              },
+              {
+                "line": 9,
+                "code": "return $user->id === $tugas->user_id;",
+                "note": "Aturan mengizinkan hanya bila pengguna adalah pemilik data."
+              }
+            ]
+          },
+          "callouts": [
+            {
+              "tone": "good",
+              "title": "Aturan di satu tempat",
+              "body": "Dengan policy, aturan izin terkumpul di satu kelas. Aplikasi bagian lain cukup memanggilnya tanpa menyalin pemeriksaan."
+            }
+          ],
+          "checkpoint": {
+            "prompt": "Apa yang dibandingkan aturan pada contoh, dan apa hasilnya bila pengguna bukan pemilik data?",
+            "success": "Pengenal pengguna dibandingkan dengan pemilik data; bila berbeda, aturan mengembalikan tidak boleh."
+          }
+        },
+        {
+          "id": "dua-pemeriksaan",
+          "title": "Dua pemeriksaan yang berbeda",
+          "body": [
+            "Authentication menjawab siapa pengguna. Authorization menjawab apa yang boleh dilakukannya. Keduanya terpisah, dan menyelesaikan yang pertama tidak berarti menyelesaikan yang kedua.",
+            "Pengguna yang sudah masuk tetap tidak boleh mengubah data milik orang lain. Karena itu, setiap tindakan yang menyentuh data tertentu perlu memeriksa kepemilikan atau izinnya.",
+            "Kesalahan umum adalah memasang middleware identitas lalu menganggap keamanan selesai. Akibatnya, pemilik data dapat dibedakan, tetapi data orang lain tetap dapat diubah."
+          ],
+          "callouts": [
+            {
+              "tone": "warn",
+              "title": "Identitas bukan izin",
+              "body": "Sudah masuk hanya berarti pengguna dikenal. Pastikan setiap tindakan juga memeriksa apakah ia berhak atas data itu."
+            }
+          ],
+          "checkpoint": {
+            "prompt": "Mengapa memasang middleware identitas saja belum menjamin keamanan data?",
+            "success": "Karena middleware hanya memastikan pengguna dikenal, bukan memastikan ia berhak atas data tertentu."
+          }
+        },
+        {
+          "id": "menerapkan-izin",
+          "title": "Menerapkan pemeriksaan izin",
+          "body": [
+            "Pengendali pada contoh memeriksa izin sebelum mengubah data. Urutan ini penting: bila pemeriksaan dilakukan setelah perubahan, datanya sudah terlanjur berubah.",
+            "Pemeriksaan izin memakai nama tindakan dan data yang dituju. Aplikasi mencari aturan yang sesuai dan menolak tindakan bila aturan tidak terpenuhi.",
+            "Setelah izin terpenuhi, baru data diperbarui memakai nilai yang sudah divalidasi. Dengan urutan ini, hanya pengguna berhak yang dapat mengubah, dan hanya dengan nilai yang sah."
+          ],
+          "code": {
+            "language": "php",
+            "lab": false,
+            "code": "public function update(SimpanTugasRequest $request, Tugas $tugas) {\n    $this->authorize(\"update\", $tugas);\n    $tugas->update($request->validated());\n    return redirect()->route(\"tugas.index\");\n}",
+            "output": "Perubahan hanya tersimpan bila pengguna berhak atas data itu.",
+            "explain": "Pengendali memeriksa izin lebih dulu, lalu memperbarui data dengan nilai yang sudah divalidasi, kemudian mengalihkan ke halaman daftar.",
+            "annotations": [
+              {
+                "line": 2,
+                "code": "$this->authorize(\"update\", $tugas);",
+                "note": "Pemeriksaan izin dilakukan sebelum perubahan."
+              },
+              {
+                "line": 3,
+                "code": "$tugas->update($request->validated());",
+                "note": "Data diperbarui memakai hasil validasi."
+              }
+            ]
+          }
+        },
+        {
+          "id": "menguji-akses",
+          "title": "Menguji akses dari kedua sisi",
+          "body": [
+            "Setiap tindakan yang menyentuh data tertentu sebaiknya diuji dari dua sisi: pemilik yang berhak dan pengguna lain yang tidak berhak. Kedua pengujian itu memastikan aturan benar-benar berjalan.",
+            "Uji juga permintaan tanpa sesi. Bila tanpa sesi tetap dapat mengakses, berarti lapisan identitas belum dipasang dengan benar.",
+            "Kebocoran izin sering tidak terlihat pada pemakaian normal karena pengguna biasanya mengakses data miliknya sendiri. Karena itu, pengujian dari sisi bukan pemilik justru yang paling penting."
+          ],
+          "checkpoint": {
+            "prompt": "Mengapa pengujian dari sisi bukan pemilik penting meski pemakaian normal terlihat aman?",
+            "success": "Karena kebocoran izin biasanya tidak muncul saat pengguna mengakses data miliknya sendiri, sehingga perlu diuji secara khusus."
+          }
+        }
+      ],
+      "practice": [
+        {
+          "id": "latihan-1",
+          "level": "guided",
+          "title": "Policy untuk mengubah tugas",
+          "task": "Buat policy yang mengizinkan pengubahan tugas hanya oleh pemiliknya, lalu terapkan pada aksi pengendali.",
+          "steps": [
+            "Buat kelas policy dengan method untuk mengubah.",
+            "Bandingkan pengguna dengan pemilik data.",
+            "Panggil pemeriksaan izin pada aksi pengendali.",
+            "Uji dengan pemilik dan bukan pemilik."
+          ],
+          "starterCode": "class TugasPolicy {\n    public function update(User $user, Tugas $tugas): bool {\n        // lengkapi\n    }\n}",
+          "expected": "Pemilik dapat mengubah; pengguna lain ditolak.",
+          "stretch": "Tambahkan aturan untuk tindakan menghapus.",
+          "hints": [
+            "Aturan menerima pengguna dan data.",
+            "Bandingkan pengenal pemilik data.",
+            "Periksa izin sebelum perubahan."
+          ],
+          "verification": {
+            "command": "Jalankan aksi sebagai pemilik dan sebagai pengguna lain.",
+            "expected": "Pemilik diizinkan; pengguna lain ditolak tanpa mengubah data.",
+            "evidence": "Simpan policy, pengendali, dan catatan hasil kedua pengujian."
+          }
+        },
+        {
+          "id": "latihan-2",
+          "level": "independent",
+          "title": "Pisahkan identitas dan izin",
+          "task": "Batasi sebuah rute dengan pemeriksaan identitas, lalu pastikan tindakan pada data tetap memeriksa izin kepemilikan.",
+          "steps": [
+            "Pasang pemeriksaan identitas pada rute.",
+            "Tambahkan pemeriksaan izin pada aksinya.",
+            "Uji akses tanpa sesi.",
+            "Uji akses dengan sesi milik pengguna lain."
+          ],
+          "starterCode": "Route::middleware(\"auth\")->group(function () { ... });",
+          "expected": "Tanpa sesi ditolak, dan dengan sesi pengguna lain tetap ditolak pada data yang bukan miliknya.",
+          "stretch": "Tambahkan pesan kesalahan yang berbeda untuk kedua kasus.",
+          "hints": [
+            "Identitas memastikan pengguna dikenal.",
+            "Izin memastikan pengguna berhak atas data.",
+            "Uji kedua lapisan secara terpisah."
+          ],
+          "verification": {
+            "command": "Jalankan tiga skenario: tanpa sesi, pemilik, dan bukan pemilik.",
+            "expected": "Hanya pemilik yang berhasil mengubah data.",
+            "evidence": "Simpan berkas rute, pengendali, dan catatan tiga pengujian."
+          }
+        },
+        {
+          "id": "latihan-3",
+          "level": "transfer",
+          "title": "Peta izin aplikasi tugas",
+          "task": "Susun peta izin untuk seluruh tindakan pada aplikasi catatan tugas beserta peran yang berhak, lalu terapkan pada policy.",
+          "steps": [
+            "Daftar seluruh tindakan pada data tugas.",
+            "Tentukan siapa yang berhak untuk setiap tindakan.",
+            "Tulis method policy untuk setiap tindakan.",
+            "Uji setiap tindakan dari sisi berhak dan tidak berhak."
+          ],
+          "starterCode": "Melihat: ...\nMengubah: ...\nMenghapus: ...",
+          "expected": "Setiap tindakan punya aturan izin yang jelas dan teruji dari kedua sisi.",
+          "stretch": "Tambahkan peran admin yang boleh mengubah semua data.",
+          "hints": [
+            "Beberapa tindakan mungkin berlaku untuk semua pemilik data.",
+            "Setiap aturan sebaiknya berupa method tersendiri.",
+            "Uji kedua sisi untuk setiap tindakan."
+          ],
+          "verification": {
+            "command": "Jalankan setiap tindakan sebagai pengguna berhak dan tidak berhak.",
+            "expected": "Hasil setiap tindakan sesuai peta izin yang disusun.",
+            "evidence": "Simpan policy dan catatan hasil pengujian setiap tindakan."
+          }
+        }
+      ],
+      "verification": {
+        "mode": "manual",
+        "command": "Uji setiap tindakan dari sisi pemilik, bukan pemilik, dan tanpa sesi.",
+        "expected": "Tanpa sesi ditolak, pemilik diizinkan sesuai aturannya, dan bukan pemilik selalu ditolak tanpa mengubah data.",
+        "evidence": "Simpan policy, pengendali, dan catatan hasil seluruh pengujian."
+      },
+      "troubleshooting": [
+        {
+          "symptom": "Pengguna dapat mengubah data milik orang lain.",
+          "cause": "Pemeriksaan izin tidak dilakukan meski identitas sudah diperiksa.",
+          "fix": "Tambahkan pemeriksaan izin pada setiap tindakan yang menyentuh data tertentu."
+        },
+        {
+          "symptom": "Perubahan sudah tersimpan meski izin ditolak.",
+          "cause": "Pemeriksaan izin dijalankan setelah data diubah.",
+          "fix": "Pindahkan pemeriksaan izin ke awal aksi, sebelum perubahan dijalankan."
+        },
+        {
+          "symptom": "Akses tanpa sesi tetap berhasil.",
+          "cause": "Pemeriksaan identitas tidak dipasang pada rute yang bersangkutan.",
+          "fix": "Pasang middleware identitas pada seluruh rute yang memerlukan sesi, lalu uji tanpa sesi."
+        },
+        {
+          "symptom": "Aturan izin berbeda-beda pada beberapa aksi.",
+          "cause": "Pemeriksaan ditulis langsung di setiap aksi alih-alih dipusatkan pada policy.",
+          "fix": "Pindahkan seluruh aturan izin ke kelas policy dan panggil dari aksi."
+        }
+      ],
       "quiz": {
-        "question": "Apa prinsip yang paling tepat untuk topik “Authentication vs authorization”?",
-        "options": [
-          "Selalu lakukan otorisasi server-side pada tiap resource sensitif.",
-          "Gunakan solusi paling rumit sejak awal, meski kebutuhan belum jelas.",
-          "Lewati pengujian karena contoh kecil pasti benar."
-        ],
-        "answer": 0,
-        "explanation": "Selalu lakukan otorisasi server-side pada tiap resource sensitif."
-      }
+        "questions": [
+          {
+            "id": "q1",
+            "type": "recall",
+            "question": "Apa perbedaan authentication dan authorization?",
+            "options": [
+              "Authentication mengenali pengguna; authorization menentukan tindakan yang boleh dilakukan",
+              "Keduanya sama saja",
+              "Authentication mengatur data; authorization mengenali pengguna"
+            ],
+            "answer": 0,
+            "explanation": "Authentication menjawab siapa pengguna, authorization menjawab apa yang boleh dilakukannya."
+          },
+          {
+            "id": "q2",
+            "type": "code-reading",
+            "question": "Mengapa pemeriksaan izin harus dijalankan sebelum data diubah?",
+            "options": [
+              "Agar lebih cepat",
+              "Agar perubahan tidak terlanjur tersimpan ketika izin ternyata ditolak",
+              "Agar data tersimpan otomatis"
+            ],
+            "answer": 1,
+            "explanation": "Bila diperiksa setelah perubahan, data sudah terlanjur berubah meski izinnya ditolak."
+          },
+          {
+            "id": "q3",
+            "type": "scenario",
+            "question": "Middleware identitas sudah dipasang, tetapi pengguna masih dapat mengubah data orang lain. Penyebab paling mungkin...",
+            "options": [
+              "Middleware identitas salah pasang",
+              "Pemeriksaan izin kepemilikan belum dilakukan",
+              "Basis data terlalu lambat"
+            ],
+            "answer": 1,
+            "explanation": "Identitas hanya mengenali pengguna; izin kepemilikan tetap perlu diperiksa terpisah."
+          }
+        ]
+      },
+      "resources": [
+        {
+          "sourceId": "laravel-authorization",
+          "note": "Dokumentasi resmi Laravel tentang policy dan pemeriksaan izin."
+        },
+        {
+          "sourceId": "laravel-docs",
+          "note": "Dokumentasi resmi Laravel tentang authentication dan middleware."
+        },
+        {
+          "sourceId": "owasp-sqli",
+          "note": "Panduan OWASP tentang pengendalian akses dan penanganan masukan."
+        }
+      ],
+      "summary": [
+        "Authentication mengenali pengguna, sedangkan authorization menentukan tindakan yang boleh dilakukan.",
+        "Memasang middleware identitas belum cukup; setiap tindakan perlu memeriksa izin.",
+        "Aturan izin dipusatkan pada kelas policy sesuai jenis data.",
+        "Pemeriksaan izin dijalankan sebelum perubahan, dan akses diuji dari sisi berhak serta tidak berhak."
+      ],
+      "next": "Berikutnya: REST API dan Resource. Anda akan menyediakan data untuk aplikasi lain dengan bentuk tanggapan yang konsisten."
     },
     {
       "id": "m08-l07",
       "title": "REST API Laravel dan Resource",
-      "minutes": 45,
+      "minutes": 120,
       "level": "Menengah",
-      "intro": "API mengirim JSON dengan status HTTP yang tepat. API Resource menata bentuk payload dan mencegah pembocoran field internal. Gunakan pagination, filter, dan dokumentasi.",
-      "explanation": "Pilih struktur error yang konsisten, misalnya message, errors, code. Jangan mengembalikan password hash, secret atau data yang tidak diperlukan.",
-      "code": "<?php\nreturn response()->json([\n  \"data\" => [\"id\" => 1, \"title\" => \"Belajar API\"],\n], 200);",
+      "depth": "integrasi",
+      "schema": 3.1,
       "codeLanguage": "php",
-      "practice": [
-        "Tentukan kontrak JSON untuk list, detail, create, dan error validasi tasks.",
-        "Ubah satu input atau asumsi pada contoh, catat hasil dan jelaskan alasannya."
+      "outcome": "Setelah pelajaran ini, Anda dapat menyediakan data untuk aplikasi lain lewat API dengan alamat dan bentuk tanggapan yang konsisten.",
+      "objectives": [
+        "Menjelaskan prinsip dasar API yang mengikuti gaya REST.",
+        "Mendaftarkan rute API untuk operasi data.",
+        "Mengembalikan tanggapan dengan status yang tepat.",
+        "Menyusun bentuk tanggapan memakai kelas resource."
       ],
-      "bestPractice": "Tetapkan kontrak respons yang stabil dan minim field sensitif.",
-      "commonMistake": "Mengembalikan seluruh kolom database apa adanya ke mobile.",
+      "prerequisites": [
+        {
+          "label": "Authentication vs authorization",
+          "lessonId": "m08-l06"
+        }
+      ],
+      "terms": [
+        {
+          "term": "API",
+          "definition": "Antarmuka yang memungkinkan aplikasi lain memakai fungsi atau data sebuah layanan."
+        },
+        {
+          "term": "REST",
+          "definition": "Gaya perancangan API yang memakai method HTTP dan alamat untuk mewakili operasi pada sumber daya."
+        },
+        {
+          "term": "Status code",
+          "definition": "Angka pada tanggapan HTTP yang menyatakan hasil permintaan."
+        },
+        {
+          "term": "Resource",
+          "definition": "Kelas yang menyusun bentuk data sebelum dikirim sebagai tanggapan JSON."
+        }
+      ],
+      "syntax": [
+        {
+          "token": "Route::apiResource(\"tugas\", TugasController::class);",
+          "readAs": "Baca sebagai pendaftaran seluruh rute operasi data untuk sumber daya tugas sekaligus.",
+          "meaning": "Satu perintah mendaftarkan rute daftar, tambah, tampil, ubah, dan hapus dengan alamat dan method yang konsisten.",
+          "example": "Route::apiResource(\"tugas\", TugasController::class);",
+          "output": "Seluruh operasi data tersedia dengan pola alamat yang seragam.",
+          "pitfall": "Menulis setiap rute satu per satu membuat pola mudah berbeda antar sumber daya."
+        },
+        {
+          "token": "return (new TugasResource($tugas))->response()->setStatusCode(201);",
+          "readAs": "Baca sebagai pengiriman data tugas dengan status yang menyatakan data baru dibuat.",
+          "meaning": "Status memengaruhi cara klien menanggapi. Untuk pembuatan data, status yang tepat memberi tahu bahwa sumber daya baru tersedia.",
+          "example": "return new TugasResource($tugas);",
+          "output": "Klien menerima data dan status yang sesuai hasil operasinya.",
+          "pitfall": "Selalu mengembalikan status berhasil membuat klien tidak dapat membedakan hasil operasi."
+        },
+        {
+          "token": "\"judul\" => $this->judul,",
+          "readAs": "Baca sebagai pemetaan kolom data ke nama pada tanggapan JSON.",
+          "meaning": "Kelas resource menyusun bentuk tanggapan secara eksplisit, sehingga kolom yang tidak perlu tidak ikut terkirim.",
+          "example": "\"id\" => $this->id,",
+          "output": "Tanggapan hanya memuat kolom yang ditentukan.",
+          "pitfall": "Mengirim data mentah dari model dapat membocorkan kolom internal yang tidak seharusnya dibagikan."
+        }
+      ],
+      "conventions": [
+        "Pakai alamat yang mewakili sumber daya dan method yang menyatakan operasinya.",
+        "Kembalikan status yang sesuai dengan hasil operasi.",
+        "Susun tanggapan lewat kelas resource agar bentuknya konsisten.",
+        "Jangan membocorkan kolom internal atau data sensitif pada tanggapan.",
+        "Pertahankan bentuk tanggapan yang sama antarversi agar klien tidak rusak."
+      ],
+      "sections": [
+        {
+          "id": "cara-membaca",
+          "title": "Cara membaca rute API",
+          "body": [
+            "Rute API dibaca sebagai pemetaan sumber daya ke sekumpulan operasi. Satu sumber daya menghasilkan beberapa alamat, masing-masing dengan method yang menyatakan operasinya.",
+            "Pada contoh, satu perintah mendaftarkan seluruh operasi untuk sumber daya tugas. Alamatnya mengikuti pola yang sama, sehingga urutan pendaftaran tidak lagi mudah menimbulkan tabrakan.",
+            "Konsistensi ini mempermudah pemakaian. Klien cukup memahami pola alamat dan method untuk memakai seluruh operasi, bukan menghafal alamat satu per satu."
+          ],
+          "code": {
+            "language": "php",
+            "lab": false,
+            "code": "<?php\n// routes/api.php\nuse App\\Http\\Controllers\\TugasController;\n\nRoute::apiResource(\"tugas\", TugasController::class);",
+            "output": "Seluruh operasi data untuk tugas tersedia dengan pola alamat dan method yang seragam.",
+            "explain": "Satu perintah mendaftarkan rute untuk daftar, tambah, tampil, ubah, dan hapus. Pengendali menangani masing-masing operasi.",
+            "annotations": [
+              {
+                "line": 2,
+                "code": "// routes/api.php",
+                "note": "Berkas rute API terpisah dari rute halaman."
+              },
+              {
+                "line": 3,
+                "code": "use App\\Http\\Controllers\\TugasController;",
+                "note": "Pengendali yang menangani operasi diimpor."
+              },
+              {
+                "line": 5,
+                "code": "Route::apiResource(\"tugas\", TugasController::class);",
+                "note": "Pendaftaran tunggal mencakup seluruh operasi sumber daya."
+              }
+            ]
+          },
+          "callouts": [
+            {
+              "tone": "good",
+              "title": "Pola yang konsisten",
+              "body": "Satu sumber daya dengan pola alamat yang seragam membuat API mudah dipelajari dan dipakai klien."
+            }
+          ],
+          "checkpoint": {
+            "prompt": "Sebutkan dua operasi yang didaftarkan oleh perintah rute sumber daya itu.",
+            "success": "Misalnya menampilkan daftar dan menambah data, selain menampilkan, mengubah, dan menghapus satu data."
+          }
+        },
+        {
+          "id": "resource",
+          "title": "Menyusun tanggapan dengan resource",
+          "body": [
+            "Kelas resource dibaca sebagai daftar kolom yang dikirim ke klien. Setiap baris memetakan satu nilai dari data ke nama pada tanggapan. Kolom yang tidak disebut tidak ikut terkirim.",
+            "Pada contoh, hanya tiga kolom yang dibagikan. Kolom internal seperti waktu pembuatan atau penunjuk pemilik tidak ikut, sehingga tanggapan tetap ringkas dan aman.",
+            "Nilai juga dapat disesuaikan bentuknya saat dipetakan. Contohnya, nilai status diubah menjadi tipe yang jelas bagi klien. Penyesuaian ini terkumpul di satu kelas sehingga seragam di seluruh tanggapan."
+          ],
+          "code": {
+            "language": "php",
+            "lab": false,
+            "code": "<?php\nnamespace App\\Http\\Resources;\n\nuse Illuminate\\Http\\Request;\nuse Illuminate\\Http\\Resources\\Json\\JsonResource;\n\nclass TugasResource extends JsonResource {\n    public function toArray(Request $request): array {\n        return [\n            \"id\" => $this->id,\n            \"judul\" => $this->judul,\n            \"selesai\" => (bool) $this->selesai,\n        ];\n    }\n}",
+            "output": "Tanggapan JSON hanya memuat kolom id, judul, dan selesai untuk setiap tugas.",
+            "explain": "Kelas resource mendefinisikan bentuk tanggapan. Setiap baris memetakan satu nilai dari data dan menyesuaikan bentuknya bila perlu.",
+            "annotations": [
+              {
+                "line": 7,
+                "code": "class TugasResource extends JsonResource {",
+                "note": "Kelas resource menyusun bentuk tanggapan untuk data tugas."
+              },
+              {
+                "line": 8,
+                "code": "public function toArray(Request $request): array {",
+                "note": "Bentuk ditentukan sebagai daftar kolom."
+              },
+              {
+                "line": 10,
+                "code": "\"id\" => $this->id,",
+                "note": "Kolom pengenal dibagikan."
+              },
+              {
+                "line": 11,
+                "code": "\"judul\" => $this->judul,",
+                "note": "Kolom judul dibagikan."
+              },
+              {
+                "line": 12,
+                "code": "\"selesai\" => (bool) $this->selesai,",
+                "note": "Kolom status disesuaikan menjadi tipe yang jelas bagi klien."
+              }
+            ]
+          }
+        },
+        {
+          "id": "status-dan-operasi",
+          "title": "Status yang tepat untuk setiap operasi",
+          "body": [
+            "Setiap operasi memiliki status yang paling sesuai. Membaca berhasil memakai status berhasil biasa, membuat data baru memakai status dibuat, dan masukan yang tidak sah memakai status kesalahan dari sisi pengirim.",
+            "Status bukan sekadar hiasan. Klien memakainya untuk memutuskan langkah berikutnya: menampilkan data, menampilkan kesalahan, atau mencoba lagi.",
+            "Menjaga status tetap konsisten antaroperasi memudahkan klien. Bila status tidak sesuai, klien akan menebak-nebak dan menangani hasil yang salah."
+          ],
+          "callouts": [
+            {
+              "tone": "warn",
+              "title": "Jangan selalu 200",
+              "body": "Mengembalikan status berhasil untuk semua hasil menyulitkan klien membedakan sukses dan gagal."
+            }
+          ],
+          "checkpoint": {
+            "prompt": "Status apa yang tepat untuk berhasil membuat data baru dan untuk masukan yang tidak sah?",
+            "success": "Status dibuat untuk data baru yang berhasil, dan status kesalahan sisi pengirim untuk masukan yang tidak sah."
+          }
+        },
+        {
+          "id": "kesinambungan-bentuk",
+          "title": "Menjaga bentuk tanggapan tetap stabil",
+          "body": [
+            "Klien bergantung pada bentuk tanggapan. Mengubah nama kolom atau menghapusnya tanpa peringatan dapat merusak aplikasi yang memakai API Anda.",
+            "Menambahkan kolom baru umumnya aman karena klien dapat mengabaikannya. Menghapus atau mengganti nama kolom perlu direncanakan dan diberitahukan lebih dulu.",
+            "Dokumentasikan bentuk tanggapan setiap alamat. Dokumentasi ini menjadi rujukan bersama sehingga perubahan bentuk dapat dinilai dampaknya sebelum dilakukan."
+          ],
+          "checkpoint": {
+            "prompt": "Perubahan bentuk tanggapan seperti apa yang relatif aman, dan mana yang perlu direncanakan?",
+            "success": "Menambah kolom baru relatif aman; menghapus atau mengganti nama kolom perlu direncanakan karena dapat merusak klien."
+          }
+        }
+      ],
+      "practice": [
+        {
+          "id": "latihan-1",
+          "level": "guided",
+          "title": "Rute API untuk tugas",
+          "task": "Daftarkan seluruh operasi API untuk sumber daya tugas, lalu pastikan setiap alamat memanggil aksi yang benar.",
+          "steps": [
+            "Daftarkan rute sumber daya untuk tugas.",
+            "Periksa setiap alamat yang dihasilkan.",
+            "Pastikan setiap aksi mengembalikan status yang sesuai."
+          ],
+          "starterCode": "Route::apiResource(\"tugas\", TugasController::class);",
+          "expected": "Seluruh operasi tersedia dengan pola alamat dan status yang sesuai.",
+          "stretch": "Tambahkan pembatasan akses pada operasi yang mengubah data.",
+          "hints": [
+            "Satu perintah mendaftarkan seluruh operasi sumber daya.",
+            "Method menyatakan jenis operasi.",
+            "Status disesuaikan dengan hasil setiap operasi."
+          ],
+          "verification": {
+            "command": "Panggil setiap alamat dan periksa data serta statusnya.",
+            "expected": "Setiap alamat mengembalikan data dan status yang sesuai operasinya.",
+            "evidence": "Simpan berkas rute dan catatan hasil setiap alamat."
+          }
+        },
+        {
+          "id": "latihan-2",
+          "level": "independent",
+          "title": "Bentuk tanggapan dengan resource",
+          "task": "Buat kelas resource yang hanya membagikan kolom id, judul, dan selesai, lalu terapkan pada aksi daftar.",
+          "steps": [
+            "Buat kelas resource untuk data tugas.",
+            "Tentukan kolom yang dibagikan.",
+            "Sesuaikan bentuk nilai yang perlu, misalnya status.",
+            "Terapkan pada aksi daftar dan periksa tanggapannya."
+          ],
+          "starterCode": "class TugasResource extends JsonResource {\n    public function toArray(Request $request): array {\n        return [];\n    }\n}",
+          "expected": "Tanggapan hanya memuat kolom yang ditentukan dan bentuk nilainya konsisten.",
+          "stretch": "Tambahkan kolom waktu dibuat dengan format yang jelas.",
+          "hints": [
+            "Setiap baris memetakan satu nilai ke nama pada tanggapan.",
+            "Kolom yang tidak disebut tidak ikut terkirim.",
+            "Bentuk nilai dapat disesuaikan saat dipetakan."
+          ],
+          "verification": {
+            "command": "Panggil aksi daftar dan periksa kunci serta tipe nilai pada tanggapan.",
+            "expected": "Tanggapan memuat tepat kolom yang ditentukan dengan tipe yang sesuai.",
+            "evidence": "Simpan kelas resource dan contoh tanggapan."
+          }
+        },
+        {
+          "id": "latihan-3",
+          "level": "transfer",
+          "title": "Bentuk tanggapan untuk seluruh operasi",
+          "task": "Rancang bentuk tanggapan yang konsisten untuk seluruh operasi tugas, termasuk tanggapan kesalahan validasi, lalu jelaskan alasannya.",
+          "steps": [
+            "Tentukan bentuk tanggapan data tunggal.",
+            "Tentukan bentuk tanggapan daftar.",
+            "Tentukan bentuk tanggapan kesalahan yang konsisten.",
+            "Jelaskan alasan keseragaman bentuk itu."
+          ],
+          "starterCode": "Data tunggal: ...\nDaftar: ...\nKesalahan: ...",
+          "expected": "Bentuk tanggapan seragam dan mudah ditangani klien, termasuk pada kasus gagal.",
+          "stretch": "Tambahkan penomoran halaman pada tanggapan daftar.",
+          "hints": [
+            "Konsistensi membantu klien menangani hasil.",
+            "Bentuk kesalahan sebaiknya sama di seluruh alamat.",
+            "Dokumentasikan bentuk yang ditetapkan."
+          ],
+          "verification": {
+            "command": "Bandingkan bentuk tanggapan pada operasi berhasil dan gagal.",
+            "expected": "Bentuk tanggapan konsisten dan kesalahan mudah dibedakan.",
+            "evidence": "Simpan rancangan bentuk dan contoh tanggapan tiap kasus."
+          }
+        }
+      ],
+      "verification": {
+        "mode": "manual",
+        "command": "Panggil seluruh alamat API dan periksa data, status, serta bentuk tanggapannya.",
+        "expected": "Setiap operasi mengembalikan data dan status yang sesuai, dengan bentuk tanggapan yang konsisten dan tanpa kolom internal.",
+        "evidence": "Simpan berkas rute, resource, dan catatan hasil setiap pemanggilan."
+      },
+      "troubleshooting": [
+        {
+          "symptom": "Klien tidak dapat membedakan berhasil dan gagal.",
+          "cause": "Semua hasil dikembalikan dengan status berhasil yang sama.",
+          "fix": "Kembalikan status yang sesuai dengan hasil setiap operasi."
+        },
+        {
+          "symptom": "Tanggapan memuat kolom yang tidak seharusnya dibagikan.",
+          "cause": "Data mentah dari model dikirim langsung tanpa kelas resource.",
+          "fix": "Susun bentuk tanggapan lewat kelas resource yang menyebut kolom yang dibagikan saja."
+        },
+        {
+          "symptom": "Aplikasi klien rusak setelah API diperbarui.",
+          "cause": "Nama atau keberadaan kolom pada tanggapan berubah tanpa peringatan.",
+          "fix": "Rencanakan perubahan bentuk tanggapan dan dokumentasikan agar klien dapat menyesuaikan."
+        },
+        {
+          "symptom": "Alamat API bertabrakan sehingga sebagian permintaan salah arah.",
+          "cause": "Rute didaftarkan satu per satu dengan pola yang tidak seragam.",
+          "fix": "Gunakan pendaftaran sumber daya agar pola alamat konsisten dan tidak bertabrakan."
+        }
+      ],
       "quiz": {
-        "question": "Apa prinsip yang paling tepat untuk topik “REST API Laravel dan Resource”?",
-        "options": [
-          "Tetapkan kontrak respons yang stabil dan minim field sensitif.",
-          "Gunakan solusi paling rumit sejak awal, meski kebutuhan belum jelas.",
-          "Lewati pengujian karena contoh kecil pasti benar."
-        ],
-        "answer": 0,
-        "explanation": "Tetapkan kontrak respons yang stabil dan minim field sensitif."
-      }
+        "questions": [
+          {
+            "id": "q1",
+            "type": "recall",
+            "question": "Apa keuntungan mendaftarkan rute lewat sumber daya?",
+            "options": [
+              "API menjadi lebih cepat",
+              "Seluruh operasi data tersedia dengan pola alamat dan method yang seragam",
+              "Data tersimpan otomatis"
+            ],
+            "answer": 1,
+            "explanation": "Pendaftaran sumber daya menghasilkan pola alamat dan method yang konsisten untuk seluruh operasi."
+          },
+          {
+            "id": "q2",
+            "type": "code-reading",
+            "question": "Apa fungsi kelas resource pada tanggapan API?",
+            "options": [
+              "Menyimpan data ke basis data",
+              "Menyusun bentuk tanggapan sehingga hanya kolom yang ditentukan yang dikirim",
+              "Mengurutkan data"
+            ],
+            "answer": 1,
+            "explanation": "Kelas resource memetakan data ke bentuk tanggapan yang eksplisit dan aman."
+          },
+          {
+            "id": "q3",
+            "type": "scenario",
+            "question": "Berhasil membuat data baru. Status tanggapan yang tepat...",
+            "options": [
+              "Status berhasil biasa",
+              "Status dibuat",
+              "Status kesalahan sisi pengirim"
+            ],
+            "answer": 1,
+            "explanation": "Pembuatan data baru sebaiknya memakai status yang menandakan sumber daya baru dibuat."
+          }
+        ]
+      },
+      "resources": [
+        {
+          "sourceId": "laravel-resources",
+          "note": "Dokumentasi resmi Laravel tentang kelas resource dan bentuk tanggapan."
+        },
+        {
+          "sourceId": "laravel-routing",
+          "note": "Dokumentasi resmi Laravel tentang rute sumber daya API."
+        },
+        {
+          "sourceId": "rfc-9110",
+          "note": "Standar HTTP tentang method dan status code."
+        }
+      ],
+      "summary": [
+        "API gaya REST memakai alamat untuk mewakili sumber daya dan method untuk menyatakan operasinya.",
+        "Pendaftaran sumber daya menghasilkan pola alamat dan method yang konsisten.",
+        "Setiap operasi mengembalikan status yang sesuai hasilnya.",
+        "Kelas resource menyusun bentuk tanggapan sehingga hanya kolom yang ditentukan yang dikirim."
+      ],
+      "next": "Berikutnya: queue, jobs, caching, dan file. Anda akan memindahkan pekerjaan berat ke luar permintaan serta menyimpan berkas dengan aman."
     },
     {
       "id": "m08-l08",
       "title": "Queue, jobs, caching, dan file",
-      "minutes": 45,
+      "minutes": 120,
       "level": "Menengah",
-      "intro": "Pekerjaan lambat (email, laporan besar) sebaiknya memakai queue bila memerlukan respons cepat. Cache mempercepat data yang dapat digunakan ulang tetapi butuh strategi invalidasi.",
-      "explanation": "File upload harus divalidasi tipe/ukuran dan disimpan di disk sesuai kebutuhan. Jangan mempercayai nama file dari pengguna. Jalankan worker dengan pengelolaan proses pada produksi.",
-      "code": "<?php\n// Contoh konsep:\n// ReportJob::dispatch($reportId);\n// Respons HTTP tidak harus menunggu laporan selesai.",
+      "depth": "integrasi",
+      "schema": 3.1,
       "codeLanguage": "php",
-      "practice": [
-        "Pilih proses yang perlu background job, lalu jelaskan bagaimana melacak sukses/gagal.",
-        "Ubah satu input atau asumsi pada contoh, catat hasil dan jelaskan alasannya."
+      "outcome": "Setelah pelajaran ini, Anda dapat memindahkan pekerjaan berat ke antrean, memakai singgahan untuk mempercepat pembacaan, dan mengelola berkas unggahan dengan aman.",
+      "objectives": [
+        "Menjelaskan kapan pekerjaan sebaiknya dipindahkan ke antrean.",
+        "Menulis job yang dijalankan oleh pekerja antrean.",
+        "Memakai singgahan untuk hasil perhitungan yang sering diminta.",
+        "Menyimpan berkas unggahan dengan nama dan lokasi yang aman."
       ],
-      "bestPractice": "Gunakan queue untuk beban lambat dan pantau retry serta kegagalannya.",
-      "commonMistake": "Mengirim laporan berat pada satu request hingga timeout.",
+      "prerequisites": [
+        {
+          "label": "REST API Laravel dan Resource",
+          "lessonId": "m08-l07"
+        }
+      ],
+      "terms": [
+        {
+          "term": "Antrean",
+          "definition": "Daftar pekerjaan yang dijalankan terpisah dari permintaan pengguna sehingga permintaan cepat selesai."
+        },
+        {
+          "term": "Job",
+          "definition": "Satuan pekerjaan yang diletakkan pada antrean untuk dijalankan oleh pekerja."
+        },
+        {
+          "term": "Singgahan",
+          "definition": "Penyimpanan sementara hasil yang mahal dihitung agar pemanggilan berikutnya lebih cepat."
+        },
+        {
+          "term": "Unggahan",
+          "definition": "Berkas yang dikirim pengguna lewat permintaan dan perlu disimpan serta diperiksa."
+        }
+      ],
+      "syntax": [
+        {
+          "token": "class KirimPengingat implements ShouldQueue { ... }",
+          "readAs": "Baca sebagai deklarasi pekerjaan yang akan dijalankan pada antrean, bukan di dalam permintaan.",
+          "meaning": "Dengan menandai job, pekerjaan itu dipisahkan dari permintaan sehingga pengguna tidak menunggu prosesnya selesai.",
+          "example": "class KirimPengingat implements ShouldQueue { ... }",
+          "output": "Job dijalankan oleh pekerja antrean di luar permintaan pengguna.",
+          "pitfall": "Menjalankan pekerjaan berat di dalam permintaan membuat halaman lambat dan mudah waktu habis."
+        },
+        {
+          "token": "Cache::remember(\"tugas.aktif\", 60, fn () => Tugas::where(\"selesai\", false)->count());",
+          "readAs": "Baca sebagai pengambilan nilai dari singgahan, atau penghitungan ulang bila belum ada atau sudah kedaluwarsa.",
+          "meaning": "remember menyimpan hasil selama jangka waktu tertentu dan memakainya kembali pada pemanggilan berikutnya.",
+          "example": "Cache::remember(\"tugas.aktif\", 60, fn () => Tugas::count());",
+          "output": "Pemanggilan berikutnya dalam rentang waktu itu tidak menghitung ulang.",
+          "pitfall": "Menyimpan data dengan masa berlaku terlalu panjang membuat tampilan menampilkan nilai yang sudah usang."
+        },
+        {
+          "token": "$path = $request->file(\"lampiran\")->store(\"lampiran\");",
+          "readAs": "Baca sebagai penyimpanan berkas unggahan dan pengambilan lokasi hasil simpanannya.",
+          "meaning": "Berkas disimpan dengan nama yang dihasilkan sistem di lokasi tertentu, bukan memakai nama dari pengguna apa adanya.",
+          "example": "$path = $request->file(\"lampiran\")->store(\"lampiran\");",
+          "output": "Berkas tersimpan dan lokasinya dapat dicatat untuk diambil kembali.",
+          "pitfall": "Memakai nama berkas dari pengguna apa adanya membuka risiko nama yang berbahaya atau bertabrakan."
+        }
+      ],
+      "conventions": [
+        "Pindahkan pekerjaan berat ke antrean agar permintaan tetap cepat.",
+        "Pastikan job dapat dijalankan ulang tanpa menimbulkan efek ganda.",
+        "Simpan hasil yang mahal dihitung pada singgahan dengan masa berlaku yang wajar.",
+        "Periksa jenis dan ukuran berkas unggahan sebelum disimpan.",
+        "Simpan berkas dengan nama yang dihasilkan sistem, bukan nama dari pengguna."
+      ],
+      "sections": [
+        {
+          "id": "cara-membaca",
+          "title": "Cara membaca job antrean",
+          "body": [
+            "Job dibaca sebagai kelas yang menyatakan pekerjaannya pada method utama. Penanda antrean memberitahu aplikasi bahwa kelas ini tidak dijalankan di dalam permintaan, melainkan diserahkan kepada pekerja.",
+            "Pada contoh, kelas menyatakan dirinya sebagai pekerjaan antrean, lalu menuliskan langkah pekerjaannya. Karena dijalankan terpisah, pengguna tidak menunggu proses pengiriman surel selesai.",
+            "Job sebaiknya dirancang agar dapat dijalankan ulang. Pekerja dapat mengulang job yang gagal, sehingga efek ganda harus dihindari dengan pemeriksaan yang tepat."
+          ],
+          "code": {
+            "language": "php",
+            "lab": false,
+            "code": "<?php\nnamespace App\\Jobs;\n\nuse Illuminate\\Contracts\\Queue\\ShouldQueue;\nuse Illuminate\\Foundation\\Queue\\Queueable;\n\nclass KirimPengingat implements ShouldQueue {\n    use Queueable;\n\n    public function handle(): void {\n        // kirim surel pengingat\n    }\n}",
+            "output": "Job dikirim ke antrean dan dijalankan oleh pekerja terpisah dari permintaan pengguna.",
+            "explain": "Kelas menyatakan dirinya sebagai pekerjaan antrean, lalu menuliskan langkah pekerjaannya pada method utama.",
+            "annotations": [
+              {
+                "line": 7,
+                "code": "class KirimPengingat implements ShouldQueue {",
+                "note": "Kelas menyatakan dirinya sebagai pekerjaan antrean."
+              },
+              {
+                "line": 8,
+                "code": "use Queueable;",
+                "note": "Penanda menyediakan kemampuan pengelolaan antrean."
+              },
+              {
+                "line": 10,
+                "code": "public function handle(): void {",
+                "note": "Method ini memuat langkah pekerjaan yang dijalankan pekerja."
+              }
+            ]
+          },
+          "callouts": [
+            {
+              "tone": "good",
+              "title": "Permintaan tetap cepat",
+              "body": "Pekerjaan berat dilempar ke antrean sehingga pengguna tidak menunggu. Pekerja antrean menjalankannya di belakang."
+            }
+          ],
+          "checkpoint": {
+            "prompt": "Apa keuntungan menjalankan pekerjaan berat lewat antrean alih-alih di dalam permintaan?",
+            "success": "Permintaan tetap cepat karena pengguna tidak menunggu pekerjaan berat selesai."
+          }
+        },
+        {
+          "id": "singgahan",
+          "title": "Memakai singgahan dengan bijak",
+          "body": [
+            "Singgahan dibaca sebagai penyimpanan hasil sementara. Permintaan pertama menghitung nilainya lalu menyimpannya. Permintaan berikutnya dalam masa berlaku mendapat nilai yang sama tanpa menghitung ulang.",
+            "Masa berlaku menentukan keseimbangan. Terlalu panjang membuat data usang, terlalu pendek membuat hitungan mahal terulang. Pilih masa yang sesuai seberapa cepat data berubah.",
+            "Singgahan juga perlu dibersihkan ketika data berubah. Bila ada penambahan tugas, nilai lama yang tersimpan menjadi tidak sesuai. Pastikan nilai yang bergantung pada data dihapus saat data itu berubah."
+          ],
+          "code": {
+            "language": "php",
+            "lab": false,
+            "code": "Cache::remember(\"tugas.aktif\", 60, function () {\n    return Tugas::where(\"selesai\", false)->count();\n});",
+            "output": "Hitungan tugas aktif disimpan selama 60 detik dan dipakai kembali selama rentang itu.",
+            "explain": "Pemanggilan pertama menghitung jumlah lalu menyimpannya pada kunci tertentu. Pemanggilan berikutnya memakai nilai tersimpan sampai masa berlakunya habis.",
+            "annotations": [
+              {
+                "line": 1,
+                "code": "Cache::remember(\"tugas.aktif\", 60, function () {",
+                "note": "Kunci singgahan dan masa berlaku ditentukan."
+              },
+              {
+                "line": 2,
+                "code": "return Tugas::where(\"selesai\", false)->count();",
+                "note": "Nilai dihitung dari basis data saat belum ada di singgahan."
+              }
+            ]
+          },
+          "callouts": [
+            {
+              "tone": "warn",
+              "title": "Bersihkan saat data berubah",
+              "body": "Nilai tersimpan yang bergantung pada data harus dihapus saat data itu berubah. Jika tidak, tampilan menampilkan nilai usang."
+            }
+          ]
+        },
+        {
+          "id": "berkas",
+          "title": "Mengelola berkas unggahan",
+          "body": [
+            "Berkas unggahan berasal dari luar, sehingga diperlakukan sebagai masukan yang tidak tepercaya. Periksa jenis, ukuran, dan isinya sebelum disimpan.",
+            "Simpan berkas dengan nama yang dihasilkan sistem. Nama dari pengguna dapat memuat karakter berbahaya atau bertabrakan dengan berkas lain.",
+            "Simpan berkas di lokasi yang tidak dapat dijalankan langsung sebagai program. Berkas yang dibagikan sebaiknya diakses lewat jalur terkendali agar pemeriksaan izin tetap berlaku."
+          ],
+          "callouts": [
+            {
+              "tone": "bad",
+              "title": "Kesalahan umum",
+              "body": "Menyimpan berkas dengan nama dari pengguna apa adanya. Nama itu dapat memuat karakter berbahaya atau menimpa berkas lain."
+            }
+          ],
+          "checkpoint": {
+            "prompt": "Sebutkan dua pemeriksaan yang perlu dilakukan pada berkas unggahan sebelum disimpan.",
+            "success": "Memeriksa jenis berkas dan ukurannya, serta menyimpannya dengan nama yang dihasilkan sistem."
+          }
+        },
+        {
+          "id": "kapan-memakai",
+          "title": "Memilih kapan memakai antrean dan singgahan",
+          "body": [
+            "Antrean cocok untuk pekerjaan yang tidak dibutuhkan jawabannya saat itu, misalnya mengirim surel, membuat laporan, atau memproses gambar. Pengguna tidak perlu menunggu hasilnya.",
+            "Singgahan cocok untuk hasil yang mahal dihitung dan sering diminta, serta dapat ditoleransi sedikit usang. Contohnya jumlah ringkasan atau daftar yang jarang berubah.",
+            "Keduanya bukan pengganti perbaikan yang mendasar. Bila query atau logika memang lambat, perbaiki sumbernya lebih dulu sebelum menutupinya dengan singgahan."
+          ],
+          "checkpoint": {
+            "prompt": "Sebutkan satu contoh pekerjaan yang cocok masuk antrean dan satu yang cocok disinggahkan.",
+            "success": "Mengirim surel cocok masuk antrean; ringkasan jumlah yang sering diminta cocok disinggahkan."
+          }
+        }
+      ],
+      "practice": [
+        {
+          "id": "latihan-1",
+          "level": "guided",
+          "title": "Pindahkan pengiriman surel ke antrean",
+          "task": "Buat job untuk mengirim surel pengingat dan panggil dari pengendali agar tidak dijalankan di dalam permintaan.",
+          "steps": [
+            "Buat kelas job dengan penanda antrean.",
+            "Tulis langkah pengiriman pada method utamanya.",
+            "Panggil job itu dari pengendali.",
+            "Periksa pengguna tidak menunggu proses pengiriman."
+          ],
+          "starterCode": "class KirimPengingat implements ShouldQueue {\n    public function handle(): void {\n        // lengkapi\n    }\n}",
+          "expected": "Permintaan selesai cepat dan job dijalankan terpisah oleh pekerja antrean.",
+          "stretch": "Tambahkan percobaan ulang bila pengiriman gagal.",
+          "hints": [
+            "Penanda antrean memisahkan job dari permintaan.",
+            "Langkah pekerjaan ditulis pada method utama.",
+            "Job dipanggil dari pengendali setelah data tersimpan."
+          ],
+          "verification": {
+            "command": "Jalankan permintaan lalu periksa job tercatat dan dijalankan oleh pekerja.",
+            "expected": "Permintaan cepat selesai dan job diproses terpisah.",
+            "evidence": "Simpan kelas job, pengendali, dan catatan proses antrean."
+          }
+        },
+        {
+          "id": "latihan-2",
+          "level": "independent",
+          "title": "Singgahkan ringkasan yang mahal",
+          "task": "Singgahkan hasil hitungan ringkasan yang mahal dengan masa berlaku yang wajar, lalu pastikan nilainya dibersihkan saat data berubah.",
+          "steps": [
+            "Tentukan kunci dan masa berlaku singgahan.",
+            "Simpan hasil hitungan memakai mekanisme singgahan.",
+            "Hapus nilai tersimpan saat data terkait berubah.",
+            "Uji hitungan pertama dan pemanggilan berikutnya."
+          ],
+          "starterCode": "Cache::remember(\"kunci\", 60, fn () => /* hitung */);",
+          "expected": "Pemanggilan berikutnya memakai nilai tersimpan dan tidak usang setelah data berubah.",
+          "stretch": "Bandingkan waktu sebelum dan sesudah singgahan.",
+          "hints": [
+            "Masa berlaku menyeimbangkan kesegaran dan kecepatan.",
+            "Nilainya harus dihapus saat sumbernya berubah.",
+            "Uji setelah ada perubahan data."
+          ],
+          "verification": {
+            "command": "Ubah data lalu panggil ulang; periksa nilai yang ditampilkan.",
+            "expected": "Nilai diperbarui setelah data berubah dan tidak menampilkan hasil usang.",
+            "evidence": "Simpan kode dan catatan hasil sebelum serta sesudah perubahan data."
+          }
+        },
+        {
+          "id": "latihan-3",
+          "level": "transfer",
+          "title": "Rancang alur unggahan yang aman",
+          "task": "Rancang alur unggahan lampiran tugas: pemeriksaan, penyimpanan, dan akses kembali oleh pemiliknya saja.",
+          "steps": [
+            "Tentukan pemeriksaan yang dilakukan sebelum menyimpan.",
+            "Tentukan cara penamaan dan lokasi penyimpanan.",
+            "Tentukan cara mengakses kembali dengan pemeriksaan izin.",
+            "Uji berkas sah dan berkas yang tidak sesuai."
+          ],
+          "starterCode": "Pemeriksaan: ...\nPenyimpanan: ...\nAkses: ...",
+          "expected": "Hanya berkas sah yang tersimpan, diberi nama sistem, dan hanya pemiliknya dapat mengaksesnya.",
+          "stretch": "Batasi ukuran berkas dan tampilkan pesan bila melebihi.",
+          "hints": [
+            "Berkas dari pengguna diperlakukan sebagai masukan tidak tepercaya.",
+            "Nama berkas dihasilkan sistem.",
+            "Akses berkas memakai jalur terkendali agar izin berlaku."
+          ],
+          "verification": {
+            "command": "Unggah berkas sah dan berkas yang tidak sesuai, lalu coba akses sebagai pengguna lain.",
+            "expected": "Berkas tidak sesuai ditolak dan akses oleh bukan pemilik ditolak.",
+            "evidence": "Simpan rancangan alur dan catatan hasil pengujian."
+          }
+        }
+      ],
+      "verification": {
+        "mode": "manual",
+        "command": "Jalankan job antrean, uji singgahan sebelum dan sesudah perubahan data, serta uji unggahan berkas.",
+        "expected": "Job dijalankan terpisah, singgahan menampilkan nilai yang tidak usang, dan hanya berkas sah yang tersimpan dan dapat diakses pemiliknya.",
+        "evidence": "Simpan kelas job, kode singgahan, dan catatan hasil pengujian berkas."
+      },
+      "troubleshooting": [
+        {
+          "symptom": "Halaman lambat karena menunggu proses panjang.",
+          "cause": "Pekerjaan berat dijalankan di dalam permintaan alih-alih dilempar ke antrean.",
+          "fix": "Pindahkan pekerjaan itu ke job antrean agar permintaan cepat selesai."
+        },
+        {
+          "symptom": "Tampilan menampilkan nilai yang sudah usang.",
+          "cause": "Nilai singgahan tidak dihapus saat data sumbernya berubah.",
+          "fix": "Hapus nilai singgahan terkait setiap kali data yang mendasarinya berubah."
+        },
+        {
+          "symptom": "Berkas unggahan bertabrakan atau berbahaya.",
+          "cause": "Berkas disimpan memakai nama dari pengguna apa adanya.",
+          "fix": "Simpan dengan nama yang dihasilkan sistem dan periksa jenis serta ukurannya."
+        },
+        {
+          "symptom": "Job yang sama menimbulkan efek ganda saat diulang.",
+          "cause": "Job tidak dirancang untuk dapat dijalankan ulang dengan aman.",
+          "fix": "Tambahkan pemeriksaan sehingga mengulang job tidak menimbulkan efek yang terduplikasi."
+        }
+      ],
       "quiz": {
-        "question": "Apa prinsip yang paling tepat untuk topik “Queue, jobs, caching, dan file”?",
-        "options": [
-          "Gunakan queue untuk beban lambat dan pantau retry serta kegagalannya.",
-          "Gunakan solusi paling rumit sejak awal, meski kebutuhan belum jelas.",
-          "Lewati pengujian karena contoh kecil pasti benar."
-        ],
-        "answer": 0,
-        "explanation": "Gunakan queue untuk beban lambat dan pantau retry serta kegagalannya."
-      }
+        "questions": [
+          {
+            "id": "q1",
+            "type": "recall",
+            "question": "Kapan pekerjaan sebaiknya dipindahkan ke antrean?",
+            "options": [
+              "Ketika pekerjaan berat dan jawabannya tidak dibutuhkan segera",
+              "Ketika halaman sudah cepat",
+              "Ketika data berubah setiap detik"
+            ],
+            "answer": 0,
+            "explanation": "Antrean cocok untuk pekerjaan berat yang tidak perlu menghambat permintaan pengguna."
+          },
+          {
+            "id": "q2",
+            "type": "code-reading",
+            "question": "Apa yang dilakukan Cache::remember dengan masa berlaku tertentu?",
+            "options": [
+              "Menghitung ulang setiap kali dipanggil",
+              "Menyimpan hasil dan memakainya kembali sampai masa berlakunya habis",
+              "Menghapus data dari basis data"
+            ],
+            "answer": 1,
+            "explanation": "remember menyimpan hasil selama masa berlaku dan memakainya kembali pada pemanggilan berikutnya."
+          },
+          {
+            "id": "q3",
+            "type": "scenario",
+            "question": "Menyimpan berkas unggahan dengan nama dari pengguna apa adanya. Risikonya...",
+            "options": [
+              "Tidak ada risiko",
+              "Nama berbahaya atau bertabrakan dengan berkas lain",
+              "Berkas menjadi lebih kecil"
+            ],
+            "answer": 1,
+            "explanation": "Nama dari pengguna dapat memuat karakter berbahaya atau menimpa berkas lain, sehingga nama dihasilkan sistem."
+          }
+        ]
+      },
+      "resources": [
+        {
+          "sourceId": "laravel-queues",
+          "note": "Dokumentasi resmi Laravel tentang antrean dan job."
+        },
+        {
+          "sourceId": "laravel-docs",
+          "note": "Dokumentasi resmi Laravel tentang singgahan dan penyimpanan berkas."
+        },
+        {
+          "sourceId": "php-manual",
+          "note": "Manual PHP tentang penanganan berkas dan fungsi terkait."
+        }
+      ],
+      "summary": [
+        "Antrean memindahkan pekerjaan berat keluar dari permintaan sehingga pengguna tidak menunggu.",
+        "Job sebaiknya dapat dijalankan ulang tanpa menimbulkan efek ganda.",
+        "Singgahan menyimpan hasil yang mahal dihitung, dengan masa berlaku yang sesuai kesegaran data.",
+        "Berkas unggahan diperiksa dan disimpan dengan nama yang dihasilkan sistem."
+      ],
+      "next": "Berikutnya: testing Laravel dan deployment. Anda akan menguji perilaku aplikasi dan menyiapkan peluncuran yang dapat diulang."
     },
     {
       "id": "m08-l09",
       "title": "Testing Laravel dan deployment",
-      "minutes": 45,
+      "minutes": 120,
       "level": "Menengah",
-      "intro": "Feature test menguji endpoint, database, autentikasi, dan kebijakan akses. Unit test menguji fungsi/domain. Deployment memerlukan env, APP_KEY, migrate, cache, worker, log, backup.",
-      "explanation": "Jalankan test sebelum merilis perubahan. Bedakan development/staging/production, jangan mengaktifkan debug di publik, dan pastikan prosedur rollback.",
-      "code": "php artisan test\nphp artisan migrate --force\n# jalankan di lingkungan yang sudah diverifikasi",
+      "depth": "integrasi",
+      "schema": 3.1,
       "codeLanguage": "bash",
-      "practice": [
-        "Rancang test API: guest tidak boleh edit, owner boleh edit, non-owner ditolak.",
-        "Ubah satu input atau asumsi pada contoh, catat hasil dan jelaskan alasannya."
+      "outcome": "Setelah pelajaran ini, Anda dapat menulis test yang memeriksa perilaku aplikasi serta menyiapkan langkah peluncuran yang dapat diulang.",
+      "objectives": [
+        "Menulis test fitur yang memeriksa tanggapan alamat.",
+        "Menyiapkan data uji secara terpisah dari data nyata.",
+        "Menjelaskan perbedaan test fitur dan test unit.",
+        "Menyusun langkah peluncuran yang dapat diulang."
       ],
-      "bestPractice": "Otomatisasi test dan verifikasi migrasi sebelum deployment.",
-      "commonMistake": "Menjalankan migration destruktif di produksi tanpa backup/rollback.",
+      "prerequisites": [
+        {
+          "label": "Queue, jobs, caching, dan file",
+          "lessonId": "m08-l08"
+        }
+      ],
+      "terms": [
+        {
+          "term": "Test fitur",
+          "definition": "Test yang menjalankan permintaan ke alamat dan memeriksa tanggapan beserta efeknya."
+        },
+        {
+          "term": "Test unit",
+          "definition": "Test yang memeriksa satu bagian kode secara terpisah tanpa permintaan HTTP."
+        },
+        {
+          "term": "Data uji",
+          "definition": "Data yang disiapkan khusus untuk pengujian dan dipisahkan dari data nyata."
+        },
+        {
+          "term": "Peluncuran",
+          "definition": "Rangkaian langkah yang dijalankan berurutan untuk menerbitkan versi aplikasi."
+        }
+      ],
+      "syntax": [
+        {
+          "token": "Tugas::factory()->count(3)->create();",
+          "readAs": "Baca sebagai penyiapan tiga data tugas uji dengan nilai yang dihasilkan otomatis.",
+          "meaning": "Factory membuat data uji yang konsisten sehingga test tidak bergantung pada data nyata.",
+          "example": "Tugas::factory()->count(3)->create();",
+          "output": "Tiga baris data uji tersedia untuk pengujian.",
+          "pitfall": "Mengandalkan data nyata membuat test tidak stabil karena isinya berubah di luar kendali."
+        },
+        {
+          "token": "$this->get(\"/tugas\");",
+          "readAs": "Baca sebagai pengiriman permintaan ke alamat itu di dalam test.",
+          "meaning": "Test fitur menjalankan permintaan seperti pengguna lalu mengembalikan tanggapan yang dapat diperiksa.",
+          "example": "$this->get(\"/tugas\");",
+          "output": "Tanggapan berisi status dan isi yang dapat diperiksa test.",
+          "pitfall": "Memeriksa isi halaman yang terlalu rinci membuat test mudah rusak saat tampilan berubah."
+        },
+        {
+          "token": "$response->assertStatus(200);",
+          "readAs": "Baca sebagai pemeriksaan bahwa tanggapan berhasil.",
+          "meaning": "Pemeriksaan menyatakan harapan test. Bila tidak terpenuhi, test gagal dan menunjukkan bagian yang bermasalah.",
+          "example": "$response->assertStatus(200);",
+          "output": "Test lulus bila status tanggapan sesuai harapan.",
+          "pitfall": "Hanya memeriksa status tanpa memeriksa isi membuat test tidak membuktikan data yang benar tampil."
+        }
+      ],
+      "conventions": [
+        "Beri nama test yang menyatakan perilaku yang diperiksa.",
+        "Siapkan data uji lewat factory, bukan memakai data nyata.",
+        "Periksa perilaku yang dapat diamati, bukan detail tampilan yang mudah berubah.",
+        "Uji jalur berhasil dan jalur gagal, termasuk kasus tanpa izin.",
+        "Jalankan test sebagai bagian dari langkah peluncuran."
+      ],
+      "sections": [
+        {
+          "id": "cara-membaca",
+          "title": "Cara membaca test fitur",
+          "body": [
+            "Test dibaca dalam tiga bagian: persiapan, tindakan, dan pemeriksaan. Bagian persiapan menyiapkan data, tindakan mengirim permintaan, dan pemeriksaan menyatakan harapan atas hasilnya.",
+            "Pada contoh, tiga data uji dibuat lebih dulu, lalu permintaan dikirim ke alamat daftar, dan hasilnya diperiksa. Karena data disiapkan oleh test sendiri, hasilnya tidak bergantung pada isi basis data nyata.",
+            "Nama test menyatakan perilaku yang diperiksa. Ketika test gagal, nama itu langsung memberi tahu bagian mana yang tidak sesuai harapan, tanpa perlu membaca isi testnya."
+          ],
+          "code": {
+            "language": "php",
+            "lab": false,
+            "code": "<?php\nnamespace Tests\\Feature;\n\nuse App\\Models\\Tugas;\nuse Tests\\TestCase;\n\nclass TugasTest extends TestCase {\n    public function test_menampilkan_daftar_tugas(): void {\n        Tugas::factory()->count(3)->create();\n\n        $response = $this->get(\"/tugas\");\n\n        $response->assertStatus(200);\n    }\n}",
+            "output": "Test lulus karena alamat daftar mengembalikan status berhasil.",
+            "explain": "Test menyiapkan tiga data, mengirim permintaan ke alamat daftar, lalu memeriksa status tanggapannya.",
+            "annotations": [
+              {
+                "line": 8,
+                "code": "public function test_menampilkan_daftar_tugas(): void {",
+                "note": "Nama test menyatakan perilaku yang diperiksa."
+              },
+              {
+                "line": 9,
+                "code": "Tugas::factory()->count(3)->create();",
+                "note": "Data uji disiapkan lewat factory."
+              },
+              {
+                "line": 11,
+                "code": "$response = $this->get(\"/tugas\");",
+                "note": "Permintaan dikirim seperti pengguna mengakses alamat."
+              },
+              {
+                "line": 13,
+                "code": "$response->assertStatus(200);",
+                "note": "Pemeriksaan menyatakan harapan atas status tanggapan."
+              }
+            ]
+          },
+          "callouts": [
+            {
+              "tone": "good",
+              "title": "Data uji milik test",
+              "body": "Setiap test menyiapkan datanya sendiri. Dengan begitu, urutan menjalankan test tidak memengaruhi hasilnya."
+            }
+          ],
+          "checkpoint": {
+            "prompt": "Sebutkan tiga bagian test pada contoh dan baris yang mewakili masing-masing.",
+            "success": "Persiapan pada pembuatan data uji, tindakan pada pengiriman permintaan, dan pemeriksaan pada assertStatus."
+          }
+        },
+        {
+          "id": "jenis-test",
+          "title": "Test fitur dan test unit",
+          "body": [
+            "Test fitur memeriksa perilaku dari sisi pengguna: permintaan dikirim dan tanggapan diperiksa. Ia menguji rute, pengendali, dan tampilan secara bersama.",
+            "Test unit memeriksa satu bagian kode secara terpisah, misalnya sebuah service atau aturan izin. Ia lebih cepat dan lebih tepat menunjukkan letak kesalahan.",
+            "Pembagian yang sehat memakai banyak test unit untuk logika dan sejumlah test fitur untuk alur penting. Gabungan keduanya memberi perlindungan tanpa membuat pengujian lambat."
+          ],
+          "checkpoint": {
+            "prompt": "Apa perbedaan test fitur dan test unit pada aplikasi web?",
+            "success": "Test fitur mengirim permintaan dan memeriksa tanggapan; test unit memeriksa satu bagian kode secara terpisah."
+          }
+        },
+        {
+          "id": "peluncuran",
+          "title": "Langkah peluncuran yang dapat diulang",
+          "body": [
+            "Peluncuran dibaca sebagai urutan langkah yang dijalankan berurutan. Setiap langkah menyiapkan satu hal, dari struktur basis data sampai pengujian sebelum versi diterbitkan.",
+            "Urutan penting: struktur disiapkan lebih dulu, lalu pengaturan dan rute dioptimalkan, dan pengujian dijalankan sebelum aplikasi dipakai pengguna. Bila satu langkah gagal, peluncuran dihentikan.",
+            "Menyimpan langkah-langkah ini dalam urutan yang tercatat membuat peluncuran dapat diulang. Hasil yang sama dapat diperoleh setiap kali tanpa mengandalkan ingatan."
+          ],
+          "code": {
+            "language": "bash",
+            "lab": false,
+            "code": "php artisan migrate --force\nphp artisan config:cache\nphp artisan route:cache\nphp artisan test",
+            "output": "Struktur basis data diperbarui, pengaturan dioptimalkan, lalu pengujian dijalankan sebelum versi diterbitkan.",
+            "explain": "Perintah pertama menjalankan migration tanpa konfirmasi, dua berikutnya menyiapkan singgahan pengaturan dan rute, dan perintah terakhir menjalankan pengujian.",
+            "annotations": [
+              {
+                "line": 1,
+                "code": "php artisan migrate --force",
+                "note": "Migration dijalankan untuk memperbarui struktur basis data."
+              },
+              {
+                "line": 2,
+                "code": "php artisan config:cache",
+                "note": "Pengaturan disinggahkan agar pemuatan lebih cepat."
+              },
+              {
+                "line": 3,
+                "code": "php artisan route:cache",
+                "note": "Rute disinggahkan agar pencocokan lebih cepat."
+              },
+              {
+                "line": 4,
+                "code": "php artisan test",
+                "note": "Pengujian dijalankan sebelum versi diterbitkan."
+              }
+            ]
+          },
+          "callouts": [
+            {
+              "tone": "warn",
+              "title": "Uji sebelum terbit",
+              "body": "Jalankan pengujian sebagai bagian dari peluncuran. Versi yang gagal diuji sebaiknya tidak diterbitkan."
+            }
+          ]
+        },
+        {
+          "id": "kesiapan-terbit",
+          "title": "Kesiapan sebelum terbit",
+          "body": [
+            "Sebelum menerbitkan, periksa pengaturan produksi: kunci aplikasi sudah diatur, mode pengembangan dimatikan, dan alamat yang dipakai sesuai lingkungan.",
+            "Periksa juga hal yang bergantung pada lingkungan lain, misalnya koneksi basis data dan antrean. Ketergantungan yang belum siap adalah sumber kegagalan paling umum saat peluncuran.",
+            "Siapkan cara kembali ke versi sebelumnya bila terjadi masalah. Rencana kembali yang sudah diuji membuat kegagalan peluncuran tidak berlarut-larut."
+          ],
+          "checkpoint": {
+            "prompt": "Sebutkan dua hal yang perlu diperiksa pada pengaturan produksi sebelum terbit.",
+            "success": "Kunci aplikasi sudah diatur dan mode pengembangan dimatikan, selain kesiapan koneksi basis data serta antrean."
+          }
+        }
+      ],
+      "practice": [
+        {
+          "id": "latihan-1",
+          "level": "guided",
+          "title": "Test fitur halaman tugas",
+          "task": "Tulis test fitur yang menyiapkan data uji, mengirim permintaan ke halaman daftar, dan memeriksa hasilnya.",
+          "steps": [
+            "Siapkan data uji lewat factory.",
+            "Kirim permintaan ke alamat daftar.",
+            "Periksa status tanggapan.",
+            "Tambahkan pemeriksaan bahwa data tampil pada tanggapan."
+          ],
+          "starterCode": "public function test_menampilkan_daftar(): void {\n    // siapkan data, kirim permintaan, periksa\n}",
+          "expected": "Test lulus dan memeriksa data uji tampil pada tanggapan.",
+          "stretch": "Tambahkan test untuk alamat detail satu tugas.",
+          "hints": [
+            "Factory membuat data uji secara konsisten.",
+            "Permintaan dikirim seperti pengguna mengakses alamat.",
+            "Periksa status sebelum memeriksa isi."
+          ],
+          "verification": {
+            "command": "Jalankan pengujian dan periksa hasilnya.",
+            "expected": "Test lulus memeriksa data uji pada tanggapan.",
+            "evidence": "Simpan berkas test dan keluaran pengujian."
+          }
+        },
+        {
+          "id": "latihan-2",
+          "level": "independent",
+          "title": "Test jalur tanpa izin",
+          "task": "Tulis test yang memastikan pengguna bukan pemilik tidak dapat mengubah tugas milik orang lain.",
+          "steps": [
+            "Siapkan dua pengguna dan satu tugas milik pengguna pertama.",
+            "Masuk sebagai pengguna kedua.",
+            "Kirim permintaan ubah pada tugas itu.",
+            "Periksa permintaan ditolak dan data tidak berubah."
+          ],
+          "starterCode": "public function test_bukan_pemilik_ditolak(): void {\n    // siapkan, akses, periksa\n}",
+          "expected": "Permintaan ditolak dan data tetap tidak berubah.",
+          "stretch": "Tambahkan test bahwa pemilik diizinkan mengubah.",
+          "hints": [
+            "Siapkan dua pengguna agar kepemilikan jelas.",
+            "Periksa status tanggapan yang menyatakan penolakan.",
+            "Periksa data setelah permintaan untuk memastikan tidak berubah."
+          ],
+          "verification": {
+            "command": "Jalankan test penolakan dan test izin pemilik.",
+            "expected": "Bukan pemilik ditolak; pemilik diizinkan, dan data sesuai harapan.",
+            "evidence": "Simpan berkas test dan keluaran pengujian."
+          }
+        },
+        {
+          "id": "latihan-3",
+          "level": "transfer",
+          "title": "Susun langkah peluncuran",
+          "task": "Tulis urutan langkah peluncuran untuk aplikasi tugas, memuat pembaruan struktur, penyiapan pengaturan, pengujian, dan langkah kembali bila gagal.",
+          "steps": [
+            "Tentukan urutan langkah dari awal sampai terbit.",
+            "Sertakan pengujian sebelum terbit.",
+            "Tentukan cara kembali ke versi sebelumnya.",
+            "Jalankan seluruh urutan pada lingkungan uji."
+          ],
+          "starterCode": "1. ...\n2. ...\n3. ...\nKembali bila gagal: ...",
+          "expected": "Urutan dapat dijalankan dan menghasilkan versi siap pakai, dengan langkah kembali yang jelas.",
+          "stretch": "Bungkus seluruh langkah dalam satu perintah yang dapat diulang.",
+          "hints": [
+            "Struktur disiapkan sebelum aplikasi dipakai.",
+            "Pengujian dijalankan sebelum terbit.",
+            "Rencana kembali dibuat sebelum dibutuhkan."
+          ],
+          "verification": {
+            "command": "Jalankan urutan pada lingkungan uji dan periksa hasil setiap langkah.",
+            "expected": "Setiap langkah berjalan berurutan dan aplikasi siap dipakai pada akhirnya.",
+            "evidence": "Simpan urutan langkah dan catatan hasil pelaksanaannya."
+          }
+        }
+      ],
+      "verification": {
+        "mode": "manual",
+        "command": "Jalankan seluruh test lalu jalankan urutan langkah peluncuran pada lingkungan uji.",
+        "expected": "Seluruh test lulus dan langkah peluncuran berjalan berurutan tanpa kegagalan hingga aplikasi siap dipakai.",
+        "evidence": "Simpan berkas test, keluaran pengujian, dan catatan pelaksanaan peluncuran."
+      },
+      "troubleshooting": [
+        {
+          "symptom": "Test gagal hanya kadang-kadang.",
+          "cause": "Test bergantung pada data nyata atau urutan menjalankan test.",
+          "fix": "Siapkan data uji di dalam setiap test agar test berdiri sendiri."
+        },
+        {
+          "symptom": "Test lulus tetapi bug tetap terjadi pada pengguna.",
+          "cause": "Test hanya memeriksa status tanpa memeriksa isi atau efeknya.",
+          "fix": "Tambahkan pemeriksaan atas data yang tampil dan efek perubahan datanya."
+        },
+        {
+          "symptom": "Halaman error setelah diterbitkan meski berjalan baik di pengembangan.",
+          "cause": "Pengaturan produksi atau ketergantungan lingkungan belum siap.",
+          "fix": "Periksa pengaturan produksi, koneksi basis data, dan antrean sebelum terbit."
+        },
+        {
+          "symptom": "Peluncuran gagal separuh jalan dan sulit dikembalikan.",
+          "cause": "Tidak ada urutan langkah yang tercatat atau rencana kembali.",
+          "fix": "Susun urutan langkah peluncuran yang dapat diulang beserta rencana kembali yang sudah diuji."
+        }
+      ],
       "quiz": {
-        "question": "Apa prinsip yang paling tepat untuk topik “Testing Laravel dan deployment”?",
-        "options": [
-          "Otomatisasi test dan verifikasi migrasi sebelum deployment.",
-          "Gunakan solusi paling rumit sejak awal, meski kebutuhan belum jelas.",
-          "Lewati pengujian karena contoh kecil pasti benar."
-        ],
-        "answer": 0,
-        "explanation": "Otomatisasi test dan verifikasi migrasi sebelum deployment."
-      }
+        "questions": [
+          {
+            "id": "q1",
+            "type": "recall",
+            "question": "Apa perbedaan test fitur dan test unit?",
+            "options": [
+              "Test fitur memeriksa perilaku lewat permintaan; test unit memeriksa satu bagian kode secara terpisah",
+              "Keduanya sama saja",
+              "Test fitur hanya untuk tampilan; test unit hanya untuk basis data"
+            ],
+            "answer": 0,
+            "explanation": "Test fitur mengirim permintaan dan memeriksa tanggapan; test unit menguji satu bagian kode terpisah."
+          },
+          {
+            "id": "q2",
+            "type": "code-reading",
+            "question": "Mengapa data uji sebaiknya dibuat lewat factory?",
+            "options": [
+              "Agar lebih cepat",
+              "Agar test tidak bergantung pada data nyata dan hasilnya konsisten",
+              "Agar data lama terhapus"
+            ],
+            "answer": 1,
+            "explanation": "Factory menyiapkan data uji yang konsisten sehingga test tidak bergantung pada data nyata."
+          },
+          {
+            "id": "q3",
+            "type": "scenario",
+            "question": "Sebelum menerbitkan versi baru, langkah yang tepat...",
+            "options": [
+              "Menerbitkan lebih dulu lalu menguji di produksi",
+              "Menjalankan pengujian sebagai bagian dari langkah peluncuran",
+              "Melewati pengujian bila perubahan kecil"
+            ],
+            "answer": 1,
+            "explanation": "Pengujian dijalankan sebelum versi diterbitkan agar kegagalan tidak sampai ke pengguna."
+          }
+        ]
+      },
+      "resources": [
+        {
+          "sourceId": "phpunit-docs",
+          "note": "Dokumentasi resmi PHPUnit tentang penulisan test dan pemeriksaan hasil."
+        },
+        {
+          "sourceId": "laravel-docs",
+          "note": "Dokumentasi resmi Laravel tentang test dan peluncuran aplikasi."
+        },
+        {
+          "sourceId": "composer-docs",
+          "note": "Dokumentasi Composer tentang pemasangan ketergantungan produksi."
+        }
+      ],
+      "summary": [
+        "Test fitur mengirim permintaan dan memeriksa tanggapan; test unit memeriksa satu bagian kode terpisah.",
+        "Data uji disiapkan lewat factory agar test tidak bergantung pada data nyata.",
+        "Pengujian menjadi bagian dari langkah peluncuran sebelum versi diterbitkan.",
+        "Peluncuran yang dapat diulang memuat kesiapan pengaturan dan rencana kembali bila gagal."
+      ],
+      "next": "Materi berikutnya melanjutkan ke pengujian perangkat lunak secara umum. Anda akan menyusun strategi pengujian untuk aplikasi yang lebih besar."
     }
   ]
 }

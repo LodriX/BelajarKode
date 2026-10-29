@@ -1323,6 +1323,105 @@
       "tier": "official",
       "version": "rolling",
       "accessedAt": "2026-10-29"
+    },
+    {
+      "id": "laravel-routing",
+      "title": "Laravel Docs: Routing",
+      "publisher": "Laravel",
+      "url": "https://laravel.com/docs/13.x/routing",
+      "tier": "official",
+      "version": "13.x",
+      "accessedAt": "2026-10-29"
+    },
+    {
+      "id": "laravel-eloquent",
+      "title": "Laravel Docs: Eloquent ORM",
+      "publisher": "Laravel",
+      "url": "https://laravel.com/docs/13.x/eloquent",
+      "tier": "official",
+      "version": "13.x",
+      "accessedAt": "2026-10-29"
+    },
+    {
+      "id": "laravel-validation",
+      "title": "Laravel Docs: Validation",
+      "publisher": "Laravel",
+      "url": "https://laravel.com/docs/13.x/validation",
+      "tier": "official",
+      "version": "13.x",
+      "accessedAt": "2026-10-29"
+    },
+    {
+      "id": "laravel-authorization",
+      "title": "Laravel Docs: Authorization",
+      "publisher": "Laravel",
+      "url": "https://laravel.com/docs/13.x/authorization",
+      "tier": "official",
+      "version": "13.x",
+      "accessedAt": "2026-10-29"
+    },
+    {
+      "id": "laravel-resources",
+      "title": "Laravel Docs: Eloquent API Resources",
+      "publisher": "Laravel",
+      "url": "https://laravel.com/docs/13.x/eloquent-resources",
+      "tier": "official",
+      "version": "13.x",
+      "accessedAt": "2026-10-29"
+    },
+    {
+      "id": "laravel-queues",
+      "title": "Laravel Docs: Queues",
+      "publisher": "Laravel",
+      "url": "https://laravel.com/docs/13.x/queues",
+      "tier": "official",
+      "version": "13.x",
+      "accessedAt": "2026-10-29"
+    },
+    {
+      "id": "php-types",
+      "title": "PHP Manual: Type Declarations",
+      "publisher": "PHP Group",
+      "url": "https://www.php.net/manual/en/language.types.declarations.php",
+      "tier": "official",
+      "version": "current",
+      "accessedAt": "2026-10-29"
+    },
+    {
+      "id": "php-oop",
+      "title": "PHP Manual: Classes and Objects",
+      "publisher": "PHP Group",
+      "url": "https://www.php.net/manual/en/language.oop5.php",
+      "tier": "official",
+      "version": "current",
+      "accessedAt": "2026-10-29"
+    },
+    {
+      "id": "psr-12",
+      "title": "PHP-FIG: PSR-12 Extended Coding Style",
+      "publisher": "PHP Framework Interop Group",
+      "url": "https://www.php-fig.org/psr/psr-12/",
+      "tier": "standard",
+      "version": "1.0.0",
+      "accessedAt": "2026-10-29"
+    },
+    {
+      "id": "composer-docs",
+      "title": "Composer Documentation",
+      "publisher": "Composer",
+      "url": "https://getcomposer.org/doc/",
+      "tier": "official",
+      "version": "current",
+      "accessedAt": "2026-10-29"
+    },
+    {
+      "id": "phpunit-docs",
+      "title": "PHPUnit Documentation",
+      "publisher": "PHPUnit",
+      "url": "https://docs.phpunit.de/en/11.5/",
+      "tier": "official",
+      "version": "11.5",
+      "accessedAt": "2026-10-29"
     }
   ],
   "modules": [
@@ -1449,7 +1548,16 @@
       "m07-l04",
       "m07-l05",
       "m07-l06",
-      "m07-l07"
+      "m07-l07",
+      "m08-l01",
+      "m08-l02",
+      "m08-l03",
+      "m08-l04",
+      "m08-l05",
+      "m08-l06",
+      "m08-l07",
+      "m08-l08",
+      "m08-l09"
     ],
     "depthWordBands": {
       "fondasi": [
