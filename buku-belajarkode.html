@@ -7958,338 +7958,838 @@ Rencana peralihan: ...</code></pre><p><em>Hasil: Rekomendasi beralasan dan memua
   <p class="subtitle">Membuat aplikasi mobile dari backend yang sama</p>
   <div class="panel"><b>Tujuan modul</b><p>Membangun aplikasi Flutter dengan navigasi, state, formulir, API, dan penyimpanan aman.</p></div>
   <article class="lesson" id="m10-l01">
-  <div class="lesson-meta">Pelajaran 01 · 45 menit · Menengah · Dart</div>
+  <div class="lesson-meta">Pelajaran 01 · 120 menit · Menengah · Dart</div>
   <h3>Dart dan null safety</h3>
-  
-  
-  
-  
-  
-  
+  <div class="panel good"><b>Hasil belajar</b><p>Setelah pelajaran ini, Anda dapat menulis kelas Dart dengan tipe yang jelas, menangani nilai yang mungkin kosong secara aman, serta memakai fitur bahasa modern seperti catatan dan pemilihan pola.</p></div>
+  <h4>Tujuan</h4><ul><li>Membedakan tipe yang tidak boleh kosong dan tipe yang mungkin kosong.</li><li>Menandai nilai kosong dengan aman tanpa memaksakan tipe.</li><li>Menulis kelas dengan properti dan konstruktor yang ringkas.</li><li>Memakai catatan dan pola untuk mengembalikan beberapa nilai.</li></ul>
+  <div class="panel"><b>Prasyarat</b><p>Arsitektur monolith modular vs microservices</p></div>
+  <h4>Istilah kunci</h4><dl class="glossary"><div><dt>Null safety</dt><dd>Aturan yang membuat tipe membedakan nilai yang pasti ada dan nilai yang mungkin kosong, sehingga kesalahan kosong terdeteksi saat ditulis.</dd></div><div><dt>Tipe non-null</dt><dd>Tipe yang nilainya dipastikan selalu ada dan tidak boleh kosong.</dd></div><div><dt>Tipe nullable</dt><dd>Tipe yang nilainya boleh kosong, ditandai dengan tanda tanya setelah nama tipe.</dd></div><div><dt>Catatan</dt><dd>Nilai ringkas yang menggabungkan beberapa nilai berurutan tanpa membuat kelas baru.</dd></div><div><dt>Pola</dt><dd>Bentuk yang memeriksa dan membongkar nilai, misalnya membongkar catatan menjadi variabel terpisah.</dd></div></dl>
+  <h4>Kartu sintaks</h4><div class="panel">
+  <b><code>String judul;</code></b>
+  <p><em>Dibaca: Baca sebagai properti bertipe teks yang wajib berisi nilai.</em></p>
+  <p>Tipe tanpa tanda tanya berarti nilainya tidak boleh kosong. Pemeriksa tipe menolak penugasan kosong.</p>
+  <pre><code>String judul = &quot;Belajar&quot;;</code></pre>
+  <p><em>Output: Nilai kosong pada properti itu ditolak sebelum kode dijalankan.</em></p>
+  <p><em>Hati-hati: Memberi nilai kosong pada tipe non-null menghasilkan kesalahan yang sebenarnya bisa dicegah sejak awal.</em></p>
+</div><div class="panel">
+  <b><code>String? judul;</code></b>
+  <p><em>Dibaca: Baca sebagai properti bertipe teks yang boleh kosong.</em></p>
+  <p>Tanda tanya menandai bahwa nilai mungkin tidak ada. Pemakaian nilainya harus diperiksa lebih dulu.</p>
+  <pre><code>String? judul;</code></pre>
+  <p><em>Output: Nilai kosong diterima, tetapi pemakaiannya wajib diperiksa.</em></p>
+  <p><em>Hati-hati: Memakai nilai nullable tanpa pemeriksaan membuat program gagal saat nilainya benar-benar kosong.</em></p>
+</div><div class="panel">
+  <b><code>final (teks, jumlah) = hitung();</code></b>
+  <p><em>Dibaca: Baca sebagai pembongkaran catatan menjadi dua variabel.</em></p>
+  <p>Catatan menggabungkan beberapa nilai, dan pola membongkarnya menjadi variabel terpisah dengan nama yang jelas.</p>
+  <pre><code>final (teks, jumlah) = hitung();</code></pre>
+  <p><em>Output: Kedua nilai dari catatan tersedia sebagai variabel terpisah.</em></p>
+  <p><em>Hati-hati: Memakai posisi catatan secara sembarangan membuat kode sulit dibaca ketika jumlah nilainya bertambah.</em></p>
+</div>
+  <h4>Aturan penulisan</h4><ul><li>Bedakan tipe yang pasti ada dan tipe yang mungkin kosong secara eksplisit.</li><li>Periksa nilai nullable sebelum dipakai, bukan memaksakan tipe.</li><li>Hindari paksaan non-null kecuali Anda benar-benar yakin nilainya ada.</li><li>Pakai kelas untuk data yang punya makna, bukan hanya sekumpulan nilai.</li><li>Beri nama properti dan variabel sesuai isinya agar pembongkaran catatan tetap jelas.</li></ul>
   <section class="lesson-section">
-  <h4>01 · Memahami konsepnya</h4>
-  <p>Dart adalah bahasa utama Flutter. Pelajari var/final/const, function, class, Future, async/await, generic, dan null safety.</p><p>Null safety membantu membedakan nilai yang bisa kosong (String?) dan yang wajib terisi (String). Gunakan operator ?., ?? secara sadar, jangan pakai ! sembarangan.</p>
-  
-  <div class="panel good"><b>Best practice</b><p>Utamakan final dan manfaatkan null safety; validasi data dari API.</p></div><div class="panel bad"><b>Kesalahan umum</b><p>Memaksa non-null (!) tanpa memastikan data tersedia.</p></div>
-  
+  <h4>01 · Cara membaca kelas dengan tipe aman</h4>
+  <p>Kelas dibaca dari janjinya: properti mana yang pasti ada dan mana yang boleh kosong. Pada contoh, judul wajib ada, sedangkan tenggat boleh kosong karena tidak setiap tugas punya batas waktu.</p><p>Perbedaan itu memengaruhi cara memakai nilainya. Judul dapat dipakai langsung, sedangkan tenggat harus diperiksa lebih dulu. Pemeriksa tipe menolak pemakaian tenggat secara langsung tanpa pemeriksaan.</p><p>Pada contoh, nilai tenggat disalin ke variabel setempat lalu diperiksa. Setelah pemeriksaan, nilainya dianggap pasti ada sehingga tanggalnya dapat dibaca dengan aman.</p>
+  <pre><code>class Tugas {
+  Tugas(this.judul, {this.tenggat});
+
+  final String judul;
+  final DateTime? tenggat;
+
+  String status() {
+    final t = tenggat;
+    if (t == null) return &quot;Tanpa tenggat&quot;;
+    return &quot;Tenggat ${t.day}/${t.month}&quot;;
+  }
+}</code></pre><div class="panel"><b>Output yang diharapkan</b><p>Fungsi mengembalikan teks tanpa tenggat bila nilainya kosong, atau tanggal bila tersedia.</p></div><p>Judul bertipe non-null, sedangkan tenggat bertipe nullable. Pemeriksaan kosong sebelum pemakaian membuat pembacaan tanggal tetap aman.</p><div class="panel"><b>Bedah baris</b><ol><li>Baris 2 · <code>Tugas(this.judul, {this.tenggat});</code> — Konstruktor menerima judul wajib dan tenggat opsional.</li><li>Baris 4 · <code>final String judul;</code> — Judul bertipe non-null sehingga selalu ada.</li><li>Baris 5 · <code>final DateTime? tenggat;</code> — Tenggat bertipe nullable karena boleh kosong.</li><li>Baris 8 · <code>final t = tenggat;</code> — Nilai nullable disalin ke variabel setempat.</li><li>Baris 9 · <code>if (t == null) return &quot;Tanpa tenggat&quot;;</code> — Pemeriksaan kosong menentukan jalur keluaran.</li></ol></div>
+  <div class="panel good"><b>Jujur soal kosong</b><p>Tandai tipe nullable hanya untuk nilai yang benar-benar boleh kosong. Kejujuran tipe ini membuat kesalahan kosong terdeteksi lebih awal.</p></div>
+  <div class="panel warn"><b>Cek pemahaman</b><p>Mengapa nilai tenggat harus disalin ke variabel setempat sebelum diperiksa?</p><p>Kriteria berhasil: Agar pemeriksaan kosong berlaku pada satu nilai yang tidak berubah sehingga pemakaian berikutnya dianggap aman.</p></div>
 </section><section class="lesson-section">
-  <h4>02 · Contoh kode</h4>
-  <p>Perhatikan input, proses, dan output. Ketik ulang, lalu ubah satu nilai.</p>
-  <pre><code>void main() {
-  final nama = &quot;Dina&quot;;
-  String? kota;
-  print(&quot;Halo $nama, kota: ${kota ?? &quot;belum diisi&quot;}&quot;);
-}</code></pre>
+  <h4>02 · Menangani nilai yang mungkin kosong</h4>
+  <p>Nilai nullable tidak dapat dipakai langsung. Anda harus memeriksanya lebih dulu, memberi nilai cadangan, atau menyatakan secara tegas bahwa Anda yakin nilainya ada.</p><p>Pilihan yang paling aman adalah memeriksa nilainya. Pilihan lain, memberi nilai cadangan, berguna ketika ada nilai pengganti yang wajar. Paksaan non-null dipakai paling akhir karena dapat menggagalkan program bila tebakan Anda salah.</p><p>Kebiasaan yang baik adalah menandai tipe nullable sesempit mungkin. Semakin sedikit nilai yang boleh kosong, semakin sedikit pemeriksaan yang diperlukan dan semakin kecil kemungkinan kesalahan.</p>
+  
+  <div class="panel warn"><b>Hindari paksaan non-null</b><p>Paksaan non-null membuat program gagal saat nilainya kosong. Pakai pemeriksaan atau nilai cadangan terlebih dulu.</p></div>
+  <div class="panel warn"><b>Cek pemahaman</b><p>Sebutkan dua cara aman memakai nilai nullable selain paksaan non-null.</p><p>Kriteria berhasil: Memeriksa nilainya lebih dulu atau memberi nilai cadangan ketika nilainya kosong.</p></div>
+</section><section class="lesson-section">
+  <h4>03 · Catatan dan pola untuk beberapa nilai</h4>
+  <p>Ketika sebuah fungsi perlu mengembalikan beberapa nilai sekaligus, membuat kelas khusus untuk itu kadang berlebihan. Catatan memberi cara ringkas menggabungkan beberapa nilai berurutan.</p><p>Nilai dari catatan dapat dibongkar menjadi variabel terpisah. Pembongkaran dengan nama yang jelas membuat maksud setiap nilai terbaca tanpa perlu menghitung posisinya.</p><p>Untuk nilai yang punya makna tersendiri dan dipakai di banyak tempat, kelas tetap lebih tepat karena memberi nama pada setiap bagiannya. Pilih kelas ketika data itu bermakna, dan catatan ketika nilainya hanya dipakai sesaat.</p>
   
   
+  <div class="panel warn"><b>Cek pemahaman</b><p>Kapan catatan lebih tepat dipakai dibanding membuat kelas baru?</p><p>Kriteria berhasil: Ketika beberapa nilai hanya perlu digabung sesaat dan tidak memiliki makna tersendiri yang dipakai di banyak tempat.</p></div>
 </section>
-  <h4>Latihan bertingkat</h4><ol><li><b>Latihan 1</b> <em>(Mandiri)</em><p>Buat class Produk dengan nama, harga, dan metode hitungTotal(qty).</p></li><li><b>Latihan 2</b> <em>(Mandiri)</em><p>Ubah satu input atau asumsi pada contoh, catat hasil dan jelaskan alasannya.</p></li></ol>
-  
-  
+  <h4>Latihan bertingkat</h4><ol><li><b>Kelas dengan tipe aman</b> <em>(Terbimbing)</em><p>Buat kelas tugas dengan judul wajib dan tenggat opsional, lalu tulis fungsi yang menyatakan status tenggatnya.</p><ol><li>Deklarasikan kelas dengan dua properti.</li><li>Beri judul tipe non-null dan tenggat tipe nullable.</li><li>Periksa nilai tenggat sebelum dipakai.</li><li>Kembalikan teks yang sesuai kedua keadaan.</li></ol><pre><code>class Tugas {
+  // properti dan fungsi
+}</code></pre><p><em>Hasil: Nilai tenggat kosong dan terisi keduanya ditangani tanpa kesalahan.</em></p><details><summary>Petunjuk bertahap</summary><ol><li>Tipe nullable ditandai tanda tanya.</li><li>Nilai nullable diperiksa sebelum dipakai.</li><li>Kedua keadaan mengembalikan teks yang jelas.</li></ol></details><p><em>Tantangan: Tambahkan properti opsional lain dan tangani dengan pola yang sama.</em></p></li><li><b>Bongkar catatan hasil</b> <em>(Mandiri)</em><p>Tulis fungsi yang mengembalikan catatan berisi ringkasan dan jumlah tugas, lalu bongkar hasilnya menjadi dua variabel.</p><ol><li>Tentukan nilai yang dikembalikan fungsi.</li><li>Kembalikan keduanya sebagai catatan.</li><li>Bongkar hasil pemanggilan menjadi dua variabel.</li><li>Tampilkan keduanya dengan label yang jelas.</li></ol><pre><code>({String, int}) ringkas(List&lt;Tugas&gt; tugas) {
+  // lengkapi
+}</code></pre><p><em>Hasil: Kedua nilai dari catatan tersedia sebagai variabel dengan nama yang jelas.</em></p><details><summary>Petunjuk bertahap</summary><ol><li>Catatan menggabungkan beberapa nilai berurutan.</li><li>Pembongkaran memakai tanda kurung dengan nama variabel.</li><li>Beri nama variabel yang menyatakan isinya.</li></ol></details><p><em>Tantangan: Tambahkan nilai ketiga pada catatan dan sesuaikan pembongkarannya.</em></p></li><li><b>Rancang model tugas</b> <em>(Penerapan)</em><p>Rancang model data tugas lengkap: mana properti wajib, mana yang boleh kosong, dan bagaimana setiap nilai kosong ditangani.</p><ol><li>Daftar seluruh properti yang dibutuhkan.</li><li>Tentukan mana yang wajib dan mana yang boleh kosong.</li><li>Tentukan cara menangani setiap nilai kosong.</li><li>Tulis kelas beserta fungsi turunannya.</li></ol><pre><code>class Tugas {
+  // rancangan properti
+}</code></pre><p><em>Hasil: Setiap properti punya tipe yang tepat dan nilai kosongnya ditangani dengan jelas.</em></p><details><summary>Petunjuk bertahap</summary><ol><li>Tandai nullable hanya untuk nilai yang benar-benar boleh kosong.</li><li>Setiap nilai kosong punya cara penanganan yang jelas.</li><li>Kelas beri nama sesuai maknanya.</li></ol></details><p><em>Tantangan: Tambahkan fungsi yang menyusun ringkasan dari seluruh properti.</em></p></li></ol>
+  <h4>Verifikasi</h4><div class="panel"><b>Mode: Manual</b><pre><code>Jalankan ketiga latihan dan periksa bahwa nilai kosong tertangani tanpa memicu kesalahan.</code></pre><p><em>Hasil yang diharapkan: Kelas dan fungsi berjalan dengan nilai kosong maupun terisi, dan pemeriksa tipe tidak melaporkan pelanggaran.</em></p><p><em>Bukti yang disimpan: Simpan berkas kelas dan keluaran setiap latihan.</em></p></div>
+  <h4>Mengatasi masalah</h4><ul><li><b>Program gagal ketika sebuah nilai ternyata kosong.</b><br>Penyebab umum: Nilai nullable dipakai langsung tanpa pemeriksaan atau nilai cadangan.<br>Perbaikan: Periksa nilainya lebih dulu atau berikan nilai cadangan sebelum dipakai.</li><li><b>Banyak pemeriksaan kosong tersebar di mana-mana.</b><br>Penyebab umum: Terlalu banyak properti ditandai nullable meski sebenarnya selalu terisi.<br>Perbaikan: Tandai non-null properti yang memang selalu terisi agar pemeriksaan tidak perlu.</li><li><b>Program gagal meski sudah memakai paksaan non-null.</b><br>Penyebab umum: Paksaan non-null dipakai pada nilai yang ternyata kosong.<br>Perbaikan: Ganti paksaan itu dengan pemeriksaan atau nilai cadangan yang aman.</li><li><b>Kode sulit dibaca karena fungsi mengembalikan banyak nilai.</b><br>Penyebab umum: Posisi nilai pada catatan tidak jelas bagi pembaca.<br>Perbaikan: Bongkar catatan dengan nama variabel yang jelas, atau ganti menjadi kelas bila nilainya bermakna.</li></ul>
   <div class="quiz"><strong>Uji pemahaman</strong><div class="quiz-question">
-    <b>1. Apa prinsip yang paling tepat untuk topik “Dart dan null safety”?</b>
-    <ol type="A"><li>Utamakan final dan manfaatkan null safety; validasi data dari API.</li><li>Gunakan solusi paling rumit sejak awal, meski kebutuhan belum jelas.</li><li>Lewati pengujian karena contoh kecil pasti benar.</li></ol>
-    <details><summary>Lihat pembahasan</summary><p class="answer">Jawaban: A. Utamakan final dan manfaatkan null safety; validasi data dari API.</p></details>
+    <b>1. Apa arti tanda tanya setelah nama tipe pada Dart?</b>
+    <ol type="A"><li>Tipe itu boleh kosong</li><li>Tipe itu wajib terisi</li><li>Tipe itu berupa angka</li></ol>
+    <details><summary>Lihat pembahasan</summary><p class="answer">Jawaban: A. Tanda tanya menandai bahwa nilai bertipe itu boleh kosong.</p></details>
+  </div><div class="quiz-question">
+    <b>2. Mengapa nilai nullable disalin ke variabel setempat sebelum diperiksa pada contoh?</b>
+    <ol type="A"><li>Agar lebih cepat</li><li>Agar pemeriksaan berlaku pada satu nilai yang tidak berubah sehingga pemakaian berikutnya aman</li><li>Agar nilainya berubah menjadi non-null secara otomatis</li></ol>
+    <details><summary>Lihat pembahasan</summary><p class="answer">Jawaban: B. Setelah diperiksa, nilai yang tersimpan di variabel setempat dianggap pasti ada.</p></details>
+  </div><div class="quiz-question">
+    <b>3. Fungsi perlu mengembalikan dua nilai yang hanya dipakai sesaat. Pilihan yang tepat...</b>
+    <ol type="A"><li>Membuat kelas baru untuk keduanya</li><li>Mengembalikan catatan lalu membongkarnya</li><li>Menyimpannya pada variabel global</li></ol>
+    <details><summary>Lihat pembahasan</summary><p class="answer">Jawaban: B. Catatan tepat untuk nilai yang hanya digabung sesaat tanpa makna tersendiri.</p></details>
   </div></div>
-  
-  
-  
+  <h4>Ringkasan</h4><ul><li>Null safety membedakan tipe yang pasti ada dan tipe yang mungkin kosong.</li><li>Nilai nullable diperiksa atau diberi nilai cadangan sebelum dipakai.</li><li>Kelas dengan tipe jelas membuat kesalahan kosong terdeteksi lebih awal.</li><li>Catatan dan pola menggabungkan serta membongkar beberapa nilai berurutan dengan ringkas.</li></ul>
+  <div class="panel"><b>Berikutnya</b><p>Berikutnya: pohon widget Flutter. Anda akan memahami bagaimana tampilan aplikasi disusun dari widget.</p></div>
+  <h4>Sumber</h4><ul><li><a href="https://dart.dev/null-safety" rel="noopener noreferrer">Dart: Sound Null Safety</a> <small>Dart · current</small> — Penjelasan resmi null safety pada Dart.</li><li><a href="https://dart.dev/language/classes" rel="noopener noreferrer">Dart: Classes</a> <small>Dart · current</small> — Dokumentasi resmi kelas, properti, dan konstruktor Dart.</li><li><a href="https://dart.dev/language/records" rel="noopener noreferrer">Dart: Records</a> <small>Dart · current</small> — Dokumentasi resmi catatan dan pola pada Dart.</li></ul>
 </article>
 <article class="lesson" id="m10-l02">
-  <div class="lesson-meta">Pelajaran 02 · 45 menit · Menengah · Dart</div>
+  <div class="lesson-meta">Pelajaran 02 · 120 menit · Menengah · Dart</div>
   <h3>Flutter widget tree</h3>
-  
-  
-  
-  
-  
-  
+  <div class="panel good"><b>Hasil belajar</b><p>Setelah pelajaran ini, Anda dapat menyusun tampilan Flutter dari widget serta menjelaskan bagaimana perubahan data membuat tampilan diperbarui.</p></div>
+  <h4>Tujuan</h4><ul><li>Menjelaskan apa itu widget dan bagaimana widget disusun.</li><li>Membedakan widget yang tidak berubah dan widget yang menyimpan keadaan.</li><li>Menyusun tampilan dari widget bersarang.</li><li>Menjelaskan kapan tampilan diperbarui.</li></ul>
+  <div class="panel"><b>Prasyarat</b><p>Dart dan null safety</p></div>
+  <h4>Istilah kunci</h4><dl class="glossary"><div><dt>Widget</dt><dd>Bagian tampilan Flutter yang mendeskripsikan potongan antarmuka.</dd></div><div><dt>Pohon widget</dt><dd>Susunan widget bersarang yang membentuk seluruh tampilan aplikasi.</dd></div><div><dt>Widget tanpa keadaan</dt><dd>Widget yang tampilannya hanya bergantung pada nilai yang diberikan kepadanya.</dd></div><div><dt>Widget berkeadaan</dt><dd>Widget yang menyimpan keadaan di dalamnya dan dapat mengubah tampilannya sendiri.</dd></div><div><dt>Pembangunan ulang</dt><dd>Proses menyusun ulang tampilan ketika keadaan berubah.</dd></div></dl>
+  <h4>Kartu sintaks</h4><div class="panel">
+  <b><code>class KartuTugas extends StatelessWidget { ... }</code></b>
+  <p><em>Dibaca: Baca sebagai widget yang tampilannya hanya ditentukan oleh nilai yang diberikan.</em></p>
+  <p>Widget tanpa keadaan tidak menyimpan apa pun. Setiap kali nilainya berubah, ia dibangun ulang dari nol sesuai nilai baru.</p>
+  <pre><code>class KartuTugas extends StatelessWidget { ... }</code></pre>
+  <p><em>Output: Tampilan menyesuaikan nilai yang diberikan tanpa menyimpan keadaan sendiri.</em></p>
+  <p><em>Hati-hati: Menyimpan keadaan yang berubah di dalam widget tanpa keadaan membuat perubahan tampilan tidak tampak.</em></p>
+</div><div class="panel">
+  <b><code>class Panel extends StatefulWidget { ... }</code></b>
+  <p><em>Dibaca: Baca sebagai widget yang menyimpan keadaan dan dapat mengubah tampilannya sendiri.</em></p>
+  <p>Widget berkeadaan cocok ketika tampilannya berubah karena interaksi, misalnya nilai yang sedang dihitung atau pilihan yang sedang aktif.</p>
+  <pre><code>class Panel extends StatefulWidget { ... }</code></pre>
+  <p><em>Output: Tampilan dapat berubah tanpa membangun ulang seluruh aplikasi.</em></p>
+  <p><em>Hati-hati: Menaruh seluruh keadaan aplikasi pada satu widget berkeadaan besar membuat kode sulit dirawat.</em></p>
+</div><div class="panel">
+  <b><code>return Column(children: [judul, daftar]);</code></b>
+  <p><em>Dibaca: Baca sebagai susunan vertikal berisi widget judul lalu widget daftar.</em></p>
+  <p>Widget bersarang menyusun tata letak. Setiap widget menerima anaknya sebagai daftar atau satu nilai.</p>
+  <pre><code>return Column(children: [judul, daftar]);</code></pre>
+  <p><em>Output: Kedua anak tersusun berurutan dari atas ke bawah.</em></p>
+  <p><em>Hati-hati: Menyusun anak yang melebihi ruang tanpa pengaturan membuat tampilan meluap.</em></p>
+</div>
+  <h4>Aturan penulisan</h4><ul><li>Pecah tampilan menjadi widget kecil dengan nama yang menyatakan perannya.</li><li>Pakai widget tanpa keadaan selama tidak ada keadaan yang perlu disimpan.</li><li>Simpan keadaan pada widget terdekat yang benar-benar membutuhkannya.</li><li>Jangan membangun widget berat langsung di dalam metode pembangunan.</li><li>Beri nama widget dengan gaya penulisan huruf besar di awal setiap kata.</li></ul>
   <section class="lesson-section">
-  <h4>01 · Memahami konsepnya</h4>
-  <p>Flutter menyusun UI sebagai hierarki widget. StatelessWidget cocok untuk tampilan yang hanya bergantung pada input; StatefulWidget ketika state lokal berubah.</p><p>Pahami BuildContext, build(), const widget, dan kapan UI perlu rebuild. Komponen kecil membuat layar mudah diuji dan dipelihara.</p>
-  
-  <div class="panel good"><b>Best practice</b><p>Pecah widget panjang menjadi komponen dengan tanggung jawab jelas.</p></div><div class="panel bad"><b>Kesalahan umum</b><p>Satu file widget berisi seluruh aplikasi hingga ribuan baris.</p></div>
+  <h4>01 · Cara membaca widget tanpa keadaan</h4>
+  <p>Widget dibaca dari nilai yang diterimanya, lalu dari tampilan yang dihasilkan. Pada contoh, widget menerima satu teks judul dan membangun tampilan berupa jarak lalu teks.</p><p>Perhatikan bahwa widget ini tidak menyimpan apa pun. Semua yang ditampilkan berasal dari nilai yang diberikan. Karena itu, setiap kali nilai itu berubah, tampilannya otomatis menyesuaikan.</p><p>Metode pembangunan mengembalikan satu widget yang berisi widget lain. Susunan bersarang inilah yang membentuk pohon widget, dan setiap simpul menyatakan satu bagian tampilan.</p>
+  <pre><code>class KartuTugas extends StatelessWidget {
+  const KartuTugas({super.key, required this.judul});
+
+  final String judul;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(12),
+      child: Text(judul),
+    );
+  }
+}</code></pre><div class="panel"><b>Output yang diharapkan</b><p>Widget tampil sebagai teks judul yang diberi jarak sekelilingnya.</p></div><p>Widget menerima judul, lalu metode pembangunan mengembalikan susunan jarak dan teks. Tidak ada keadaan yang disimpan di dalamnya.</p><div class="panel"><b>Bedah baris</b><ol><li>Baris 2 · <code>const KartuTugas({super.key, required this.judul});</code> — Konstruktor menerima judul wajib.</li><li>Baris 4 · <code>final String judul;</code> — Judul bertipe non-null sehingga selalu ada.</li><li>Baris 7 · <code>Widget build(BuildContext context) {</code> — Metode pembangunan menentukan tampilan widget.</li><li>Baris 8 · <code>return Padding(</code> — Widget jarak membungkus isi di sekelilingnya.</li><li>Baris 10 · <code>child: Text(judul),</code> — Teks menampilkan nilai yang diterima widget.</li></ol></div>
+  <div class="panel good"><b>Widget sebagai deskripsi</b><p>Widget hanya mendeskripsikan tampilan untuk nilai tertentu. Dengan begitu, aplikasi dapat membangun ulang tampilan kapan saja dari nilai terbaru.</p></div>
+  <div class="panel warn"><b>Cek pemahaman</b><p>Dari mana widget tanpa keadaan memperoleh isi tampilannya?</p><p>Kriteria berhasil: Dari nilai yang diberikan kepadanya, karena ia tidak menyimpan keadaan sendiri.</p></div>
+</section><section class="lesson-section">
+  <h4>02 · Widget yang menyimpan keadaan</h4>
+  <p>Widget berkeadaan dibaca dalam dua bagian: deklarasi widget dan kelas keadaan yang menyimpan nilainya. Bagian pertama menyatakan widget, bagian kedua menyimpan nilai yang berubah.</p><p>Pada contoh, keadaan menyimpan sebuah angka. Ketika angkanya diubah, panggilan pembaruan keadaan memberi tahu Flutter agar membangun ulang tampilan dengan nilai terbaru.</p><p>Memanggil pembaruan keadaan tanpa mengubah nilainya tidak berguna. Sebaliknya, mengubah nilai tanpa memanggil pembaruan membuat tampilan tidak ikut berubah meski datanya sudah berubah.</p>
+  <pre><code>class Penghitung extends StatefulWidget {
+  const Penghitung({super.key});
+
+  @override
+  State&lt;Penghitung&gt; createState() =&gt; _PenghitungState();
+}
+
+class _PenghitungState extends State&lt;Penghitung&gt; {
+  int nilai = 0;
+
+  void tambah() {
+    setState(() =&gt; nilai += 1);
+  }
+}</code></pre><div class="panel"><b>Output yang diharapkan</b><p>Setiap panggilan penambahan membuat nilai bertambah dan tampilan dibangun ulang.</p></div><p>Kelas keadaan menyimpan nilai. Perubahan nilai disertai panggilan pembaruan keadaan sehingga tampilan dibangun ulang dengan nilai terbaru.</p><div class="panel"><b>Bedah baris</b><ol><li>Baris 1 · <code>class Penghitung extends StatefulWidget {</code> — Widget berkeadaan dinyatakan terpisah dari keadaannya.</li><li>Baris 5 · <code>State&lt;Penghitung&gt; createState() =&gt; _PenghitungState();</code> — Kelas keadaan dibuat oleh widget.</li><li>Baris 9 · <code>int nilai = 0;</code> — Keadaan menyimpan nilai yang berubah.</li><li>Baris 12 · <code>setState(() =&gt; nilai += 1);</code> — Perubahan nilai disertai pemberitahuan pembangunan ulang.</li></ol></div>
+  <div class="panel warn"><b>Ubah nilai lalu beri tahu</b><p>Mengubah nilai tanpa memberi tahu Flutter membuat tampilan tidak ikut berubah meski datanya sudah baru.</p></div>
   
 </section><section class="lesson-section">
-  <h4>02 · Contoh kode</h4>
-  <p>Perhatikan input, proses, dan output. Ketik ulang, lalu ubah satu nilai.</p>
-  <pre><code>import &quot;package:flutter/material.dart&quot;;
-void main() =&gt; runApp(const MaterialApp(
-  home: Scaffold(body: Center(child: Text(&quot;Halo Flutter&quot;))),
-));</code></pre>
+  <h4>03 · Kapan tampilan dibangun ulang</h4>
+  <p>Flutter membangun ulang tampilan ketika keadaan berubah atau ketika nilai yang diberikan ke sebuah widget berbeda dari sebelumnya. Pembangunan ulang ini normal dan biasanya cepat.</p><p>Karena itu, metode pembangunan sebaiknya ringan. Pekerjaan berat seperti memuat data atau menghitung besar sebaiknya disiapkan di luar metode itu, bukan diulang setiap kali tampilan dibangun.</p><p>Pecah tampilan menjadi widget kecil agar perubahan keadaan hanya membangun ulang bagian yang terpengaruh. Semakin kecil bagian yang dibangun ulang, semakin hemat dan semakin mudah ditelusuri.</p>
+  
+  <div class="panel warn"><b>Jaga pembangunan tetap ringan</b><p>Metode pembangunan dapat dipanggil berkali-kali. Jangan menaruh pekerjaan berat atau pemanggilan jaringan di dalamnya.</p></div>
+  <div class="panel warn"><b>Cek pemahaman</b><p>Mengapa pekerjaan berat sebaiknya tidak diletakkan di dalam metode pembangunan?</p><p>Kriteria berhasil: Karena metode itu dapat dipanggil berkali-kali saat tampilan dibangun ulang sehingga pekerjaan berat terulang.</p></div>
+</section><section class="lesson-section">
+  <h4>04 · Menyusun pohon widget</h4>
+  <p>Tampilan aplikasi disusun dari widget bersarang. Widget paling luar memberi kerangka, misalnya susunan halaman, sedangkan widget di dalamnya mengisi isi bagian-bagian halaman.</p><p>Bacalah pohon dari luar ke dalam: kerangka, lalu bagian, lalu isi terkecil. Cara membaca ini membuat Anda tahu di bagian mana sebuah tampilan ditentukan.</p><p>Pecah pohon menjadi widget bernama ketika satu bagian sudah cukup besar atau dipakai berulang. Nama widget itu memberi keterangan yang tidak diberikan oleh susunan widget bawaan.</p>
   
   
+  <div class="panel warn"><b>Cek pemahaman</b><p>Bagaimana cara membaca pohon widget dengan mudah?</p><p>Kriteria berhasil: Dari luar ke dalam: kerangka halaman, lalu bagiannya, lalu isi terkecil setiap bagian.</p></div>
 </section>
-  <h4>Latihan bertingkat</h4><ol><li><b>Latihan 1</b> <em>(Mandiri)</em><p>Buat halaman Halo Dunia dengan judul dan tombol.</p></li><li><b>Latihan 2</b> <em>(Mandiri)</em><p>Ubah satu input atau asumsi pada contoh, catat hasil dan jelaskan alasannya.</p></li></ol>
-  
-  
+  <h4>Latihan bertingkat</h4><ol><li><b>Widget kartu tanpa keadaan</b> <em>(Terbimbing)</em><p>Buat widget tanpa keadaan yang menampilkan judul tugas dengan jarak sekelilingnya.</p><ol><li>Deklarasikan kelas widget tanpa keadaan.</li><li>Terima judul sebagai nilai wajib.</li><li>Susun jarak lalu teks pada metode pembangunan.</li><li>Tampilkan beberapa kartu dengan judul berbeda.</li></ol><pre><code>class KartuTugas extends StatelessWidget {
+  // lengkapi
+}</code></pre><p><em>Hasil: Kartu tampil dengan judul sesuai nilai yang diberikan.</em></p><details><summary>Petunjuk bertahap</summary><ol><li>Nilai diterima lewat konstruktor.</li><li>Metode pembangunan mengembalikan susunan widget.</li><li>Teks menampilkan nilai yang diterima.</li></ol></details><p><em>Tantangan: Tambahkan baris keterangan kedua di bawah judul.</em></p></li><li><b>Penghitung berkeadaan</b> <em>(Mandiri)</em><p>Buat widget berkeadaan dengan sebuah angka yang bertambah ketika tombolnya ditekan.</p><ol><li>Deklarasikan widget berkeadaan beserta kelas keadaannya.</li><li>Simpan angka pada keadaan.</li><li>Tambahkan tombol yang menambah angka.</li><li>Tampilkan angka terbaru setiap kali berubah.</li></ol><pre><code>class Penghitung extends StatefulWidget {
+  // lengkapi
+}</code></pre><p><em>Hasil: Angka bertambah dan tampilan selalu menunjukkan nilai terbaru.</em></p><details><summary>Petunjuk bertahap</summary><ol><li>Keadaan menyimpan nilai yang berubah.</li><li>Perubahan nilai disertai pemberitahuan pembangunan ulang.</li><li>Tampilan membaca nilai terbaru dari keadaan.</li></ol></details><p><em>Tantangan: Tambahkan tombol pengurang dengan syarat tidak kurang dari nol.</em></p></li><li><b>Susun halaman dari widget kecil</b> <em>(Penerapan)</em><p>Susun halaman daftar tugas dari beberapa widget kecil: kepala halaman, daftar, dan kartu tugas.</p><ol><li>Tentukan bagian halaman yang perlu.</li><li>Buat widget tersendiri untuk setiap bagian.</li><li>Susun bagian itu menjadi satu halaman.</li><li>Pastikan setiap bagian punya tanggung jawab yang jelas.</li></ol><pre><code>Column(children: [/* kepala, daftar, kartu */])</code></pre><p><em>Hasil: Halaman tersusun dari widget kecil dengan tanggung jawab yang jelas.</em></p><details><summary>Petunjuk bertahap</summary><ol><li>Widget kecil mudah dibaca dan dipakai ulang.</li><li>Beri nama widget sesuai perannya.</li><li>Susunan membaca dari kerangka ke isi.</li></ol></details><p><em>Tantangan: Pindahkan setiap widget ke berkasnya sendiri.</em></p></li></ol>
+  <h4>Verifikasi</h4><div class="panel"><b>Mode: Manual</b><pre><code>Jalankan ketiga latihan pada perangkat atau penampil dan periksa tampilannya.</code></pre><p><em>Hasil yang diharapkan: Kartu tampil sesuai nilainya, penghitung memperbarui angkanya, dan halaman tersusun dari widget kecil tanpa tampilan meluap.</em></p><p><em>Bukti yang disimpan: Simpan berkas widget dan tangkapan layar setiap latihan.</em></p></div>
+  <h4>Mengatasi masalah</h4><ul><li><b>Perubahan nilai tidak ikut terlihat pada tampilan.</b><br>Penyebab umum: Nilai diubah tanpa memberi tahu Flutter agar membangun ulang.<br>Perbaikan: Ubah nilai melalui pembaruan keadaan agar tampilan dibangun ulang.</li><li><b>Tampilan meluap melebihi ruang yang tersedia.</b><br>Penyebab umum: Susunan anak tidak dibatasi ukurannya di dalam ruang yang terbatas.<br>Perbaikan: Batasi atau bungkus susunan yang dapat memanjang agar muat pada ruangnya.</li><li><b>Aplikasi terasa berat saat halaman dibangun.</b><br>Penyebab umum: Pekerjaan berat diletakkan di dalam metode pembangunan.<br>Perbaikan: Pindahkan pekerjaan berat ke luar metode pembangunan dan simpan hasilnya pada keadaan.</li><li><b>Satu bagian berubah membuat seluruh halaman dibangun ulang.</b><br>Penyebab umum: Keadaan disimpan pada widget yang terlalu besar.<br>Perbaikan: Pecah halaman menjadi widget kecil dan simpan keadaan pada widget terdekat yang membutuhkannya.</li></ul>
   <div class="quiz"><strong>Uji pemahaman</strong><div class="quiz-question">
-    <b>1. Apa prinsip yang paling tepat untuk topik “Flutter widget tree”?</b>
-    <ol type="A"><li>Pecah widget panjang menjadi komponen dengan tanggung jawab jelas.</li><li>Gunakan solusi paling rumit sejak awal, meski kebutuhan belum jelas.</li><li>Lewati pengujian karena contoh kecil pasti benar.</li></ol>
-    <details><summary>Lihat pembahasan</summary><p class="answer">Jawaban: A. Pecah widget panjang menjadi komponen dengan tanggung jawab jelas.</p></details>
+    <b>1. Apa perbedaan widget tanpa keadaan dan widget berkeadaan?</b>
+    <ol type="A"><li>Keduanya sama saja</li><li>Widget tanpa keadaan hanya bergantung pada nilai yang diberikan; widget berkeadaan menyimpan dan mengubah keadaannya</li><li>Widget berkeadaan selalu lebih cepat</li></ol>
+    <details><summary>Lihat pembahasan</summary><p class="answer">Jawaban: B. Widget tanpa keadaan tidak menyimpan apa pun, sedangkan widget berkeadaan menyimpan nilai yang berubah.</p></details>
+  </div><div class="quiz-question">
+    <b>2. Apa yang terjadi ketika keadaan diubah tanpa memberi tahu Flutter?</b>
+    <ol type="A"><li>Tampilan dibangun ulang</li><li>Tampilan tidak ikut berubah meski datanya sudah baru</li><li>Aplikasi berhenti</li></ol>
+    <details><summary>Lihat pembahasan</summary><p class="answer">Jawaban: B. Tanpa pemberitahuan, Flutter tidak membangun ulang tampilan sehingga yang tampil masih nilai lama.</p></details>
+  </div><div class="quiz-question">
+    <b>3. Sebuah halaman punya beberapa bagian dengan keadaan berbeda. Tindakan tepat...</b>
+    <ol type="A"><li>Menyimpan seluruh keadaan pada satu widget besar</li><li>Memecah halaman menjadi widget kecil dan menyimpan keadaan pada widget yang membutuhkannya</li><li>Membangun ulang seluruh aplikasi setiap perubahan</li></ol>
+    <details><summary>Lihat pembahasan</summary><p class="answer">Jawaban: B. Widget kecil dengan keadaan terdekat membatasi bagian yang dibangun ulang.</p></details>
   </div></div>
-  
-  
-  
+  <h4>Ringkasan</h4><ul><li>Widget mendeskripsikan potongan tampilan dan disusun menjadi pohon widget.</li><li>Widget tanpa keadaan hanya bergantung pada nilai yang diberikan; widget berkeadaan menyimpan keadaannya.</li><li>Perubahan keadaan memicu pembangunan ulang tampilan.</li><li>Memecah tampilan menjadi widget kecil membuat pembaruan lebih hemat dan kode lebih jelas.</li></ul>
+  <div class="panel"><b>Berikutnya</b><p>Berikutnya: tata letak dan tampilan yang menyesuaikan ukuran layar. Anda akan menyusun halaman yang nyaman di berbagai ukuran.</p></div>
+  <h4>Sumber</h4><ul><li><a href="https://docs.flutter.dev/" rel="noopener noreferrer">Flutter Documentation</a> <small>Google · stable</small> — Dokumentasi resmi Flutter tentang widget dan dasar tampilan.</li><li><a href="https://dart.dev/language/classes" rel="noopener noreferrer">Dart: Classes</a> <small>Dart · current</small> — Dokumentasi Dart tentang kelas dan properti yang dipakai widget.</li><li><a href="https://dart.dev/language" rel="noopener noreferrer">Dart Language Tour</a> <small>Google · stable</small> — Referensi bahasa Dart sebagai dasar penulisan widget.</li></ul>
 </article>
 <article class="lesson" id="m10-l03">
-  <div class="lesson-meta">Pelajaran 03 · 45 menit · Menengah · Dart</div>
+  <div class="lesson-meta">Pelajaran 03 · 120 menit · Menengah · Dart</div>
   <h3>Layout dan responsive Flutter</h3>
-  
-  
-  
-  
-  
-  
+  <div class="panel good"><b>Hasil belajar</b><p>Setelah pelajaran ini, Anda dapat menyusun tata letak Flutter yang rapi dan menyesuaikan tampilannya untuk berbagai ukuran layar.</p></div>
+  <h4>Tujuan</h4><ul><li>Menjelaskan aturan pembatasan ukuran pada tata letak Flutter.</li><li>Memakai susunan baris, kolom, dan lapisan dengan benar.</li><li>Membuat tampilan menyesuaikan ukuran layar.</li><li>Mengatasi tampilan yang meluap.</li></ul>
+  <div class="panel"><b>Prasyarat</b><p>Flutter widget tree</p></div>
+  <h4>Istilah kunci</h4><dl class="glossary"><div><dt>Pembatasan</dt><dd>Ukuran ruang yang diberikan induk kepada anaknya dalam penyusunan tata letak.</dd></div><div><dt>Baris dan kolom</dt><dd>Susunan widget secara mendatar atau menegak.</dd></div><div><dt>Lapisan</dt><dd>Susunan widget yang saling menumpuk sesuai urutan tertentu.</dd></div><div><dt>Tata letak menyesuaikan</dt><dd>Tata letak yang berubah susunannya menurut lebar atau tinggi ruang yang tersedia.</dd></div><div><dt>Meluap</dt><dd>Keadaan ketika isi memerlukan ruang lebih besar daripada ruang yang tersedia sehingga sebagian terpotong.</dd></div></dl>
+  <h4>Kartu sintaks</h4><div class="panel">
+  <b><code>Column(children: [anak1, anak2])</code></b>
+  <p><em>Dibaca: Baca sebagai susunan menegak berisi dua anak berurutan dari atas ke bawah.</em></p>
+  <p>Kolom membagi ruang secara menegak. Ukuran setiap anak ditentukan anak itu sendiri, sedangkan kolom mengatur urutannya.</p>
+  <pre><code>Column(children: [anak1, anak2])</code></pre>
+  <p><em>Output: Kedua anak tersusun dari atas ke bawah.</em></p>
+  <p><em>Hati-hati: Menaruh banyak anak tanpa pengaturan membuat kolom meluap di layar pendek.</em></p>
+</div><div class="panel">
+  <b><code>Expanded(child: Text(judul))</code></b>
+  <p><em>Dibaca: Baca sebagai anak yang mengambil sisa ruang yang belum terpakai pada induknya.</em></p>
+  <p>Pembungkus ini membuat anak mengisi sisa ruang, sehingga susunan tidak meluap meski panjang isinya berbeda-beda.</p>
+  <pre><code>Expanded(child: Text(judul))</code></pre>
+  <p><em>Output: Anak mengisi sisa ruang pada arah susunan induknya.</em></p>
+  <p><em>Hati-hati: Menaruh pembungkus ini di dalam induk yang ruangnya tak terbatas membuat ukurannya tidak dapat ditentukan.</em></p>
+</div><div class="panel">
+  <b><code>if (lebar &gt; 600) duaKolom else satuKolom</code></b>
+  <p><em>Dibaca: Baca sebagai pemilihan susunan menurut lebar ruang yang tersedia.</em></p>
+  <p>Tampilan yang menyesuaikan memilih susunan berbeda untuk layar sempit dan lebar tanpa membuat halaman terpisah.</p>
+  <pre><code>if (lebar &gt; 600) duaKolom else satuKolom</code></pre>
+  <p><em>Output: Tata letak menyesuaikan ukuran layar yang sedang dipakai.</em></p>
+  <p><em>Hati-hati: Memakai satu susunan untuk semua ukuran membuat tampilan sempit atau meluap pada sebagian perangkat.</em></p>
+</div>
+  <h4>Aturan penulisan</h4><ul><li>Ingat aturan dasar: pembatasan mengalir dari induk ke anak, sedangkan ukuran dilaporkan kembali dari anak ke induk.</li><li>Pakai pembungkus pengisi sisa ruang untuk isi yang panjangnya berubah-ubah.</li><li>Batasi lebar isi agar tetap nyaman dibaca pada layar besar.</li><li>Uji tampilan pada beberapa ukuran layar, bukan hanya satu.</li><li>Tangani tampilan meluap dengan susunan yang dapat digulir atau ukuran yang dibatasi.</li></ul>
   <section class="lesson-section">
-  <h4>01 · Memahami konsepnya</h4>
-  <p>Row dan Column mengatur sumbu utama, Expanded/Flexible membagi ruang; ListView menangani daftar panjang. MediaQuery/LayoutBuilder berguna untuk responsive.</p><p>Pahami constraint layout Flutter dan hindari ukuran tetap yang memicu overflow pada HP kecil, orientasi landscape, maupun font skala besar.</p>
+  <h4>01 · Cara membaca susunan mendatar</h4>
+  <p>Susunan mendatar dibaca dari anak paling kiri ke kanan. Setiap anak menentukan ukurannya sendiri, kecuali anak yang meminta mengisi sisa ruang.</p><p>Pada contoh, ikon dan jarak berukuran tetap, sedangkan teks dibungkus pengisi sisa ruang. Karena itu, teks menempati sisa lebar yang ada dan tidak membuat susunan meluap.</p><p>Perhatikan juga penanganan isi yang terlalu panjang. Teks yang melebihi ruangnya dipotong dengan penanda, sehingga tampilan tetap rapi tanpa memotong tata letak secara tiba-tiba.</p>
+  <pre><code>Row(
+  children: [
+    const Icon(Icons.task),
+    const SizedBox(width: 12),
+    Expanded(child: Text(judul, overflow: TextOverflow.ellipsis)),
+  ],
+)</code></pre><div class="panel"><b>Output yang diharapkan</b><p>Ikon dan jarak tampil di kiri, lalu teks mengisi sisa lebar dan dipotong bila terlalu panjang.</p></div><p>Susunan mendatar menempatkan ikon berukuran tetap, jarak tetap, lalu teks yang mengambil sisa ruang sehingga tidak meluap.</p><div class="panel"><b>Bedah baris</b><ol><li>Baris 1 · <code>Row(</code> — Susunan menempatkan anak secara mendatar.</li><li>Baris 3 · <code>const Icon(Icons.task),</code> — Ikon berukuran tetap menempati ruangnya sendiri.</li><li>Baris 4 · <code>const SizedBox(width: 12),</code> — Jarak tetap memisahkan ikon dan teks.</li><li>Baris 5 · <code>Expanded(child: Text(judul, overflow: TextOverflow.ellipsis)),</code> — Teks mengambil sisa ruang dan dipotong bila terlalu panjang.</li></ol></div>
+  <div class="panel good"><b>Satu anak mengisi sisa</b><p>Sisakan satu anak yang mengambil sisa ruang. Cara ini mencegah susunan meluap ketika isinya panjang.</p></div>
+  <div class="panel warn"><b>Cek pemahaman</b><p>Mengapa teks pada contoh dibungkus pengisi sisa ruang?</p><p>Kriteria berhasil: Agar teks menempati sisa lebar saja sehingga susunan tidak meluap meski judulnya panjang.</p></div>
+</section><section class="lesson-section">
+  <h4>02 · Menyesuaikan dengan ukuran ruang</h4>
+  <p>Tata letak yang menyesuaikan dibaca sebagai pilihan susunan menurut ruang yang tersedia. Pada contoh, lebar ruang diperiksa, lalu susunan dipilih sesuai hasilnya.</p><p>Cara ini membuat satu halaman dapat tampil nyaman di layar sempit maupun lebar. Alih-alih membuat dua halaman terpisah, susunannya saja yang berbeda.</p><p>Pemeriksaan dilakukan pada lebar ruang yang tersedia, bukan pada lebar layar perangkat. Perbedaan ini penting karena ruang yang tersedia dapat lebih kecil, misalnya ketika halaman dibagi dua.</p>
+  <pre><code>LayoutBuilder(
+  builder: (context, batas) {
+    if (batas.maxWidth &gt; 600) {
+      return const TampilanDuaKolom();
+    }
+    return const TampilanSatuKolom();
+  },
+)</code></pre><div class="panel"><b>Output yang diharapkan</b><p>Susunan dua kolom dipakai pada ruang lebar, dan susunan satu kolom pada ruang sempit.</p></div><p>Lebar ruang yang tersedia diperiksa, lalu susunan yang sesuai dipilih. Satu halaman melayani beberapa ukuran tanpa halaman terpisah.</p><div class="panel"><b>Bedah baris</b><ol><li>Baris 1 · <code>LayoutBuilder(</code> — Pembangun tata letak memberi ukuran ruang yang tersedia.</li><li>Baris 3 · <code>if (batas.maxWidth &gt; 600) {</code> — Lebar ruang diperiksa untuk memilih susunan.</li><li>Baris 4 · <code>return const TampilanDuaKolom();</code> — Ruang lebar memakai susunan dua kolom.</li><li>Baris 6 · <code>return const TampilanSatuKolom();</code> — Ruang sempit memakai susunan satu kolom.</li></ol></div>
   
-  <div class="panel good"><b>Best practice</b><p>Gunakan widget scroll yang sesuai dan uji text scaling.</p></div><div class="panel bad"><b>Kesalahan umum</b><p>Menaruh ListView dalam Column tanpa batas tinggi.</p></div>
   
 </section><section class="lesson-section">
-  <h4>02 · Contoh kode</h4>
-  <p>Perhatikan input, proses, dan output. Ketik ulang, lalu ubah satu nilai.</p>
-  <pre><code>Column(children: [
-  const Text(&quot;Tugas Hari Ini&quot;),
-  Expanded(child: ListView(children: const [
-    ListTile(title: Text(&quot;Belajar Dart&quot;)),
-  ])),
-]);</code></pre>
+  <h4>03 · Aturan pembatasan ukuran</h4>
+  <p>Penyusunan tata letak Flutter mengikuti satu aturan: induk memberi batas ruang kepada anaknya, dan anak melaporkan ukurannya kembali. Pemahaman aturan ini menjelaskan sebagian besar masalah tata letak.</p><p>Bila induk memberi ruang tak terbatas, anak yang mengisi sisa ruang tidak dapat menentukan ukurannya. Inilah sebab banyak pesan kesalahan tata letak yang membingungkan.</p><p>Saat menemui masalah tata letak, telusuri batas ruang dari induk ke anak. Biasanya masalahnya ada pada induk yang memberikan ruang tak terbatas atau memberi batas yang terlalu kecil.</p>
+  
+  <div class="panel warn"><b>Ruang tak terbatas</b><p>Anak yang mengisi sisa ruang tidak dapat berukuran di dalam induk yang memberi ruang tak terbatas. Periksa batas dari induknya.</p></div>
+  <div class="panel warn"><b>Cek pemahaman</b><p>Bagaimana aturan pembatasan ukuran pada tata letak Flutter?</p><p>Kriteria berhasil: Induk memberi batas ruang kepada anaknya, dan anak melaporkan ukuran yang dipakainya kembali kepada induk.</p></div>
+</section><section class="lesson-section">
+  <h4>04 · Mengatasi tampilan yang meluap</h4>
+  <p>Tampilan meluap terjadi ketika isi memerlukan ruang lebih besar daripada yang tersedia. Gejalanya terlihat dari penanda bergaris yang muncul di layar.</p><p>Ada beberapa cara mengatasinya. Isi yang panjang dapat dibuat dapat digulir, ukurannya dibatasi, atau susunannya diubah agar lebih hemat ruang.</p><p>Pilih cara yang sesuai sifat isinya. Isi yang memang panjang lebih baik dapat digulir, sedangkan isi yang hanya sedikit melebihi ruang lebih baik ukurannya disesuaikan.</p>
   
   
+  <div class="panel warn"><b>Cek pemahaman</b><p>Sebutkan dua cara mengatasi tampilan yang meluap.</p><p>Kriteria berhasil: Membuat isi dapat digulir, atau membatasi ukuran dan menyesuaikan susunannya agar lebih hemat ruang.</p></div>
 </section>
-  <h4>Latihan bertingkat</h4><ol><li><b>Latihan 1</b> <em>(Mandiri)</em><p>Buat daftar kartu yang tidak overflow pada layar kecil.</p></li><li><b>Latihan 2</b> <em>(Mandiri)</em><p>Ubah satu input atau asumsi pada contoh, catat hasil dan jelaskan alasannya.</p></li></ol>
-  
-  
+  <h4>Latihan bertingkat</h4><ol><li><b>Baris dengan teks mengisi sisa</b> <em>(Terbimbing)</em><p>Susun baris berisi ikon, jarak, dan teks judul yang mengambil sisa ruang serta dipotong bila terlalu panjang.</p><ol><li>Susun baris dengan tiga anak.</li><li>Beri ikon dan jarak ukuran tetap.</li><li>Bungkus teks agar mengisi sisa ruang.</li><li>Tambahkan pemotongan untuk teks yang terlalu panjang.</li></ol><pre><code>Row(children: [/* ikon, jarak, teks */])</code></pre><p><em>Hasil: Baris tampil rapi meski judulnya sangat panjang.</em></p><details><summary>Petunjuk bertahap</summary><ol><li>Satu anak mengisi sisa ruang.</li><li>Teks yang panjang dipotong dengan penanda.</li><li>Jarak tetap memisahkan anak.</li></ol></details><p><em>Tantangan: Tambahkan ikon kedua di sisi kanan.</em></p></li><li><b>Tata letak menurut lebar</b> <em>(Mandiri)</em><p>Buat halaman yang memakai susunan dua kolom pada ruang lebar dan satu kolom pada ruang sempit.</p><ol><li>Periksa lebar ruang yang tersedia.</li><li>Pilih susunan sesuai hasil pemeriksaan.</li><li>Susun tampilan tersendiri untuk setiap keadaan.</li><li>Uji pada kedua ukuran.</li></ol><pre><code>LayoutBuilder(builder: (context, batas) { /* pilih susunan */ })</code></pre><p><em>Hasil: Susunan berganti sesuai lebar ruang dan tetap nyaman pada keduanya.</em></p><details><summary>Petunjuk bertahap</summary><ol><li>Lebar ruang diperiksa, bukan lebar perangkat.</li><li>Setiap keadaan memakai susunan yang sesuai.</li><li>Uji kedua ukuran secara terpisah.</li></ol></details><p><em>Tantangan: Tambahkan keadaan ketiga untuk ruang yang sangat lebar.</em></p></li><li><b>Rancang halaman daftar tugas</b> <em>(Penerapan)</em><p>Rancang halaman daftar tugas yang nyaman pada ponsel dan tablet, beserta cara menangani daftar yang panjang.</p><ol><li>Tentukan susunan untuk ponsel.</li><li>Tentukan penyesuaian untuk tablet.</li><li>Tentukan cara menangani daftar yang panjang.</li><li>Rancang batas lebar agar isi tetap nyaman dibaca.</li></ol><pre><code>Ponsel: ...
+Tablet: ...
+Daftar panjang: ...</code></pre><p><em>Hasil: Halaman nyaman pada kedua ukuran dan daftar panjang tertangani dengan baik.</em></p><details><summary>Petunjuk bertahap</summary><ol><li>Batasi lebar isi pada layar besar.</li><li>Daftar panjang sebaiknya dapat digulir.</li><li>Uji pada beberapa ukuran layar.</li></ol></details><p><em>Tantangan: Tambahkan penyesuaian untuk layar yang sangat lebar.</em></p></li></ol>
+  <h4>Verifikasi</h4><div class="panel"><b>Mode: Manual</b><pre><code>Tampilkan ketiga latihan pada beberapa ukuran layar dan periksa tidak ada tampilan meluap.</code></pre><p><em>Hasil yang diharapkan: Baris rapi meski isinya panjang, susunan berganti sesuai lebar ruang, dan daftar panjang dapat ditelusuri.</em></p><p><em>Bukti yang disimpan: Simpan berkas dan tangkapan layar tiap ukuran.</em></p></div>
+  <h4>Mengatasi masalah</h4><ul><li><b>Muncul penanda tampilan meluap bergaris.</b><br>Penyebab umum: Isi memerlukan ruang lebih besar daripada ruang yang tersedia.<br>Perbaikan: Buat isi dapat digulir, batasi ukurannya, atau ubah susunannya agar lebih hemat ruang.</li><li><b>Anak yang mengisi sisa ruang tidak dapat menentukan ukurannya.</b><br>Penyebab umum: Induknya memberi ruang tak terbatas.<br>Perbaikan: Beri batas ruang pada induk atau ubah susunannya agar ruangnya terbatas.</li><li><b>Tampilan tidak nyaman dibaca pada layar besar.</b><br>Penyebab umum: Isi memakai seluruh lebar tanpa batas sehingga barisnya terlalu panjang.<br>Perbaikan: Batasi lebar isi dan pusatkan agar nyaman dibaca.</li><li><b>Susunan tampil berbeda dari yang diharapkan pada sebagian perangkat.</b><br>Penyebab umum: Tata letak memakai satu susunan untuk semua ukuran.<br>Perbaikan: Tambahkan penyesuaian susunan menurut lebar ruang yang tersedia.</li></ul>
   <div class="quiz"><strong>Uji pemahaman</strong><div class="quiz-question">
-    <b>1. Apa prinsip yang paling tepat untuk topik “Layout dan responsive Flutter”?</b>
-    <ol type="A"><li>Gunakan widget scroll yang sesuai dan uji text scaling.</li><li>Gunakan solusi paling rumit sejak awal, meski kebutuhan belum jelas.</li><li>Lewati pengujian karena contoh kecil pasti benar.</li></ol>
-    <details><summary>Lihat pembahasan</summary><p class="answer">Jawaban: A. Gunakan widget scroll yang sesuai dan uji text scaling.</p></details>
+    <b>1. Bagaimana aturan dasar pembatasan ukuran pada tata letak Flutter?</b>
+    <ol type="A"><li>Anak memberi batas kepada induk</li><li>Induk memberi batas ruang kepada anak, dan anak melaporkan ukurannya kembali</li><li>Semua widget berukuran tetap</li></ol>
+    <details><summary>Lihat pembahasan</summary><p class="answer">Jawaban: B. Batas ruang mengalir dari induk ke anak, sedangkan ukuran dilaporkan dari anak ke induk.</p></details>
+  </div><div class="quiz-question">
+    <b>2. Apa kegunaan pembungkus pengisi sisa ruang pada susunan?</b>
+    <ol type="A"><li>Membuat anak mengambil sisa ruang sehingga susunan tidak meluap</li><li>Menambah jumlah anak</li><li>Menghapus anak lain</li></ol>
+    <details><summary>Lihat pembahasan</summary><p class="answer">Jawaban: A. Pembungkus itu membuat anak mengisi sisa ruang pada arah susunan induknya.</p></details>
+  </div><div class="quiz-question">
+    <b>3. Halaman harus nyaman di ponsel dan tablet. Tindakan tepat...</b>
+    <ol type="A"><li>Memakai satu susunan untuk semua ukuran</li><li>Menyesuaikan susunan menurut lebar ruang yang tersedia</li><li>Membuat dua aplikasi terpisah</li></ol>
+    <details><summary>Lihat pembahasan</summary><p class="answer">Jawaban: B. Tata letak yang menyesuaikan memilih susunan berbeda menurut lebar ruang sehingga nyaman di keduanya.</p></details>
   </div></div>
-  
-  
-  
+  <h4>Ringkasan</h4><ul><li>Tata letak Flutter mengikuti aturan pembatasan dari induk ke anak dengan ukuran dilaporkan kembali.</li><li>Susunan baris dan kolom mengatur anak menurut arahnya.</li><li>Pembungkus pengisi sisa ruang mencegah susunan meluap ketika isinya panjang.</li><li>Tata letak yang menyesuaikan memilih susunan menurut lebar ruang yang tersedia.</li></ul>
+  <div class="panel"><b>Berikutnya</b><p>Berikutnya: pengelolaan keadaan dan pemisahan tanggung jawab. Anda akan memisahkan logika dari tampilan agar aplikasi mudah diuji.</p></div>
+  <h4>Sumber</h4><ul><li><a href="https://docs.flutter.dev/ui/layout" rel="noopener noreferrer">Flutter Docs: Layout</a> <small>Flutter · stable</small> — Dokumentasi resmi Flutter tentang tata letak dan aturan pembatasan ukuran.</li><li><a href="https://docs.flutter.dev/ui/adaptive-responsive" rel="noopener noreferrer">Flutter Docs: Adaptive and Responsive Design</a> <small>Flutter · stable</small> — Panduan resmi Flutter tentang tampilan yang menyesuaikan ukuran.</li><li><a href="https://docs.flutter.dev/" rel="noopener noreferrer">Flutter Documentation</a> <small>Google · stable</small> — Dokumentasi resmi Flutter tentang widget penyusun tata letak.</li></ul>
 </article>
 <article class="lesson" id="m10-l04">
-  <div class="lesson-meta">Pelajaran 04 · 45 menit · Menengah · Dart</div>
+  <div class="lesson-meta">Pelajaran 04 · 120 menit · Menengah · Dart</div>
   <h3>State management dan separation of concerns</h3>
-  
-  
-  
-  
-  
-  
+  <div class="panel good"><b>Hasil belajar</b><p>Setelah pelajaran ini, Anda dapat memisahkan logika aplikasi dari tampilan serta memilih tempat menyimpan keadaan yang sesuai agar kode mudah diuji dan dirawat.</p></div>
+  <h4>Tujuan</h4><ul><li>Menjelaskan mengapa logika tidak sebaiknya berada di dalam widget tampilan.</li><li>Memisahkan keadaan menjadi bagian yang dapat diuji.</li><li>Memilih tempat menyimpan keadaan menurut jangkauan pemakaiannya.</li><li>Menghubungkan tampilan dengan sumber keadaan secara bersih.</li></ul>
+  <div class="panel"><b>Prasyarat</b><p>Layout dan responsive Flutter</p></div>
+  <h4>Istilah kunci</h4><dl class="glossary"><div><dt>Keadaan aplikasi</dt><dd>Data yang menentukan apa yang ditampilkan aplikasi dan dapat berubah selama aplikasi dipakai.</dd></div><div><dt>Pemisahan tanggung jawab</dt><dd>Prinsip menempatkan setiap tanggung jawab pada satu bagian kode agar tidak bercampur.</dd></div><div><dt>Jangkauan keadaan</dt><dd>Seberapa luas keadaan itu dipakai, apakah satu widget, satu halaman, atau seluruh aplikasi.</dd></div><div><dt>Pengelolaan keadaan</dt><dd>Cara mengatur penyimpanan dan pembaruan keadaan serta menyebarkannya ke tampilan yang membutuhkan.</dd></div></dl>
+  <h4>Kartu sintaks</h4><div class="panel">
+  <b><code>class TugasController extends ChangeNotifier { ... }</code></b>
+  <p><em>Dibaca: Baca sebagai pengendali keadaan yang memberi tahu pendengarnya ketika berubah.</em></p>
+  <p>Kelas ini memisahkan logika dan keadaan dari tampilan. Tampilan cukup mendengarkan perubahan tanpa memuat aturannya sendiri.</p>
+  <pre><code>class TugasController extends ChangeNotifier { ... }</code></pre>
+  <p><em>Output: Perubahan keadaan disebarkan ke tampilan yang mendengarkannya.</em></p>
+  <p><em>Hati-hati: Menaruh logika dan pemanggilan jaringan di dalam widget membuat logika itu sulit diuji tanpa menjalankan tampilan.</em></p>
+</div><div class="panel">
+  <b><code>notifyListeners();</code></b>
+  <p><em>Dibaca: Baca sebagai pemberitahuan bahwa keadaan berubah dan tampilan perlu diperbarui.</em></p>
+  <p>Panggilan itu menyebarkan perubahan ke semua pendengar. Tanpa itu, tampilan tidak tahu keadaannya sudah berbeda.</p>
+  <pre><code>notifyListeners();</code></pre>
+  <p><em>Output: Tampilan yang mendengarkan membangun ulang dengan keadaan terbaru.</em></p>
+  <p><em>Hati-hati: Memanggilnya sebelum nilai benar-benar berubah membuat tampilan dibangun ulang tanpa alasan.</em></p>
+</div><div class="panel">
+  <b><code>AnimatedBuilder(animation: keadaan, builder: ...)</code></b>
+  <p><em>Dibaca: Baca sebagai widget yang membangun ulang isinya setiap kali keadaan berubah.</em></p>
+  <p>Widget ini menghubungkan tampilan dengan sumber keadaan. Hanya bagian yang dibungkusnya yang dibangun ulang saat keadaan berubah.</p>
+  <pre><code>AnimatedBuilder(animation: keadaan, builder: ...)</code></pre>
+  <p><em>Output: Tampilan mengikuti keadaan terbaru tanpa membangun ulang seluruh halaman.</em></p>
+  <p><em>Hati-hati: Membungkus seluruh halaman membuat bagian yang tidak berubah ikut dibangun ulang setiap kali keadaan berubah.</em></p>
+</div>
+  <h4>Aturan penulisan</h4><ul><li>Pisahkan logika aplikasi dari widget tampilan.</li><li>Simpan keadaan sedekat mungkin dengan bagian yang memakainya.</li><li>Naikkan keadaan ke tempat yang lebih tinggi hanya bila memang dipakai bersama.</li><li>Beri tahu pendengar hanya setelah keadaan benar-benar berubah.</li><li>Uji logika keadaan secara terpisah tanpa menjalankan tampilan.</li></ul>
   <section class="lesson-section">
-  <h4>01 · Memahami konsepnya</h4>
-  <p>State sederhana dapat memakai setState; saat data dibagi lintas layar, gunakan pola yang jelas seperti ChangeNotifier atau Riverpod (pilihan lanjutan).</p><p>Pisahkan view dari logika pemanggilan API dan state. Jangan memilih paket state management karena popularitas semata; uji kemudahan perawatan oleh tim.</p>
-  
-  <div class="panel good"><b>Best practice</b><p>Mulai sederhana; tambahkan state management ketika kebutuhan membenarkan.</p></div><div class="panel bad"><b>Kesalahan umum</b><p>Memasukkan request HTTP dan pemrosesan bisnis di method build().</p></div>
-  
+  <h4>01 · Cara membaca pengendali keadaan</h4>
+  <p>Pengendali keadaan dibaca dari data yang disimpannya dan cara mengubahnya. Pada contoh, ia menyimpan daftar tugas dan menyediakan cara menambah, lalu memberi tahu pendengarnya setiap kali daftar berubah.</p><p>Perhatikan bahwa daftar disimpan sebagai data pribadi, sedangkan pemakaian luar hanya melihat salinan yang tidak dapat diubah. Cara ini mencegah bagian lain mengubah data tanpa melalui pengendali.</p><p>Dengan pemisahan ini, aturan penambahan tugas dapat diuji langsung pada pengendali tanpa menjalankan tampilan. Inilah keuntungan utama memisahkan logika dari widget.</p>
+  <pre><code>class TugasController extends ChangeNotifier {
+  final List&lt;Tugas&gt; _tugas = [];
+
+  List&lt;Tugas&gt; get tugas =&gt; List.unmodifiable(_tugas);
+
+  void tambah(Tugas tugas) {
+    _tugas.add(tugas);
+    notifyListeners();
+  }
+}</code></pre><div class="panel"><b>Output yang diharapkan</b><p>Pengendali menyimpan daftar tugas, menyediakan salinan untuk dibaca, dan memberi tahu pendengar setiap kali daftarnya berubah.</p></div><p>Keadaan disimpan sebagai data pribadi dengan pembacaan hanya-baca. Penambahan dilakukan lewat satu cara yang sekaligus memberi tahu pendengar.</p><div class="panel"><b>Bedah baris</b><ol><li>Baris 1 · <code>class TugasController extends ChangeNotifier {</code> — Kelas pengendali memberi tahu pendengarnya ketika berubah.</li><li>Baris 2 · <code>final List&lt;Tugas&gt; _tugas = [];</code> — Daftar disimpan sebagai data pribadi.</li><li>Baris 4 · <code>List&lt;Tugas&gt; get tugas =&gt; List.unmodifiable(_tugas);</code> — Pembacaan luar hanya mendapat salinan yang tidak dapat diubah.</li><li>Baris 7 · <code>_tugas.add(tugas);</code> — Perubahan keadaan dilakukan lewat satu cara.</li><li>Baris 8 · <code>notifyListeners();</code> — Pendengar diberi tahu setelah keadaan benar-benar berubah.</li></ol></div>
+  <div class="panel good"><b>Logika yang dapat diuji</b><p>Karena logika berada di luar tampilan, ia dapat diuji langsung tanpa menjalankan antarmuka.</p></div>
+  <div class="panel warn"><b>Cek pemahaman</b><p>Mengapa pengendali menyediakan salinan yang tidak dapat diubah untuk pembacaan luar?</p><p>Kriteria berhasil: Agar bagian lain tidak mengubah data tanpa melalui pengendali sehingga aturan tetap terjaga.</p></div>
 </section><section class="lesson-section">
-  <h4>02 · Contoh kode</h4>
-  <p>Perhatikan input, proses, dan output. Ketik ulang, lalu ubah satu nilai.</p>
-  <pre><code>// Konsep aliran state:
-// Widget -&gt; Controller/ViewModel -&gt; Repository -&gt; API
-// Perubahan state memicu render ulang UI.</code></pre>
+  <h4>02 · Mengapa logika dipisahkan</h4>
+  <p>Widget tampilan punya satu tugas: menggambar antarmuka. Menaruh logika di dalamnya membuat satu kelas memuat banyak tanggung jawab sekaligus, sehingga sulit dibaca dan sulit diuji.</p><p>Logika yang berada di luar tampilan dapat diuji tanpa menjalankan antarmuka. Pengujian menjadi lebih cepat dan lebih tepat menunjukkan letak kesalahan.</p><p>Pemisahan juga membuat logika dapat dipakai ulang. Bila kelak aplikasi menampilkan data yang sama pada halaman berbeda, logikanya sudah tersedia terpisah dari tampilan mana pun.</p>
+  
+  <div class="panel warn"><b>Widget yang mengurus terlalu banyak</b><p>Widget yang memuat pemanggilan jaringan, aturan, dan tampilan sekaligus sulit diuji. Pindahkan logikanya ke pengendali.</p></div>
+  <div class="panel warn"><b>Cek pemahaman</b><p>Sebutkan dua keuntungan memisahkan logika dari widget tampilan.</p><p>Kriteria berhasil: Kode lebih mudah dibaca dan logika dapat diuji tanpa menjalankan tampilan.</p></div>
+</section><section class="lesson-section">
+  <h4>03 · Memilih tempat menyimpan keadaan</h4>
+  <p>Tempat menyimpan keadaan ditentukan oleh jangkauan pemakaiannya. Keadaan yang hanya dipakai satu widget cukup disimpan di widget itu. Keadaan yang dipakai satu halaman disimpan pada tingkat halaman.</p><p>Keadaan yang dipakai beberapa halaman, misalnya data pengguna yang sedang masuk, baru dinaikkan ke tingkat aplikasi. Menaikkannya terlalu cepat membuat pengelolaan menjadi rumit tanpa manfaat.</p><p>Saat menaikkan keadaan, pastikan hanya bagian yang benar-benar membutuhkan yang menerima pembaruan. Menyebarkan seluruh keadaan ke seluruh halaman membuat pembangunan ulang menjadi boros.</p>
   
   
+  <div class="panel warn"><b>Cek pemahaman</b><p>Kapan keadaan sebaiknya dinaikkan ke tingkat aplikasi?</p><p>Kriteria berhasil: Ketika keadaan itu dipakai bersama oleh beberapa halaman, bukan hanya satu widget atau satu halaman.</p></div>
+</section><section class="lesson-section">
+  <h4>04 · Jebakan pada pengelolaan keadaan</h4>
+  <p>Jebakan paling umum adalah menyimpan keadaan yang sama di dua tempat. Ketika keduanya tidak lagi sama, tampilan menampilkan nilai yang berbeda dari yang seharusnya.</p><p>Jebakan kedua adalah menyebarkan keadaan terlalu luas. Akibatnya, perubahan kecil memicu pembangunan ulang banyak bagian yang sebenarnya tidak terpengaruh.</p><p>Jebakan ketiga adalah mengubah keadaan secara langsung dari luar pengendali. Jalur perubahan yang tidak seragam membuat aturannya mudah terlewat dan sulit dilacak.</p>
+  
+  
+  <div class="panel warn"><b>Cek pemahaman</b><p>Mengapa menyimpan keadaan yang sama di dua tempat berbahaya?</p><p>Kriteria berhasil: Karena keduanya dapat berbeda sehingga tampilan menampilkan nilai yang tidak sesuai.</p></div>
 </section>
-  <h4>Latihan bertingkat</h4><ol><li><b>Latihan 1</b> <em>(Mandiri)</em><p>Buat state daftar tugas yang bisa ditambah dan dicentang.</p></li><li><b>Latihan 2</b> <em>(Mandiri)</em><p>Ubah satu input atau asumsi pada contoh, catat hasil dan jelaskan alasannya.</p></li></ol>
-  
-  
+  <h4>Latihan bertingkat</h4><ol><li><b>Pengendali daftar tugas</b> <em>(Terbimbing)</em><p>Buat pengendali yang menyimpan daftar tugas dan memberi tahu pendengarnya setiap kali daftar berubah.</p><ol><li>Deklarasikan kelas pengendali yang memberi tahu pendengar.</li><li>Simpan daftar sebagai data pribadi.</li><li>Sediakan pembacaan hanya-baca.</li><li>Beri tahu pendengar setelah perubahan.</li></ol><pre><code>class TugasController extends ChangeNotifier {
+  // lengkapi
+}</code></pre><p><em>Hasil: Daftar berubah melalui satu cara dan pendengar diberi tahu setiap kali.</em></p><details><summary>Petunjuk bertahap</summary><ol><li>Keadaan disimpan sebagai data pribadi.</li><li>Pembacaan luar berupa salinan.</li><li>Pendengar diberi tahu setelah perubahan.</li></ol></details><p><em>Tantangan: Tambahkan cara menghapus tugas melalui jalur yang sama.</em></p></li><li><b>Hubungkan tampilan dengan pengendali</b> <em>(Mandiri)</em><p>Bungkus bagian tampilan yang menampilkan daftar dengan widget yang membangun ulang saat keadaan berubah.</p><ol><li>Bungkus hanya bagian yang terpengaruh keadaan.</li><li>Baca daftar dari pengendali.</li><li>Tampilkan daftar pada bagian itu.</li><li>Pastikan bagian lain tidak ikut dibangun ulang.</li></ol><pre><code>AnimatedBuilder(animation: controller, builder: (context, _) { /* tampilkan daftar */ })</code></pre><p><em>Hasil: Bagian daftar mengikuti keadaan terbaru tanpa membangun ulang seluruh halaman.</em></p><details><summary>Petunjuk bertahap</summary><ol><li>Hanya bagian terpengaruh yang dibungkus.</li><li>Daftar dibaca dari pengendali.</li><li>Pembungkus memicu pembangunan ulang saat keadaan berubah.</li></ol></details><p><em>Tantangan: Pindahkan bagian kedua yang juga bergantung pada keadaan ke pembungkus tersendiri.</em></p></li><li><b>Rancang jangkauan keadaan aplikasi</b> <em>(Penerapan)</em><p>Rancang di mana setiap keadaan aplikasi tugas disimpan: pada widget, halaman, atau aplikasi, beserta alasannya.</p><ol><li>Daftar keadaan yang dipakai aplikasi.</li><li>Tentukan jangkauan pemakaian setiap keadaan.</li><li>Tempatkan setiap keadaan pada tingkat yang sesuai.</li><li>Jelaskan alasan setiap penempatan.</li></ol><pre><code>Keadaan: ...
+Tingkat: ...
+Alasan: ...</code></pre><p><em>Hasil: Setiap keadaan ditempatkan pada tingkat yang paling dekat dengan pemakainya.</em></p><details><summary>Petunjuk bertahap</summary><ol><li>Mulai dari tempat terdekat pemakainya.</li><li>Naikkan hanya bila dipakai bersama.</li><li>Hindari menyimpan keadaan yang sama di dua tempat.</li></ol></details><p><em>Tantangan: Tandai keadaan yang berpotensi dinaikkan bila kebutuhan berubah.</em></p></li></ol>
+  <h4>Verifikasi</h4><div class="panel"><b>Mode: Manual</b><pre><code>Jalankan pengendali secara terpisah dan periksa tampilan hanya membangun ulang bagian yang terpengaruh.</code></pre><p><em>Hasil yang diharapkan: Logika pengendali berjalan tanpa tampilan, dan tampilan mengikuti keadaan tanpa membangun ulang seluruh halaman.</em></p><p><em>Bukti yang disimpan: Simpan kelas pengendali, berkas tampilan, dan catatan hasil pengujian.</em></p></div>
+  <h4>Mengatasi masalah</h4><ul><li><b>Tampilan menampilkan nilai lama meski data sudah berubah.</b><br>Penyebab umum: Pendengar tidak diberi tahu setelah keadaan berubah.<br>Perbaikan: Beri tahu pendengar setiap kali keadaan benar-benar berubah.</li><li><b>Seluruh halaman dibangun ulang setiap ada perubahan kecil.</b><br>Penyebab umum: Keadaan disebarkan terlalu luas ke seluruh halaman.<br>Perbaikan: Bungkus hanya bagian yang terpengaruh keadaan dengan pembungkus yang mendengarkan.</li><li><b>Dua bagian menampilkan nilai yang berbeda untuk data yang sama.</b><br>Penyebab umum: Keadaan yang sama disimpan di dua tempat.<br>Perbaikan: Simpan keadaan itu di satu tempat dan baca dari sana.</li><li><b>Aturan pada keadaan sering terlewat.</b><br>Penyebab umum: Keadaan diubah langsung dari luar pengendali.<br>Perbaikan: Pusatkan semua perubahan keadaan pada satu jalur di dalam pengendali.</li></ul>
   <div class="quiz"><strong>Uji pemahaman</strong><div class="quiz-question">
-    <b>1. Apa prinsip yang paling tepat untuk topik “State management dan separation of concerns”?</b>
-    <ol type="A"><li>Mulai sederhana; tambahkan state management ketika kebutuhan membenarkan.</li><li>Gunakan solusi paling rumit sejak awal, meski kebutuhan belum jelas.</li><li>Lewati pengujian karena contoh kecil pasti benar.</li></ol>
-    <details><summary>Lihat pembahasan</summary><p class="answer">Jawaban: A. Mulai sederhana; tambahkan state management ketika kebutuhan membenarkan.</p></details>
+    <b>1. Mengapa logika aplikasi sebaiknya dipisahkan dari widget tampilan?</b>
+    <ol type="A"><li>Agar tampilan lebih berwarna</li><li>Agar kode lebih mudah dibaca dan logika dapat diuji tanpa menjalankan tampilan</li><li>Agar aplikasi lebih besar</li></ol>
+    <details><summary>Lihat pembahasan</summary><p class="answer">Jawaban: B. Pemisahan membuat kode lebih jelas dan logika dapat diuji secara terpisah.</p></details>
+  </div><div class="quiz-question">
+    <b>2. Apa fungsi pemberitahuan pendengar pada pengendali keadaan?</b>
+    <ol type="A"><li>Menyimpan data ke basis data</li><li>Menyebarkan perubahan keadaan ke tampilan yang mendengarkan</li><li>Menghentikan aplikasi</li></ol>
+    <details><summary>Lihat pembahasan</summary><p class="answer">Jawaban: B. Pemberitahuan itu membuat tampilan yang mendengarkan membangun ulang dengan keadaan terbaru.</p></details>
+  </div><div class="quiz-question">
+    <b>3. Keadaan hanya dipakai satu widget. Tempat penyimpanan yang tepat...</b>
+    <ol type="A"><li>Tingkat aplikasi</li><li>Pada widget itu sendiri</li><li>Di berkas terpisah yang dipakai bersama</li></ol>
+    <details><summary>Lihat pembahasan</summary><p class="answer">Jawaban: B. Keadaan disimpan sedekat mungkin dengan pemakainya, yaitu pada widget itu sendiri.</p></details>
   </div></div>
-  
-  
-  
+  <h4>Ringkasan</h4><ul><li>Logika aplikasi dipisahkan dari widget tampilan agar dapat diuji dan dirawat.</li><li>Pengendali menyimpan keadaan dan memberi tahu pendengarnya saat berubah.</li><li>Tempat penyimpanan keadaan dipilih menurut jangkauan pemakaiannya.</li><li>Hanya bagian yang terpengaruh keadaan yang dibangun ulang melalui pembungkus yang mendengarkan.</li></ul>
+  <div class="panel"><b>Berikutnya</b><p>Berikutnya: navigasi dan pengaturan rute. Anda akan memindahkan pengguna antar halaman dengan alamat yang jelas.</p></div>
+  <h4>Sumber</h4><ul><li><a href="https://docs.flutter.dev/data-and-backend/state-mgmt/intro" rel="noopener noreferrer">Flutter Docs: State Management</a> <small>Flutter · stable</small> — Panduan resmi Flutter tentang pengelolaan keadaan.</li><li><a href="https://docs.flutter.dev/" rel="noopener noreferrer">Flutter Documentation</a> <small>Google · stable</small> — Dokumentasi resmi Flutter tentang widget dan pembangunan ulang.</li><li><a href="https://dart.dev/language/classes" rel="noopener noreferrer">Dart: Classes</a> <small>Dart · current</small> — Dokumentasi Dart tentang kelas dan properti yang dipakai pengendali.</li></ul>
 </article>
 <article class="lesson" id="m10-l05">
-  <div class="lesson-meta">Pelajaran 05 · 45 menit · Menengah · Dart</div>
+  <div class="lesson-meta">Pelajaran 05 · 120 menit · Menengah · Dart</div>
   <h3>Navigation dan routing</h3>
-  
-  
-  
-  
-  
-  
+  <div class="panel good"><b>Hasil belajar</b><p>Setelah pelajaran ini, Anda dapat memindahkan pengguna antar halaman dengan rute bernama serta menangani alamat dan pengembalian hasil antar halaman.</p></div>
+  <h4>Tujuan</h4><ul><li>Memindahkan pengguna dari satu halaman ke halaman lain.</li><li>Memakai rute bernama agar tujuan mudah diubah.</li><li>Mengirim dan menerima hasil antar halaman.</li><li>Menjelaskan perbedaan tumpukan halaman dan penggantian halaman.</li></ul>
+  <div class="panel"><b>Prasyarat</b><p>State management dan separation of concerns</p></div>
+  <h4>Istilah kunci</h4><dl class="glossary"><div><dt>Rute</dt><dd>Penanda yang menunjuk sebuah halaman dan dipakai untuk berpindah ke sana.</dd></div><div><dt>Tumpukan halaman</dt><dd>Susunan halaman yang tersimpan sesuai urutan kunjungan pengguna.</dd></div><div><dt>Mendorong halaman</dt><dd>Menambahkan halaman baru ke atas tumpukan sehingga dapat dikembalikan.</dd></div><div><dt>Mengganti halaman</dt><dd>Menukar halaman saat ini dengan halaman lain tanpa menyisakan yang lama di tumpukan.</dd></div><div><dt>Mengembalikan hasil</dt><dd>Mengirim nilai dari halaman yang ditutup ke halaman yang membukanya.</dd></div></dl>
+  <h4>Kartu sintaks</h4><div class="panel">
+  <b><code>Navigator.pushNamed(context, &quot;/tugas&quot;);</code></b>
+  <p><em>Dibaca: Baca sebagai membuka halaman bertanda rute itu di atas halaman saat ini.</em></p>
+  <p>Halaman baru ditambahkan ke tumpukan sehingga pengguna dapat kembali ke halaman sebelumnya.</p>
+  <pre><code>Navigator.pushNamed(context, &quot;/tugas&quot;);</code></pre>
+  <p><em>Output: Halaman tujuan terbuka dan halaman sebelumnya tetap tersimpan di tumpukan.</em></p>
+  <p><em>Hati-hati: Menulis alamat rute langsung di banyak tempat menyulitkan perubahan nama rute.</em></p>
+</div><div class="panel">
+  <b><code>Navigator.pushReplacementNamed(context, &quot;/masuk&quot;);</code></b>
+  <p><em>Dibaca: Baca sebagai mengganti halaman saat ini dengan halaman bertanda rute itu.</em></p>
+  <p>Halaman lama dibuang dari tumpukan sehingga pengguna tidak dapat kembali ke sana. Cara ini cocok setelah proses masuk atau keluar.</p>
+  <pre><code>Navigator.pushReplacementNamed(context, &quot;/masuk&quot;);</code></pre>
+  <p><em>Output: Halaman baru menggantikan halaman lama tanpa sisa di tumpukan.</em></p>
+  <p><em>Hati-hati: Memakai penggantian ketika pengguna seharusnya dapat kembali membuat mereka kehilangan jejak.</em></p>
+</div><div class="panel">
+  <b><code>final hasil = await Navigator.pushNamed(context, &quot;/pilih&quot;);</code></b>
+  <p><em>Dibaca: Baca sebagai membuka halaman lalu menunggu nilai yang dikembalikannya.</em></p>
+  <p>Halaman yang dibuka dapat mengirim nilai saat ditutup, sehingga halaman pembuka memperoleh pilihan pengguna.</p>
+  <pre><code>final hasil = await Navigator.pushNamed(context, &quot;/pilih&quot;);</code></pre>
+  <p><em>Output: Halaman pembuka menerima nilai hasil pemilihan.</em></p>
+  <p><em>Hati-hati: Menunggu hasil tanpa memeriksa kemungkinan nilainya kosong membuat program gagal saat pengguna membatalkan.</em></p>
+</div>
+  <h4>Aturan penulisan</h4><ul><li>Kumpulkan nama rute di satu tempat agar mudah ditelusuri.</li><li>Pakai rute bernama alih-alih menulis alamat langsung di banyak berkas.</li><li>Gunakan penggantian halaman hanya untuk keadaan yang memang tidak perlu dikembalikan.</li><li>Periksa kemungkinan hasil kosong ketika menunggu nilai dari halaman lain.</li><li>Pastikan pengguna selalu memiliki cara kembali atau keluar yang jelas.</li></ul>
   <section class="lesson-section">
-  <h4>01 · Memahami konsepnya</h4>
-  <p>Navigasi berpindah layar dan dapat membawa parameter seperti ID tugas. Flutter Navigator cukup untuk alur sederhana; go_router cocok untuk routing lebih terstruktur dan deep link.</p><p>Jangan mengirim object besar tanpa alasan; saat membuka detail, muat data berdasar ID untuk konsistensi. Tangani halaman tidak ditemukan dan back navigation.</p>
-  
-  <div class="panel good"><b>Best practice</b><p>Kelola route dan parameter secara eksplisit.</p></div><div class="panel bad"><b>Kesalahan umum</b><p>Mengandalkan state layar sebelumnya untuk data penting tanpa refresh.</p></div>
-  
+  <h4>01 · Cara membaca pendaftaran rute</h4>
+  <p>Rute dibaca sebagai daftar nama beserta halaman yang ditunjuknya. Nama rute menjadi penanda tetap, sedangkan halaman di baliknya dapat diganti tanpa mengubah tempat pemanggilannya.</p><p>Pada contoh, dua nama rute didaftarkan beserta halaman masing-masing. Berpindah ke halaman tugas cukup memakai nama rutonya, tanpa menyebut kelas halaman secara langsung.</p><p>Cara ini memusatkan penghubung antara nama dan halaman pada satu tempat. Ketika halaman tujuan diganti, cukup daftarnya yang diubah, sedangkan pemanggilan tetap sama.</p>
+  <pre><code>MaterialApp(
+  routes: {
+    &quot;/&quot;: (context) =&gt; const HalamanDaftar(),
+    &quot;/tugas&quot;: (context) =&gt; const HalamanTugas(),
+  },
+);
+
+Navigator.pushNamed(context, &quot;/tugas&quot;);</code></pre><div class="panel"><b>Output yang diharapkan</b><p>Berpindah ke halaman tugas cukup memakai nama rutonya yang sudah didaftarkan.</p></div><p>Nama rute didaftarkan beserta halaman yang ditunjuknya. Perpindahan memakai nama itu sehingga tidak bergantung pada kelas halaman secara langsung.</p><div class="panel"><b>Bedah baris</b><ol><li>Baris 2 · <code>routes: {</code> — Nama rute didaftarkan pada satu tempat.</li><li>Baris 3 · <code>&quot;/&quot;: (context) =&gt; const HalamanDaftar(),</code> — Nama rute awal menunjuk halaman daftar.</li><li>Baris 4 · <code>&quot;/tugas&quot;: (context) =&gt; const HalamanTugas(),</code> — Nama rute tugas menunjuk halaman tugas.</li><li>Baris 8 · <code>Navigator.pushNamed(context, &quot;/tugas&quot;);</code> — Perpindahan memakai nama rute, bukan kelas halaman langsung.</li></ol></div>
+  <div class="panel good"><b>Nama rute sebagai penanda tetap</b><p>Dengan nama rute, penggantian halaman tujuan cukup dilakukan di tempat pendaftaran, bukan di seluruh berkas yang berpindah.</p></div>
+  <div class="panel warn"><b>Cek pemahaman</b><p>Apa keuntungan mendaftarkan rute bernama dibanding menulis kelas halaman langsung di setiap perpindahan?</p><p>Kriteria berhasil: Penggantian halaman tujuan cukup diubah di satu tempat, sedangkan pemanggilan tetap sama.</p></div>
 </section><section class="lesson-section">
-  <h4>02 · Contoh kode</h4>
-  <p>Perhatikan input, proses, dan output. Ketik ulang, lalu ubah satu nilai.</p>
-  <pre><code>Navigator.push(context, MaterialPageRoute(
-  builder: (_) =&gt; const DetailPage(),
-));
-// DetailPage perlu didefinisikan di proyek lengkap.</code></pre>
+  <h4>02 · Tumpukan halaman dan cara berpindah</h4>
+  <p>Halaman disimpan pada tumpukan menurut urutan kunjungan. Membuka halaman baru menambahkannya di atas tumpukan, dan menutupnya membuang halaman teratas sehingga pengguna kembali ke halaman sebelumnya.</p><p>Mengganti halaman berbeda dari menambahkannya. Mengganti membuang halaman lama sehingga pengguna tidak dapat kembali ke sana. Perbedaan ini menentukan apakah pengguna dapat menelusuri kembali jejaknya.</p><p>Pilih cara berpindah yang sesuai maksud. Untuk menelusuri data, tambahkan halaman agar dapat dikembalikan. Setelah proses masuk, ganti halaman agar pengguna tidak kembali ke halaman masuk.</p>
+  
+  <div class="panel warn"><b>Hati-hati mengganti halaman</b><p>Mengganti halaman membuang jejak sebelumnya. Pastikan pengguna memang tidak perlu kembali ke halaman itu.</p></div>
+  <div class="panel warn"><b>Cek pemahaman</b><p>Apa perbedaan menambah halaman dan mengganti halaman?</p><p>Kriteria berhasil: Menambah halaman menyisakan halaman sebelumnya di tumpukan; mengganti halaman membuang halaman lama.</p></div>
+</section><section class="lesson-section">
+  <h4>03 · Mengirim dan menerima hasil</h4>
+  <p>Halaman dapat mengirim nilai ketika ditutup, sehingga halaman yang membukanya memperoleh hasil pilihan atau masukan pengguna. Pola ini menghindari kebutuhan menyimpan keadaan sementara di tingkat aplikasi.</p><p>Nilai hasil dapat kosong, misalnya ketika pengguna membatalkan. Periksa dulu apakah hasilnya ada sebelum memakainya agar program tidak gagal.</p><p>Untuk data yang lebih rumit atau perlu bertahan lama, simpan pada pengendali keadaan dan baca dari sana. Pengiriman hasil cocok untuk pilihan sederhana antar dua halaman berdekatan.</p>
   
   
+  <div class="panel warn"><b>Cek pemahaman</b><p>Mengapa hasil dari halaman yang ditutup perlu diperiksa apakah ada?</p><p>Kriteria berhasil: Karena pengguna dapat membatalkan sehingga tidak ada hasil yang dikembalikan dan nilainya kosong.</p></div>
+</section><section class="lesson-section">
+  <h4>04 · Rute yang terkelola dan alamat</h4>
+  <p>Ketika aplikasi tumbuh, daftar rute sederhana tidak lagi cukup. Halaman perlu menerima bagian alamat, misalnya pengenal tugas, dan pengguna perlu dapat berpindah dari pemberitahuan langsung ke halaman tertentu.</p><p>Pengelolaan rute yang lebih lengkap memungkinkan bagian alamat diurai menjadi nilai yang dipakai halaman. Dengan begitu, satu pola rute dapat melayani banyak halaman serupa.</p><p>Menyusun rute sejak awal dengan pola yang jelas memudahkan penambahan halaman baru tanpa mengubah cara berpindah di seluruh aplikasi.</p>
+  
+  
+  <div class="panel warn"><b>Cek pemahaman</b><p>Kapan pengelolaan rute sederhana tidak lagi cukup?</p><p>Kriteria berhasil: Ketika halaman perlu menerima bagian alamat, seperti pengenal, atau pengguna perlu menuju halaman tertentu lewat alamat.</p></div>
 </section>
-  <h4>Latihan bertingkat</h4><ol><li><b>Latihan 1</b> <em>(Mandiri)</em><p>Buat alur halaman daftar -&gt; detail -&gt; kembali.</p></li><li><b>Latihan 2</b> <em>(Mandiri)</em><p>Ubah satu input atau asumsi pada contoh, catat hasil dan jelaskan alasannya.</p></li></ol>
-  
-  
+  <h4>Latihan bertingkat</h4><ol><li><b>Daftarkan rute bernama</b> <em>(Terbimbing)</em><p>Daftarkan dua rute bernama untuk halaman daftar dan halaman tugas, lalu berpindah memakai namanya.</p><ol><li>Daftarkan nama rute beserta halaman yang ditunjuknya.</li><li>Tentukan nama rute awal.</li><li>Berpindah memakai nama rute.</li><li>Pastikan pengguna dapat kembali ke halaman sebelumnya.</li></ol><pre><code>MaterialApp(routes: { &quot;/&quot;: ..., &quot;/tugas&quot;: ... })</code></pre><p><em>Hasil: Perpindahan memakai nama rute dan pengguna dapat kembali.</em></p><details><summary>Petunjuk bertahap</summary><ol><li>Nama rute didaftarkan di satu tempat.</li><li>Perpindahan memakai nama, bukan kelas halaman.</li><li>Menambah halaman menyisakan jejak kembali.</li></ol></details><p><em>Tantangan: Tambahkan rute ketiga untuk halaman pengaturan.</em></p></li><li><b>Terima hasil dari halaman lain</b> <em>(Mandiri)</em><p>Buka halaman pemilihan lalu terima nilai pilihannya pada halaman pembuka.</p><ol><li>Buka halaman pemilihan dengan menunggu hasil.</li><li>Kirim nilai dari halaman itu saat ditutup.</li><li>Periksa hasilnya pada halaman pembuka.</li><li>Tangani keadaan ketika pengguna membatalkan.</li></ol><pre><code>final hasil = await Navigator.pushNamed(context, &quot;/pilih&quot;);</code></pre><p><em>Hasil: Nilai pilihan diterima dan keadaan batal ditangani tanpa kesalahan.</em></p><details><summary>Petunjuk bertahap</summary><ol><li>Halaman pemilihan mengirim nilai saat ditutup.</li><li>Hasil dapat kosong bila dibatalkan.</li><li>Periksa hasil sebelum dipakai.</li></ol></details><p><em>Tantangan: Tampilkan nilai pilihan pada halaman pembuka.</em></p></li><li><b>Rancang peta navigasi aplikasi</b> <em>(Penerapan)</em><p>Susun peta navigasi aplikasi tugas: halaman apa saja yang ada, bagaimana pengguna berpindah, dan kapan memakai penggantian halaman.</p><ol><li>Daftar seluruh halaman aplikasi.</li><li>Tentukan cara berpindah antar halaman.</li><li>Tentukan bagian yang memakai penggantian halaman.</li><li>Pastikan setiap halaman punya cara kembali atau keluar.</li></ol><pre><code>Halaman: ...
+Perpindahan: ...
+Sesudah masuk: ...</code></pre><p><em>Hasil: Peta navigasi lengkap dan setiap halaman dapat ditinggalkan dengan jelas.</em></p><details><summary>Petunjuk bertahap</summary><ol><li>Menelusuri data memakai penambahan halaman.</li><li>Penggantian halaman untuk keadaan tanpa kembali.</li><li>Setiap halaman perlu jalan keluar yang jelas.</li></ol></details><p><em>Tantangan: Tandai bagian alamat yang perlu didukung untuk berpindah langsung.</em></p></li></ol>
+  <h4>Verifikasi</h4><div class="panel"><b>Mode: Manual</b><pre><code>Telusuri semua jalur navigasi dan uji penerimaan hasil antar halaman.</code></pre><p><em>Hasil yang diharapkan: Perpindahan memakai rute bernama berjalan benar, pengguna dapat kembali bila semestinya, dan hasil antar halaman diterima dengan aman.</em></p><p><em>Bukti yang disimpan: Simpan berkas rute dan catatan hasil penelusuran navigasi.</em></p></div>
+  <h4>Mengatasi masalah</h4><ul><li><b>Aplikasi gagal saat berpindah ke halaman yang dituju.</b><br>Penyebab umum: Nama rute belum didaftarkan atau berbeda dari yang dipanggil.<br>Perbaikan: Periksa pendaftaran nama rute dan sesuaikan pemanggilannya.</li><li><b>Pengguna tidak dapat kembali ke halaman sebelumnya.</b><br>Penyebab umum: Perpindahan memakai penggantian halaman padahal pengguna perlu kembali.<br>Perbaikan: Ganti menjadi penambahan halaman agar halaman sebelumnya tetap tersimpan.</li><li><b>Program gagal ketika pengguna membatalkan halaman pemilihan.</b><br>Penyebab umum: Hasil kosong dipakai tanpa diperiksa.<br>Perbaikan: Periksa apakah hasil ada sebelum memakainya.</li><li><b>Nama rute berbeda di beberapa berkas sehingga sulit dilacak.</b><br>Penyebab umum: Nama rute ditulis langsung di banyak tempat alih-alih dikumpulkan.<br>Perbaikan: Kumpulkan nama rute di satu tempat dan pakai dari sana.</li></ul>
   <div class="quiz"><strong>Uji pemahaman</strong><div class="quiz-question">
-    <b>1. Apa prinsip yang paling tepat untuk topik “Navigation dan routing”?</b>
-    <ol type="A"><li>Kelola route dan parameter secara eksplisit.</li><li>Gunakan solusi paling rumit sejak awal, meski kebutuhan belum jelas.</li><li>Lewati pengujian karena contoh kecil pasti benar.</li></ol>
-    <details><summary>Lihat pembahasan</summary><p class="answer">Jawaban: A. Kelola route dan parameter secara eksplisit.</p></details>
+    <b>1. Apa perbedaan menambah halaman dan mengganti halaman?</b>
+    <ol type="A"><li>Keduanya sama saja</li><li>Menambah halaman menyisakan jejak kembali; mengganti halaman membuang halaman lama</li><li>Menambah halaman menutup aplikasi</li></ol>
+    <details><summary>Lihat pembahasan</summary><p class="answer">Jawaban: B. Menambah halaman menyimpan halaman sebelumnya, sedangkan mengganti membuangnya.</p></details>
+  </div><div class="quiz-question">
+    <b>2. Apa yang diterima halaman pembuka ketika menunggu nilai dari halaman lain?</b>
+    <ol type="A"><li>Selalu sebuah nilai pasti</li><li>Nilai hasil yang dapat kosong bila pengguna membatalkan</li><li>Status jaringan</li></ol>
+    <details><summary>Lihat pembahasan</summary><p class="answer">Jawaban: B. Hasil dapat kosong ketika pengguna membatalkan, sehingga perlu diperiksa.</p></details>
+  </div><div class="quiz-question">
+    <b>3. Setelah proses masuk, pengguna tidak seharusnya kembali ke halaman masuk. Tindakan tepat...</b>
+    <ol type="A"><li>Menambah halaman masuk ke tumpukan</li><li>Mengganti halaman masuk dengan halaman beranda</li><li>Membuka halaman masuk lagi</li></ol>
+    <details><summary>Lihat pembahasan</summary><p class="answer">Jawaban: B. Penggantian halaman membuang halaman masuk sehingga pengguna tidak dapat kembali ke sana.</p></details>
   </div></div>
-  
-  
-  
+  <h4>Ringkasan</h4><ul><li>Rute bernama memusatkan penghubung antara nama dan halaman sehingga mudah diubah.</li><li>Menambah halaman menyisakan jejak kembali; mengganti halaman membuang jejak itu.</li><li>Halaman dapat mengirim nilai saat ditutup dan halaman pembuka menerimanya.</li><li>Pengelolaan rute yang lebih lengkap diperlukan ketika halaman menerima bagian alamat.</li></ul>
+  <div class="panel"><b>Berikutnya</b><p>Berikutnya: formulir, validasi, dan keadaan antarmuka. Anda akan membimbing pengguna mengisi masukan dengan benar.</p></div>
+  <h4>Sumber</h4><ul><li><a href="https://docs.flutter.dev/ui/navigation" rel="noopener noreferrer">Flutter Docs: Navigation and Routing</a> <small>Flutter · stable</small> — Dokumentasi resmi Flutter tentang navigasi dan rute.</li><li><a href="https://docs.flutter.dev/" rel="noopener noreferrer">Flutter Documentation</a> <small>Google · stable</small> — Dokumentasi resmi Flutter tentang halaman dan perpindahannya.</li><li><a href="https://dart.dev/language" rel="noopener noreferrer">Dart Language Tour</a> <small>Google · stable</small> — Referensi bahasa Dart untuk penanganan nilai hasil yang mungkin kosong.</li></ul>
 </article>
 <article class="lesson" id="m10-l06">
-  <div class="lesson-meta">Pelajaran 06 · 45 menit · Menengah · Dart</div>
+  <div class="lesson-meta">Pelajaran 06 · 120 menit · Menengah · Dart</div>
   <h3>Form, validasi, dan UX status</h3>
-  
-  
-  
-  
-  
-  
+  <div class="panel good"><b>Hasil belajar</b><p>Setelah pelajaran ini, Anda dapat menyusun formulir yang tervalidasi serta menampilkan keadaan menunggu, berhasil, dan gagal dengan jelas kepada pengguna.</p></div>
+  <h4>Tujuan</h4><ul><li>Menyusun formulir dengan pemeriksaan masukan.</li><li>Menampilkan pesan kesalahan pada kolom yang bermasalah.</li><li>Menampilkan keadaan menunggu saat proses berjalan.</li><li>Mencegah pengiriman ganda.</li></ul>
+  <div class="panel"><b>Prasyarat</b><p>Navigation dan routing</p></div>
+  <h4>Istilah kunci</h4><dl class="glossary"><div><dt>Formulir</dt><dd>Kumpulan kolom masukan yang diperiksa bersama sebelum dikirim.</dd></div><div><dt>Pemeriksa kolom</dt><dd>Fungsi yang memeriksa nilai sebuah kolom dan mengembalikan pesan bila tidak sah.</dd></div><div><dt>Keadaan menunggu</dt><dd>Keadaan ketika proses sedang berjalan dan pengguna perlu diberi tahu.</dd></div><div><dt>Pengiriman ganda</dt><dd>Terkirimnya satu permintaan lebih dari sekali karena pengguna menekan tombol berulang.</dd></div></dl>
+  <h4>Kartu sintaks</h4><div class="panel">
+  <b><code>validator: (nilai) =&gt; nilai!.isEmpty ? &quot;Wajib diisi&quot; : null,</code></b>
+  <p><em>Dibaca: Baca sebagai pemeriksaan kolom yang mengembalikan pesan bila kosong, atau tidak ada pesan bila sah.</em></p>
+  <p>Pemeriksa mengembalikan pesan kesalahan atau tidak ada nilai sama sekali. Hasilnya menentukan apakah formulir boleh dikirim.</p>
+  <pre><code>validator: (nilai) =&gt; nilai!.isEmpty ? &quot;Wajib diisi&quot; : null,</code></pre>
+  <p><em>Output: Kolom yang tidak sah menampilkan pesan dan menghalangi pengiriman.</em></p>
+  <p><em>Hati-hati: Mengembalikan pesan kosong alih-alih tanpa nilai membuat kolom dianggap tidak sah.</em></p>
+</div><div class="panel">
+  <b><code>if (!kunci.currentState!.validate()) return;</code></b>
+  <p><em>Dibaca: Baca sebagai pemeriksaan seluruh kolom sebelum melanjutkan pengiriman.</em></p>
+  <p>Pemeriksaan ini menjalankan seluruh pemeriksa kolom sekaligus dan menghentikan pengiriman bila ada yang tidak sah.</p>
+  <pre><code>if (!kunci.currentState!.validate()) return;</code></pre>
+  <p><em>Output: Pengiriman hanya berlanjut bila seluruh kolom sah.</em></p>
+  <p><em>Hati-hati: Mengirim tanpa memeriksa formulir membiarkan data tidak sah masuk ke server.</em></p>
+</div><div class="panel">
+  <b><code>setState(() =&gt; sedangKirim = true);</code></b>
+  <p><em>Dibaca: Baca sebagai penandaan bahwa proses pengiriman sedang berjalan.</em></p>
+  <p>Penanda ini dipakai untuk menampilkan keadaan menunggu dan mencegah pengiriman ganda selama proses berlangsung.</p>
+  <pre><code>setState(() =&gt; sedangKirim = true);</code></pre>
+  <p><em>Output: Tampilan menampilkan keadaan menunggu dan tombol tidak dapat ditekan lagi.</em></p>
+  <p><em>Hati-hati: Tidak menandai keadaan menunggu membuat pengguna menekan tombol berulang dan mengirim data ganda.</em></p>
+</div>
+  <h4>Aturan penulisan</h4><ul><li>Periksa setiap kolom dengan pemeriksa yang mengembalikan pesan yang jelas.</li><li>Tampilkan kesalahan pada kolom yang bermasalah, bukan hanya pesan umum.</li><li>Tandai keadaan menunggu selama proses berjalan.</li><li>Cegah pengiriman ganda dengan menonaktifkan tombol saat proses berlangsung.</li><li>Beri tahu hasil akhir, baik berhasil maupun gagal, dengan pesan yang jelas.</li></ul>
   <section class="lesson-section">
-  <h4>01 · Memahami konsepnya</h4>
-  <p>TextFormField dan Form membantu validasi masukan. Selalu siapkan loading, empty, success, dan error state.</p><p>Validasi klien bertujuan membantu pengguna, sedangkan backend tetap otoritatif. Perhatikan keyboard type, fokus, pesan error, dan tombol disabled saat request berjalan.</p>
-  
-  <div class="panel good"><b>Best practice</b><p>Berikan umpan balik yang dapat dipahami pada setiap state layar.</p></div><div class="panel bad"><b>Kesalahan umum</b><p>Tidak menampilkan error jaringan sehingga pengguna mengira data tersimpan.</p></div>
+  <h4>01 · Cara membaca kolom masukan</h4>
+  <p>Kolom masukan dibaca dari nilai yang ditampilkannya dan pemeriksaan yang dijalankannya. Pemeriksa itu mengembalikan pesan kesalahan bila nilainya tidak sah, atau tidak ada nilai bila sah.</p><p>Pada contoh, kolom memeriksa apakah nilainya kosong. Bila kosong, ia mengembalikan pesan yang tampil tepat di bawah kolom. Bila terisi, tidak ada pesan yang dikembalikan.</p><p>Perhatikan bahwa pemeriksaan mengembalikan pesan yang menyebut masalahnya. Pesan seperti masukan tidak sah kurang membantu dibanding pesan yang menyebut kolomnya wajib diisi.</p>
+  <pre><code>TextFormField(
+  controller: _judul,
+  decoration: const InputDecoration(labelText: &quot;Judul&quot;),
+  validator: (nilai) {
+    if (nilai == null || nilai.isEmpty) return &quot;Judul wajib diisi&quot;;
+    return null;
+  },
+)</code></pre><div class="panel"><b>Output yang diharapkan</b><p>Kolom menampilkan pesan judul wajib diisi ketika kosong dan tidak menampilkan pesan ketika terisi.</p></div><p>Pemeriksa kolom mengembalikan pesan bila nilai kosong dan tidak ada nilai bila sah. Pesan itu tampil di bawah kolom.</p><div class="panel"><b>Bedah baris</b><ol><li>Baris 1 · <code>TextFormField(</code> — Kolom masukan menampilkan nilai yang dapat diperiksa.</li><li>Baris 3 · <code>decoration: const InputDecoration(labelText: &quot;Judul&quot;),</code> — Label memberi tahu kolom ini untuk apa.</li><li>Baris 4 · <code>validator: (nilai) {</code> — Pemeriksa dijalankan saat formulir diperiksa.</li><li>Baris 5 · <code>if (nilai == null || nilai.isEmpty) return &quot;Judul wajib diisi&quot;;</code> — Pesan dikembalikan bila nilainya kosong.</li><li>Baris 6 · <code>return null;</code> — Tidak ada pesan dikembalikan bila nilainya sah.</li></ol></div>
+  <div class="panel good"><b>Pesan pada kolomnya</b><p>Menampilkan pesan pada kolom yang bermasalah membuat pengguna langsung tahu bagian mana yang perlu diperbaiki.</p></div>
+  <div class="panel warn"><b>Cek pemahaman</b><p>Apa yang dikembalikan pemeriksa kolom ketika nilainya sah?</p><p>Kriteria berhasil: Tidak ada nilai sama sekali, bukan pesan kosong.</p></div>
+</section><section class="lesson-section">
+  <h4>02 · Menampilkan keadaan proses</h4>
+  <p>Pengiriman dibaca sebagai urutan: periksa masukan, tandai proses berjalan, jalankan pekerjaan, lalu akhiri penanda. Urutan ini memastikan pengguna melihat keadaan yang benar pada setiap tahap.</p><p>Pada contoh, formulir diperiksa lebih dulu. Bila tidak sah, pengiriman dihentikan. Setelah itu proses ditandai berjalan, pekerjaan dijalankan, dan penanda diakhiri apa pun hasilnya.</p><p>Penandaan keadaan proses berguna untuk dua hal: memberi tahu pengguna bahwa aplikasi sedang bekerja, dan mencegah pengiriman ganda selama proses berlangsung.</p>
+  <pre><code>Future&lt;void&gt; kirim() async {
+  if (!_kunci.currentState!.validate()) return;
+  setState(() =&gt; _sedangKirim = true);
+  try {
+    await _controller.simpan(_judul.text);
+    _pesan.value = &quot;Tugas tersimpan&quot;;
+  } finally {
+    setState(() =&gt; _sedangKirim = false);
+  }
+}</code></pre><div class="panel"><b>Output yang diharapkan</b><p>Pengiriman berjalan hanya bila masukan sah, menandai keadaan menunggu, lalu mengakhirinya setelah selesai.</p></div><p>Formulir diperiksa lebih dulu. Proses ditandai berjalan sebelum pekerjaan dimulai dan diakhiri setelah selesai, apa pun hasilnya.</p><div class="panel"><b>Bedah baris</b><ol><li>Baris 2 · <code>if (!_kunci.currentState!.validate()) return;</code> — Pengiriman dihentikan bila masukan tidak sah.</li><li>Baris 3 · <code>setState(() =&gt; _sedangKirim = true);</code> — Keadaan menunggu ditandai sebelum pekerjaan dimulai.</li><li>Baris 5 · <code>await _controller.simpan(_judul.text);</code> — Pekerjaan dijalankan setelah masukan sah.</li><li>Baris 8 · <code>setState(() =&gt; _sedangKirim = false);</code> — Keadaan menunggu diakhiri setelah pekerjaan selesai.</li></ol></div>
+  <div class="panel warn"><b>Akhiri penanda apa pun hasilnya</b><p>Keadaan menunggu harus diakhiri meski pekerjaan gagal. Jika tidak, tombol tetap tidak dapat ditekan dan pengguna bingung.</p></div>
   
 </section><section class="lesson-section">
-  <h4>02 · Contoh kode</h4>
-  <p>Perhatikan input, proses, dan output. Ketik ulang, lalu ubah satu nilai.</p>
-  <pre><code>final formKey = GlobalKey&lt;FormState&gt;();
-// Form(key: formKey, child: TextFormField(
-// validator: (v) =&gt; (v ?? &quot;&quot;).isEmpty ? &quot;Wajib diisi&quot; : null));</code></pre>
+  <h4>03 · Menyampaikan keadaan kepada pengguna</h4>
+  <p>Antarmuka perlu menyampaikan empat keadaan: kosong, sedang memuat, berhasil, dan gagal. Setiap keadaan memerlukan tampilan yang berbeda agar pengguna tahu apa yang sedang terjadi.</p><p>Keadaan kosong sebaiknya menjelaskan bahwa memang belum ada data, bukan tampak seperti kesalahan. Keadaan memuat menampilkan penanda bahwa aplikasi sedang bekerja.</p><p>Keadaan gagal menyebutkan apa yang gagal dan langkah berikutnya, misalnya mencoba lagi. Keadaan berhasil menegaskan bahwa tindakan pengguna berhasil dilakukan.</p>
+  
+  <div class="panel good"><b>Empat keadaan antarmuka</b><p>Sediakan tampilan untuk keadaan kosong, memuat, berhasil, dan gagal. Keadaan kosong yang jelas mencegah pengguna mengira terjadi kesalahan.</p></div>
+  <div class="panel warn"><b>Cek pemahaman</b><p>Sebutkan empat keadaan antarmuka yang perlu disampaikan kepada pengguna.</p><p>Kriteria berhasil: Keadaan kosong, sedang memuat, berhasil, dan gagal.</p></div>
+</section><section class="lesson-section">
+  <h4>04 · Jebakan pada formulir dan proses</h4>
+  <p>Jebakan paling umum adalah membiarkan tombol tetap dapat ditekan selama proses berlangsung. Akibatnya, pengguna mengirim data yang sama beberapa kali.</p><p>Jebakan berikutnya adalah menampilkan pesan gagal yang umum tanpa menyebut sebabnya. Pengguna tidak tahu langkah apa yang harus diambil.</p><p>Jebakan ketika memakai penanda keadaan proses adalah lupa mengakhirinya ketika terjadi kesalahan. Bila penandanya tetap menyala, tombol tidak pernah dapat ditekan lagi.</p>
   
   
+  <div class="panel warn"><b>Cek pemahaman</b><p>Apa akibat lupa mengakhiri penanda keadaan menunggu ketika proses gagal?</p><p>Kriteria berhasil: Tombol tetap tidak dapat ditekan sehingga pengguna tidak dapat mencoba lagi.</p></div>
 </section>
-  <h4>Latihan bertingkat</h4><ol><li><b>Latihan 1</b> <em>(Mandiri)</em><p>Bangun form tugas dengan judul wajib dan tanggal opsional.</p></li><li><b>Latihan 2</b> <em>(Mandiri)</em><p>Ubah satu input atau asumsi pada contoh, catat hasil dan jelaskan alasannya.</p></li></ol>
-  
-  
+  <h4>Latihan bertingkat</h4><ol><li><b>Formulir tugas tervalidasi</b> <em>(Terbimbing)</em><p>Buat formulir dengan kolom judul yang wajib diisi dan tampilkan pesan bila kosong.</p><ol><li>Susun formulir dengan satu kolom judul.</li><li>Tambahkan pemeriksa yang mengembalikan pesan bila kosong.</li><li>Periksa formulir sebelum mengirim.</li><li>Tampilkan pesan kesalahan pada kolomnya.</li></ol><pre><code>Form(key: _kunci, child: TextFormField(validator: ...))</code></pre><p><em>Hasil: Kolom kosong menampilkan pesan dan pengiriman dicegah.</em></p><details><summary>Petunjuk bertahap</summary><ol><li>Pemeriksa mengembalikan pesan bila tidak sah.</li><li>Seluruh kolom diperiksa sebelum dikirim.</li><li>Pesan tampil pada kolom yang bermasalah.</li></ol></details><p><em>Tantangan: Tambahkan kolom kedua dengan aturan panjang minimum.</em></p></li><li><b>Keadaan menunggu dan cegah ganda</b> <em>(Mandiri)</em><p>Tambahkan keadaan menunggu pada pengiriman formulir dan cegah tombol dapat ditekan dua kali.</p><ol><li>Tandai keadaan menunggu sebelum pekerjaan dimulai.</li><li>Nonaktifkan tombol selama proses berlangsung.</li><li>Akhiri penanda setelah pekerjaan selesai.</li><li>Pastikan penanda diakhiri meski terjadi kesalahan.</li></ol><pre><code>setState(() =&gt; _sedangKirim = true);
+// pekerjaan
+setState(() =&gt; _sedangKirim = false);</code></pre><p><em>Hasil: Tombol tidak dapat ditekan dua kali dan dapat dipakai lagi setelah selesai.</em></p><details><summary>Petunjuk bertahap</summary><ol><li>Penanda dinyalakan sebelum pekerjaan.</li><li>Tombol dinonaktifkan saat penanda menyala.</li><li>Penanda diakhiri apa pun hasilnya.</li></ol></details><p><em>Tantangan: Tambahkan penanda memuat berupa putaran di dalam tombol.</em></p></li><li><b>Rancang keadaan antarmuka halaman</b> <em>(Penerapan)</em><p>Rancang tampilan untuk empat keadaan halaman daftar tugas: kosong, memuat, berhasil, dan gagal.</p><ol><li>Tentukan tampilan untuk setiap keadaan.</li><li>Tentukan cara berpindah antar keadaan.</li><li>Tentukan pesan untuk keadaan gagal.</li><li>Pastikan keadaan kosong tidak tampak seperti kesalahan.</li></ol><pre><code>Kosong: ...
+Memuat: ...
+Gagal: ...</code></pre><p><em>Hasil: Keempat keadaan punya tampilan berbeda dan pesan yang jelas.</em></p><details><summary>Petunjuk bertahap</summary><ol><li>Setiap keadaan punya tampilan berbeda.</li><li>Keadaan kosong bukan kesalahan.</li><li>Keadaan gagal menyebut langkah berikutnya.</li></ol></details><p><em>Tantangan: Tambahkan tombol coba lagi pada keadaan gagal.</em></p></li></ol>
+  <h4>Verifikasi</h4><div class="panel"><b>Mode: Manual</b><pre><code>Uji formulir kosong, formulir terisi, keadaan menunggu, dan keadaan gagal.</code></pre><p><em>Hasil yang diharapkan: Formulir tidak sah dicegah, keadaan menunggu tampil selama proses, tombol tidak dapat ditekan dua kali, dan hasil akhir diberitahukan.</em></p><p><em>Bukti yang disimpan: Simpan berkas formulir dan catatan hasil setiap pengujian.</em></p></div>
+  <h4>Mengatasi masalah</h4><ul><li><b>Data terkirim dua kali meski pengguna menekan tombol sekali.</b><br>Penyebab umum: Tombol tetap aktif selama proses berlangsung.<br>Perbaikan: Nonaktifkan tombol selama keadaan menunggu menyala.</li><li><b>Pesan kesalahan muncul meski kolom sudah terisi.</b><br>Penyebab umum: Pemeriksa mengembalikan nilai yang dianggap pesan meski kolomnya sah.<br>Perbaikan: Kembalikan tidak ada nilai sama sekali ketika kolomnya sah.</li><li><b>Tombol tidak dapat ditekan lagi setelah satu kegagalan.</b><br>Penyebab umum: Penanda keadaan menunggu tidak diakhiri ketika terjadi kesalahan.<br>Perbaikan: Akhiri penanda keadaan menunggu apa pun hasil pekerjaannya.</li><li><b>Pengguna bingung karena halaman tampak kosong tanpa keterangan.</b><br>Penyebab umum: Keadaan kosong tidak dibedakan dari keadaan memuat atau gagal.<br>Perbaikan: Tampilkan keterangan khusus untuk keadaan kosong agar tidak tampak seperti kesalahan.</li></ul>
   <div class="quiz"><strong>Uji pemahaman</strong><div class="quiz-question">
-    <b>1. Apa prinsip yang paling tepat untuk topik “Form, validasi, dan UX status”?</b>
-    <ol type="A"><li>Berikan umpan balik yang dapat dipahami pada setiap state layar.</li><li>Gunakan solusi paling rumit sejak awal, meski kebutuhan belum jelas.</li><li>Lewati pengujian karena contoh kecil pasti benar.</li></ol>
-    <details><summary>Lihat pembahasan</summary><p class="answer">Jawaban: A. Berikan umpan balik yang dapat dipahami pada setiap state layar.</p></details>
+    <b>1. Apa yang dikembalikan pemeriksa kolom ketika nilainya sah?</b>
+    <ol type="A"><li>Pesan kosong</li><li>Tidak ada nilai sama sekali</li><li>Nilai kolom itu</li></ol>
+    <details><summary>Lihat pembahasan</summary><p class="answer">Jawaban: B. Pemeriksa mengembalikan pesan bila tidak sah, dan tidak ada nilai bila sah.</p></details>
+  </div><div class="quiz-question">
+    <b>2. Mengapa penanda keadaan menunggu harus diakhiri apa pun hasilnya?</b>
+    <ol type="A"><li>Agar tampilan lebih cepat</li><li>Agar tombol dapat ditekan lagi sehingga pengguna dapat mencoba ulang</li><li>Agar data tersimpan</li></ol>
+    <details><summary>Lihat pembahasan</summary><p class="answer">Jawaban: B. Bila tidak diakhiri, tombol tetap tidak dapat ditekan dan pengguna tidak dapat mencoba lagi.</p></details>
+  </div><div class="quiz-question">
+    <b>3. Halaman belum memiliki data sama sekali. Tindakan tepat...</b>
+    <ol type="A"><li>Menampilkannya seperti kesalahan</li><li>Menampilkan keterangan khusus keadaan kosong</li><li>Menyembunyikan halaman</li></ol>
+    <details><summary>Lihat pembahasan</summary><p class="answer">Jawaban: B. Keadaan kosong perlu keterangan sendiri agar tidak tampak seperti kesalahan.</p></details>
   </div></div>
-  
-  
-  
+  <h4>Ringkasan</h4><ul><li>Formulir memeriksa setiap kolom lewat pemeriksa yang mengembalikan pesan bila tidak sah.</li><li>Seluruh kolom diperiksa sebelum pengiriman dijalankan.</li><li>Keadaan menunggu ditandai selama proses dan diakhiri apa pun hasilnya.</li><li>Antarmuka perlu membedakan keadaan kosong, memuat, berhasil, dan gagal.</li></ul>
+  <div class="panel"><b>Berikutnya</b><p>Berikutnya: panggilan HTTP dan pengubahan JSON. Anda akan menghubungkan aplikasi dengan API dan mengubah data menjadi objek.</p></div>
+  <h4>Sumber</h4><ul><li><a href="https://docs.flutter.dev/" rel="noopener noreferrer">Flutter Documentation</a> <small>Google · stable</small> — Dokumentasi resmi Flutter tentang formulir dan kolom masukan.</li><li><a href="https://dart.dev/null-safety" rel="noopener noreferrer">Dart: Sound Null Safety</a> <small>Dart · current</small> — Dasar penanganan nilai kosong pada pemeriksa kolom.</li><li><a href="https://docs.flutter.dev/data-and-backend/state-mgmt/intro" rel="noopener noreferrer">Flutter Docs: State Management</a> <small>Flutter · stable</small> — Panduan pengelolaan keadaan untuk menandai keadaan proses.</li></ul>
 </article>
 <article class="lesson" id="m10-l07">
-  <div class="lesson-meta">Pelajaran 07 · 45 menit · Menengah · Dart</div>
+  <div class="lesson-meta">Pelajaran 07 · 120 menit · Menengah · Dart</div>
   <h3>HTTP API dan JSON serialization</h3>
-  
-  
-  
-  
-  
-  
+  <div class="panel good"><b>Hasil belajar</b><p>Setelah pelajaran ini, Anda dapat memanggil API dari aplikasi, mengubah data JSON menjadi objek, serta menangani kegagalan jaringan dengan rapi.</p></div>
+  <h4>Tujuan</h4><ul><li>Memanggil API dengan method dan alamat yang benar.</li><li>Mengubah data JSON menjadi objek dan sebaliknya.</li><li>Memisahkan lapisan pemanggilan API dari tampilan.</li><li>Menangani kegagalan jaringan dan status kesalahan.</li></ul>
+  <div class="panel"><b>Prasyarat</b><p>Form, validasi, dan UX status</p></div>
+  <h4>Istilah kunci</h4><dl class="glossary"><div><dt>Permintaan HTTP</dt><dd>Panggilan ke layanan di jaringan dengan method, alamat, dan isi tertentu.</dd></div><div><dt>JSON</dt><dd>Format teks untuk bertukar data yang mudah dibaca manusia dan program.</dd></div><div><dt>Pengubahan bentuk</dt><dd>Proses mengubah data JSON menjadi objek program dan sebaliknya.</dd></div><div><dt>Lapisan layanan</dt><dd>Bagian kode yang mengurus pemanggilan API sehingga widget tampilan tidak memanggil jaringan langsung.</dd></div></dl>
+  <h4>Kartu sintaks</h4><div class="panel">
+  <b><code>final res = await http.get(uri, headers: {&quot;Authorization&quot;: &quot;Bearer $token&quot;});</code></b>
+  <p><em>Dibaca: Baca sebagai permintaan mengambil data dari alamat itu dengan menyertakan token.</em></p>
+  <p>Method menyatakan maksud, alamat menyatakan sumber daya, dan header membawa keterangan seperti bukti akses.</p>
+  <pre><code>final res = await http.get(uri, headers: {&quot;Authorization&quot;: &quot;Bearer $token&quot;});</code></pre>
+  <p><em>Output: Permintaan dikirim dan hasilnya tersedia sebagai tanggapan.</em></p>
+  <p><em>Hati-hati: Tidak memeriksa status tanggapan membuat data kesalahan ikut diproses sebagai data biasa.</em></p>
+</div><div class="panel">
+  <b><code>Tugas.fromJson(jsonDecode(res.body) as Map&lt;String, dynamic&gt;)</code></b>
+  <p><em>Dibaca: Baca sebagai pengubahan data JSON menjadi objek tugas.</em></p>
+  <p>Fungsi pengubahan menerima data mentah hasil penguraian lalu menyusun objek dengan properti yang jelas.</p>
+  <pre><code>Tugas.fromJson(jsonDecode(res.body) as Map&lt;String, dynamic&gt;)</code></pre>
+  <p><em>Output: Data JSON tersedia sebagai objek yang dapat dipakai langsung.</em></p>
+  <p><em>Hati-hati: Menggunakan data mentah di seluruh aplikasi menyebarkan rincian bentuk JSON ke banyak tempat.</em></p>
+</div><div class="panel">
+  <b><code>&quot;judul&quot;: judul,</code></b>
+  <p><em>Dibaca: Baca sebagai pemetaan properti objek ke nama kolom pada data JSON.</em></p>
+  <p>Fungsi pengubahan arah sebaliknya menyusun data JSON dari objek sehingga bentuk yang dikirim sesuai kontrak API.</p>
+  <pre><code>&quot;judul&quot;: judul,</code></pre>
+  <p><em>Output: Data yang dikirim berbentuk JSON sesuai nama kolom yang diharapkan.</em></p>
+  <p><em>Hati-hati: Mengirim objek mentah tanpa mengubah bentuknya membuat kolom yang tidak perlu ikut terkirim.</em></p>
+</div>
+  <h4>Aturan penulisan</h4><ul><li>Pisahkan pemanggilan API ke lapisan layanan, bukan di dalam widget.</li><li>Periksa status tanggapan sebelum memakai isinya.</li><li>Ubah data JSON menjadi objek agar rincian bentuknya tidak menyebar.</li><li>Tangani kegagalan jaringan dan berikan hasil yang jelas kepada pemanggil.</li><li>Jangan menaruh token atau kunci rahasia langsung di dalam kode.</li></ul>
   <section class="lesson-section">
-  <h4>01 · Memahami konsepnya</h4>
-  <p>Flutter mengonsumsi REST API dari Laravel melalui paket http atau Dio. Response JSON dipetakan menjadi model Dart dengan fromJson/toJson; selalu cek status dan bentuk payload.</p><p>URL localhost pada emulator bukan selalu server host; sesuaikan environment. Gunakan base URL melalui konfigurasi per environment. Rahasia tidak boleh dibundel di aplikasi.</p>
-  
-  <div class="panel good"><b>Best practice</b><p>Pisahkan layer networking, parsing, dan widget.</p></div><div class="panel bad"><b>Kesalahan umum</b><p>Melakukan JSON parsing langsung di build() tiap kali widget dirender.</p></div>
+  <h4>01 · Cara membaca pengubahan dari JSON</h4>
+  <p>Fungsi pengubahan dibaca sebagai pemetaan dari data mentah ke objek. Setiap baris menyebut nama kolom pada data JSON dan properti objek yang menerimanya.</p><p>Pada contoh, bentuk dari data JSON disusun menjadi objek tugas. Perubahan bentuk dari objek kembali ke data JSON ditulis terpisah dengan pemetaan yang berlawanan arah.</p><p>Dengan cara ini, rincian nama kolom terkumpul di satu kelas. Bagian aplikasi lain cukup memakai objeknya tanpa perlu tahu bagaimana data mentah disusun.</p>
+  <pre><code>class Tugas {
+  Tugas({required this.id, required this.judul});
+
+  final int id;
+  final String judul;
+
+  factory Tugas.fromJson(Map&lt;String, dynamic&gt; json) {
+    return Tugas(id: json[&quot;id&quot;] as int, judul: json[&quot;judul&quot;] as String);
+  }
+}</code></pre><div class="panel"><b>Output yang diharapkan</b><p>Data JSON dengan kolom id dan judul berubah menjadi objek tugas yang dapat dipakai.</p></div><p>Fungsi pengubahan memetakan kolom data JSON ke properti objek. Objek menyembunyikan rincian bentuk data dari bagian lain aplikasi.</p><div class="panel"><b>Bedah baris</b><ol><li>Baris 1 · <code>class Tugas {</code> — Kelas mewakili satu tugas sebagai objek.</li><li>Baris 4 · <code>final int id;</code> — Pengenal bertipe bilangan bulat.</li><li>Baris 5 · <code>final String judul;</code> — Judul bertipe teks.</li><li>Baris 7 · <code>factory Tugas.fromJson(Map&lt;String, dynamic&gt; json) {</code> — Fungsi pengubahan menerima data yang sudah diurai.</li><li>Baris 8 · <code>return Tugas(id: json[&quot;id&quot;] as int, judul: json[&quot;judul&quot;] as String);</code> — Setiap kolom data dipetakan ke properti objek.</li></ol></div>
+  <div class="panel good"><b>Bentuk data di satu kelas</b><p>Menyatukan pemetaan pada satu kelas membuat perubahan bentuk data cukup dilakukan di satu tempat.</p></div>
+  <div class="panel warn"><b>Cek pemahaman</b><p>Mengapa pemetaan kolom data JSON sebaiknya disatukan pada satu kelas?</p><p>Kriteria berhasil: Agar perubahan bentuk data cukup dilakukan di satu tempat dan tidak menyebar ke seluruh aplikasi.</p></div>
+</section><section class="lesson-section">
+  <h4>02 · Memisahkan lapisan layanan</h4>
+  <p>Lapisan layanan dibaca sebagai penghubung antara aplikasi dan API. Ia menyusun permintaan, memeriksa hasilnya, dan mengubah data menjadi objek yang siap dipakai.</p><p>Pada contoh, kelas layanan menerima klien jaringan dan alamat dasar. Cara ini membuatnya dapat diuji dengan klien tiruan tanpa benar-benar memanggil jaringan.</p><p>Perhatikan pemeriksaan status sebelum data diubah. Bila status menandakan kesalahan, pemanggilan dihentikan dengan kesalahan yang jelas dan tidak melanjutkan pengubahan data.</p>
+  <pre><code>class TugasApi {
+  TugasApi(this._klien, this._alamat);
+
+  final http.Client _klien;
+  final String _alamat;
+
+  Future&lt;List&lt;Tugas&gt;&gt; daftar() async {
+    final res = await _klien.get(Uri.parse(&quot;$_alamat/tugas&quot;));
+    if (res.statusCode != 200) throw Exception(&quot;HTTP ${res.statusCode}&quot;);
+    final data = jsonDecode(res.body) as List&lt;dynamic&gt;;
+    return data.map((e) =&gt; Tugas.fromJson(e as Map&lt;String, dynamic&gt;)).toList();
+  }
+}</code></pre><div class="panel"><b>Output yang diharapkan</b><p>Layanan mengambil daftar tugas, memeriksa statusnya, lalu mengubah datanya menjadi daftar objek.</p></div><p>Kelas layanan menyusun permintaan dan memeriksa statusnya. Data yang sudah diurai diubah menjadi daftar objek yang siap dipakai tampilan.</p><div class="panel"><b>Bedah baris</b><ol><li>Baris 1 · <code>class TugasApi {</code> — Kelas layanan memisahkan pemanggilan API dari tampilan.</li><li>Baris 2 · <code>TugasApi(this._klien, this._alamat);</code> — Klien jaringan dan alamat dasar diterima dari luar.</li><li>Baris 8 · <code>final res = await _klien.get(Uri.parse(&quot;$_alamat/tugas&quot;));</code> — Permintaan disusun memakai alamat dasar.</li><li>Baris 9 · <code>if (res.statusCode != 200) throw Exception(&quot;HTTP ${res.statusCode}&quot;);</code> — Status tanggapan diperiksa sebelum data diubah.</li><li>Baris 11 · <code>return data.map((e) =&gt; Tugas.fromJson(e as Map&lt;String, dynamic&gt;)).toList();</code> — Data yang sudah diurai diubah menjadi objek.</li></ol></div>
+  <div class="panel warn"><b>Jangan panggil jaringan dari widget</b><p>Widget yang memanggil jaringan langsung sulit diuji dan mencampur tampilan dengan urusan data.</p></div>
   
 </section><section class="lesson-section">
-  <h4>02 · Contoh kode</h4>
-  <p>Perhatikan input, proses, dan output. Ketik ulang, lalu ubah satu nilai.</p>
-  <pre><code>// Gambaran sederhana:
-// final res = await http.get(Uri.parse(baseUrl + &quot;/tasks&quot;));
-// if (res.statusCode == 200) { ... }</code></pre>
+  <h4>03 · Menangani kegagalan jaringan</h4>
+  <p>Pemanggilan jaringan dapat gagal karena koneksi terputus, waktu tunggu habis, atau layanan tujuan mengembalikan kesalahan. Setiap kegagalan itu perlu ditangani agar aplikasi tidak berhenti mendadak.</p><p>Bungkus pemanggilan sedemikian rupa sehingga kegagalannya menjadi hasil yang jelas bagi pemanggil. Pemanggil kemudian dapat memutuskan menampilkan pesan atau mencoba lagi.</p><p>Bedakan kesalahan yang dapat dicoba ulang dari yang tidak. Gangguan koneksi sementara layak dicoba ulang, sedangkan masukan yang salah tidak akan berubah bila diulang.</p>
   
   
+  <div class="panel warn"><b>Cek pemahaman</b><p>Sebutkan dua penyebab pemanggilan jaringan gagal yang perlu ditangani.</p><p>Kriteria berhasil: Koneksi terputus atau waktu tunggu habis, dan kesalahan yang dikembalikan layanan tujuan.</p></div>
+</section><section class="lesson-section">
+  <h4>04 · Jebakan pada pemanggilan API</h4>
+  <p>Jebakan pertama adalah memakai data mentah di banyak tempat. Ketika bentuk data berubah, seluruh tempat itu perlu diperbarui. Ubahlah data menjadi objek di satu lapisan.</p><p>Jebakan kedua adalah mengabaikan status tanggapan. Data kesalahan yang berbentuk JSON akan tetap diurai dan tampak seperti data biasa, sehingga kesalahan tersembunyi.</p><p>Jebakan ketiga adalah menaruh kunci rahasia langsung di dalam kode aplikasi. Aplikasi mobile dapat dibongkar, sehingga kunci itu tidak dapat dianggap rahasia.</p>
+  
+  <div class="panel bad"><b>Jangan simpan rahasia di kode</b><p>Kunci rahasia di dalam kode aplikasi mobile dapat terbaca pihak lain. Simpan rahasia di server, bukan di aplikasi.</p></div>
+  <div class="panel warn"><b>Cek pemahaman</b><p>Mengapa kunci rahasia tidak aman disimpan di dalam kode aplikasi mobile?</p><p>Kriteria berhasil: Karena aplikasi dapat dibongkar sehingga kunci itu dapat terbaca pihak lain.</p></div>
 </section>
-  <h4>Latihan bertingkat</h4><ol><li><b>Latihan 1</b> <em>(Mandiri)</em><p>Tulis model Dart Task.fromJson dari {id,title,done}; siapkan kasus field hilang.</p></li><li><b>Latihan 2</b> <em>(Mandiri)</em><p>Ubah satu input atau asumsi pada contoh, catat hasil dan jelaskan alasannya.</p></li></ol>
-  
-  
+  <h4>Latihan bertingkat</h4><ol><li><b>Ubah JSON menjadi objek</b> <em>(Terbimbing)</em><p>Buat kelas tugas dengan fungsi pengubahan dari data JSON dan sebaliknya.</p><ol><li>Tentukan properti objek tugas.</li><li>Tulis fungsi pengubahan dari data JSON.</li><li>Tulis fungsi pengubahan ke data JSON.</li><li>Uji dengan contoh data.</li></ol><pre><code>class Tugas {
+  factory Tugas.fromJson(Map&lt;String, dynamic&gt; json) {
+    // lengkapi
+  }
+}</code></pre><p><em>Hasil: Data JSON berubah menjadi objek dan kembali menjadi data yang sama.</em></p><details><summary>Petunjuk bertahap</summary><ol><li>Setiap kolom dipetakan ke properti.</li><li>Tipe nilai disesuaikan saat memetakan.</li><li>Pengubahan dua arah memakai nama kolom yang sama.</li></ol></details><p><em>Tantangan: Tangani kolom yang boleh kosong pada fungsi pengubahan.</em></p></li><li><b>Layanan pengambilan tugas</b> <em>(Mandiri)</em><p>Buat lapisan layanan yang mengambil daftar tugas, memeriksa status, dan mengembalikan daftar objek.</p><ol><li>Terima klien jaringan dan alamat dasar.</li><li>Susun permintaan pengambilan.</li><li>Periksa status tanggapan.</li><li>Ubah data menjadi daftar objek.</li></ol><pre><code>class TugasApi {
+  Future&lt;List&lt;Tugas&gt;&gt; daftar() async {
+    // lengkapi
+  }
+}</code></pre><p><em>Hasil: Layanan mengembalikan daftar objek dan melaporkan kesalahan status dengan jelas.</em></p><details><summary>Petunjuk bertahap</summary><ol><li>Status diperiksa sebelum data diubah.</li><li>Data diubah menjadi objek pada lapisan ini.</li><li>Kesalahan dilaporkan sebagai kesalahan yang jelas.</li></ol></details><p><em>Tantangan: Tambahkan fungsi untuk mengambil satu tugas berdasarkan pengenal.</em></p></li><li><b>Rancang alur pengambilan data</b> <em>(Penerapan)</em><p>Rancang alur lengkap pengambilan data dari API sampai tampil, termasuk keadaan memuat, berhasil, dan gagal.</p><ol><li>Tentukan urutan dari pemicu sampai tampil.</li><li>Tentukan tempat pengubahan data.</li><li>Tentukan penanganan setiap kegagalan.</li><li>Tentukan keadaan antarmuka di setiap tahap.</li></ol><pre><code>Pemicu: ...
+Pengambilan: ...
+Tampil: ...</code></pre><p><em>Hasil: Alur memisahkan pengambilan data, pengubahan, dan tampilan dengan penanganan gagal yang jelas.</em></p><details><summary>Petunjuk bertahap</summary><ol><li>Pengambilan berada di lapisan layanan.</li><li>Data diubah menjadi objek sebelum tampil.</li><li>Setiap tahap punya keadaan antarmuka.</li></ol></details><p><em>Tantangan: Tambahkan percobaan ulang untuk kegagalan sementara.</em></p></li></ol>
+  <h4>Verifikasi</h4><div class="panel"><b>Mode: Manual</b><pre><code>Uji pengubahan data dan pemanggilan layanan pada jalur berhasil serta jalur gagal.</code></pre><p><em>Hasil yang diharapkan: Data berubah menjadi objek dengan benar, lapisan layanan memeriksa status, dan kegagalan jaringan ditangani dengan pesan yang jelas.</em></p><p><em>Bukti yang disimpan: Simpan kelas layanan dan catatan hasil setiap pengujian.</em></p></div>
+  <h4>Mengatasi masalah</h4><ul><li><b>Aplikasi berhenti mendadak saat koneksi terputus.</b><br>Penyebab umum: Kegagalan jaringan tidak ditangani.<br>Perbaikan: Bungkus pemanggilan jaringan dan ubah kegagalannya menjadi hasil yang dapat ditangani pemanggil.</li><li><b>Kesalahan layanan tampak seperti data biasa.</b><br>Penyebab umum: Status tanggapan tidak diperiksa sebelum data diubah.<br>Perbaikan: Periksa status tanggapan dan hentikan pengubahan data bila menandakan kesalahan.</li><li><b>Banyak berkas perlu diubah ketika bentuk data bergeser.</b><br>Penyebab umum: Data mentah dipakai langsung di banyak tempat.<br>Perbaikan: Ubah data menjadi objek di satu lapisan agar bentuknya tidak menyebar.</li><li><b>Kunci rahasia terbaca pihak lain.</b><br>Penyebab umum: Kunci disimpan langsung di dalam kode aplikasi.<br>Perbaikan: Pindahkan rahasia ke server dan jangan menaruhnya di aplikasi.</li></ul>
   <div class="quiz"><strong>Uji pemahaman</strong><div class="quiz-question">
-    <b>1. Apa prinsip yang paling tepat untuk topik “HTTP API dan JSON serialization”?</b>
-    <ol type="A"><li>Pisahkan layer networking, parsing, dan widget.</li><li>Gunakan solusi paling rumit sejak awal, meski kebutuhan belum jelas.</li><li>Lewati pengujian karena contoh kecil pasti benar.</li></ol>
-    <details><summary>Lihat pembahasan</summary><p class="answer">Jawaban: A. Pisahkan layer networking, parsing, dan widget.</p></details>
+    <b>1. Mengapa pemanggilan API sebaiknya berada di lapisan layanan, bukan di dalam widget?</b>
+    <ol type="A"><li>Agar tampilan lebih berwarna</li><li>Agar logika data dapat diuji dan tampilan tidak bercampur urusan jaringan</li><li>Agar aplikasi lebih kecil</li></ol>
+    <details><summary>Lihat pembahasan</summary><p class="answer">Jawaban: B. Lapisan layanan memisahkan urusan data dari tampilan sehingga keduanya lebih mudah diuji dan dirawat.</p></details>
+  </div><div class="quiz-question">
+    <b>2. Apa yang harus diperiksa sebelum data tanggapan diubah menjadi objek?</b>
+    <ol type="A"><li>Warna antarmuka</li><li>Status tanggapan</li><li>Ukuran layar</li></ol>
+    <details><summary>Lihat pembahasan</summary><p class="answer">Jawaban: B. Status diperiksa agar data kesalahan tidak ikut diubah dan diproses sebagai data biasa.</p></details>
+  </div><div class="quiz-question">
+    <b>3. Aplikasi mobile memerlukan kunci rahasia layanan. Tindakan tepat...</b>
+    <ol type="A"><li>Menyimpannya di dalam kode aplikasi</li><li>Menaruhnya di server dan memakai aplikasi sebagai perantara</li><li>Menulisnya pada komentar kode</li></ol>
+    <details><summary>Lihat pembahasan</summary><p class="answer">Jawaban: B. Kode aplikasi mobile dapat dibongkar, sehingga rahasia disimpan di server, bukan di aplikasi.</p></details>
   </div></div>
-  
-  
-  
+  <h4>Ringkasan</h4><ul><li>Lapisan layanan menyusun pemanggilan API, memeriksa status, dan mengubah data menjadi objek.</li><li>Pemetaan data JSON disatukan pada satu kelas agar bentuknya tidak menyebar.</li><li>Kegagalan jaringan dan status kesalahan ditangani dan dilaporkan dengan jelas.</li><li>Rahasia layanan disimpan di server, bukan di dalam kode aplikasi mobile.</li></ul>
+  <div class="panel"><b>Berikutnya</b><p>Berikutnya: aplikasi yang tetap jalan saat luring dan penyimpanan aman. Anda akan menyimpan data di perangkat dengan benar.</p></div>
+  <h4>Sumber</h4><ul><li><a href="https://docs.flutter.dev/data-and-backend/networking" rel="noopener noreferrer">Flutter Docs: Networking</a> <small>Flutter · stable</small> — Dokumentasi resmi Flutter tentang pemanggilan jaringan dari aplikasi.</li><li><a href="https://pub.dev/packages/http" rel="noopener noreferrer">pub.dev: http package</a> <small>Dart team · current</small> — Dokumentasi paket http untuk permintaan jaringan pada Dart.</li><li><a href="https://dart.dev/language" rel="noopener noreferrer">Dart Language Tour</a> <small>Google · stable</small> — Referensi bahasa Dart untuk fungsi asinkron dan penanganan kesalahan.</li></ul>
 </article>
 <article class="lesson" id="m10-l08">
-  <div class="lesson-meta">Pelajaran 08 · 45 menit · Menengah · Dart</div>
+  <div class="lesson-meta">Pelajaran 08 · 120 menit · Menengah · Dart</div>
   <h3>Offline-first dan secure storage</h3>
-  
-  
-  
-  
-  
-  
+  <div class="panel good"><b>Hasil belajar</b><p>Setelah pelajaran ini, Anda dapat merancang aplikasi yang tetap berguna saat koneksi terputus serta menyimpan data sensitif dengan aman di perangkat.</p></div>
+  <h4>Tujuan</h4><ul><li>Menjelaskan maksud pendekatan yang mengutamakan data luring.</li><li>Menyimpan salinan data di perangkat untuk keadaan tanpa koneksi.</li><li>Menyimpan data sensitif dengan penyimpanan aman.</li><li>Menyusun cara menyelaraskan data luring dan data server.</li></ul>
+  <div class="panel"><b>Prasyarat</b><p>HTTP API dan JSON serialization</p></div>
+  <h4>Istilah kunci</h4><dl class="glossary"><div><dt>Luring</dt><dd>Keadaan ketika perangkat tidak terhubung ke jaringan.</dd></div><div><dt>Mengutamakan luring</dt><dd>Pendekatan yang menampilkan data tersimpan lebih dulu, lalu menyelaraskannya dengan server.</dd></div><div><dt>Singgahan perangkat</dt><dd>Penyimpanan salinan data di perangkat agar dapat dibaca tanpa jaringan.</dd></div><div><dt>Penyimpanan aman</dt><dd>Penyimpanan yang melindungi data sensitif memakai perlindungan bawaan perangkat.</dd></div><div><dt>Penyelarasan</dt><dd>Proses menyamakan data perangkat dengan data server.</dd></div></dl>
+  <h4>Kartu sintaks</h4><div class="panel">
+  <b><code>await simpanLokal(&quot;tugas&quot;, jsonEncode(daftar));</code></b>
+  <p><em>Dibaca: Baca sebagai penyimpanan salinan data di perangkat dalam bentuk teks.</em></p>
+  <p>Data disimpan di perangkat agar dapat dibaca kembali tanpa jaringan, misalnya ketika koneksi terputus.</p>
+  <pre><code>await simpanLokal(&quot;tugas&quot;, jsonEncode(daftar));</code></pre>
+  <p><em>Output: Salinan data tersedia di perangkat untuk pemakaian berikutnya.</em></p>
+  <p><em>Hati-hati: Menyimpan data tanpa batas jumlah mengisi ruang perangkat dan memperlambat pemuatan.</em></p>
+</div><div class="panel">
+  <b><code>await PenyimpananAman.tulis(&quot;token&quot;, nilai);</code></b>
+  <p><em>Dibaca: Baca sebagai penyimpanan nilai sensitif memakai perlindungan bawaan perangkat.</em></p>
+  <p>Nilai sensitif seperti token disimpan dengan perlindungan khusus, bukan pada penyimpanan biasa yang mudah dibaca.</p>
+  <pre><code>await PenyimpananAman.tulis(&quot;token&quot;, nilai);</code></pre>
+  <p><em>Output: Nilai sensitif tersimpan terlindungi pada perangkat.</em></p>
+  <p><em>Hati-hati: Menyimpan token pada penyimpanan biasa membuatnya mudah terbaca bila perangkat diperiksa.</em></p>
+</div><div class="panel">
+  <b><code>if (dataLokal != null) tampilkan(dataLokal);</code></b>
+  <p><em>Dibaca: Baca sebagai pemakaian data tersimpan lebih dulu sebelum menunggu jaringan.</em></p>
+  <p>Menampilkan data tersimpan lebih dulu membuat aplikasi langsung berguna tanpa menunggu pemuatan dari jaringan.</p>
+  <pre><code>if (dataLokal != null) tampilkan(dataLokal);</code></pre>
+  <p><em>Output: Pengguna melihat data lebih cepat, lalu data diperbarui setelah jaringan tersedia.</em></p>
+  <p><em>Hati-hati: Menampilkan data tersimpan tanpa menyelaraskannya membuat pengguna melihat data lama terus-menerus.</em></p>
+</div>
+  <h4>Aturan penulisan</h4><ul><li>Tampilkan data tersimpan lebih dulu, lalu selaraskan dengan server.</li><li>Simpan hanya data yang diperlukan untuk pemakaian luring.</li><li>Simpan data sensitif memakai penyimpanan aman, bukan penyimpanan biasa.</li><li>Beri tanda pada data yang belum terselaras dengan server.</li><li>Batasi jumlah dan masa berlaku data tersimpan agar ruang perangkat tidak penuh.</li></ul>
   <section class="lesson-section">
-  <h4>01 · Memahami konsepnya</h4>
-  <p>Offline-first memungkinkan pengguna membaca/menulis sebagian data tanpa jaringan. Gunakan local database terstruktur (SQLite/Drift) untuk offline kompleks, secure storage untuk token sensitif.</p><p>Buat strategi sync eksplisit: antrian perubahan, timestamp/version, konflik, retry, dan status sinkronisasi. localStorage pada web berbeda dari penyimpanan mobile native.</p>
-  
-  <div class="panel good"><b>Best practice</b><p>Definisikan kebijakan konflik sebelum menerapkan sinkronisasi.</p></div><div class="panel bad"><b>Kesalahan umum</b><p>Menganggap offline sync otomatis tidak akan memiliki konflik.</p></div>
+  <h4>01 · Cara membaca alur yang mengutamakan luring</h4>
+  <p>Alur dibaca berurutan: baca data tersimpan, tampilkan bila ada, lalu ambil data terbaru dari server dan simpan kembali. Urutan ini membuat aplikasi langsung berguna tanpa menunggu jaringan.</p><p>Pada contoh, data tersimpan dibaca lebih dulu dan ditampilkan bila ada. Setelah itu data terbaru diambil dari server dan menggantikan salinan di perangkat untuk pemakaian berikutnya.</p><p>Perhatikan bahwa salinan perangkat tidak menggantikan server. Ia hanya membuat aplikasi tetap berguna sementara, lalu diselaraskan ketika jaringan tersedia.</p>
+  <pre><code>Future&lt;List&lt;Tugas&gt;&gt; muat() async {
+  final lokal = await bacaLokal(&quot;tugas&quot;);
+  if (lokal != null) {
+    tampilkan(urai(lokal));
+  }
+  final dariServer = await api.daftar();
+  await simpanLokal(&quot;tugas&quot;, jsonEncode(dariServer));
+  return dariServer;
+}</code></pre><div class="panel"><b>Output yang diharapkan</b><p>Data tersimpan ditampilkan lebih dulu, lalu data terbaru dari server menggantikannya.</p></div><p>Data perangkat dipakai lebih dulu agar tampilan cepat berguna. Data dari server kemudian menggantikan salinan itu untuk pemakaian berikutnya.</p><div class="panel"><b>Bedah baris</b><ol><li>Baris 2 · <code>final lokal = await bacaLokal(&quot;tugas&quot;);</code> — Data tersimpan dibaca dari perangkat.</li><li>Baris 3 · <code>if (lokal != null) {</code> — Data ditampilkan bila tersedia.</li><li>Baris 6 · <code>final dariServer = await api.daftar();</code> — Data terbaru diambil dari server.</li><li>Baris 7 · <code>await simpanLokal(&quot;tugas&quot;, jsonEncode(dariServer));</code> — Salinan perangkat diperbarui untuk pemakaian berikutnya.</li></ol></div>
+  <div class="panel good"><b>Data dulu, jaringan kemudian</b><p>Menampilkan data tersimpan lebih dulu membuat aplikasi terasa cepat dan tetap berguna saat koneksi lambat.</p></div>
+  <div class="panel warn"><b>Cek pemahaman</b><p>Mengapa data tersimpan ditampilkan lebih dulu sebelum menunggu jaringan?</p><p>Kriteria berhasil: Agar aplikasi langsung berguna tanpa menunggu pemuatan dari jaringan yang mungkin lambat atau terputus.</p></div>
+</section><section class="lesson-section">
+  <h4>02 · Menyimpan data sensitif dengan aman</h4>
+  <p>Penyimpanan aman dibaca sebagai tempat khusus untuk nilai sensitif. Nilai seperti token disimpan dengan perlindungan bawaan perangkat sehingga tidak mudah dibaca.</p><p>Pada contoh, token dibaca dari penyimpanan aman dan dipakai untuk menyusun header permintaan. Nilainya tidak pernah ditulis langsung di dalam kode.</p><p>Bedakan tempat penyimpanan menurut sifat datanya. Data biasa seperti daftar tugas cukup pada penyimpanan biasa, sedangkan token dan data pribadi memerlukan penyimpanan aman.</p>
+  <pre><code>await PenyimpananAman.tulis(&quot;token&quot;, res.body);
+final token = await PenyimpananAman.baca(&quot;token&quot;);
+
+if (token != null) {
+  klien.options.headers[&quot;Authorization&quot;] = &quot;Bearer $token&quot;;
+}</code></pre><div class="panel"><b>Output yang diharapkan</b><p>Token dibaca dari penyimpanan aman lalu dipakai untuk menyusun header permintaan.</p></div><p>Nilai sensitif ditulis dan dibaca melalui penyimpanan aman. Nilai itu kemudian dipakai untuk menyusun header tanpa ditulis di dalam kode.</p><div class="panel"><b>Bedah baris</b><ol><li>Baris 1 · <code>await PenyimpananAman.tulis(&quot;token&quot;, res.body);</code> — Token disimpan melalui penyimpanan aman.</li><li>Baris 2 · <code>final token = await PenyimpananAman.baca(&quot;token&quot;);</code> — Token dibaca kembali saat dibutuhkan.</li><li>Baris 4 · <code>if (token != null) {</code> — Pemakaian token diperiksa agar tidak kosong.</li><li>Baris 5 · <code>klien.options.headers[&quot;Authorization&quot;] = &quot;Bearer $token&quot;;</code> — Token disusun pada header permintaan.</li></ol></div>
+  <div class="panel warn"><b>Jangan simpan token di penyimpanan biasa</b><p>Token pada penyimpanan biasa mudah terbaca bila perangkat diperiksa. Pakai penyimpanan aman untuk nilai sensitif.</p></div>
   
 </section><section class="lesson-section">
-  <h4>02 · Contoh kode</h4>
-  <p>Perhatikan input, proses, dan output. Ketik ulang, lalu ubah satu nilai.</p>
-  <pre><code>// Contoh alur:
-// 1 Simpan perubahan lokal + status pending
-// 2 Saat online, kirim ke API
-// 3 Jika sukses, tandai synced
-// 4 Jika konflik, tampilkan pilihan resolusi</code></pre>
+  <h4>03 · Menyelaraskan data luring dan server</h4>
+  <p>Penyelarasan menyamakan data perangkat dengan data server. Tanpa penyelarasan yang jelas, pengguna dapat melihat data lama atau kehilangan perubahan yang belum terkirim.</p><p>Untuk data yang hanya dibaca, penyelarasan cukup menggantikan salinan perangkat dengan data server terbaru. Untuk data yang diubah, perubahan yang belum terkirim perlu dicatat agar tidak hilang.</p><p>Tandai data yang belum terselaras agar dapat ditampilkan berbeda, misalnya dengan keterangan belum terkirim. Kejujuran ini membantu pengguna memahami keadaan datanya.</p>
   
   
+  <div class="panel warn"><b>Cek pemahaman</b><p>Mengapa perubahan yang belum terkirim perlu dicatat saat aplikasi luring?</p><p>Kriteria berhasil: Agar perubahan itu tidak hilang dan dapat dikirim saat koneksi tersedia kembali.</p></div>
+</section><section class="lesson-section">
+  <h4>04 · Jebakan pada data luring</h4>
+  <p>Jebakan pertama adalah menyimpan semua data tanpa batas. Salinan yang menumpuk menghabiskan ruang perangkat dan memperlambat pemuatan.</p><p>Jebakan kedua adalah menampilkan data tersimpan tanpa pernah menyelaraskannya. Pengguna dapat melihat data lama tanpa tahu bahwa ada versi yang lebih baru.</p><p>Jebakan ketiga adalah menyimpan data sensitif pada penyimpanan biasa. Data itu dapat terbaca bila perangkat diperiksa, sehingga perlu tempat yang terlindungi.</p>
+  
+  
+  <div class="panel warn"><b>Cek pemahaman</b><p>Apa risiko menampilkan data tersimpan tanpa menyelaraskannya?</p><p>Kriteria berhasil: Pengguna melihat data lama tanpa tahu bahwa ada versi terbaru di server.</p></div>
 </section>
-  <h4>Latihan bertingkat</h4><ol><li><b>Latihan 1</b> <em>(Mandiri)</em><p>Rancang alur ketika dua perangkat mengedit catatan yang sama tanpa jaringan.</p></li><li><b>Latihan 2</b> <em>(Mandiri)</em><p>Ubah satu input atau asumsi pada contoh, catat hasil dan jelaskan alasannya.</p></li></ol>
-  
-  
+  <h4>Latihan bertingkat</h4><ol><li><b>Tampilkan data tersimpan lebih dulu</b> <em>(Terbimbing)</em><p>Susun fungsi pemuatan yang menampilkan data tersimpan lebih dulu, lalu menggantinya dengan data dari server.</p><ol><li>Baca data tersimpan dari perangkat.</li><li>Tampilkan data itu bila ada.</li><li>Ambil data terbaru dari server.</li><li>Simpan data terbaru sebagai salinan perangkat.</li></ol><pre><code>Future&lt;void&gt; muat() async {
+  // data tersimpan lalu server
+}</code></pre><p><em>Hasil: Data tersimpan tampil lebih dulu, lalu digantikan data terbaru.</em></p><details><summary>Petunjuk bertahap</summary><ol><li>Data perangkat dipakai lebih dulu.</li><li>Server memberi data terbaru.</li><li>Salinan perangkat diperbarui setelah itu.</li></ol></details><p><em>Tantangan: Tambahkan penanda bahwa data sedang diselaraskan.</em></p></li><li><b>Simpan token dengan aman</b> <em>(Mandiri)</em><p>Simpan token hasil proses masuk pada penyimpanan aman, lalu pakai untuk menyusun header permintaan.</p><ol><li>Tulis token ke penyimpanan aman setelah masuk.</li><li>Baca token saat dibutuhkan.</li><li>Periksa apakah token ada.</li><li>Susun header permintaan memakai token itu.</li></ol><pre><code>await PenyimpananAman.tulis(&quot;token&quot;, ...);</code></pre><p><em>Hasil: Token tersimpan terlindungi dan dipakai tanpa ditulis di dalam kode.</em></p><details><summary>Petunjuk bertahap</summary><ol><li>Nilai sensitif memakai penyimpanan aman.</li><li>Token dibaca saat dibutuhkan.</li><li>Pemakaian token diperiksa agar tidak kosong.</li></ol></details><p><em>Tantangan: Hapus token dari penyimpanan saat pengguna keluar.</em></p></li><li><b>Rancang pembaruan luring</b> <em>(Penerapan)</em><p>Rancang cara aplikasi mencatat perubahan yang dibuat saat luring lalu mengirimnya ketika koneksi tersedia kembali.</p><ol><li>Tentukan perubahan yang perlu dicatat.</li><li>Tentukan cara menyimpannya saat luring.</li><li>Tentukan waktu pengiriman ke server.</li><li>Tentukan penanda perubahan yang belum terkirim.</li></ol><pre><code>Perubahan: ...
+Simpan saat luring: ...
+Kirim saat daring: ...</code></pre><p><em>Hasil: Perubahan luring tercatat, terkirim saat koneksi tersedia, dan tandanya jelas bagi pengguna.</em></p><details><summary>Petunjuk bertahap</summary><ol><li>Perubahan yang belum terkirim perlu dicatat.</li><li>Pengiriman dilakukan saat koneksi tersedia.</li><li>Tandai data yang belum terselaras.</li></ol></details><p><em>Tantangan: Tangani kemungkinan perubahan bentrok dengan data server.</em></p></li></ol>
+  <h4>Verifikasi</h4><div class="panel"><b>Mode: Manual</b><pre><code>Uji pemuatan luring, penyimpanan token, dan pengiriman perubahan yang dibuat saat luring.</code></pre><p><em>Hasil yang diharapkan: Aplikasi tetap berguna tanpa koneksi, token tersimpan terlindungi, dan perubahan luring terkirim saat koneksi tersedia.</em></p><p><em>Bukti yang disimpan: Simpan kode dan catatan hasil setiap pengujian.</em></p></div>
+  <h4>Mengatasi masalah</h4><ul><li><b>Pengguna terus melihat data lama.</b><br>Penyebab umum: Data tersimpan ditampilkan tanpa pernah diselaraskan dengan server.<br>Perbaikan: Ambil data terbaru dari server dan perbarui salinan perangkat setelah tampilan awal.</li><li><b>Token mudah terbaca saat perangkat diperiksa.</b><br>Penyebab umum: Token disimpan pada penyimpanan biasa.<br>Perbaikan: Pindahkan token ke penyimpanan aman.</li><li><b>Perubahan pengguna hilang setelah koneksi kembali.</b><br>Penyebab umum: Perubahan yang dibuat saat luring tidak dicatat.<br>Perbaikan: Catat perubahan luring dan kirimkan saat koneksi tersedia.</li><li><b>Ruang perangkat cepat penuh.</b><br>Penyebab umum: Salinan data disimpan tanpa batas jumlah atau masa berlaku.<br>Perbaikan: Batasi jumlah dan masa berlaku data yang disimpan di perangkat.</li></ul>
   <div class="quiz"><strong>Uji pemahaman</strong><div class="quiz-question">
-    <b>1. Apa prinsip yang paling tepat untuk topik “Offline-first dan secure storage”?</b>
-    <ol type="A"><li>Definisikan kebijakan konflik sebelum menerapkan sinkronisasi.</li><li>Gunakan solusi paling rumit sejak awal, meski kebutuhan belum jelas.</li><li>Lewati pengujian karena contoh kecil pasti benar.</li></ol>
-    <details><summary>Lihat pembahasan</summary><p class="answer">Jawaban: A. Definisikan kebijakan konflik sebelum menerapkan sinkronisasi.</p></details>
+    <b>1. Apa maksud pendekatan yang mengutamakan luring?</b>
+    <ol type="A"><li>Tidak pernah memakai jaringan</li><li>Menampilkan data tersimpan lebih dulu, lalu menyelaraskannya dengan server</li><li>Menyimpan semua data selamanya</li></ol>
+    <details><summary>Lihat pembahasan</summary><p class="answer">Jawaban: B. Pendekatan ini menampilkan data tersimpan lebih dulu agar aplikasi tetap berguna, lalu menyelaraskan dengan server.</p></details>
+  </div><div class="quiz-question">
+    <b>2. Mengapa token disimpan memakai penyimpanan aman?</b>
+    <ol type="A"><li>Agar lebih cepat</li><li>Agar terlindungi dan tidak mudah terbaca bila perangkat diperiksa</li><li>Agar dapat dipakai bersama aplikasi lain</li></ol>
+    <details><summary>Lihat pembahasan</summary><p class="answer">Jawaban: B. Penyimpanan aman melindungi nilai sensitif dengan perlindungan bawaan perangkat.</p></details>
+  </div><div class="quiz-question">
+    <b>3. Pengguna mengubah data saat koneksi terputus. Tindakan tepat...</b>
+    <ol type="A"><li>Membuang perubahannya</li><li>Mencatat perubahannya dan mengirim saat koneksi tersedia</li><li>Menghentikan aplikasi</li></ol>
+    <details><summary>Lihat pembahasan</summary><p class="answer">Jawaban: B. Perubahan luring dicatat agar tidak hilang dan dikirim saat koneksi tersedia kembali.</p></details>
   </div></div>
-  
-  
-  
+  <h4>Ringkasan</h4><ul><li>Pendekatan mengutamakan luring menampilkan data tersimpan lebih dulu lalu menyelaraskannya dengan server.</li><li>Data sensitif disimpan memakai penyimpanan aman, bukan penyimpanan biasa.</li><li>Perubahan yang dibuat saat luring dicatat agar tidak hilang dan dikirim saat koneksi tersedia.</li><li>Jumlah dan masa berlaku data tersimpan dibatasi agar ruang perangkat tidak penuh.</li></ul>
+  <div class="panel"><b>Berikutnya</b><p>Berikutnya: pengujian dan rilis aplikasi Flutter. Anda akan menguji alur penting dan menyiapkan versi yang siap dipasang.</p></div>
+  <h4>Sumber</h4><ul><li><a href="https://pub.dev/packages/flutter_secure_storage" rel="noopener noreferrer">pub.dev: flutter_secure_storage</a> <small>Julian Steenbakker · current</small> — Dokumentasi paket penyimpanan aman untuk data sensitif pada perangkat.</li><li><a href="https://docs.flutter.dev/data-and-backend/networking" rel="noopener noreferrer">Flutter Docs: Networking</a> <small>Flutter · stable</small> — Dokumentasi resmi Flutter tentang jaringan yang mendasari penyelarasan data.</li><li><a href="https://docs.flutter.dev/" rel="noopener noreferrer">Flutter Documentation</a> <small>Google · stable</small> — Dokumentasi resmi Flutter tentang penyimpanan dan keadaan aplikasi.</li></ul>
 </article>
 <article class="lesson" id="m10-l09">
-  <div class="lesson-meta">Pelajaran 09 · 45 menit · Menengah · Bash</div>
+  <div class="lesson-meta">Pelajaran 09 · 120 menit · Menengah · Bash</div>
   <h3>Testing dan rilis Flutter</h3>
-  
-  
-  
-  
-  
-  
+  <div class="panel good"><b>Hasil belajar</b><p>Setelah pelajaran ini, Anda dapat menulis pengujian untuk alur penting aplikasi serta menyiapkan versi rilis yang siap dipasang.</p></div>
+  <h4>Tujuan</h4><ul><li>Menulis pengujian yang memeriksa perilaku widget.</li><li>Menguji logika keadaan secara terpisah dari tampilan.</li><li>Menyiapkan versi rilis aplikasi.</li><li>Menjaga agar versi yang dirilis sudah teruji.</li></ul>
+  <div class="panel"><b>Prasyarat</b><p>Offline-first dan secure storage</p></div>
+  <h4>Istilah kunci</h4><dl class="glossary"><div><dt>Pengujian widget</dt><dd>Pengujian yang membangun sebagian tampilan dan memeriksa perilakunya.</dd></div><div><dt>Pengujian unit</dt><dd>Pengujian yang memeriksa satu bagian logika tanpa menjalankan tampilan.</dd></div><div><dt>Versi rilis</dt><dd>Versi aplikasi yang dibangun untuk dipasang atau dibagikan ke pengguna.</dd></div><div><dt>Penanda versi</dt><dd>Nomor yang menandai versi aplikasi agar perubahan dapat dilacak.</dd></div></dl>
+  <h4>Kartu sintaks</h4><div class="panel">
+  <b><code>await tester.pumpWidget(const AplikasiUji());</code></b>
+  <p><em>Dibaca: Baca sebagai pembangunan bagian tampilan di dalam pengujian.</em></p>
+  <p>Pengujian widget membangun tampilan pada lingkungan uji lalu memeriksa perilakunya tanpa perangkat sungguhan.</p>
+  <pre><code>await tester.pumpWidget(const AplikasiUji());</code></pre>
+  <p><em>Output: Tampilan terbangun di dalam pengujian dan siap diperiksa.</em></p>
+  <p><em>Hati-hati: Menguji hal yang terlalu rinci pada tampilan membuat pengujian mudah rusak saat tata letak berubah.</em></p>
+</div><div class="panel">
+  <b><code>expect(find.text(&quot;Belajar&quot;), findsOneWidget);</code></b>
+  <p><em>Dibaca: Baca sebagai pemeriksaan bahwa teks itu muncul tepat satu kali.</em></p>
+  <p>Pemeriksaan menyatakan harapan pengujian. Bila tidak terpenuhi, pengujian gagal dan menunjukkan bagian yang bermasalah.</p>
+  <pre><code>expect(find.text(&quot;Belajar&quot;), findsOneWidget);</code></pre>
+  <p><em>Output: Pengujian lulus bila teks itu muncul tepat satu kali.</em></p>
+  <p><em>Hati-hati: Hanya memeriksa bahwa tampilan terbangun tanpa memeriksa perilakunya membuat pengujian tidak membuktikan apa pun.</em></p>
+</div><div class="panel">
+  <b><code>flutter build apk --release</code></b>
+  <p><em>Dibaca: Baca sebagai pembangunan versi rilis aplikasi untuk perangkat Android.</em></p>
+  <p>Perintah ini menghasilkan berkas versi rilis yang siap dipasang. Pembangunan rilis dilakukan setelah pengujian lulus.</p>
+  <pre><code>flutter build apk --release</code></pre>
+  <p><em>Output: Berkas versi rilis terbentuk dan siap dibagikan.</em></p>
+  <p><em>Hati-hati: Membangun versi rilis tanpa menjalankan pengujian berisiko membagikan versi yang bermasalah.</em></p>
+</div>
+  <h4>Aturan penulisan</h4><ul><li>Uji logika keadaan secara terpisah dari tampilan.</li><li>Uji perilaku alur penting, bukan rincian tata letak yang mudah berubah.</li><li>Jalankan pengujian sebelum membangun versi rilis.</li><li>Naikkan penanda versi setiap kali merilis perubahan.</li><li>Simpan hasil pengujian sebagai catatan rilis.</li></ul>
   <section class="lesson-section">
-  <h4>01 · Memahami konsepnya</h4>
-  <p>Unit test menguji logika, widget test menguji UI, integration test memeriksa alur nyata. Release build memerlukan konfigurasi signing, izin, privasi, serta QA pada perangkat.</p><p>Jangan hanya menjalankan emulator. Uji HP fisik, mode offline, rotasi, font scaling, izin, dan pembaruan aplikasi. Pisahkan server staging dari production.</p>
+  <h4>01 · Cara membaca pengujian widget</h4>
+  <p>Pengujian dibaca dalam tiga bagian: persiapan, tindakan, dan pemeriksaan. Bagian persiapan menyiapkan tampilan, tindakan menjalankannya, dan pemeriksaan menyatakan harapan atas hasilnya.</p><p>Pada contoh, bagian tampilan dibangun dengan satu judul, lalu diperiksa bahwa judul itu muncul tepat satu kali. Bagian pemeriksaan inilah yang membuat pengujian bermakna.</p><p>Nama pengujian menyatakan perilaku yang diperiksa. Ketika pengujian gagal, nama itu langsung memberi tahu bagian mana yang tidak sesuai harapan.</p>
+  <pre><code>testWidgets(&quot;menampilkan judul tugas&quot;, (tester) async {
+  await tester.pumpWidget(
+    const MaterialApp(home: KartuTugas(judul: &quot;Belajar&quot;)),
+  );
+
+  expect(find.text(&quot;Belajar&quot;), findsOneWidget);
+});</code></pre><div class="panel"><b>Output yang diharapkan</b><p>Pengujian lulus karena judul yang diberikan muncul tepat satu kali pada tampilan.</p></div><p>Bagian tampilan dibangun dengan judul tertentu, lalu diperiksa bahwa judul itu muncul satu kali. Pemeriksaan mengikat pengujian pada perilaku yang diamati.</p><div class="panel"><b>Bedah baris</b><ol><li>Baris 1 · <code>testWidgets(&quot;menampilkan judul tugas&quot;, (tester) async {</code> — Nama pengujian menyatakan perilaku yang diperiksa.</li><li>Baris 2 · <code>await tester.pumpWidget(</code> — Bagian tampilan dibangun di dalam pengujian.</li><li>Baris 3 · <code>const MaterialApp(home: KartuTugas(judul: &quot;Belajar&quot;)),</code> — Tampilan diberi nilai judul untuk diuji.</li><li>Baris 6 · <code>expect(find.text(&quot;Belajar&quot;), findsOneWidget);</code> — Pemeriksaan menyatakan harapan atas hasilnya.</li></ol></div>
+  <div class="panel good"><b>Uji perilaku yang diamati</b><p>Periksa hal yang dapat diamati pengguna, bukan rincian tata letak. Pengujian seperti ini lebih tahan terhadap perubahan tampilan.</p></div>
+  <div class="panel warn"><b>Cek pemahaman</b><p>Sebutkan tiga bagian pengujian pada contoh beserta baris yang mewakilinya.</p><p>Kriteria berhasil: Persiapan pada pembangunan tampilan, tindakan pada pemuatan tampilan, dan pemeriksaan pada baris harapan.</p></div>
+</section><section class="lesson-section">
+  <h4>02 · Jenis pengujian pada aplikasi</h4>
+  <p>Pengujian unit memeriksa logika keadaan tanpa tampilan. Ia cepat dan tepat menunjukkan letak kesalahan, sehingga cocok untuk aturan yang rumit.</p><p>Pengujian widget membangun sebagian tampilan dan memeriksa perilakunya. Ia memastikan tampilan menampilkan data dan menanggapi tindakan dengan benar.</p><p>Pembagian yang sehat memakai banyak pengujian unit untuk logika dan sejumlah pengujian widget untuk alur penting. Gabungan keduanya melindungi aplikasi tanpa memperlambat pekerjaan.</p>
   
-  <div class="panel good"><b>Best practice</b><p>Rilis setelah test, pengukuran crash, dan verifikasi konfigurasi build.</p></div><div class="panel bad"><b>Kesalahan umum</b><p>Menggunakan endpoint development dan kredensial uji di build produksi.</p></div>
+  
+  <div class="panel warn"><b>Cek pemahaman</b><p>Apa perbedaan pengujian unit dan pengujian widget?</p><p>Kriteria berhasil: Pengujian unit memeriksa logika tanpa tampilan; pengujian widget membangun tampilan dan memeriksa perilakunya.</p></div>
+</section><section class="lesson-section">
+  <h4>03 · Menyiapkan versi rilis</h4>
+  <p>Langkah rilis dibaca sebagai urutan: periksa kode, jalankan pengujian, lalu bangun versi rilis. Urutan ini memastikan hanya versi yang sudah diperiksa yang dibangun.</p><p>Pada contoh, kode diperiksa lebih dulu untuk menemukan masalah gaya dan kesalahan yang jelas, lalu pengujian dijalankan, dan barulah versi rilis dibangun.</p><p>Menyimpan urutan ini sebagai langkah yang tetap membuat rilis dapat diulang. Hasil yang sama dapat diperoleh setiap kali tanpa mengandalkan ingatan.</p>
+  <pre><code>flutter test
+flutter analyze
+flutter build appbundle --release</code></pre><div class="panel"><b>Output yang diharapkan</b><p>Kode diperiksa, pengujian dijalankan, lalu versi rilis aplikasi dibangun.</p></div><p>Perintah pertama dan kedua memeriksa kode dan menjalankan pengujian. Perintah terakhir membangun versi rilis setelah keduanya lulus.</p><div class="panel"><b>Bedah baris</b><ol><li>Baris 1 · <code>flutter test</code> — Pengujian dijalankan untuk memeriksa perilaku.</li><li>Baris 2 · <code>flutter analyze</code> — Kode diperiksa untuk menemukan masalah yang jelas.</li><li>Baris 3 · <code>flutter build appbundle --release</code> — Versi rilis dibangun setelah pemeriksaan lulus.</li></ol></div>
+  <div class="panel warn"><b>Uji sebelum membangun rilis</b><p>Jalankan pengujian sebelum membangun versi rilis. Versi yang gagal diuji sebaiknya tidak dibagikan.</p></div>
   
 </section><section class="lesson-section">
-  <h4>02 · Contoh kode</h4>
-  <p>Perhatikan input, proses, dan output. Ketik ulang, lalu ubah satu nilai.</p>
-  <pre><code>flutter analyze
-flutter test
-flutter build apk --release
-# signing dan konfigurasi rilis diperlukan</code></pre>
+  <h4>04 · Kesiapan sebelum merilis</h4>
+  <p>Sebelum merilis, periksa hal yang bergantung pada lingkungan: alamat API yang dipakai sudah benar, kunci penandatanganan sudah disiapkan, dan penanda versi sudah dinaikkan.</p><p>Periksa juga hal yang tampak kepada pengguna: nama aplikasi, ikon, dan keterangan versi. Kekeliruan pada hal itu sulit diperbaiki setelah versi dibagikan.</p><p>Siapkan cara membagikan versi dan mencatat perubahannya. Catatan perubahan membantu pengguna dan tim memahami apa yang berbeda pada versi baru.</p>
   
   
+  <div class="panel warn"><b>Cek pemahaman</b><p>Sebutkan dua hal yang perlu diperiksa sebelum merilis versi aplikasi.</p><p>Kriteria berhasil: Alamat API yang dipakai sudah benar dan penanda versi sudah dinaikkan, selain kesiapan penandatanganan.</p></div>
 </section>
-  <h4>Latihan bertingkat</h4><ol><li><b>Latihan 1</b> <em>(Mandiri)</em><p>Rancang 5 skenario test penting untuk form login dan daftar tugas.</p></li><li><b>Latihan 2</b> <em>(Mandiri)</em><p>Ubah satu input atau asumsi pada contoh, catat hasil dan jelaskan alasannya.</p></li></ol>
-  
-  
+  <h4>Latihan bertingkat</h4><ol><li><b>Pengujian tampilan kartu</b> <em>(Terbimbing)</em><p>Tulis pengujian yang membangun kartu tugas dengan judul tertentu dan memeriksa judul itu tampil.</p><ol><li>Bangun kartu tugas dengan judul tertentu.</li><li>Tentukan pemeriksaan yang menyatakan harapannya.</li><li>Jalankan pengujian.</li><li>Pastikan pengujian gagal bila judulnya diubah.</li></ol><pre><code>testWidgets(&quot;menampilkan judul&quot;, (tester) async {
+  // lengkapi
+});</code></pre><p><em>Hasil: Pengujian lulus dengan judul yang benar dan gagal bila judulnya berbeda.</em></p><details><summary>Petunjuk bertahap</summary><ol><li>Bangun tampilan lebih dulu.</li><li>Pemeriksaan menyatakan harapan.</li><li>Uji juga keadaan gagal.</li></ol></details><p><em>Tantangan: Tambahkan pemeriksaan bahwa jarak sekeliling tampil.</em></p></li><li><b>Pengujian logika keadaan</b> <em>(Mandiri)</em><p>Tulis pengujian unit untuk pengendali daftar tugas yang memeriksa penambahan dan penghapusan.</p><ol><li>Siapkan pengendali tanpa tampilan.</li><li>Tambahkan beberapa tugas.</li><li>Periksa jumlah dan isinya.</li><li>Hapus satu tugas dan periksa kembali.</li></ol><pre><code>test(&quot;menambah tugas&quot;, () {
+  // lengkapi
+});</code></pre><p><em>Hasil: Logika pengendali teruji tanpa menjalankan tampilan.</em></p><details><summary>Petunjuk bertahap</summary><ol><li>Pengujian unit tidak memerlukan tampilan.</li><li>Periksa isi setelah setiap tindakan.</li><li>Uji juga keadaan batas.</li></ol></details><p><em>Tantangan: Tambahkan pengujian bahwa penghapusan memberi tahu pendengar.</em></p></li><li><b>Susun langkah rilis</b> <em>(Penerapan)</em><p>Susun urutan langkah rilis aplikasi, memuat pemeriksaan kode, pengujian, pembangunan versi, dan persiapan penandatanganan.</p><ol><li>Tentukan urutan dari pemeriksaan sampai versi dibangun.</li><li>Sertakan pengujian sebelum membangun.</li><li>Tentukan hal lingkungan yang perlu diperiksa.</li><li>Jalankan seluruh urutan pada lingkungan uji.</li></ol><pre><code>1. ...
+2. ...
+3. ...</code></pre><p><em>Hasil: Urutan dapat dijalankan dan menghasilkan versi rilis yang sudah teruji.</em></p><details><summary>Petunjuk bertahap</summary><ol><li>Pemeriksaan dan pengujian mendahului pembangunan.</li><li>Alamat API disesuaikan untuk rilis.</li><li>Penanda versi dinaikkan setiap rilis.</li></ol></details><p><em>Tantangan: Catat perubahan versi pada berkas catatan perubahan.</em></p></li></ol>
+  <h4>Verifikasi</h4><div class="panel"><b>Mode: Manual</b><pre><code>Jalankan pengujian unit dan widget, lalu bangun versi rilis pada lingkungan uji.</code></pre><p><em>Hasil yang diharapkan: Seluruh pengujian lulus dan versi rilis terbentuk setelah pemeriksaan berjalan, dengan penanda versi yang sudah dinaikkan.</em></p><p><em>Bukti yang disimpan: Simpan berkas pengujian, keluaran pengujian, dan catatan langkah rilis.</em></p></div>
+  <h4>Mengatasi masalah</h4><ul><li><b>Pengujian berhenti ketika tata letak berubah sedikit.</b><br>Penyebab umum: Pengujian memeriksa rincian tata letak yang mudah berubah.<br>Perbaikan: Ubah pengujian agar memeriksa perilaku yang dapat diamati, bukan rincian tata letak.</li><li><b>Pengujian logika memerlukan tampilan untuk berjalan.</b><br>Penyebab umum: Logika masih bercampur dengan widget tampilan.<br>Perbaikan: Pindahkan logika ke pengendali keadaan agar dapat diuji terpisah.</li><li><b>Versi rilis gagal dipasang karena penandatanganan belum siap.</b><br>Penyebab umum: Pemeriksaan lingkungan rilis terlewat.<br>Perbaikan: Periksa penandatanganan dan alamat API sebelum membangun versi rilis.</li><li><b>Versi baru dibagikan padahal masih ada masalah.</b><br>Penyebab umum: Versi dibangun tanpa menjalankan pengujian.<br>Perbaikan: Jalankan pengujian sebagai bagian dari langkah rilis sebelum membangun versi.</li></ul>
   <div class="quiz"><strong>Uji pemahaman</strong><div class="quiz-question">
-    <b>1. Apa prinsip yang paling tepat untuk topik “Testing dan rilis Flutter”?</b>
-    <ol type="A"><li>Rilis setelah test, pengukuran crash, dan verifikasi konfigurasi build.</li><li>Gunakan solusi paling rumit sejak awal, meski kebutuhan belum jelas.</li><li>Lewati pengujian karena contoh kecil pasti benar.</li></ol>
-    <details><summary>Lihat pembahasan</summary><p class="answer">Jawaban: A. Rilis setelah test, pengukuran crash, dan verifikasi konfigurasi build.</p></details>
+    <b>1. Apa perbedaan pengujian unit dan pengujian widget?</b>
+    <ol type="A"><li>Keduanya sama saja</li><li>Pengujian unit memeriksa logika tanpa tampilan; pengujian widget membangun tampilan</li><li>Pengujian widget lebih cepat selalu</li></ol>
+    <details><summary>Lihat pembahasan</summary><p class="answer">Jawaban: B. Pengujian unit menguji logika tanpa tampilan, sedangkan pengujian widget membangun tampilan dan memeriksa perilakunya.</p></details>
+  </div><div class="quiz-question">
+    <b>2. Apa yang diperiksa oleh pemeriksaan harapan pada pengujian widget?</b>
+    <ol type="A"><li>Bahwa tampilan menampilkan hal yang sesuai harapan</li><li>Bahwa jaringan cepat</li><li>Bahwa perangkat memiliki cukup ruang</li></ol>
+    <details><summary>Lihat pembahasan</summary><p class="answer">Jawaban: A. Pemeriksaan menyatakan harapan atas hasil, misalnya bahwa teks tertentu muncul.</p></details>
+  </div><div class="quiz-question">
+    <b>3. Akan merilis versi baru aplikasi. Langkah yang tepat...</b>
+    <ol type="A"><li>Membangun versi rilis lebih dulu lalu menguji</li><li>Menjalankan pengujian sebelum membangun versi rilis</li><li>Melewati pengujian bila perubahannya kecil</li></ol>
+    <details><summary>Lihat pembahasan</summary><p class="answer">Jawaban: B. Pengujian dijalankan sebelum membangun versi rilis agar versi yang dibagikan sudah teruji.</p></details>
   </div></div>
-  
-  
-  
+  <h4>Ringkasan</h4><ul><li>Pengujian unit memeriksa logika tanpa tampilan; pengujian widget memeriksa perilaku tampilan.</li><li>Pengujian sebaiknya memeriksa perilaku yang dapat diamati, bukan rincian tata letak.</li><li>Pengujian dijalankan sebelum membangun versi rilis.</li><li>Langkah rilis memeriksa lingkungan, menaikkan penanda versi, dan mencatat perubahannya.</li></ul>
+  <div class="panel"><b>Berikutnya</b><p>Materi berikutnya melanjutkan ke topik lanjutan perangkat lunak. Anda akan memperluas keterampilan pada skala aplikasi yang lebih besar.</p></div>
+  <h4>Sumber</h4><ul><li><a href="https://docs.flutter.dev/testing" rel="noopener noreferrer">Flutter Docs: Testing</a> <small>Flutter · stable</small> — Dokumentasi resmi Flutter tentang pengujian unit dan widget.</li><li><a href="https://docs.flutter.dev/deployment/android" rel="noopener noreferrer">Flutter Docs: Build and Release an Android App</a> <small>Flutter · stable</small> — Panduan resmi membangun dan merilis aplikasi Android.</li><li><a href="https://docs.flutter.dev/" rel="noopener noreferrer">Flutter Documentation</a> <small>Google · stable</small> — Dokumentasi resmi Flutter tentang langkah rilis dan pemeriksaan kode.</li></ul>
 </article>
 </section>
 <section class="module" id="m11">
@@ -9065,7 +9565,7 @@ function Counter(){
     <section class="module" id="referensi">
       <div class="module-head"><h2>Sumber resmi</h2></div>
       <p class="subtitle">Versi teknologi berubah; periksa dokumentasi resmi dan tanggal pemeriksaan saat membuat proyek baru.</p>
-      <ul><li><a href="https://developer.mozilla.org/en-US/docs/Learn_web_development" rel="noopener noreferrer">MDN: Learn web development</a> <small>Mozilla · rolling</small></li><li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide" rel="noopener noreferrer">MDN: JavaScript Guide</a> <small>Mozilla · rolling</small></li><li><a href="https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/Scripting/What_is_JavaScript" rel="noopener noreferrer">MDN: What is JavaScript?</a> <small>Mozilla · rolling</small></li><li><a href="https://web.dev/learn/javascript" rel="noopener noreferrer">web.dev: Learn JavaScript</a> <small>Google · rolling</small></li><li><a href="https://www.typescriptlang.org/docs/handbook/" rel="noopener noreferrer">TypeScript Handbook</a> <small>Microsoft · rolling</small></li><li><a href="https://developer.mozilla.org/en-US/docs/Learn_web_development/Getting_started/Environment_setup/Command_line" rel="noopener noreferrer">MDN: Command line crash course</a> <small>Mozilla · rolling</small></li><li><a href="https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/windows-commands" rel="noopener noreferrer">Microsoft Learn: Windows commands</a> <small>Microsoft · Windows 11</small></li><li><a href="https://www.microsoft.com/en-us/windows/windows-11-specifications" rel="noopener noreferrer">Microsoft: Windows 11 specs and system requirements</a> <small>Microsoft · Windows 11</small></li><li><a href="https://learn.microsoft.com/en-us/windows/whats-new/windows-11-requirements" rel="noopener noreferrer">Microsoft Learn: Windows 11 requirements</a> <small>Microsoft · 2026</small></li><li><a href="https://support.microsoft.com/en-us/windows" rel="noopener noreferrer">Microsoft Support: Windows</a> <small>Microsoft · rolling</small></li><li><a href="https://developer.mozilla.org/en-US/docs/Learn_web_development/Getting_started/Web_standards/How_the_web_works" rel="noopener noreferrer">MDN: How the web works</a> <small>Mozilla · rolling</small></li><li><a href="https://developer.mozilla.org/en-US/docs/Learn_web_development/Extensions/Server-side/First_steps/Client-Server_overview" rel="noopener noreferrer">MDN: Client-server overview</a> <small>Mozilla · rolling</small></li><li><a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/Overview" rel="noopener noreferrer">MDN: HTTP overview</a> <small>Mozilla · rolling</small></li><li><a href="https://www.rfc-editor.org/rfc/rfc9110.html" rel="noopener noreferrer">RFC 9110: HTTP Semantics</a> <small>IETF · 9110</small></li><li><a href="https://developer.chrome.com/docs/devtools/" rel="noopener noreferrer">Chrome DevTools: Documentation</a> <small>Google · rolling</small></li><li><a href="https://developer.chrome.com/docs/devtools/javascript/" rel="noopener noreferrer">Chrome DevTools: Debug JavaScript</a> <small>Google · rolling</small></li><li><a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/Caching" rel="noopener noreferrer">MDN: HTTP caching</a> <small>Mozilla · rolling</small></li><li><a href="https://www.cisa.gov/secure-our-world/use-strong-passwords" rel="noopener noreferrer">CISA: Use strong passwords</a> <small>CISA · rolling</small></li><li><a href="https://support.google.com/accounts/answer/185839" rel="noopener noreferrer">Google: Turn on 2-Step Verification</a> <small>Google · rolling</small></li><li><a href="https://www.cisa.gov/secure-our-world/recognize-and-report-phishing" rel="noopener noreferrer">CISA: Recognize and report phishing</a> <small>CISA · rolling</small></li><li><a href="https://support.google.com/mail/answer/8253" rel="noopener noreferrer">Google: Avoid and report phishing emails</a> <small>Google · rolling</small></li><li><a href="https://peraturan.bpk.go.id/Details/229798/uu-no-27-tahun-2022" rel="noopener noreferrer">JDIH BPK: UU No. 27 Tahun 2022 tentang Pelindungan Data Pribadi</a> <small>BPK RI · 2022</small></li><li><a href="https://www.nist.gov/privacy-framework" rel="noopener noreferrer">NIST: Privacy Framework</a> <small>NIST · 1.1 IPD</small></li><li><a href="https://www.cisa.gov/stopransomware" rel="noopener noreferrer">CISA: StopRansomware</a> <small>CISA · rolling</small></li><li><a href="https://git-scm.com/docs" rel="noopener noreferrer">Git: Reference</a> <small>Git · rolling</small></li><li><a href="https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/Scripting/Debugging_JavaScript" rel="noopener noreferrer">MDN: Debugging JavaScript</a> <small>Mozilla · rolling</small></li><li><a href="https://lsc.cornell.edu/how-to-study/studying-for-and-taking-exams/effective-study-strategies/" rel="noopener noreferrer">Cornell Learning Strategies Center: Effective Study Strategies</a> <small>Cornell University · rolling</small></li><li><a href="https://lsc.cornell.edu/how-to-study/studying-for-and-taking-exams/guidelines-for-creating-a-study-schedule/" rel="noopener noreferrer">Cornell Learning Strategies Center: Creating a Study Schedule</a> <small>Cornell University · rolling</small></li><li><a href="https://www.nist.gov/itl/ai-risk-management-framework" rel="noopener noreferrer">NIST: AI Risk Management Framework</a> <small>NIST · 1.0</small></li><li><a href="https://lsc.cornell.edu/find-your-academic-groove/using-gai-for-learning/" rel="noopener noreferrer">Cornell Learning Strategies Center: Using GAI for Learning</a> <small>Cornell University · rolling</small></li><li><a href="https://www.php.net/manual/en/" rel="noopener noreferrer">PHP Manual</a> <small>PHP Group · 8.5</small></li><li><a href="https://laravel.com/docs/13.x" rel="noopener noreferrer">Laravel Documentation</a> <small>Laravel · 13.x</small></li><li><a href="https://www.postgresql.org/docs/18/" rel="noopener noreferrer">PostgreSQL Documentation</a> <small>PostgreSQL Global Development Group · 18.6</small></li><li><a href="https://docs.flutter.dev/" rel="noopener noreferrer">Flutter Documentation</a> <small>Google · stable</small></li><li><a href="https://dart.dev/language" rel="noopener noreferrer">Dart Language Tour</a> <small>Google · stable</small></li><li><a href="https://top10.owasp.org/2025/" rel="noopener noreferrer">OWASP Top 10:2025</a> <small>OWASP · 2025</small></li><li><a href="https://www.w3.org/TR/WCAG22/" rel="noopener noreferrer">WCAG 2.2</a> <small>W3C · 2.2</small></li><li><a href="https://developer.mozilla.org/en-US/docs/Web/API/Window/localStorage" rel="noopener noreferrer">MDN: Window.localStorage</a> <small>Mozilla · rolling</small></li><li><a href="https://developer.mozilla.org/en-US/docs/Web/API/Storage" rel="noopener noreferrer">MDN: Storage</a> <small>Mozilla · rolling</small></li><li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON" rel="noopener noreferrer">MDN: JSON</a> <small>Mozilla · rolling</small></li><li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/try...catch" rel="noopener noreferrer">MDN: try...catch</a> <small>Mozilla · rolling</small></li><li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Control_flow_and_error_handling" rel="noopener noreferrer">MDN: Control flow and error handling</a> <small>Mozilla · rolling</small></li><li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Loops_and_iteration" rel="noopener noreferrer">MDN: Loops and iteration</a> <small>Mozilla · rolling</small></li><li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Indexed_collections" rel="noopener noreferrer">MDN: Indexed collections</a> <small>Mozilla · rolling</small></li><li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Working_with_objects" rel="noopener noreferrer">MDN: Working with objects</a> <small>Mozilla · rolling</small></li><li><a href="https://developer.mozilla.org/en-US/docs/Glossary/Truthy" rel="noopener noreferrer">MDN: Truthy</a> <small>Mozilla · rolling</small></li><li><a href="https://developer.mozilla.org/en-US/docs/Glossary/Algorithm" rel="noopener noreferrer">MDN: Algorithm</a> <small>Mozilla · rolling</small></li><li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/let" rel="noopener noreferrer">MDN: let</a> <small>Mozilla · rolling</small></li><li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/const" rel="noopener noreferrer">MDN: const</a> <small>Mozilla · rolling</small></li><li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Expressions_and_operators" rel="noopener noreferrer">MDN: Expressions and operators</a> <small>Mozilla · rolling</small></li><li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/typeof" rel="noopener noreferrer">MDN: typeof</a> <small>Mozilla · rolling</small></li><li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Functions" rel="noopener noreferrer">MDN: Functions</a> <small>Mozilla · rolling</small></li><li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array" rel="noopener noreferrer">MDN: Array</a> <small>Mozilla · rolling</small></li><li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Closures" rel="noopener noreferrer">MDN: Closures</a> <small>Mozilla · rolling</small></li><li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Modules" rel="noopener noreferrer">MDN: JavaScript modules</a> <small>Mozilla · rolling</small></li><li><a href="https://developer.mozilla.org/en-US/docs/Web/HTML" rel="noopener noreferrer">MDN: HTML elements reference</a> <small>Mozilla · rolling</small></li><li><a href="https://developer.mozilla.org/en-US/docs/Web/CSS" rel="noopener noreferrer">MDN: CSS reference</a> <small>Mozilla · rolling</small></li><li><a href="https://developer.mozilla.org/en-US/docs/Learn_web_development/Extensions/Forms" rel="noopener noreferrer">MDN: Web forms</a> <small>Mozilla · rolling</small></li><li><a href="https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/CSS_layout" rel="noopener noreferrer">MDN: CSS layout</a> <small>Mozilla · rolling</small></li><li><a href="https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/Accessibility" rel="noopener noreferrer">MDN: Accessibility</a> <small>Mozilla · rolling</small></li><li><a href="https://developer.mozilla.org/en-US/docs/Web/API/Document_Object_Model" rel="noopener noreferrer">MDN: Document Object Model (DOM)</a> <small>Mozilla · rolling</small></li><li><a href="https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/Scripting/Events" rel="noopener noreferrer">MDN: Introduction to events</a> <small>Mozilla · rolling</small></li><li><a href="https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API" rel="noopener noreferrer">MDN: Fetch API</a> <small>Mozilla · rolling</small></li><li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise" rel="noopener noreferrer">MDN: Promise</a> <small>Mozilla · rolling</small></li><li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/async_function" rel="noopener noreferrer">MDN: async function</a> <small>Mozilla · rolling</small></li><li><a href="https://docs.npmjs.com/" rel="noopener noreferrer">npm Docs</a> <small>npm, Inc. · rolling</small></li><li><a href="https://vitest.dev/guide/" rel="noopener noreferrer">Vitest: Getting Started</a> <small>Vitest · rolling</small></li><li><a href="https://git-scm.com/book/en/v2" rel="noopener noreferrer">Pro Git (buku resmi Git)</a> <small>Git · 2nd edition</small></li><li><a href="https://docs.github.com/en" rel="noopener noreferrer">GitHub Docs</a> <small>GitHub · rolling</small></li><li><a href="https://docs.github.com/en/pull-requests" rel="noopener noreferrer">GitHub Docs: Pull requests</a> <small>GitHub · rolling</small></li><li><a href="https://docs.github.com/en/get-started/git-basics/ignoring-files" rel="noopener noreferrer">GitHub Docs: Ignoring files</a> <small>GitHub · rolling</small></li><li><a href="https://www.postgresql.org/docs/current/tutorial.html" rel="noopener noreferrer">PostgreSQL Tutorial</a> <small>PostgreSQL Global Development Group · current</small></li><li><a href="https://www.postgresql.org/docs/current/ddl-constraints.html" rel="noopener noreferrer">PostgreSQL: Constraints</a> <small>PostgreSQL Global Development Group · current</small></li><li><a href="https://www.postgresql.org/docs/current/indexes.html" rel="noopener noreferrer">PostgreSQL: Indexes</a> <small>PostgreSQL Global Development Group · current</small></li><li><a href="https://www.postgresql.org/docs/current/tutorial-transactions.html" rel="noopener noreferrer">PostgreSQL: Transactions</a> <small>PostgreSQL Global Development Group · current</small></li><li><a href="https://www.postgresql.org/docs/current/backup.html" rel="noopener noreferrer">PostgreSQL: Backup and Restore</a> <small>PostgreSQL Global Development Group · current</small></li><li><a href="https://cheatsheetseries.owasp.org/cheatsheets/SQL_Injection_Prevention_Cheat_Sheet.html" rel="noopener noreferrer">OWASP: SQL Injection Prevention Cheat Sheet</a> <small>OWASP Foundation · rolling</small></li><li><a href="https://laravel.com/docs/13.x/routing" rel="noopener noreferrer">Laravel Docs: Routing</a> <small>Laravel · 13.x</small></li><li><a href="https://laravel.com/docs/13.x/eloquent" rel="noopener noreferrer">Laravel Docs: Eloquent ORM</a> <small>Laravel · 13.x</small></li><li><a href="https://laravel.com/docs/13.x/validation" rel="noopener noreferrer">Laravel Docs: Validation</a> <small>Laravel · 13.x</small></li><li><a href="https://laravel.com/docs/13.x/authorization" rel="noopener noreferrer">Laravel Docs: Authorization</a> <small>Laravel · 13.x</small></li><li><a href="https://laravel.com/docs/13.x/eloquent-resources" rel="noopener noreferrer">Laravel Docs: Eloquent API Resources</a> <small>Laravel · 13.x</small></li><li><a href="https://laravel.com/docs/13.x/queues" rel="noopener noreferrer">Laravel Docs: Queues</a> <small>Laravel · 13.x</small></li><li><a href="https://www.php.net/manual/en/language.types.declarations.php" rel="noopener noreferrer">PHP Manual: Type Declarations</a> <small>PHP Group · current</small></li><li><a href="https://www.php.net/manual/en/language.oop5.php" rel="noopener noreferrer">PHP Manual: Classes and Objects</a> <small>PHP Group · current</small></li><li><a href="https://www.php-fig.org/psr/psr-12/" rel="noopener noreferrer">PHP-FIG: PSR-12 Extended Coding Style</a> <small>PHP Framework Interop Group · 1.0.0</small></li><li><a href="https://getcomposer.org/doc/" rel="noopener noreferrer">Composer Documentation</a> <small>Composer · current</small></li><li><a href="https://docs.phpunit.de/en/11.5/" rel="noopener noreferrer">PHPUnit Documentation</a> <small>PHPUnit · 11.5</small></li><li><a href="https://spec.openapis.org/oas/latest.html" rel="noopener noreferrer">OpenAPI Specification</a> <small>OpenAPI Initiative · latest</small></li><li><a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/CORS" rel="noopener noreferrer">MDN: Cross-Origin Resource Sharing (CORS)</a> <small>Mozilla · rolling</small></li><li><a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Status" rel="noopener noreferrer">MDN: HTTP response status codes</a> <small>Mozilla · rolling</small></li><li><a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Methods" rel="noopener noreferrer">MDN: HTTP request methods</a> <small>Mozilla · rolling</small></li><li><a href="https://www.rfc-editor.org/rfc/rfc6749.html" rel="noopener noreferrer">RFC 6749: The OAuth 2.0 Authorization Framework</a> <small>IETF · 6749</small></li></ul>
+      <ul><li><a href="https://developer.mozilla.org/en-US/docs/Learn_web_development" rel="noopener noreferrer">MDN: Learn web development</a> <small>Mozilla · rolling</small></li><li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide" rel="noopener noreferrer">MDN: JavaScript Guide</a> <small>Mozilla · rolling</small></li><li><a href="https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/Scripting/What_is_JavaScript" rel="noopener noreferrer">MDN: What is JavaScript?</a> <small>Mozilla · rolling</small></li><li><a href="https://web.dev/learn/javascript" rel="noopener noreferrer">web.dev: Learn JavaScript</a> <small>Google · rolling</small></li><li><a href="https://www.typescriptlang.org/docs/handbook/" rel="noopener noreferrer">TypeScript Handbook</a> <small>Microsoft · rolling</small></li><li><a href="https://developer.mozilla.org/en-US/docs/Learn_web_development/Getting_started/Environment_setup/Command_line" rel="noopener noreferrer">MDN: Command line crash course</a> <small>Mozilla · rolling</small></li><li><a href="https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/windows-commands" rel="noopener noreferrer">Microsoft Learn: Windows commands</a> <small>Microsoft · Windows 11</small></li><li><a href="https://www.microsoft.com/en-us/windows/windows-11-specifications" rel="noopener noreferrer">Microsoft: Windows 11 specs and system requirements</a> <small>Microsoft · Windows 11</small></li><li><a href="https://learn.microsoft.com/en-us/windows/whats-new/windows-11-requirements" rel="noopener noreferrer">Microsoft Learn: Windows 11 requirements</a> <small>Microsoft · 2026</small></li><li><a href="https://support.microsoft.com/en-us/windows" rel="noopener noreferrer">Microsoft Support: Windows</a> <small>Microsoft · rolling</small></li><li><a href="https://developer.mozilla.org/en-US/docs/Learn_web_development/Getting_started/Web_standards/How_the_web_works" rel="noopener noreferrer">MDN: How the web works</a> <small>Mozilla · rolling</small></li><li><a href="https://developer.mozilla.org/en-US/docs/Learn_web_development/Extensions/Server-side/First_steps/Client-Server_overview" rel="noopener noreferrer">MDN: Client-server overview</a> <small>Mozilla · rolling</small></li><li><a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/Overview" rel="noopener noreferrer">MDN: HTTP overview</a> <small>Mozilla · rolling</small></li><li><a href="https://www.rfc-editor.org/rfc/rfc9110.html" rel="noopener noreferrer">RFC 9110: HTTP Semantics</a> <small>IETF · 9110</small></li><li><a href="https://developer.chrome.com/docs/devtools/" rel="noopener noreferrer">Chrome DevTools: Documentation</a> <small>Google · rolling</small></li><li><a href="https://developer.chrome.com/docs/devtools/javascript/" rel="noopener noreferrer">Chrome DevTools: Debug JavaScript</a> <small>Google · rolling</small></li><li><a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/Caching" rel="noopener noreferrer">MDN: HTTP caching</a> <small>Mozilla · rolling</small></li><li><a href="https://www.cisa.gov/secure-our-world/use-strong-passwords" rel="noopener noreferrer">CISA: Use strong passwords</a> <small>CISA · rolling</small></li><li><a href="https://support.google.com/accounts/answer/185839" rel="noopener noreferrer">Google: Turn on 2-Step Verification</a> <small>Google · rolling</small></li><li><a href="https://www.cisa.gov/secure-our-world/recognize-and-report-phishing" rel="noopener noreferrer">CISA: Recognize and report phishing</a> <small>CISA · rolling</small></li><li><a href="https://support.google.com/mail/answer/8253" rel="noopener noreferrer">Google: Avoid and report phishing emails</a> <small>Google · rolling</small></li><li><a href="https://peraturan.bpk.go.id/Details/229798/uu-no-27-tahun-2022" rel="noopener noreferrer">JDIH BPK: UU No. 27 Tahun 2022 tentang Pelindungan Data Pribadi</a> <small>BPK RI · 2022</small></li><li><a href="https://www.nist.gov/privacy-framework" rel="noopener noreferrer">NIST: Privacy Framework</a> <small>NIST · 1.1 IPD</small></li><li><a href="https://www.cisa.gov/stopransomware" rel="noopener noreferrer">CISA: StopRansomware</a> <small>CISA · rolling</small></li><li><a href="https://git-scm.com/docs" rel="noopener noreferrer">Git: Reference</a> <small>Git · rolling</small></li><li><a href="https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/Scripting/Debugging_JavaScript" rel="noopener noreferrer">MDN: Debugging JavaScript</a> <small>Mozilla · rolling</small></li><li><a href="https://lsc.cornell.edu/how-to-study/studying-for-and-taking-exams/effective-study-strategies/" rel="noopener noreferrer">Cornell Learning Strategies Center: Effective Study Strategies</a> <small>Cornell University · rolling</small></li><li><a href="https://lsc.cornell.edu/how-to-study/studying-for-and-taking-exams/guidelines-for-creating-a-study-schedule/" rel="noopener noreferrer">Cornell Learning Strategies Center: Creating a Study Schedule</a> <small>Cornell University · rolling</small></li><li><a href="https://www.nist.gov/itl/ai-risk-management-framework" rel="noopener noreferrer">NIST: AI Risk Management Framework</a> <small>NIST · 1.0</small></li><li><a href="https://lsc.cornell.edu/find-your-academic-groove/using-gai-for-learning/" rel="noopener noreferrer">Cornell Learning Strategies Center: Using GAI for Learning</a> <small>Cornell University · rolling</small></li><li><a href="https://www.php.net/manual/en/" rel="noopener noreferrer">PHP Manual</a> <small>PHP Group · 8.5</small></li><li><a href="https://laravel.com/docs/13.x" rel="noopener noreferrer">Laravel Documentation</a> <small>Laravel · 13.x</small></li><li><a href="https://www.postgresql.org/docs/18/" rel="noopener noreferrer">PostgreSQL Documentation</a> <small>PostgreSQL Global Development Group · 18.6</small></li><li><a href="https://docs.flutter.dev/" rel="noopener noreferrer">Flutter Documentation</a> <small>Google · stable</small></li><li><a href="https://dart.dev/language" rel="noopener noreferrer">Dart Language Tour</a> <small>Google · stable</small></li><li><a href="https://top10.owasp.org/2025/" rel="noopener noreferrer">OWASP Top 10:2025</a> <small>OWASP · 2025</small></li><li><a href="https://www.w3.org/TR/WCAG22/" rel="noopener noreferrer">WCAG 2.2</a> <small>W3C · 2.2</small></li><li><a href="https://developer.mozilla.org/en-US/docs/Web/API/Window/localStorage" rel="noopener noreferrer">MDN: Window.localStorage</a> <small>Mozilla · rolling</small></li><li><a href="https://developer.mozilla.org/en-US/docs/Web/API/Storage" rel="noopener noreferrer">MDN: Storage</a> <small>Mozilla · rolling</small></li><li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON" rel="noopener noreferrer">MDN: JSON</a> <small>Mozilla · rolling</small></li><li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/try...catch" rel="noopener noreferrer">MDN: try...catch</a> <small>Mozilla · rolling</small></li><li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Control_flow_and_error_handling" rel="noopener noreferrer">MDN: Control flow and error handling</a> <small>Mozilla · rolling</small></li><li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Loops_and_iteration" rel="noopener noreferrer">MDN: Loops and iteration</a> <small>Mozilla · rolling</small></li><li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Indexed_collections" rel="noopener noreferrer">MDN: Indexed collections</a> <small>Mozilla · rolling</small></li><li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Working_with_objects" rel="noopener noreferrer">MDN: Working with objects</a> <small>Mozilla · rolling</small></li><li><a href="https://developer.mozilla.org/en-US/docs/Glossary/Truthy" rel="noopener noreferrer">MDN: Truthy</a> <small>Mozilla · rolling</small></li><li><a href="https://developer.mozilla.org/en-US/docs/Glossary/Algorithm" rel="noopener noreferrer">MDN: Algorithm</a> <small>Mozilla · rolling</small></li><li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/let" rel="noopener noreferrer">MDN: let</a> <small>Mozilla · rolling</small></li><li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/const" rel="noopener noreferrer">MDN: const</a> <small>Mozilla · rolling</small></li><li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Expressions_and_operators" rel="noopener noreferrer">MDN: Expressions and operators</a> <small>Mozilla · rolling</small></li><li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/typeof" rel="noopener noreferrer">MDN: typeof</a> <small>Mozilla · rolling</small></li><li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Functions" rel="noopener noreferrer">MDN: Functions</a> <small>Mozilla · rolling</small></li><li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array" rel="noopener noreferrer">MDN: Array</a> <small>Mozilla · rolling</small></li><li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Closures" rel="noopener noreferrer">MDN: Closures</a> <small>Mozilla · rolling</small></li><li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Modules" rel="noopener noreferrer">MDN: JavaScript modules</a> <small>Mozilla · rolling</small></li><li><a href="https://developer.mozilla.org/en-US/docs/Web/HTML" rel="noopener noreferrer">MDN: HTML elements reference</a> <small>Mozilla · rolling</small></li><li><a href="https://developer.mozilla.org/en-US/docs/Web/CSS" rel="noopener noreferrer">MDN: CSS reference</a> <small>Mozilla · rolling</small></li><li><a href="https://developer.mozilla.org/en-US/docs/Learn_web_development/Extensions/Forms" rel="noopener noreferrer">MDN: Web forms</a> <small>Mozilla · rolling</small></li><li><a href="https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/CSS_layout" rel="noopener noreferrer">MDN: CSS layout</a> <small>Mozilla · rolling</small></li><li><a href="https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/Accessibility" rel="noopener noreferrer">MDN: Accessibility</a> <small>Mozilla · rolling</small></li><li><a href="https://developer.mozilla.org/en-US/docs/Web/API/Document_Object_Model" rel="noopener noreferrer">MDN: Document Object Model (DOM)</a> <small>Mozilla · rolling</small></li><li><a href="https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/Scripting/Events" rel="noopener noreferrer">MDN: Introduction to events</a> <small>Mozilla · rolling</small></li><li><a href="https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API" rel="noopener noreferrer">MDN: Fetch API</a> <small>Mozilla · rolling</small></li><li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise" rel="noopener noreferrer">MDN: Promise</a> <small>Mozilla · rolling</small></li><li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/async_function" rel="noopener noreferrer">MDN: async function</a> <small>Mozilla · rolling</small></li><li><a href="https://docs.npmjs.com/" rel="noopener noreferrer">npm Docs</a> <small>npm, Inc. · rolling</small></li><li><a href="https://vitest.dev/guide/" rel="noopener noreferrer">Vitest: Getting Started</a> <small>Vitest · rolling</small></li><li><a href="https://git-scm.com/book/en/v2" rel="noopener noreferrer">Pro Git (buku resmi Git)</a> <small>Git · 2nd edition</small></li><li><a href="https://docs.github.com/en" rel="noopener noreferrer">GitHub Docs</a> <small>GitHub · rolling</small></li><li><a href="https://docs.github.com/en/pull-requests" rel="noopener noreferrer">GitHub Docs: Pull requests</a> <small>GitHub · rolling</small></li><li><a href="https://docs.github.com/en/get-started/git-basics/ignoring-files" rel="noopener noreferrer">GitHub Docs: Ignoring files</a> <small>GitHub · rolling</small></li><li><a href="https://www.postgresql.org/docs/current/tutorial.html" rel="noopener noreferrer">PostgreSQL Tutorial</a> <small>PostgreSQL Global Development Group · current</small></li><li><a href="https://www.postgresql.org/docs/current/ddl-constraints.html" rel="noopener noreferrer">PostgreSQL: Constraints</a> <small>PostgreSQL Global Development Group · current</small></li><li><a href="https://www.postgresql.org/docs/current/indexes.html" rel="noopener noreferrer">PostgreSQL: Indexes</a> <small>PostgreSQL Global Development Group · current</small></li><li><a href="https://www.postgresql.org/docs/current/tutorial-transactions.html" rel="noopener noreferrer">PostgreSQL: Transactions</a> <small>PostgreSQL Global Development Group · current</small></li><li><a href="https://www.postgresql.org/docs/current/backup.html" rel="noopener noreferrer">PostgreSQL: Backup and Restore</a> <small>PostgreSQL Global Development Group · current</small></li><li><a href="https://cheatsheetseries.owasp.org/cheatsheets/SQL_Injection_Prevention_Cheat_Sheet.html" rel="noopener noreferrer">OWASP: SQL Injection Prevention Cheat Sheet</a> <small>OWASP Foundation · rolling</small></li><li><a href="https://laravel.com/docs/13.x/routing" rel="noopener noreferrer">Laravel Docs: Routing</a> <small>Laravel · 13.x</small></li><li><a href="https://laravel.com/docs/13.x/eloquent" rel="noopener noreferrer">Laravel Docs: Eloquent ORM</a> <small>Laravel · 13.x</small></li><li><a href="https://laravel.com/docs/13.x/validation" rel="noopener noreferrer">Laravel Docs: Validation</a> <small>Laravel · 13.x</small></li><li><a href="https://laravel.com/docs/13.x/authorization" rel="noopener noreferrer">Laravel Docs: Authorization</a> <small>Laravel · 13.x</small></li><li><a href="https://laravel.com/docs/13.x/eloquent-resources" rel="noopener noreferrer">Laravel Docs: Eloquent API Resources</a> <small>Laravel · 13.x</small></li><li><a href="https://laravel.com/docs/13.x/queues" rel="noopener noreferrer">Laravel Docs: Queues</a> <small>Laravel · 13.x</small></li><li><a href="https://www.php.net/manual/en/language.types.declarations.php" rel="noopener noreferrer">PHP Manual: Type Declarations</a> <small>PHP Group · current</small></li><li><a href="https://www.php.net/manual/en/language.oop5.php" rel="noopener noreferrer">PHP Manual: Classes and Objects</a> <small>PHP Group · current</small></li><li><a href="https://www.php-fig.org/psr/psr-12/" rel="noopener noreferrer">PHP-FIG: PSR-12 Extended Coding Style</a> <small>PHP Framework Interop Group · 1.0.0</small></li><li><a href="https://getcomposer.org/doc/" rel="noopener noreferrer">Composer Documentation</a> <small>Composer · current</small></li><li><a href="https://docs.phpunit.de/en/11.5/" rel="noopener noreferrer">PHPUnit Documentation</a> <small>PHPUnit · 11.5</small></li><li><a href="https://spec.openapis.org/oas/latest.html" rel="noopener noreferrer">OpenAPI Specification</a> <small>OpenAPI Initiative · latest</small></li><li><a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/CORS" rel="noopener noreferrer">MDN: Cross-Origin Resource Sharing (CORS)</a> <small>Mozilla · rolling</small></li><li><a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Status" rel="noopener noreferrer">MDN: HTTP response status codes</a> <small>Mozilla · rolling</small></li><li><a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Methods" rel="noopener noreferrer">MDN: HTTP request methods</a> <small>Mozilla · rolling</small></li><li><a href="https://www.rfc-editor.org/rfc/rfc6749.html" rel="noopener noreferrer">RFC 6749: The OAuth 2.0 Authorization Framework</a> <small>IETF · 6749</small></li><li><a href="https://dart.dev/null-safety" rel="noopener noreferrer">Dart: Sound Null Safety</a> <small>Dart · current</small></li><li><a href="https://dart.dev/language/classes" rel="noopener noreferrer">Dart: Classes</a> <small>Dart · current</small></li><li><a href="https://dart.dev/language/records" rel="noopener noreferrer">Dart: Records</a> <small>Dart · current</small></li><li><a href="https://docs.flutter.dev/ui/navigation" rel="noopener noreferrer">Flutter Docs: Navigation and Routing</a> <small>Flutter · stable</small></li><li><a href="https://docs.flutter.dev/data-and-backend/state-mgmt/intro" rel="noopener noreferrer">Flutter Docs: State Management</a> <small>Flutter · stable</small></li><li><a href="https://docs.flutter.dev/data-and-backend/networking" rel="noopener noreferrer">Flutter Docs: Networking</a> <small>Flutter · stable</small></li><li><a href="https://docs.flutter.dev/ui/layout" rel="noopener noreferrer">Flutter Docs: Layout</a> <small>Flutter · stable</small></li><li><a href="https://docs.flutter.dev/ui/adaptive-responsive" rel="noopener noreferrer">Flutter Docs: Adaptive and Responsive Design</a> <small>Flutter · stable</small></li><li><a href="https://docs.flutter.dev/testing" rel="noopener noreferrer">Flutter Docs: Testing</a> <small>Flutter · stable</small></li><li><a href="https://docs.flutter.dev/deployment/android" rel="noopener noreferrer">Flutter Docs: Build and Release an Android App</a> <small>Flutter · stable</small></li><li><a href="https://pub.dev/packages/http" rel="noopener noreferrer">pub.dev: http package</a> <small>Dart team · current</small></li><li><a href="https://pub.dev/packages/flutter_secure_storage" rel="noopener noreferrer">pub.dev: flutter_secure_storage</a> <small>Julian Steenbakker · current</small></li></ul>
     </section>
 
     <section class="appendix" id="mendalam">
