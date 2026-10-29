@@ -1,0 +1,1266 @@
+{
+  "appName": "BelajarKode",
+  "version": "2.1.0",
+  "updated": "2026-10-29",
+  "summary": "Kurikulum pemrograman mandiri yang mengutamakan akses offline, dari dasar komputer sampai web, API, mobile, keamanan, AI, dan deployment.",
+  "disclaimer": "Aplikasi belajar ini dapat berjalan offline. SDK, emulator, Laravel, basis data, hosting Git, dan sinkronisasi antarperangkat bukan bagian dari aplikasi dan perlu instalasi terpisah. Materi adalah konten statis; progres tersimpan di browser dan dapat diunduh sebagai berkas cadangan.",
+  "roadmap": [
+    {
+      "week": 1,
+      "focus": "Cara kerja komputer dan sistem operasi",
+      "deliverable": "Diagram perangkat, sistem operasi, aplikasi, dan file"
+    },
+    {
+      "week": 2,
+      "focus": "File, folder, path, dan terminal",
+      "deliverable": "Struktur folder proyek dan 10 perintah terminal"
+    },
+    {
+      "week": 3,
+      "focus": "Internet, browser, keamanan akun, dan DevTools",
+      "deliverable": "Menjelaskan perjalanan request dan menyelesaikan checklist keamanan akun"
+    },
+    {
+      "week": 4,
+      "focus": "Program, aplikasi, dan model komputasi",
+      "deliverable": "Diagram input-proses-output untuk satu aplikasi"
+    },
+    {
+      "week": 5,
+      "focus": "Workflow developer, debugging, dan cara belajar aktif",
+      "deliverable": "Alur edit-jalankan-uji, jadwal belajar, dan catatan error pertama"
+    },
+    {
+      "week": 6,
+      "focus": "Dekomposisi masalah dan pseudocode",
+      "deliverable": "Pseudocode untuk tiga masalah nyata"
+    },
+    {
+      "week": 7,
+      "focus": "Percabangan, iterasi, dan struktur data algoritma",
+      "deliverable": "Flowchart dengan kondisi gagal yang terdaftar"
+    },
+    {
+      "week": 8,
+      "focus": "Aturan validasi, edge case, dan uji manual",
+      "deliverable": "Tabel uji kasus untuk logika catatan tugas"
+    },
+    {
+      "week": 9,
+      "focus": "Variabel, tipe data, dan operator JavaScript",
+      "deliverable": "Kalkulator prioritas tugas dengan validasi tipe"
+    },
+    {
+      "week": 10,
+      "focus": "Function, scope, dan modularitas",
+      "deliverable": "Refactor program menjadi fungsi kecil"
+    },
+    {
+      "week": 11,
+      "focus": "Array, object, dan destructuring",
+      "deliverable": "Pengolah daftar tugas dari data object"
+    },
+    {
+      "week": 12,
+      "focus": "Operator lanjutan dan error handling",
+      "deliverable": "Logika catatan tugas tahan terhadap input rusak"
+    },
+    {
+      "week": 13,
+      "focus": "Gerbang fondasi: dari logika ke program lengkap",
+      "deliverable": "Program logika catatan tugas lulus gerbang fondasi"
+    },
+    {
+      "week": 14,
+      "focus": "HTML semantik dan form",
+      "deliverable": "Form catatan tugas yang aksesibel dan tervalidasi HTML"
+    },
+    {
+      "week": 15,
+      "focus": "CSS box model, flex, dan grid",
+      "deliverable": "Halaman daftar tugas responsif"
+    },
+    {
+      "week": 16,
+      "focus": "Aksesibilitas dan desain responsif",
+      "deliverable": "Perbaikan keyboard, kontras, dan tampilan mobile"
+    },
+    {
+      "week": 17,
+      "focus": "Perakitan halaman: dari desain ke HTML/CSS final",
+      "deliverable": "Halaman web catatan tugas versi statis selesai"
+    },
+    {
+      "week": 18,
+      "focus": "DOM, event, dan state UI",
+      "deliverable": "Daftar tugas interaktif"
+    },
+    {
+      "week": 19,
+      "focus": "JSON, localStorage, dan state tersimpan",
+      "deliverable": "Aplikasi menyimpan dan memuat data aman"
+    },
+    {
+      "week": 20,
+      "focus": "Promise, async/await, dan fetch",
+      "deliverable": "Ambil data asinkron dengan error state"
+    },
+    {
+      "week": 21,
+      "focus": "TypeScript dan testing JavaScript",
+      "deliverable": "Model data strict dan unit test"
+    },
+    {
+      "week": 22,
+      "focus": "Git, commit, dan branch",
+      "deliverable": "Repo dengan riwayat commit yang rapi"
+    },
+    {
+      "week": 23,
+      "focus": "Pull request, review, dan dokumentasi",
+      "deliverable": "PR dengan README dan review checklist"
+    },
+    {
+      "week": 24,
+      "focus": "Gerbang web: rilis web app catatan tugas versi lokal",
+      "deliverable": "Web app offline dengan localStorage lulus gerbang web"
+    },
+    {
+      "week": 25,
+      "focus": "Skema tabel dan relasi database",
+      "deliverable": "ERD dan create table PostgreSQL untuk tugas dan pengguna"
+    },
+    {
+      "week": 26,
+      "focus": "SQL CRUD, JOIN, dan laporan",
+      "deliverable": "Query laporan dari dua tabel"
+    },
+    {
+      "week": 27,
+      "focus": "Index, transaksi, migrasi, dan backup",
+      "deliverable": "Simulasi transaksi dan restore"
+    },
+    {
+      "week": 28,
+      "focus": "PHP modern, tipe, dan Composer",
+      "deliverable": "Program CLI PHP dengan dependensi"
+    },
+    {
+      "week": 29,
+      "focus": "Laravel route, controller, dan MVC",
+      "deliverable": "API status dan halaman sederhana"
+    },
+    {
+      "week": 30,
+      "focus": "Migration, Eloquent, dan relasi",
+      "deliverable": "Task API dengan database"
+    },
+    {
+      "week": 31,
+      "focus": "Validasi, autentikasi, dan otorisasi",
+      "deliverable": "Route privat dan tes hak akses"
+    },
+    {
+      "week": 32,
+      "focus": "API resource, queue, dan feature test",
+      "deliverable": "Feature test Laravel lulus"
+    },
+    {
+      "week": 33,
+      "focus": "REST, status code, error, dan versioning",
+      "deliverable": "Kontrak API tertulis"
+    },
+    {
+      "week": 34,
+      "focus": "Autentikasi API, pagination, dan retry",
+      "deliverable": "API list dengan error state"
+    },
+    {
+      "week": 35,
+      "focus": "Gerbang backend: API tugas dan test kontrak",
+      "deliverable": "API catatan tugas lulus gerbang backend dengan feature test"
+    },
+    {
+      "week": 36,
+      "focus": "Dart, null safety, dan model data",
+      "deliverable": "Program Dart CLI dengan model tugas"
+    },
+    {
+      "week": 37,
+      "focus": "Flutter widget tree dan layout",
+      "deliverable": "Halaman daftar responsif"
+    },
+    {
+      "week": 38,
+      "focus": "State management, form, dan navigasi",
+      "deliverable": "UI CRUD lokal di Flutter"
+    },
+    {
+      "week": 39,
+      "focus": "HTTP, JSON, penyimpanan lokal, dan test di Flutter",
+      "deliverable": "Flutter terhubung API Laravel"
+    },
+    {
+      "week": 40,
+      "focus": "Keamanan: OWASP Top 10 dan threat modeling",
+      "deliverable": "Threat model dan security test"
+    },
+    {
+      "week": 41,
+      "focus": "Perbaikan XSS, SQL injection, CSRF, dan SSRF",
+      "deliverable": "Empat perbaikan kerentanan"
+    },
+    {
+      "week": 42,
+      "focus": "Secrets, HTTPS, header, dan supply chain",
+      "deliverable": "Checklist konfigurasi aman"
+    },
+    {
+      "week": 43,
+      "focus": "Privasi, UU PDP, dan security testing",
+      "deliverable": "Data map dan rencana insiden"
+    },
+    {
+      "week": 44,
+      "focus": "Proyek akhir: PRD, ERD, dan arsitektur",
+      "deliverable": "Dokumen produk dan arsitektur"
+    },
+    {
+      "week": 45,
+      "focus": "Proyek akhir: integrasi web dan API",
+      "deliverable": "Web app terhubung API"
+    },
+    {
+      "week": 46,
+      "focus": "Proyek akhir: aplikasi Flutter terhubung API",
+      "deliverable": "Mobile app terhubung API yang sama"
+    },
+    {
+      "week": 47,
+      "focus": "Proyek akhir: QA keamanan, deployment, dan demo",
+      "deliverable": "Demo, runbook, dan README proyek akhir"
+    },
+    {
+      "week": 48,
+      "focus": "Proyek akhir: review, perbaikan, dan serah terima",
+      "deliverable": "Catatan belajar, portofolio, dan arsip keputusan desain"
+    },
+    {
+      "week": 49,
+      "focus": "Buffer: melengkapi gerbang yang belum lulus dan pola ulang",
+      "deliverable": "Checklist gerbang fondasi, web, backend, mobile semua hijau"
+    },
+    {
+      "week": 50,
+      "focus": "Opsional: React, PWA, dan penyimpanan lanjutan",
+      "deliverable": "Riset singkat ditulis sebagai catatan"
+    },
+    {
+      "week": 51,
+      "focus": "Opsional: AI API, antrian, dan caching",
+      "deliverable": "Draf fitur lanjutan untuk catatan tugas"
+    },
+    {
+      "week": 52,
+      "focus": "Opsional: mengevaluasi langkah berikutnya",
+      "deliverable": "Rencana belajar atau portofolio 3 bulan ke depan"
+    }
+  ],
+  "tools": [
+    {
+      "category": "Wajib di awal",
+      "name": "Browser modern + DevTools",
+      "purpose": "Jalankan HTML/CSS/JS, inspect, console, network, responsive",
+      "official": "https://developer.chrome.com/docs/devtools/"
+    },
+    {
+      "category": "Wajib di awal",
+      "name": "VS Code atau VSCodium",
+      "purpose": "Editor untuk HTML/CSS/JS, PHP, Dart, Git dan debugging",
+      "official": "https://code.visualstudio.com/"
+    },
+    {
+      "category": "Wajib di awal",
+      "name": "Git",
+      "purpose": "Version control lokal dan kolaborasi",
+      "official": "https://git-scm.com/"
+    },
+    {
+      "category": "Wajib di awal",
+      "name": "Terminal / PowerShell",
+      "purpose": "Navigasi file, menjalankan skrip, operasi Git",
+      "official": "https://learn.microsoft.com/powershell/"
+    },
+    {
+      "category": "Tahap frontend",
+      "name": "Node.js LTS + npm",
+      "purpose": "Tooling frontend, package scripts, test runner; untuk file HTML murni tidak wajib",
+      "official": "https://nodejs.org/"
+    },
+    {
+      "category": "Tahap frontend",
+      "name": "TypeScript",
+      "purpose": "Static typing JavaScript dan pemeriksaan tipe",
+      "official": "https://www.typescriptlang.org/"
+    },
+    {
+      "category": "Tahap database",
+      "name": "PostgreSQL",
+      "purpose": "Database relasional untuk backend; gunakan rilis stabil didukung",
+      "official": "https://www.postgresql.org/"
+    },
+    {
+      "category": "Tahap database",
+      "name": "DBeaver Community / pgAdmin",
+      "purpose": "GUI untuk eksplorasi dan pengelolaan basis data",
+      "official": "https://dbeaver.io/"
+    },
+    {
+      "category": "Tahap backend",
+      "name": "PHP + Composer",
+      "purpose": "Runtime dan package manager Laravel",
+      "official": "https://www.php.net/"
+    },
+    {
+      "category": "Tahap backend",
+      "name": "Laravel",
+      "purpose": "Routing, validation, ORM, auth, API, queue, test",
+      "official": "https://laravel.com/docs"
+    },
+    {
+      "category": "Tahap backend",
+      "name": "Bruno atau Postman",
+      "purpose": "Uji manual endpoint API dan dokumentasi request",
+      "official": "https://www.usebruno.com/"
+    },
+    {
+      "category": "Tahap mobile",
+      "name": "Flutter SDK + Dart",
+      "purpose": "Build aplikasi Android/iOS dari satu codebase",
+      "official": "https://docs.flutter.dev/"
+    },
+    {
+      "category": "Tahap mobile",
+      "name": "Android Studio / Android SDK",
+      "purpose": "Emulator Android, SDK, build tools",
+      "official": "https://developer.android.com/studio"
+    },
+    {
+      "category": "Tahap kualitas",
+      "name": "Docker / Docker Compose",
+      "purpose": "Environment reproducible, multi-service deployment",
+      "official": "https://docs.docker.com/"
+    },
+    {
+      "category": "Tahap kualitas",
+      "name": "GitHub Actions / GitLab CI",
+      "purpose": "Lint, test, build otomatis dan pipeline delivery",
+      "official": "https://docs.github.com/actions"
+    }
+  ],
+  "glossary": [
+    {
+      "term": "Algoritma",
+      "definition": "Urutan langkah logis untuk menyelesaikan masalah."
+    },
+    {
+      "term": "API",
+      "definition": "Kontrak bagi dua sistem untuk bertukar data/fungsi."
+    },
+    {
+      "term": "Argument",
+      "definition": "Nilai yang dikirim ketika memanggil fungsi."
+    },
+    {
+      "term": "Asynchronous",
+      "definition": "Operasi yang dapat selesai kemudian tanpa menghentikan semua pekerjaan."
+    },
+    {
+      "term": "Authentication",
+      "definition": "Proses memastikan identitas pengguna."
+    },
+    {
+      "term": "Authorization",
+      "definition": "Pemeriksaan apakah identitas boleh mengakses tindakan/sumber daya."
+    },
+    {
+      "term": "Backend",
+      "definition": "Komponen server yang menangani aturan dan data."
+    },
+    {
+      "term": "Branch",
+      "definition": "Jalur perubahan pada Git yang dapat dikembangkan terpisah."
+    },
+    {
+      "term": "Cache",
+      "definition": "Salinan data sementara untuk mengurangi biaya mengambil ulang."
+    },
+    {
+      "term": "CI/CD",
+      "definition": "Otomatisasi integrasi, pengujian, dan delivery perubahan."
+    },
+    {
+      "term": "Closure",
+      "definition": "Fungsi yang mengingat variabel dari ruang lingkup pembuatannya."
+    },
+    {
+      "term": "CRUD",
+      "definition": "Create, Read, Update, Delete."
+    },
+    {
+      "term": "CSS",
+      "definition": "Bahasa styling/presentasi halaman web."
+    },
+    {
+      "term": "Database",
+      "definition": "Sistem penyimpanan dan pengambilan data yang terkelola."
+    },
+    {
+      "term": "Dependency",
+      "definition": "Paket/komponen yang dibutuhkan kode."
+    },
+    {
+      "term": "DOM",
+      "definition": "Representasi terstruktur halaman HTML untuk diproses JavaScript."
+    },
+    {
+      "term": "Edge case",
+      "definition": "Kasus batas atau tidak biasa yang penting untuk diuji."
+    },
+    {
+      "term": "Endpoint",
+      "definition": "Alamat dan metode operasi pada API."
+    },
+    {
+      "term": "Framework",
+      "definition": "Struktur/kumpulan komponen untuk mengembangkan aplikasi."
+    },
+    {
+      "term": "Frontend",
+      "definition": "Antarmuka yang berinteraksi dengan pengguna."
+    },
+    {
+      "term": "Function",
+      "definition": "Blok kode bernama/bernilai yang dapat dipanggil ulang."
+    },
+    {
+      "term": "Git",
+      "definition": "Version control untuk melacak perubahan kode."
+    },
+    {
+      "term": "HTTP",
+      "definition": "Protokol request-response di web."
+    },
+    {
+      "term": "HTTPS",
+      "definition": "HTTP yang dilindungi TLS."
+    },
+    {
+      "term": "HTML",
+      "definition": "Bahasa markup yang mendeskripsikan struktur dokumen web."
+    },
+    {
+      "term": "Idempotency",
+      "definition": "Pengulangan operasi tidak menambah efek di luar satu pelaksanaan."
+    },
+    {
+      "term": "Index",
+      "definition": "Struktur data database untuk mempercepat pola pencarian tertentu."
+    },
+    {
+      "term": "JSON",
+      "definition": "Format teks terstruktur untuk bertukar/menyimpan nilai."
+    },
+    {
+      "term": "JWT",
+      "definition": "Format token terstruktur; bukan otomatis lebih aman dari sesi."
+    },
+    {
+      "term": "LocalStorage",
+      "definition": "Penyimpanan key-value teks per origin pada browser."
+    },
+    {
+      "term": "Migration",
+      "definition": "Perubahan skema database yang terdokumentasi dalam kode."
+    },
+    {
+      "term": "MVC",
+      "definition": "Model–View–Controller; pemisahan data, tampilan, dan alur request."
+    },
+    {
+      "term": "ORM",
+      "definition": "Pemetaan tabel/relasi database ke objek/kode."
+    },
+    {
+      "term": "Package manager",
+      "definition": "Alat mengelola instalasi dan versi dependensi."
+    },
+    {
+      "term": "Parameter",
+      "definition": "Variabel masukan pada definisi fungsi."
+    },
+    {
+      "term": "PWA",
+      "definition": "Web yang punya kemampuan instalasi dan cache offline melalui mekanisme browser."
+    },
+    {
+      "term": "Promise",
+      "definition": "Objek yang mewakili penyelesaian operasi asinkron."
+    },
+    {
+      "term": "REST",
+      "definition": "Gaya arsitektur API berorientasi resource dan perilaku HTTP."
+    },
+    {
+      "term": "Runtime",
+      "definition": "Lingkungan yang mengeksekusi program."
+    },
+    {
+      "term": "Scope",
+      "definition": "Wilayah kode tempat variabel dapat diakses."
+    },
+    {
+      "term": "SDK",
+      "definition": "Paket alat pengembangan untuk platform tertentu."
+    },
+    {
+      "term": "SQL",
+      "definition": "Bahasa query untuk basis data relasional."
+    },
+    {
+      "term": "State",
+      "definition": "Kondisi/data terkini yang menentukan perilaku UI."
+    },
+    {
+      "term": "Testing",
+      "definition": "Pemeriksaan otomatis/manual bahwa sistem berperilaku sesuai harapan."
+    },
+    {
+      "term": "Token",
+      "definition": "Bukti/credential akses yang perlu dikelola aman."
+    },
+    {
+      "term": "TypeScript",
+      "definition": "Ekstensi JavaScript dengan pemeriksaan tipe saat pengembangan."
+    },
+    {
+      "term": "UI",
+      "definition": "Komponen antarmuka yang dilihat dan digunakan."
+    },
+    {
+      "term": "UX",
+      "definition": "Kualitas pengalaman pengguna sepanjang alur penggunaan."
+    },
+    {
+      "term": "Validation",
+      "definition": "Pemeriksaan bahwa input memenuhi format/aturan."
+    },
+    {
+      "term": "Widget",
+      "definition": "Unit pembangun UI dalam Flutter."
+    },
+    {
+      "term": "XSS",
+      "definition": "Serangan yang memasukkan skrip berbahaya ke konteks browser."
+    }
+  ],
+  "projects": [
+    {
+      "title": "Kalkulator Pengeluaran",
+      "phase": "Pemula · minggu 4–6",
+      "description": "Kalkulasi total, pajak/diskon, validasi input, rekapan.",
+      "acceptance": [
+        "Input harga/jumlah tak valid ditolak",
+        "Nilai total benar untuk 0 dan banyak item",
+        "Perhitungan dipisah dari UI"
+      ]
+    },
+    {
+      "title": "To-do Offline",
+      "phase": "Web · minggu 11–14",
+      "description": "HTML/CSS/JS, localStorage, filter, export-import JSON.",
+      "acceptance": [
+        "CRUD tugas lewat browser",
+        "Data bertahan setelah reload",
+        "Akses keyboard dan responsive"
+      ]
+    },
+    {
+      "title": "Inventaris PostgreSQL",
+      "phase": "Data · minggu 17–19",
+      "description": "ERD, tabel products, transaksi stok, query laporan.",
+      "acceptance": [
+        "Constraint stok nonnegatif",
+        "Query JOIN dan agregasi benar",
+        "Ada backup dan bukti restore"
+      ]
+    },
+    {
+      "title": "Task API Laravel",
+      "phase": "Backend · minggu 20–26",
+      "description": "REST API, form request, auth, policies, feature test.",
+      "acceptance": [
+        "401/403/422/201 sesuai kondisi",
+        "User tidak bisa mengedit task orang lain",
+        "Pagination dan test otomatis"
+      ]
+    },
+    {
+      "title": "Flutter Task Companion",
+      "phase": "Mobile · minggu 27–30",
+      "description": "Flutter dari API yang sama, UI state, pengelolaan error.",
+      "acceptance": [
+        "Login dan daftar tugas dari API",
+        "Offline/error memiliki UI yang jelas",
+        "Ada widget/unit test"
+      ]
+    },
+    {
+      "title": "Capstone Web + Mobile",
+      "phase": "Portofolio · minggu 35–36",
+      "description": "PRD, ERD, Laravel admin, API, Flutter, deploy, monitoring.",
+      "acceptance": [
+        "MVP memenuhi PRD",
+        "Tes dan kontrol akses tervalidasi",
+        "README/runbook/backup/rollback tersedia"
+      ]
+    }
+  ],
+  "sources": [
+    {
+      "id": "mdn-learn",
+      "title": "MDN: Learn web development",
+      "publisher": "Mozilla",
+      "url": "https://developer.mozilla.org/en-US/docs/Learn_web_development",
+      "tier": "official",
+      "version": "rolling",
+      "accessedAt": "2026-10-28"
+    },
+    {
+      "id": "mdn-js-guide",
+      "title": "MDN: JavaScript Guide",
+      "publisher": "Mozilla",
+      "url": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide",
+      "tier": "official",
+      "version": "rolling",
+      "accessedAt": "2026-10-28"
+    },
+    {
+      "id": "mdn-what-is-javascript",
+      "title": "MDN: What is JavaScript?",
+      "publisher": "Mozilla",
+      "url": "https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/Scripting/What_is_JavaScript",
+      "tier": "official",
+      "version": "rolling",
+      "accessedAt": "2026-10-28"
+    },
+    {
+      "id": "webdev-learn-javascript",
+      "title": "web.dev: Learn JavaScript",
+      "publisher": "Google",
+      "url": "https://web.dev/learn/javascript",
+      "tier": "official",
+      "version": "rolling",
+      "accessedAt": "2026-10-28"
+    },
+    {
+      "id": "typescript-handbook",
+      "title": "TypeScript Handbook",
+      "publisher": "Microsoft",
+      "url": "https://www.typescriptlang.org/docs/handbook/",
+      "tier": "official",
+      "version": "rolling",
+      "accessedAt": "2026-10-28"
+    },
+    {
+      "id": "mdn-command-line",
+      "title": "MDN: Command line crash course",
+      "publisher": "Mozilla",
+      "url": "https://developer.mozilla.org/en-US/docs/Learn_web_development/Getting_started/Environment_setup/Command_line",
+      "tier": "official",
+      "version": "rolling",
+      "accessedAt": "2026-10-28"
+    },
+    {
+      "id": "ms-windows-commands",
+      "title": "Microsoft Learn: Windows commands",
+      "publisher": "Microsoft",
+      "url": "https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/windows-commands",
+      "tier": "official",
+      "version": "Windows 11",
+      "accessedAt": "2026-10-28"
+    },
+    {
+      "id": "ms-windows-specs",
+      "title": "Microsoft: Windows 11 specs and system requirements",
+      "publisher": "Microsoft",
+      "url": "https://www.microsoft.com/en-us/windows/windows-11-specifications",
+      "tier": "official",
+      "version": "Windows 11",
+      "accessedAt": "2026-10-28"
+    },
+    {
+      "id": "ms-windows-requirements",
+      "title": "Microsoft Learn: Windows 11 requirements",
+      "publisher": "Microsoft",
+      "url": "https://learn.microsoft.com/en-us/windows/whats-new/windows-11-requirements",
+      "tier": "official",
+      "version": "2026",
+      "accessedAt": "2026-10-28"
+    },
+    {
+      "id": "ms-windows-support",
+      "title": "Microsoft Support: Windows",
+      "publisher": "Microsoft",
+      "url": "https://support.microsoft.com/en-us/windows",
+      "tier": "official",
+      "version": "rolling",
+      "accessedAt": "2026-10-28"
+    },
+    {
+      "id": "mdn-how-web-works",
+      "title": "MDN: How the web works",
+      "publisher": "Mozilla",
+      "url": "https://developer.mozilla.org/en-US/docs/Learn_web_development/Getting_started/Web_standards/How_the_web_works",
+      "tier": "official",
+      "version": "rolling",
+      "accessedAt": "2026-10-28"
+    },
+    {
+      "id": "mdn-client-server",
+      "title": "MDN: Client-server overview",
+      "publisher": "Mozilla",
+      "url": "https://developer.mozilla.org/en-US/docs/Learn_web_development/Extensions/Server-side/First_steps/Client-Server_overview",
+      "tier": "official",
+      "version": "rolling",
+      "accessedAt": "2026-10-28"
+    },
+    {
+      "id": "mdn-http-overview",
+      "title": "MDN: HTTP overview",
+      "publisher": "Mozilla",
+      "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/Overview",
+      "tier": "official",
+      "version": "rolling",
+      "accessedAt": "2026-10-28"
+    },
+    {
+      "id": "rfc-9110",
+      "title": "RFC 9110: HTTP Semantics",
+      "publisher": "IETF",
+      "url": "https://www.rfc-editor.org/rfc/rfc9110.html",
+      "tier": "standard",
+      "version": "9110",
+      "accessedAt": "2026-10-28",
+      "license": "IETF Trust"
+    },
+    {
+      "id": "chrome-devtools",
+      "title": "Chrome DevTools: Documentation",
+      "publisher": "Google",
+      "url": "https://developer.chrome.com/docs/devtools/",
+      "tier": "official",
+      "version": "rolling",
+      "accessedAt": "2026-10-28"
+    },
+    {
+      "id": "chrome-devtools-js",
+      "title": "Chrome DevTools: Debug JavaScript",
+      "publisher": "Google",
+      "url": "https://developer.chrome.com/docs/devtools/javascript/",
+      "tier": "official",
+      "version": "rolling",
+      "accessedAt": "2026-10-28"
+    },
+    {
+      "id": "mdn-http-caching",
+      "title": "MDN: HTTP caching",
+      "publisher": "Mozilla",
+      "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/Caching",
+      "tier": "official",
+      "version": "rolling",
+      "accessedAt": "2026-10-28"
+    },
+    {
+      "id": "cisa-strong-passwords",
+      "title": "CISA: Use strong passwords",
+      "publisher": "CISA",
+      "url": "https://www.cisa.gov/secure-our-world/use-strong-passwords",
+      "tier": "official",
+      "version": "rolling",
+      "accessedAt": "2026-10-28"
+    },
+    {
+      "id": "google-2sv",
+      "title": "Google: Turn on 2-Step Verification",
+      "publisher": "Google",
+      "url": "https://support.google.com/accounts/answer/185839",
+      "tier": "official",
+      "version": "rolling",
+      "accessedAt": "2026-10-28"
+    },
+    {
+      "id": "cisa-phishing",
+      "title": "CISA: Recognize and report phishing",
+      "publisher": "CISA",
+      "url": "https://www.cisa.gov/secure-our-world/recognize-and-report-phishing",
+      "tier": "official",
+      "version": "rolling",
+      "accessedAt": "2026-10-28"
+    },
+    {
+      "id": "google-phishing",
+      "title": "Google: Avoid and report phishing emails",
+      "publisher": "Google",
+      "url": "https://support.google.com/mail/answer/8253",
+      "tier": "official",
+      "version": "rolling",
+      "accessedAt": "2026-10-28"
+    },
+    {
+      "id": "uu-pdp",
+      "title": "JDIH BPK: UU No. 27 Tahun 2022 tentang Pelindungan Data Pribadi",
+      "publisher": "BPK RI",
+      "url": "https://peraturan.bpk.go.id/Details/229798/uu-no-27-tahun-2022",
+      "tier": "standard",
+      "version": "2022",
+      "accessedAt": "2026-10-28",
+      "license": "Peraturan Indonesia"
+    },
+    {
+      "id": "nist-privacy-framework",
+      "title": "NIST: Privacy Framework",
+      "publisher": "NIST",
+      "url": "https://www.nist.gov/privacy-framework",
+      "tier": "standard",
+      "version": "1.1 IPD",
+      "accessedAt": "2026-10-28"
+    },
+    {
+      "id": "cisa-stopransomware",
+      "title": "CISA: StopRansomware",
+      "publisher": "CISA",
+      "url": "https://www.cisa.gov/stopransomware",
+      "tier": "official",
+      "version": "rolling",
+      "accessedAt": "2026-10-28"
+    },
+    {
+      "id": "git-docs",
+      "title": "Git: Reference",
+      "publisher": "Git",
+      "url": "https://git-scm.com/docs",
+      "tier": "official",
+      "version": "rolling",
+      "accessedAt": "2026-10-28"
+    },
+    {
+      "id": "mdn-debugging-js",
+      "title": "MDN: Debugging JavaScript",
+      "publisher": "Mozilla",
+      "url": "https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/Scripting/Debugging_JavaScript",
+      "tier": "official",
+      "version": "rolling",
+      "accessedAt": "2026-10-28"
+    },
+    {
+      "id": "cornell-study-strategies",
+      "title": "Cornell Learning Strategies Center: Effective Study Strategies",
+      "publisher": "Cornell University",
+      "url": "https://lsc.cornell.edu/how-to-study/studying-for-and-taking-exams/effective-study-strategies/",
+      "tier": "official",
+      "version": "rolling",
+      "accessedAt": "2026-10-28"
+    },
+    {
+      "id": "cornell-study-schedule",
+      "title": "Cornell Learning Strategies Center: Creating a Study Schedule",
+      "publisher": "Cornell University",
+      "url": "https://lsc.cornell.edu/how-to-study/studying-for-and-taking-exams/guidelines-for-creating-a-study-schedule/",
+      "tier": "official",
+      "version": "rolling",
+      "accessedAt": "2026-10-28"
+    },
+    {
+      "id": "nist-ai-rmf",
+      "title": "NIST: AI Risk Management Framework",
+      "publisher": "NIST",
+      "url": "https://www.nist.gov/itl/ai-risk-management-framework",
+      "tier": "standard",
+      "version": "1.0",
+      "accessedAt": "2026-10-28"
+    },
+    {
+      "id": "cornell-gai",
+      "title": "Cornell Learning Strategies Center: Using GAI for Learning",
+      "publisher": "Cornell University",
+      "url": "https://lsc.cornell.edu/find-your-academic-groove/using-gai-for-learning/",
+      "tier": "official",
+      "version": "rolling",
+      "accessedAt": "2026-10-28"
+    },
+    {
+      "id": "php-manual",
+      "title": "PHP Manual",
+      "publisher": "PHP Group",
+      "url": "https://www.php.net/manual/en/",
+      "tier": "official",
+      "version": "8.5",
+      "accessedAt": "2026-10-28"
+    },
+    {
+      "id": "laravel-docs",
+      "title": "Laravel Documentation",
+      "publisher": "Laravel",
+      "url": "https://laravel.com/docs/13.x",
+      "tier": "official",
+      "version": "13.x",
+      "accessedAt": "2026-10-28"
+    },
+    {
+      "id": "postgresql-docs",
+      "title": "PostgreSQL Documentation",
+      "publisher": "PostgreSQL Global Development Group",
+      "url": "https://www.postgresql.org/docs/18/",
+      "tier": "official",
+      "version": "18.6",
+      "accessedAt": "2026-10-28"
+    },
+    {
+      "id": "flutter-docs",
+      "title": "Flutter Documentation",
+      "publisher": "Google",
+      "url": "https://docs.flutter.dev/",
+      "tier": "official",
+      "version": "stable",
+      "accessedAt": "2026-10-28"
+    },
+    {
+      "id": "dart-docs",
+      "title": "Dart Language Tour",
+      "publisher": "Google",
+      "url": "https://dart.dev/language",
+      "tier": "official",
+      "version": "stable",
+      "accessedAt": "2026-10-28"
+    },
+    {
+      "id": "owasp-top10",
+      "title": "OWASP Top 10:2025",
+      "publisher": "OWASP",
+      "url": "https://top10.owasp.org/2025/",
+      "tier": "standard",
+      "version": "2025",
+      "accessedAt": "2026-10-28",
+      "license": "CC BY 3.0"
+    },
+    {
+      "id": "wcag22",
+      "title": "WCAG 2.2",
+      "publisher": "W3C",
+      "url": "https://www.w3.org/TR/WCAG22/",
+      "tier": "standard",
+      "version": "2.2",
+      "accessedAt": "2026-10-28",
+      "license": "W3C Document License"
+    },
+    {
+      "id": "mdn-localstorage",
+      "title": "MDN: Window.localStorage",
+      "publisher": "Mozilla",
+      "url": "https://developer.mozilla.org/en-US/docs/Web/API/Window/localStorage",
+      "tier": "official",
+      "version": "rolling",
+      "accessedAt": "2026-10-29"
+    },
+    {
+      "id": "mdn-storage",
+      "title": "MDN: Storage",
+      "publisher": "Mozilla",
+      "url": "https://developer.mozilla.org/en-US/docs/Web/API/Storage",
+      "tier": "official",
+      "version": "rolling",
+      "accessedAt": "2026-10-29"
+    },
+    {
+      "id": "mdn-json",
+      "title": "MDN: JSON",
+      "publisher": "Mozilla",
+      "url": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON",
+      "tier": "official",
+      "version": "rolling",
+      "accessedAt": "2026-10-29"
+    },
+    {
+      "id": "mdn-try-catch",
+      "title": "MDN: try...catch",
+      "publisher": "Mozilla",
+      "url": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/try...catch",
+      "tier": "official",
+      "version": "rolling",
+      "accessedAt": "2026-10-29"
+    },
+    {
+      "id": "mdn-control-flow",
+      "title": "MDN: Control flow and error handling",
+      "publisher": "Mozilla",
+      "url": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Control_flow_and_error_handling",
+      "tier": "official",
+      "version": "rolling",
+      "accessedAt": "2026-10-29"
+    },
+    {
+      "id": "mdn-loops",
+      "title": "MDN: Loops and iteration",
+      "publisher": "Mozilla",
+      "url": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Loops_and_iteration",
+      "tier": "official",
+      "version": "rolling",
+      "accessedAt": "2026-10-29"
+    },
+    {
+      "id": "mdn-indexed-collections",
+      "title": "MDN: Indexed collections",
+      "publisher": "Mozilla",
+      "url": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Indexed_collections",
+      "tier": "official",
+      "version": "rolling",
+      "accessedAt": "2026-10-29"
+    },
+    {
+      "id": "mdn-objects-guide",
+      "title": "MDN: Working with objects",
+      "publisher": "Mozilla",
+      "url": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Working_with_objects",
+      "tier": "official",
+      "version": "rolling",
+      "accessedAt": "2026-10-29"
+    },
+    {
+      "id": "mdn-truthy",
+      "title": "MDN: Truthy",
+      "publisher": "Mozilla",
+      "url": "https://developer.mozilla.org/en-US/docs/Glossary/Truthy",
+      "tier": "official",
+      "version": "rolling",
+      "accessedAt": "2026-10-29"
+    },
+    {
+      "id": "mdn-glossary-algorithm",
+      "title": "MDN: Algorithm",
+      "publisher": "Mozilla",
+      "url": "https://developer.mozilla.org/en-US/docs/Glossary/Algorithm",
+      "tier": "official",
+      "version": "rolling",
+      "accessedAt": "2026-10-29"
+    },
+    {
+      "id": "mdn-let",
+      "title": "MDN: let",
+      "publisher": "Mozilla",
+      "url": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/let",
+      "tier": "official",
+      "version": "rolling",
+      "accessedAt": "2026-10-29"
+    },
+    {
+      "id": "mdn-const",
+      "title": "MDN: const",
+      "publisher": "Mozilla",
+      "url": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/const",
+      "tier": "official",
+      "version": "rolling",
+      "accessedAt": "2026-10-29"
+    },
+    {
+      "id": "mdn-expressions-operators",
+      "title": "MDN: Expressions and operators",
+      "publisher": "Mozilla",
+      "url": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Expressions_and_operators",
+      "tier": "official",
+      "version": "rolling",
+      "accessedAt": "2026-10-29"
+    },
+    {
+      "id": "mdn-typeof",
+      "title": "MDN: typeof",
+      "publisher": "Mozilla",
+      "url": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/typeof",
+      "tier": "official",
+      "version": "rolling",
+      "accessedAt": "2026-10-29"
+    },
+    {
+      "id": "mdn-functions",
+      "title": "MDN: Functions",
+      "publisher": "Mozilla",
+      "url": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Functions",
+      "tier": "official",
+      "version": "rolling",
+      "accessedAt": "2026-10-29"
+    },
+    {
+      "id": "mdn-array",
+      "title": "MDN: Array",
+      "publisher": "Mozilla",
+      "url": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array",
+      "tier": "official",
+      "version": "rolling",
+      "accessedAt": "2026-10-29"
+    },
+    {
+      "id": "mdn-closures",
+      "title": "MDN: Closures",
+      "publisher": "Mozilla",
+      "url": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Closures",
+      "tier": "official",
+      "version": "rolling",
+      "accessedAt": "2026-10-29"
+    },
+    {
+      "id": "mdn-modules",
+      "title": "MDN: JavaScript modules",
+      "publisher": "Mozilla",
+      "url": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Modules",
+      "tier": "official",
+      "version": "rolling",
+      "accessedAt": "2026-10-29"
+    }
+  ],
+  "modules": [
+    {
+      "id": "m00",
+      "dir": "m00"
+    },
+    {
+      "id": "m01",
+      "dir": "m01"
+    },
+    {
+      "id": "m02",
+      "dir": "m02"
+    },
+    {
+      "id": "m03",
+      "file": "m03.json"
+    },
+    {
+      "id": "m04",
+      "file": "m04.json"
+    },
+    {
+      "id": "m05",
+      "file": "m05.json"
+    },
+    {
+      "id": "m06",
+      "file": "m06.json"
+    },
+    {
+      "id": "m07",
+      "file": "m07.json"
+    },
+    {
+      "id": "m08",
+      "file": "m08.json"
+    },
+    {
+      "id": "m09",
+      "file": "m09.json"
+    },
+    {
+      "id": "m10",
+      "file": "m10.json"
+    },
+    {
+      "id": "m11",
+      "file": "m11.json"
+    },
+    {
+      "id": "m12",
+      "file": "m12.json"
+    },
+    {
+      "id": "m13",
+      "file": "m13.json"
+    }
+  ],
+  "contentPolicy": {
+    "language": "id",
+    "formalAddress": true,
+    "wordsTarget": 1800,
+    "wordsMin": 1700,
+    "quizQuestions": 3,
+    "practiceItems": 3,
+    "troubleshootingItems": 3,
+    "requireV2": [
+      "m00",
+      "m01"
+    ],
+    "requireV3": [
+      "m00-l01",
+      "m00-l02",
+      "m00-l03",
+      "m00-l04",
+      "m00-l05",
+      "m00-l06",
+      "m00-l07",
+      "m00-l08",
+      "m01-l01",
+      "m01-l02",
+      "m01-l03",
+      "m01-l04",
+      "m01-l05",
+      "m01-l06",
+      "m05-l02",
+      "m02-l01",
+      "m02-l02",
+      "m02-l03",
+      "m02-l04",
+      "m02-l05",
+      "m02-l06",
+      "m02-l07",
+      "m03-l01",
+      "m03-l03",
+      "m03-l02",
+      "m03-l04",
+      "m03-l05",
+      "m03-l06",
+      "m03-l07",
+      "m03-l08"
+    ],
+    "depthWordBands": {
+      "fondasi": [
+        900,
+        3000
+      ],
+      "integrasi": [
+        1000,
+        2400
+      ],
+      "capstone": [
+        1500,
+        3000
+      ]
+    }
+  },
+  "sourcePolicy": {
+    "minPerLesson": 2,
+    "requireTier": [
+      "standard",
+      "official"
+    ],
+    "allowedTiers": [
+      "standard",
+      "official",
+      "education",
+      "secondary"
+    ],
+    "requireAccessedAt": true
+  },
+  "target": {
+    "modules": 16,
+    "lessons": 108,
+    "weeks": 52
+  }
+}

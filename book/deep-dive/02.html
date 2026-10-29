@@ -1,0 +1,111 @@
+<div id="pendalaman-2"><div class="panel"><b>PENDALAMAN 2</b> · 02 fundamental</div><h1>Bagian I — Fundamental Ilmu Pemrograman</h1>
+<h2>1. Apa itu program dan apa itu algoritma?</h2>
+<p><strong>Program</strong> ialah instruksi yang dieksekusi komputer; <strong>algoritma</strong> adalah urutan langkah logis berhingga yang memecahkan masalah. Algoritma berbeda dari bahasa: logika menghitung diskon sama walaupun diterapkan di JavaScript, PHP, atau Dart. <strong>Input</strong> adalah data masuk, <strong>proses</strong> transformasi, <strong>output</strong> hasil; ketiganya dapat dipetakan sebelum menulis kode.</p>
+<p>Contoh: total belanja. Input: harga satuan (bilangan &gt;=0), jumlah (&gt;0), persentase diskon (0–100). Proses: subtotal = harga × jumlah; potongan = subtotal × diskon/100; total = subtotal − potongan. Output: jumlah yang dibayar. Kasus batas: diskon 0%, diskon 100%, harga nol, jumlah nol, data bukan angka, bilangan desimal. Pengecekan ini disebut <strong>validasi</strong> dan harus dilakukan sebelum proses.</p>
+<p><strong>Pseudocode:</strong></p>
+<pre><code class="language-text">BACA harga, jumlah, diskon
+JIKA harga &lt; 0 ATAU jumlah &lt;= 0 ATAU diskon &lt; 0 ATAU diskon &gt; 100
+    TAMPILKAN &quot;Input tidak valid&quot;
+LAINNYA
+    subtotal ← harga × jumlah
+    total ← subtotal × (1 − diskon / 100)
+    TAMPILKAN total
+SELESAI
+</code></pre>
+<p><strong>Latihan:</strong> (A) ubah logika di atas agar diskon berlaku hanya bila subtotal &gt;= 100000; (B) buat algoritma menghitung rata-rata nilai 5 siswa; (C) tuliskan penanganan data kosong; (D) gambarkan flowchart sederhana; (E) jelaskan mengapa diskon 110% harus ditolak. <strong>Tuntas bila:</strong> Anda mampu menjelaskan tiap cabang tanpa menyebut sintaks bahasa tertentu.</p>
+<h2>2. Cara komputer, OS, jaringan, dan web bekerja</h2>
+<p>CPU mengeksekusi instruksi, RAM menyimpan data kerja sementara, penyimpanan menyimpan file persisten, sistem operasi mengelola proses dan akses file, jaringan mengantarkan paket antarmesin. <strong>Browser</strong> menjalankan HTML (struktur), CSS (tampilan), JavaScript (interaksi), lalu berbicara dengan server lewat HTTP(S). Server menerapkan aturan bisnis dan membaca database. Database bukan tempat menyimpan password mentah, file kode, atau seluruh gambar besar secara otomatis; tergantung desain, metadata ada di DB dan file bisa di object storage.</p>
+<p><strong>Alur saat membuka aplikasi:</strong> DNS menerjemahkan domain → browser membuat koneksi TLS untuk HTTPS → browser mengirim request HTTP → reverse proxy/server aplikasi memproses → aplikasi melakukan query terotorisasi → server mengirim status/body → browser merender. DNS, TLS, HTTP, session, SQL adalah konsep berbeda; menghafal istilah tanpa memahami alur sering menyebabkan salah diagnosis.</p>
+<p><strong>Istilah inti:</strong> IP = alamat jaringan; domain = nama yang dicari melalui DNS; port = tujuan layanan dalam host; URL = lokasi resource; HTTPS = HTTP dalam koneksi terenkripsi; cookie = data kecil pada browser sesuai aturan atributnya; session = keadaan autentikasi yang biasanya disimpan/dirujuk di server; API = kontrak untuk komunikasi antarkomponen.</p>
+<p><strong>Latihan:</strong> gambar alur login dari Flutter → HTTPS → Laravel → PostgreSQL → response. Bedakan apa yang berjalan di HP vs server. Jelaskan apa yang terjadi bila DNS salah, port tertutup, database mati, dan token tidak berlaku. <strong>Tuntas bila:</strong> Anda bisa membedakan error jaringan (misalnya timeout) dari error validasi (422) dan error autentikasi (401).</p>
+<h2>3. Setup perangkat dan terminal</h2>
+<p>Untuk belajar pertama, cukup laptop 8 GB RAM (16 GB lebih nyaman untuk emulator), editor VS Code, browser modern, Git, Node.js LTS, PHP/Composer, PostgreSQL, dan Flutter stable. <strong>Jangan memasang semuanya pada hari pertama</strong>: pekan 1 cukup editor, browser, Git, dan Node LTS. Untuk Flutter Android nanti diperlukan Android Studio/SDK; pengembangan iOS memerlukan lingkungan macOS sesuai persyaratan Apple.</p>
+<p>Terminal menerima perintah teks. <code>pwd</code> menampilkan folder aktif, <code>ls</code> (Linux/macOS) atau <code>dir</code> (Windows) daftar file, <code>cd</code> pindah folder, <code>mkdir</code> membuat folder, <code>git status</code> memeriksa Git. Bedakan <em>path</em> relatif seperti <code>./src/main.js</code> dan absolut seperti <code>/home/user/proyek</code>. Jangan menjalankan skrip internet atau <code>sudo rm -rf</code> tanpa memahami isinya. Periksa <code>--help</code> sebelum memodifikasi berkas.</p>
+<pre><code class="language-bash">mkdir belajar-koding
+cd belajar-koding
+git init
+node --version
+git --version
+</code></pre>
+<p><em>Catatan:</em> untuk belajar console JavaScript, gunakan <code>node file.js</code>. Jika Node belum ada, gunakan browser DevTools pada tab Console dan ketik contoh tanpa instalasi.</p>
+<p><strong>Latihan:</strong> buat struktur <code>latihan/pekan-01</code>, <code>catatan/</code>, <code>proyek/</code> dan file <code>README.md</code>. Jelaskan fungsi setiap folder serta jalankan <code>git status</code>. <strong>Tuntas bila:</strong> folder dan file bisa dicari kembali, dan Anda paham lokasi terminal saat perintah dijalankan.</p>
+<h2>4. Variabel, tipe, operator, dan ekspresi</h2>
+<p>Variabel memberi nama sebuah nilai. Pada JavaScript, <code>const</code> default untuk nilai yang tidak akan di-reassign, <code>let</code> bila perlu berubah; hindari <code>var</code> untuk kode baru. Tipe umum: <code>number</code>, <code>string</code>, <code>boolean</code>, <code>null</code>, <code>undefined</code>, object. Nama variabel sebaiknya menjelaskan maksud (<code>jumlahPeserta</code>, bukan <code>jp</code>), satuan (<code>durasiMenit</code>), dan konteks (<code>hargaRupiah</code>). JavaScript memiliki representasi angka <em>floating point</em>; berhati-hatilah pada uang dan desimal.</p>
+<pre><code class="language-javascript">const harga = 25000;
+const jumlah = 3;
+const diskon = 10; // persen
+const subtotal = harga * jumlah;
+const total = subtotal * (1 - diskon / 100);
+console.log({ subtotal, total }); // 75000, 67500
+</code></pre>
+<p>Operator aritmetika: <code>+ - * / % **</code>. Perbandingan: <code>===</code>, <code>!==</code>, <code>&lt;</code>, <code>&lt;=</code>, <code>&gt;</code>, <code>&gt;=</code>. Logika: <code>&amp;&amp;</code> (dan), <code>||</code> (atau), <code>!</code> (tidak). <strong>Gunakan <code>===</code>, bukan <code>==</code>, sebagai pilihan awal</strong> agar perbandingan tidak melakukan konversi tipe implisit. Ekspresi <code>0.1 + 0.2</code> bukan selalu tepat <code>0.3</code>; untuk rupiah bulat simpan unit terkecil sebagai integer, untuk mata uang pecahan gunakan strategi decimal/integer berdasarkan domain.</p>
+<p><strong>Latihan:</strong> implementasikan tarif parkir: 1 jam pertama Rp4.000; jam berikutnya Rp2.000 per jam yang dibulatkan ke atas; durasi &lt;=0 ditolak. Buat 5 contoh: 30 menit, 60 menit, 61 menit, 180 menit, -1 menit. <strong>Tuntas bila:</strong> setiap hasil diuji secara manual dan dengan kode.</p>
+<h2>5. Percabangan, loop, dan pengendalian alur</h2>
+<p><code>if/else</code> membuat keputusan, <code>switch</code> menangani pilihan diskrit, <code>for</code> untuk iterasi yang diketahui, <code>while</code> jika berhenti berdasarkan kondisi. Hindari loop tanpa perubahan kondisi karena bisa tak berakhir. Biasakan <strong>guard clause</strong>: tolak kondisi tidak valid di awal fungsi, baru proses logika utama.</p>
+<pre><code class="language-javascript">function kategoriStok(jumlah) {
+  if (!Number.isInteger(jumlah) || jumlah &lt; 0) {
+    throw new Error('Jumlah harus bilangan bulat tidak negatif');
+  }
+  if (jumlah === 0) return 'habis';
+  if (jumlah &lt; 5) return 'menipis';
+  return 'cukup';
+}
+for (const n of [0, 2, 7]) console.log(n, kategoriStok(n));
+</code></pre>
+<p><strong>Latihan:</strong> tulis fungsi FizzBuzz 1–30, tetapi mulai dari analisis kelipatan 3 dan 5; buat program menentukan apakah tahun kabisat; buat perulangan untuk menghitung total item valid dan abaikan jumlah negatif. <strong>Tuntas bila:</strong> tidak ada loop tak terbatas dan semua cabang diuji.</p>
+<h2>6. Function, parameter, return, scope</h2>
+<p>Fungsi mengemas pekerjaan kecil yang bisa diuji ulang. Input melalui parameter, hasil melalui <code>return</code>, tidak menyembunyikan perubahan global yang sulit dilacak. Bedakan fungsi <strong>murni</strong> (hasil bergantung pada input, tanpa efek samping) dari fungsi dengan <em>side effect</em> (menulis file, HTTP, UI). Fungsi murni lebih mudah diuji.</p>
+<pre><code class="language-javascript">function hitungKebutuhan(jumlahOrang, literPerOrangPerHari, hari) {
+  if (![jumlahOrang, literPerOrangPerHari, hari].every(Number.isFinite)) {
+    throw new TypeError('Semua input harus angka');
+  }
+  if (jumlahOrang &lt;= 0 || literPerOrangPerHari &lt;= 0 || hari &lt;= 0) {
+    throw new RangeError('Input harus positif');
+  }
+  return jumlahOrang * literPerOrangPerHari * hari;
+}
+console.log(hitungKebutuhan(3, 3, 3)); // 27 liter (asumsi latihan)
+</code></pre>
+<p><em>Angka 3 liter/hari pada contoh hanyalah parameter latihan matematis, bukan rekomendasi medis/kebencanaan universal.</em> Untuk sistem nyata, nilai default harus mengikuti pedoman yang divalidasi dan dapat disesuaikan pengguna.</p>
+<p><strong>Latihan:</strong> pecah program kasir menjadi <code>validasiItem</code>, <code>hitungSubtotal</code>, <code>hitungDiskon</code>, <code>formatRupiah</code>; jangan gabungkan logika dengan <code>prompt</code> atau DOM. <strong>Tuntas bila:</strong> fungsi bisa dipanggil dari Console/Node tanpa halaman web.</p>
+<h2>7. Array, object, Map, Set, dan struktur data</h2>
+<p>Array adalah daftar terurut, object memodelkan entitas dengan properti, <code>Map</code> untuk key-value yang dinamis, <code>Set</code> untuk nilai unik. Pilih berdasarkan operasi: daftar item → array; detail item → object; cek duplikasi ID → Set; indeks berdasarkan key → Map. <code>filter</code>, <code>map</code>, <code>find</code>, <code>reduce</code>, <code>some</code>, <code>every</code> adalah operasi array yang sering dipakai.</p>
+<pre><code class="language-javascript">const items = [
+  { id: 1, nama: 'Air', jumlah: 6, checked: true },
+  { id: 2, nama: 'Senter', jumlah: 1, checked: false },
+  { id: 3, nama: 'Baterai', jumlah: 4, checked: true },
+];
+const yangBelum = items.filter(item =&gt; !item.checked);
+const jumlahSeluruh = items.reduce((sum, item) =&gt; sum + item.jumlah, 0);
+console.log(yangBelum, jumlahSeluruh); // Senter, 11
+</code></pre>
+<p>Mutasi (<code>push</code>, mengubah properti) berbeda dari membuat array/object baru (<code>map</code>, spread). Di antarmuka reaktif, perubahan referensi immutable sering membuat pembaruan state lebih mudah diprediksi.</p>
+<p><strong>Latihan:</strong> buat daftar tugas dengan id unik, tambah, ubah status, hapus, cari item berdasarkan id, hitung persentase selesai. Test kasus daftar kosong dan ID tidak ditemukan. <strong>Tuntas bila:</strong> fungsi tidak bergantung pada urutan item saat mencari berdasarkan ID.</p>
+<h2>8. Problem solving, kompleksitas, dan debugging</h2>
+<p>Pisahkan <em>symptom</em> (halaman kosong) dari <em>root cause</em> (response API bukan JSON). Reproduksi, catat input, baca stack trace dari baris pertama yang relevan, perkecil kasus, buat hipotesis, uji satu perubahan pada satu waktu, dan tulis regression test. Kompleksitas <strong>O(n)</strong> berarti waktu bertambah sebanding jumlah data, <strong>O(n²)</strong> sering muncul pada nested loop, <strong>O(1)</strong> operasi tetap secara model, <strong>O(log n)</strong> pencarian pada struktur terurut tertentu. Tidak semua program butuh optimasi; ukur dulu.</p>
+<p><strong>Contoh test sederhana tanpa library:</strong></p>
+<pre><code class="language-javascript">function tambah(a, b) { return a + b; }
+function assertEqual(actual, expected) {
+  if (actual !== expected) throw new Error(`${actual} != ${expected}`);
+}
+assertEqual(tambah(2, 3), 5);
+assertEqual(tambah(-1, 1), 0);
+console.log('2 test lulus');
+</code></pre>
+<p><strong>Latihan:</strong> sengaja buat bug <code>i &lt;= array.length</code>, amati item <code>undefined</code>, kemudian perbaiki. Bandingkan mencari ID dalam array besar menggunakan <code>find</code> dan <code>Map</code>. <strong>Tuntas bila:</strong> laporan bug berisi langkah reproduksi, hasil yang diharapkan, hasil aktual, akar masalah, serta uji regresi.</p>
+<h2>9. Git: sejarah perubahan dan kerja profesional</h2>
+<p>Git melacak perubahan <em>snapshot</em> file. Commit kecil dan bermakna lebih baik daripada satu commit raksasa. Branch untuk fitur/eksperimen, pull request atau merge request untuk review. Git bukan pengganti backup database atau rahasia. Jangan commit <code>.env</code>, token, password, data warga, kunci privat, atau <code>node_modules</code>.</p>
+<pre><code class="language-bash">git init
+git add README.md
+git commit -m &quot;docs: tulis petunjuk proyek&quot;
+git switch -c feat/checklist
+# edit kode lalu:
+git add .
+git diff --cached
+git commit -m &quot;feat: tambah validasi jumlah item&quot;
+</code></pre>
+<p><strong>Konvensi sederhana:</strong> <code>feat:</code>, <code>fix:</code>, <code>docs:</code>, <code>test:</code>, <code>refactor:</code>. Periksa <code>git diff</code> sebelum commit; jangan menjalankan <code>git reset --hard</code> atau force push pada branch bersama tanpa memahami dampaknya.</p>
+<p><strong>Latihan:</strong> buat branch fitur dan bugfix, lakukan masing-masing commit, tampilkan <code>git log --oneline</code>, lakukan merge lokal, lalu tulis README cara menjalankan proyek. <strong>Tuntas bila:</strong> perubahan bisa dijelaskan dari log dan rollback dapat direncanakan tanpa menghapus pekerjaan tim.</p>
+<h2>Evaluasi Bagian I</h2>
+<p>Tanpa membuka tutorial: (1) tulis pseudocode kasir; (2) bangun program JS 60–100 baris yang memvalidasi input; (3) uji minimal 8 kasus termasuk error; (4) commit bertahap; (5) jelaskan bagaimana browser dan server berkomunikasi. <strong>Kriteria lulus:</strong> &gt;=80% tes benar, tidak ada data tak valid yang diam-diam diproses, dan Anda memahami semua fungsi yang dipakai.</p>
+</div>

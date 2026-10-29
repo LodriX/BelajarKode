@@ -1,0 +1,396 @@
+{
+  "id": "m00-l01",
+  "title": "Cara kerja komputer: perangkat, sistem operasi, dan aplikasi",
+  "minutes": 90,
+  "level": "Dasar",
+  "depth": "fondasi",
+  "schema": 3.1,
+  "codeLanguage": "text",
+  "outcome": "Setelah pelajaran ini, Anda dapat menjelaskan peran CPU, RAM, penyimpanan, sistem operasi, dan aplikasi, membaca spesifikasi perangkat tanpa tertipu angka pemasaran, serta menentukan lapisan mana yang perlu diperiksa ketika komputer melambat.",
+  "objectives": [
+    "Membedakan perangkat keras, sistem operasi, aplikasi, dan file.",
+    "Menjelaskan peran CPU, RAM, dan penyimpanan dengan bahasa sehari-hari.",
+    "Membaca spesifikasi komputer tanpa tertipu angka pemasaran.",
+    "Menentukan kapan masalah berasal dari perangkat, sistem, atau aplikasi."
+  ],
+  "prerequisites": [],
+  "terms": [
+    {
+      "term": "Perangkat keras",
+      "definition": "Bagian fisik komputer yang dapat dilihat dan disentuh, misalnya layar, papan ketik, CPU, RAM, dan disk."
+    },
+    {
+      "term": "Sistem operasi",
+      "definition": "Perangkat lunak utama yang mengelola perangkat keras, file, pengguna, dan aplikasi."
+    },
+    {
+      "term": "RAM",
+      "definition": "Memori kerja sementara yang menyimpan data program yang sedang aktif."
+    },
+    {
+      "term": "Penyimpanan",
+      "definition": "Tempat data disimpan secara permanen, misalnya SSD atau hard disk."
+    }
+  ],
+  "syntax": [
+    {
+      "token": "CPU → RAM → penyimpanan",
+      "readAs": "Baca sebagai alur kerja: prosesor mengolah instruksi, RAM menyimpan data yang sedang aktif, lalu penyimpanan menyimpan data secara permanen.",
+      "meaning": "Alur ini menunjukkan tiga peran berbeda. CPU mengerjakan perhitungan, RAM menjaga data tetap dekat dengan CPU, dan penyimpanan menyimpan data setelah daya dimatikan.",
+      "example": "Buka editor → instruksi dan berkas aktif masuk RAM → hasil disimpan ke SSD.",
+      "output": "Editor merespons cepat selama data berada di RAM, dan berkas tetap ada setelah disimpan ke SSD.",
+      "pitfall": "Menganggap RAM sebagai tempat penyimpanan permanen. Data di RAM hilang saat daya mati atau aplikasi ditutup."
+    },
+    {
+      "token": "CPU 6 core / RAM 16 GB / SSD 512 GB",
+      "readAs": "Baca sebagai tiga kapasitas berbeda: jumlah inti prosesor, besar memori kerja, dan kapasitas penyimpanan.",
+      "meaning": "Baris spesifikasi hanya bermakna jika Anda tahu peran setiap angka. Angka besar pada satu komponen tidak menutupi kekurangan pada komponen lain.",
+      "example": "CPU 8 core / RAM 16 GB / SSD 1 TB",
+      "output": "Spesifikasi menunjukkan kelas perangkat, bukan jaminan bahwa semua aplikasi akan berjalan cepat.",
+      "pitfall": "Membandingkan hanya satu angka, misalnya jumlah core, lalu mengabaikan generasi prosesor, jenis RAM, dan kecepatan SSD."
+    },
+    {
+      "token": "Aplikasi → sistem operasi → perangkat keras",
+      "readAs": "Baca sebagai lapisan permintaan: aplikasi meminta layanan, sistem operasi menerjemahkan, lalu perangkat keras mengeksekusi.",
+      "meaning": "Aplikasi tidak berbicara langsung ke setiap komponen. Sistem operasi menjadi perantara yang mengatur izin, memori, dan akses perangkat.",
+      "example": "Editor → Windows 11 → SSD",
+      "output": "Permintaan simpan diteruskan melalui sistem operasi sebelum data ditulis ke SSD.",
+      "pitfall": "Menyimpulkan aplikasi rusak padahal pesan error berasal dari izin sistem operasi atau ruang disk yang penuh."
+    }
+  ],
+  "conventions": [
+    "Gunakan istilah perangkat keras, sistem operasi, aplikasi, dan berkas secara konsisten agar percakapan teknis tidak tertukar.",
+    "Saat membaca spesifikasi, catat satuan setiap angka: core, GB, TB, atau MHz. Angka tanpa satuan mudah disalahartikan.",
+    "Bedakan kapasitas RAM dari kapasitas penyimpanan. Keduanya sama-sama diukur dalam GB, tetapi perannya berbeda.",
+    "Periksa generasi dan jenis komponen, bukan hanya angkanya. SSD SATA dan SSD NVMe memiliki performa yang berbeda.",
+    "Saat mendiagnosis masalah, mulai dari lapisan paling bawah yang masuk akal: perangkat, sistem operasi, jaringan, lalu aplikasi.",
+    "Catat gejala, pesan error, dan langkah yang sudah dicoba. Catatan singkat mencegah pemeriksaan yang berulang."
+  ],
+  "sections": [
+    {
+      "id": "cara-membaca",
+      "title": "Cara membaca spesifikasi dan lapisan sistem",
+      "body": [
+        "Spesifikasi komputer adalah daftar kapasitas, bukan daftar peringkat. Baris CPU 6 core berarti prosesor memiliki enam inti yang dapat mengerjakan pekerjaan secara bersamaan. Baris RAM 16 GB berarti memori kerja menampung sekitar enam belas gigabyte data aktif. Baris SSD 512 GB berarti penyimpanan permanen menampung sekitar lima ratus dua belas gigabyte berkas dan aplikasi.",
+        "Baca spesifikasi dari kebutuhan pekerjaan, bukan dari angka terbesar. Untuk belajar pemrograman web, RAM 8 GB masih dapat dipakai, tetapi 16 GB memberi ruang lebih nyaman ketika editor, browser, terminal, dan server lokal berjalan bersamaan. SSD membuat pembukaan aplikasi dan pembacaan berkas terasa lebih cepat. GPU baru menjadi pertimbangan utama jika Anda mengolah grafis, permainan, atau model kecerdasan artifisial secara lokal.",
+        "Setelah spesifikasi, baca lapisan sistem. Aplikasi meminta sistem operasi menulis berkas; sistem operasi memeriksa izin dan ruang disk; perangkat keras mengeksekusi penulisan. Ketika terjadi masalah, lapisan yang paling dekat dengan pesan error sering memberi petunjuk paling tepat. Pesan tentang izin atau ruang disk biasanya bukan masalah logika aplikasi."
+      ],
+      "code": {
+        "language": "text",
+        "lab": false,
+        "code": "CPU: 6 core\nRAM: 16 GB\nPenyimpanan: SSD 512 GB\nSistem operasi: Windows 11",
+        "output": "Spesifikasi terbaca: prosesor 6 core, memori kerja 16 GB, penyimpanan 512 GB, dan sistem operasi Windows 11.",
+        "explain": "Empat baris ini menunjukkan cara membaca spesifikasi sebagai kapasitas dan peran, bukan sebagai satu skor performa.",
+        "annotations": [
+          {
+            "line": 1,
+            "code": "CPU: 6 core",
+            "note": "Jumlah core menunjukkan banyaknya inti prosesor, bukan kecepatan total secara otomatis."
+          },
+          {
+            "line": 2,
+            "code": "RAM: 16 GB",
+            "note": "RAM adalah memori kerja sementara untuk aplikasi yang sedang aktif."
+          },
+          {
+            "line": 3,
+            "code": "Penyimpanan: SSD 512 GB",
+            "note": "Penyimpanan menyimpan data secara permanen; jenis SSD memengaruhi kecepatan akses."
+          },
+          {
+            "line": 4,
+            "code": "Sistem operasi: Windows 11",
+            "note": "Sistem operasi mengelola perangkat, berkas, izin, dan aplikasi yang berjalan di atasnya."
+          }
+        ]
+      },
+      "callouts": [
+        {
+          "tone": "good",
+          "title": "Urutan membaca yang aman",
+          "body": "Baca peran komponen lebih dulu, lalu kapasitasnya, lalu generasinya. Setelah itu barulah bandingkan harga. Urutan ini mencegah Anda membeli angka besar yang tidak relevan dengan pekerjaan."
+        }
+      ],
+      "checkpoint": {
+        "prompt": "Ambil satu baris spesifikasi komputer, lalu jelaskan peran dan satuan angka di dalamnya. Setelah itu, tentukan satu komponen yang paling mungkin membatasi pekerjaan Anda.",
+        "success": "Anda dapat menjelaskan peran komponen, satuan angkanya, dan alasan komponen itu menjadi batasan."
+      }
+    },
+    {
+      "id": "model-mental",
+      "title": "Mengapa model mental penting",
+      "body": [
+        "Saat komputer berjalan lambat, banyak pemula langsung menyimpulkan bahwa perangkatnya rusak. Padahal penyebabnya bisa berupa RAM penuh, disk hampir habis, aplikasi yang bermasalah, atau koneksi internet yang tidak stabil. Tanpa model mental, Anda hanya menebak. Dengan model mental, Anda punya urutan pemeriksaan yang masuk akal.",
+        "Model mental bukan hafalan istilah. Model mental adalah gambaran sederhana tentang bagaimana bagian-bagian sistem saling berhubungan. Anda tidak perlu mengetahui cara transistor bekerja untuk menjadi programmer. Anda cukup memahami bahwa program membutuhkan memori, data perlu disimpan, dan sistem operasi mengatur akses ke perangkat.",
+        "Anggap komputer sebagai sebuah gedung kerja. Perangkat keras adalah bangunan dan perabotnya. Sistem operasi adalah manajer gedung yang mengatur siapa boleh masuk, ruangan mana yang dipakai, dan kapan listrik dinyalakan. Aplikasi adalah penyewa yang membawa pekerjaannya sendiri. File adalah dokumen yang disimpan di lemari arsip."
+      ],
+      "callouts": [
+        {
+          "tone": "good",
+          "title": "Kebiasaan yang membantu",
+          "body": "Saat menghadapi masalah, tanyakan dulu: apakah masalahnya di perangkat, sistem operasi, aplikasi, jaringan, atau data? Pertanyaan ini mempersempit pencarian."
+        }
+      ],
+      "checkpoint": {
+        "prompt": "Tutup materi sebentar, lalu jelaskan perbedaan perangkat keras, sistem operasi, dan aplikasi dengan analogi Anda sendiri.",
+        "success": "Anda bisa menyebut satu contoh untuk masing-masing tanpa membaca ulang."
+      }
+    },
+    {
+      "id": "perangkat-keras",
+      "title": "Perangkat keras: CPU, RAM, dan penyimpanan",
+      "body": [
+        "CPU atau prosesor adalah bagian yang mengeksekusi instruksi. Kecepatannya memengaruhi seberapa cepat perhitungan dilakukan, tetapi bukan satu-satunya faktor. Program yang menunggu jaringan atau disk bisa terasa lambat meskipun CPU tidak sibuk. Karena itu, melihat satu angka spesifikasi saja tidak cukup untuk menilai performa.",
+        "RAM adalah meja kerja sementara. Saat aplikasi dibuka, sebagian datanya dipindahkan ke RAM agar bisa diakses cepat. Jika meja kerja terlalu penuh, sistem mulai memindahkan data ke disk. Proses ini jauh lebih lambat dan membuat komputer terasa tersendat. Menutup tab browser yang tidak dipakai atau aplikasi latar belakang dapat membantu, tetapi solusi jangka panjang adalah menambah RAM bila kebutuhan memang meningkat.",
+        "Penyimpanan menyimpan data saat komputer dimatikan. SSD jauh lebih cepat daripada hard disk tradisional dan membuat sistem terasa lebih responsif. Ruang penyimpanan yang hampir penuh juga dapat memperlambat sistem karena pembaruan, cache, dan file sementara tidak punya tempat yang cukup. Sisakan ruang kosong, minimal sekitar sepuluh persen dari kapasitas.",
+        "GPU awalnya dirancang untuk grafis, tetapi sekarang juga dipakai untuk komputasi paralel dan kecerdasan artifisial. Untuk belajar pemrograman web, mobile, dan backend, GPU bukan kebutuhan utama. Fokuskan anggaran pada RAM yang cukup, SSD, layar yang nyaman, dan koneksi internet yang stabil."
+      ],
+      "callouts": [
+        {
+          "tone": "bad",
+          "title": "Kesalahan umum",
+          "body": "Membeli komputer hanya berdasarkan angka CPU, lalu mengabaikan RAM dan kualitas SSD. Untuk pekerjaan developer sehari-hari, keseimbangan komponen lebih penting."
+        }
+      ],
+      "checkpoint": {
+        "prompt": "Sebutkan satu tugas yang paling terbantu oleh RAM dan satu tugas yang paling terbantu oleh SSD.",
+        "success": "Anda membedakan memori kerja sementara dari tempat penyimpanan permanen."
+      }
+    },
+    {
+      "id": "sistem-operasi",
+      "title": "Sistem operasi sebagai manajer",
+      "body": [
+        "Sistem operasi mengelola proses, memori, file, pengguna, dan perangkat. Windows, macOS, dan Linux adalah contoh sistem operasi desktop. Android dan iOS adalah sistem operasi mobile. Ketika Anda membuka file, sistem operasi memeriksa izin akses, menemukan lokasi file, lalu menyerahkan datanya ke aplikasi yang meminta.",
+        "Sistem operasi juga menyediakan antarmuka untuk developer. Terminal, environment variable, proses latar belakang, dan izin file adalah konsep yang muncul di semua sistem operasi dengan nama yang sedikit berbeda. Memahami konsepnya lebih penting daripada menghafal satu perintah tertentu. Jika Anda pindah sistem operasi, konsep yang sama tetap berlaku.",
+        "Pembaruan sistem operasi bukan sekadar menambah fitur. Banyak pembaruan menutup celah keamanan yang sudah diketahui publik. Menunda pembaruan terlalu lama meningkatkan risiko, terutama jika perangkat dipakai untuk membuka email, mengelola akun, dan menjalankan kode dari internet. Aktifkan pembaruan otomatis bila memungkinkan, lalu restart secara berkala."
+      ],
+      "callouts": [
+        {
+          "tone": "good",
+          "title": "Aturan praktis",
+          "body": "Jangan mematikan pembaruan keamanan hanya karena ingin menghindari restart. Jadwalkan restart pada waktu yang tidak mengganggu pekerjaan."
+        }
+      ],
+      "checkpoint": {
+        "prompt": "Mengapa pembaruan sistem operasi penting untuk keamanan, bukan hanya untuk fitur baru?",
+        "success": "Anda menyebut penutupan celah keamanan dan penurunan risiko eksploitasi."
+      }
+    },
+    {
+      "id": "aplikasi",
+      "title": "Aplikasi dan lapisan abstraksi",
+      "body": [
+        "Aplikasi adalah program yang dirancang untuk tugas tertentu. Browser, editor kode, aplikasi musik, dan aplikasi bank semuanya berjalan di atas sistem operasi. Aplikasi tidak berbicara langsung ke setiap perangkat keras. Aplikasi meminta layanan kepada sistem operasi melalui antarmuka pemrograman atau API sistem.",
+        "Lapisan abstraksi menyembunyikan kerumitan. Saat Anda menyimpan file, aplikasi tidak perlu tahu jenis disk, sistem berkas, atau cara data ditulis ke sel memori. Aplikasi memanggil operasi simpan, lalu sistem operasi yang menangani detailnya. Lapisan ini membuat program lebih mudah dibuat dan dipindahkan antarperangkat.",
+        "Namun abstraksi juga bisa menyembunyikan masalah. Pesan error dari aplikasi sering kali berasal dari lapisan di bawahnya: izin file ditolak sistem operasi, koneksi terputus oleh jaringan, atau disk penuh. Karena itu, membaca error dari lapisan paling bawah sering memberi petunjuk yang lebih tepat."
+      ],
+      "callouts": [
+        {
+          "tone": "good",
+          "title": "Cara membaca masalah",
+          "body": "Telusuri dari lapisan paling bawah yang terlibat: perangkat, sistem operasi, jaringan, lalu aplikasi. Jangan mulai dengan menebak kode jika pesan error menyebut izin atau koneksi."
+        }
+      ],
+      "checkpoint": {
+        "prompt": "Berikan satu contoh masalah aplikasi yang sebenarnya berasal dari sistem operasi atau jaringan.",
+        "success": "Anda bisa menjelaskan bahwa pesan error aplikasi belum tentu disebabkan oleh logika aplikasi."
+      }
+    },
+    {
+      "id": "perjalanan-klik",
+      "title": "Contoh perjalanan satu klik",
+      "body": [
+        "Bayangkan Anda mengklik tombol simpan di aplikasi catatan. Aplikasi menerima event klik, memvalidasi isi catatan, lalu meminta sistem operasi menulis file. Sistem operasi memeriksa izin folder, menulis data ke penyimpanan, dan mengembalikan status berhasil atau gagal. Aplikasi kemudian memperbarui tampilan.",
+        "Jika penyimpanan penuh, permintaan gagal dan aplikasi menampilkan pesan. Jika folder tidak dapat ditulis, masalahnya ada pada izin. Jika aplikasi crash sebelum menulis, data mungkin hilang. Rangkaian ini menunjukkan bahwa satu tombol bisa melibatkan beberapa lapisan sekaligus.",
+        "Kebiasaan yang baik adalah mencatat gejala, pesan error, dan langkah yang sudah dicoba. Catatan ini membantu Anda berpikir sistematis dan memudahkan orang lain membantu. Hindari hanya menulis aplikasi error. Tuliskan aplikasi apa, tombol apa, pesan lengkapnya, dan kapan masalah muncul.",
+        "Latihan berpikir seperti ini akan membantu Anda saat membaca dokumentasi teknis. Dokumentasi sering menjelaskan satu lapisan secara mendalam, sementara masalah nyata melibatkan beberapa lapisan sekaligus. Dengan kebiasaan memetakan alur, Anda dapat menentukan bagian mana yang perlu diperiksa lebih dulu dan bagian mana yang belum relevan."
+      ],
+      "checkpoint": {
+        "prompt": "Tuliskan urutan lima langkah dari klik tombol simpan sampai data tersimpan.",
+        "success": "Urutan Anda mencakup aplikasi, validasi, sistem operasi, penyimpanan, dan umpan balik ke pengguna."
+      }
+    },
+    {
+      "id": "kesehatan-perangkat",
+      "title": "Kebiasaan memantau kesehatan perangkat",
+      "body": [
+        "Perangkat yang sehat bukan perangkat yang paling mahal, melainkan perangkat yang dirawat. Mulailah dengan memeriksa ruang penyimpanan setiap bulan. Jika ruang tersisa sangat sedikit, sistem operasi kesulitan membuat file sementara, memperbarui aplikasi, dan menyimpan cache. Akibatnya komputer terasa lambat meskipun CPU tidak sibuk.",
+        "Periksa juga aplikasi yang berjalan saat startup. Banyak aplikasi menambahkan dirinya ke startup dan memakan RAM serta waktu boot. Nonaktifkan aplikasi yang tidak perlu berjalan otomatis. Namun hati-hati: jangan menonaktifkan driver, antivirus, atau layanan sistem yang tidak Anda pahami. Catat perubahan agar mudah dikembalikan.",
+        "Suhu dan kebersihan fisik juga penting. Debu pada kipas membuat pendinginan tidak efektif, lalu CPU menurunkan kecepatan untuk melindungi diri. Jika kipas terdengar keras terus-menerus atau perangkat cepat panas, bersihkan debu atau minta bantuan teknisi. Jangan membuka perangkat yang masih bergaransi tanpa mengikuti prosedur resmi.",
+        "Terakhir, buat catatan singkat tentang kondisi perangkat: kapasitas disk, RAM, versi sistem operasi, dan masalah yang sering muncul. Catatan ini membantu Anda mengenali perubahan dan menghindari pembelian komponen yang tidak perlu. Perawatan sederhana yang konsisten lebih berguna daripada perbaikan besar setelah masalah menumpuk.",
+        "Jika Anda memakai laptop untuk belajar, perhatikan juga daya baterai dan suhu saat dicas. Baterai yang terus-menerus hampir penuh dan panas dapat lebih cepat menurun kemampuannya. Ikuti panduan produsen, hindari menutup ventilasi, dan jangan memakai charger yang tidak sesuai. Perawatan kecil ini memperpanjang usia perangkat dan mengurangi gangguan saat belajar."
+      ],
+      "callouts": [
+        {
+          "tone": "good",
+          "title": "Rutinitas bulanan",
+          "body": "Periksa ruang disk, daftar aplikasi startup, pembaruan sistem, dan suhu perangkat. Catat satu perubahan yang akan Anda lakukan."
+        }
+      ],
+      "checkpoint": {
+        "prompt": "Sebutkan tiga pemeriksaan perawatan perangkat yang dapat Anda lakukan tanpa membongkar komputer.",
+        "success": "Anda menyebut ruang disk, aplikasi startup, pembaruan, atau kebersihan kipas."
+      }
+    }
+  ],
+  "practice": [
+    {
+      "id": "latihan-1",
+      "title": "Inventaris perangkat",
+      "task": "Catat perangkat yang akan Anda pakai: sistem operasi, RAM, kapasitas disk, dan browser utama.",
+      "steps": [
+        "Buka pengaturan sistem dan cari informasi perangkat.",
+        "Tuliskan angka yang terlihat tanpa menebak.",
+        "Tandai satu komponen yang mungkin perlu ditingkatkan."
+      ],
+      "expected": "Satu tabel kecil berisi empat baris data perangkat.",
+      "stretch": "Bandingkan kebutuhan kurikulum dengan perangkat Anda dan tuliskan satu risiko.",
+      "level": "guided",
+      "hints": [
+        "Di Windows, buka Settings lalu System dan About. Di macOS, buka About This Mac.",
+        "Catat sistem operasi, RAM, dan kapasitas disk apa adanya, tanpa membulatkan atau menebak.",
+        "Tandai satu komponen yang paling mungkin membatasi pekerjaan belajar Anda."
+      ],
+      "starterCode": "Sistem operasi:\nRAM:\nPenyimpanan:\nBrowser:",
+      "verification": {
+        "command": "Buka pengaturan sistem dan salin angka yang terlihat.",
+        "expected": "Empat baris data perangkat terisi dan satu komponen batasan ditandai.",
+        "evidence": "Simpan tabel perangkat di catatan belajar."
+      }
+    },
+    {
+      "id": "latihan-2",
+      "title": "Baca spesifikasi",
+      "task": "Ambil satu iklan komputer, lalu pisahkan klaim pemasaran dari spesifikasi yang bisa diukur.",
+      "steps": [
+        "Salin tiga angka spesifikasi.",
+        "Tuliskan arti masing-masing angka.",
+        "Tandai satu klaim yang tidak menjelaskan kebutuhan nyata."
+      ],
+      "expected": "Daftar tiga spesifikasi dengan penjelasan netral.",
+      "stretch": "Tuliskan dua pertanyaan yang akan Anda ajukan sebelum membeli.",
+      "level": "independent",
+      "hints": [
+        "Pilih iklan atau halaman toko yang menampilkan spesifikasi lengkap.",
+        "Pisahkan klaim seperti super cepat dari angka yang dapat diukur seperti RAM dan kapasitas SSD.",
+        "Tulis satu pertanyaan yang perlu diajukan sebelum membeli."
+      ],
+      "starterCode": "Spesifikasi 1:\nSpesifikasi 2:\nSpesifikasi 3:\nKlaim pemasaran:",
+      "verification": {
+        "command": "Baca satu iklan komputer dan tandai tiga angka terukur.",
+        "expected": "Tiga spesifikasi dijelaskan secara netral dan satu klaim pemasaran ditandai.",
+        "evidence": "Simpan daftar spesifikasi dan pertanyaan pembelian."
+      }
+    },
+    {
+      "id": "latihan-3",
+      "title": "Diagnosis sederhana",
+      "task": "Pilih satu masalah komputer yang pernah Anda alami, lalu susun urutan pemeriksaan dari lapisan bawah ke atas.",
+      "steps": [
+        "Tuliskan gejala yang terlihat.",
+        "Tentukan lapisan yang paling mungkin bermasalah.",
+        "Tuliskan satu pemeriksaan untuk membuktikan atau menolak dugaan."
+      ],
+      "expected": "Urutan tiga pemeriksaan dengan alasan singkat.",
+      "stretch": "Jelaskan bagaimana hasil pemeriksaan mengubah dugaan berikutnya.",
+      "level": "transfer",
+      "hints": [
+        "Mulai dari gejala yang paling terlihat, misalnya aplikasi lambat atau berkas gagal disimpan.",
+        "Tentukan lapisan yang paling mungkin bermasalah sebelum memilih alat pemeriksaan.",
+        "Tulis satu pemeriksaan yang dapat membuktikan atau menolak dugaan Anda."
+      ],
+      "starterCode": "Gejala:\nDugaan lapisan:\nPemeriksaan 1:\nPemeriksaan 2:\nPemeriksaan 3:",
+      "verification": {
+        "command": "Susun diagnosis untuk satu masalah nyata di perangkat Anda.",
+        "expected": "Urutan pemeriksaan bergerak dari lapisan bawah ke atas dengan alasan yang jelas.",
+        "evidence": "Catat hasil setiap pemeriksaan dan dugaan yang berubah."
+      }
+    }
+  ],
+  "verification": {
+    "mode": "catatan",
+    "command": "Kerjakan Latihan 3 pada perangkat yang Anda pakai sehari-hari.",
+    "expected": "Anda dapat menyebut lapisan masalah, memilih pemeriksaan yang murah lebih dulu, dan menjelaskan mengapa pemeriksaan itu relevan.",
+    "evidence": "Simpan tabel perangkat, daftar spesifikasi, dan urutan diagnosis di catatan belajar."
+  },
+  "troubleshooting": [
+    {
+      "symptom": "Komputer terasa lambat saat banyak tab browser dibuka.",
+      "cause": "RAM habis dan sistem mulai memindahkan data ke disk.",
+      "fix": "Tutup tab atau aplikasi yang tidak dipakai, periksa penggunaan memori, lalu pertimbangkan menambah RAM bila pola ini berulang."
+    },
+    {
+      "symptom": "Aplikasi gagal menyimpan berkas.",
+      "cause": "Folder tidak memiliki izin tulis, disk penuh, atau berkas sedang dipakai aplikasi lain.",
+      "fix": "Periksa ruang disk, coba simpan ke folder proyek, dan pastikan berkas tidak sedang dibuka di aplikasi lain."
+    },
+    {
+      "symptom": "Pesan error muncul setelah pembaruan sistem.",
+      "cause": "Aplikasi lama tidak kompatibel dengan versi sistem operasi yang baru.",
+      "fix": "Perbarui aplikasi, baca catatan rilis, atau gunakan versi yang kompatibel. Jangan langsung menghapus data pengguna."
+    },
+    {
+      "symptom": "Komputer menyala, tetapi aplikasi tidak merespons.",
+      "cause": "Proses aplikasi macet, RAM penuh, atau sistem menunggu perangkat yang tidak merespons.",
+      "fix": "Buka pengelola tugas, akhiri proses aplikasi yang macet, lalu mulai ulang aplikasi. Jika sering terjadi, periksa ruang disk dan pembaruan sistem."
+    }
+  ],
+  "quiz": {
+    "questions": [
+      {
+        "id": "q1",
+        "type": "recall",
+        "question": "Bagian yang menyimpan data program yang sedang aktif disebut apa?",
+        "options": [
+          "RAM",
+          "SSD",
+          "GPU"
+        ],
+        "answer": 0,
+        "explanation": "RAM adalah memori kerja sementara untuk data program yang sedang aktif."
+      },
+      {
+        "id": "q2",
+        "type": "scenario",
+        "question": "Aplikasi menampilkan pesan bahwa file tidak dapat disimpan. Pemeriksaan pertama yang paling masuk akal adalah apa?",
+        "options": [
+          "Mengganti bahasa pemrograman",
+          "Memeriksa izin folder dan ruang disk",
+          "Menghapus seluruh isi folder proyek"
+        ],
+        "answer": 1,
+        "explanation": "Masalah penyimpanan paling sering berasal dari izin atau ruang disk, bukan dari pilihan bahasa."
+      },
+      {
+        "id": "q3",
+        "type": "code-reading",
+        "question": "Mengapa abstraksi sistem operasi membantu developer?",
+        "options": [
+          "Karena developer tidak perlu memahami semua detail perangkat keras",
+          "Karena semua aplikasi menjadi identik",
+          "Karena error tidak mungkin terjadi lagi"
+        ],
+        "answer": 0,
+        "explanation": "Abstraksi menyembunyikan detail rendah sehingga developer dapat fokus pada logika aplikasi."
+      }
+    ]
+  },
+  "resources": [
+    {
+      "sourceId": "ms-windows-specs",
+      "note": "Spesifikasi resmi CPU, RAM, penyimpanan, dan GPU untuk Windows 11."
+    },
+    {
+      "sourceId": "ms-windows-requirements",
+      "note": "Persyaratan minimum perangkat dan sistem operasi dari Microsoft Learn."
+    }
+  ],
+  "summary": [
+    "Perangkat keras menyediakan tenaga, memori, dan penyimpanan; sistem operasi mengelola semuanya.",
+    "RAM adalah meja kerja sementara, sedangkan SSD atau hard disk adalah lemari penyimpanan permanen.",
+    "Spesifikasi dibaca sebagai kapasitas dan peran, bukan sebagai satu angka pemasaran.",
+    "Saat terjadi masalah, telusuri lapisan dari perangkat, sistem operasi, jaringan, lalu aplikasi."
+  ],
+  "next": "Berikutnya: berkas, folder, jalur, dan terminal dasar. Anda akan belajar membaca lokasi berkas dan memindahkannya tanpa mengandalkan klik."
+}

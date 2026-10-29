@@ -1,0 +1,12 @@
+BelajarKode — cara membuka
+==========================
+
+1. Klik dua kali BelajarKode.html.
+2. Buku offline: klik dua kali buku-belajarkode.html.
+3. Buka menu Mulai untuk daftar persiapan alat dan verifikasi instalasi.
+4. Tidak perlu server, npm, atau internet untuk membaca materi.
+5. Progres tersimpan di browser perangkat ini, bukan di berkas HTML.
+   Untuk pindah perangkat: Pengaturan -> Unduh cadangan, lalu Pulihkan di perangkat baru.
+6. Jangan membersihkan data situs browser jika progres belum dibuatkan cadangan.
+
+Berkas ini dihasilkan otomatis oleh "npm run build".

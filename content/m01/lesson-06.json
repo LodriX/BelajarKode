@@ -1,0 +1,417 @@
+{
+  "id": "m01-l06",
+  "title": "Memakai AI sebagai tutor dengan aman",
+  "minutes": 90,
+  "level": "Dasar",
+  "depth": "fondasi",
+  "schema": 3.1,
+  "codeLanguage": "text",
+  "outcome": "Setelah pelajaran ini, Anda dapat membedakan AI sebagai tutor dari AI sebagai mesin jawaban, menulis prompt yang memuat konteks dan batasan, memverifikasi klaim terhadap dokumentasi resmi, serta menjaga privasi dan kejujuran akademik.",
+  "objectives": [
+    "Membedakan memakai AI sebagai tutor yang memandu berpikir dari memakai AI sebagai mesin jawaban.",
+    "Menulis prompt yang memuat konteks, batasan, dan bentuk keluaran yang diinginkan.",
+    "Memverifikasi jawaban AI terhadap dokumentasi resmi dan bukti yang dapat dijalankan.",
+    "Menjaga privasi, etika, hak cipta, dan bukti penalaran sendiri saat memakai AI."
+  ],
+  "prerequisites": [
+    {
+      "label": "Belajar aktif: mengingat kembali, jeda berulang, dan proyek kecil",
+      "lessonId": "m01-l05"
+    }
+  ],
+  "terms": [
+    {
+      "term": "Tutor AI",
+      "definition": "Pemakaian model bahasa untuk memberi petunjuk dan penjelasan yang membantu Anda berpikir, bukan menggantikan berpikir."
+    },
+    {
+      "term": "Prompt",
+      "definition": "Instruksi atau pertanyaan yang dikirim ke model AI, termasuk konteks dan batasan yang menentukan jawabannya."
+    },
+    {
+      "term": "Halusinasi",
+      "definition": "Keluaran AI yang terdengar meyakinkan tetapi salah, misalnya API yang tidak ada, kutipan palsu, atau perilaku yang tidak sesuai dokumentasi."
+    },
+    {
+      "term": "Verifikasi",
+      "definition": "Pemeriksaan klaim AI terhadap sumber resmi atau bukti yang dapat diulang."
+    },
+    {
+      "term": "Data sensitif",
+      "definition": "Informasi yang jika bocor dapat merugikan, misalnya kunci API, token, data pribadi, atau kode rahasia organisasi."
+    },
+    {
+      "term": "Atribusi",
+      "definition": "Pencatatan sumber atau bantuan yang dipakai agar kontribusi sendiri dan pihak lain dapat dibedakan dengan jujur."
+    }
+  ],
+  "syntax": [
+    {
+      "token": "Konteks / Tujuan / Batasan / Format",
+      "readAs": "Baca sebagai empat bagian prompt: situasi yang Anda hadapi, hasil yang ingin dicapai, aturan yang harus dipatuhi, dan bentuk jawaban yang diminta.",
+      "meaning": "Prompt yang lengkap mengurangi tebakan. Konteks memberi bahan, tujuan mengarahkan bantuan, batasan mencegah jawaban yang tidak diinginkan, dan format membuat hasil mudah diperiksa.",
+      "example": "Konteks: form login React. Tujuan: mencari sebab validasi tidak berjalan. Batasan: beri petunjuk, bukan solusi. Format: tiga langkah pemeriksaan.",
+      "output": "Jawaban berisi langkah pemeriksaan yang dapat Anda uji sendiri, bukan blok kode panjang tanpa penjelasan.",
+      "pitfall": "Menulis prompt satu kalimat tanpa konteks lalu menganggap jawaban yang tidak relevan sebagai kesalahan AI sepenuhnya."
+    },
+    {
+      "token": "Beri petunjuk, bukan solusi lengkap",
+      "readAs": "Minta AI memandu langkah berikutnya tanpa menyerahkan jawaban akhir.",
+      "meaning": "Batasan ini menjaga latihan berpikir tetap pada Anda. Anda tetap harus menguji, memahami, dan menuliskan perbaikan dengan kata sendiri.",
+      "example": "Ajukan tiga pertanyaan yang membantu saya menemukan penyebabnya.",
+      "output": "AI memberi pertanyaan atau petunjuk, lalu Anda menjawab dan menguji dugaan.",
+      "pitfall": "Meminta solusi lengkap pada menit pertama, lalu menempelkannya tanpa memahami alasan perubahan."
+    },
+    {
+      "token": "Klaim → dokumentasi resmi → uji kecil → status",
+      "readAs": "Baca sebagai alur verifikasi: catat klaim, cari sumber resmi, jalankan uji minimal, lalu tandai terverifikasi atau belum.",
+      "meaning": "AI dapat menghasilkan jawaban yang terdengar meyakinkan tetapi salah. Verifikasi mengubah klaim menjadi pengetahuan yang dapat Anda pertanggungjawabkan.",
+      "example": "Klaim: localStorage menyimpan objek. Dokumentasi: hanya string. Uji: objek berubah menjadi [object Object].",
+      "output": "Klaim ditolak atau diterima berdasarkan bukti, bukan berdasarkan keyakinan pada AI.",
+      "pitfall": "Memverifikasi dengan bertanya lagi ke AI yang sama. Sumber harus independen dan dapat diperiksa."
+    }
+  ],
+  "conventions": [
+    "Tulis konteks, tujuan, batasan, dan format sebelum mengirim prompt.",
+    "Minta petunjuk atau pertanyaan sebelum meminta solusi lengkap.",
+    "Verifikasi setiap klaim teknis pada dokumentasi resmi dan uji kecil yang dapat dijalankan.",
+    "Jangan memasukkan kata sandi, kunci API, data pribadi, atau kode rahasia ke prompt.",
+    "Tulis ulang penjelasan dengan kata sendiri dan simpan bukti penalaran Anda.",
+    "Cantumkan bantuan AI bila aturan akademik atau tempat kerja mewajibkannya."
+  ],
+  "sections": [
+    {
+      "id": "cara-membaca",
+      "title": "Cara membaca prompt dan hasil verifikasi",
+      "body": [
+        "Prompt yang baik terasa seperti instruksi kepada rekan kerja yang belum melihat layar Anda. Ia memuat situasi, hasil yang diinginkan, batasan, dan bentuk jawaban. Semakin jelas batasannya, semakin kecil kemungkinan AI mengambil alih pekerjaan yang seharusnya Anda latih sendiri.",
+        "Saat membaca jawaban AI, pisahkan klaim dari saran. Klaim tentang perilaku API, versi, atau sintaks harus diverifikasi. Saran tentang langkah berikutnya dapat Anda pertimbangkan, tetapi tetap Anda uji. Jangan menyalin kode sebelum memahami input, proses, dan output-nya.",
+        "Verifikasi memerlukan sumber independen. Buka dokumentasi resmi, catat versi yang dibahas, lalu jalankan uji kecil di lingkungan Anda. Jika hasil uji berbeda dari klaim, percayai bukti yang dapat diulang. Simpan catatan verifikasi agar Anda tidak mengulang pemeriksaan yang sama."
+      ],
+      "code": {
+        "language": "text",
+        "lab": false,
+        "code": "Konteks  : Saya membuat form login di React dan validasi tidak berjalan.\nTujuan   : Menemukan penyebab sebelum mengubah kode.\nBatasan  : Beri petunjuk dan pertanyaan, bukan solusi lengkap.\nFormat   : Tiga langkah pemeriksaan yang dapat saya uji.\nVerifikasi: Saya akan mencocokkan saran dengan dokumentasi resmi.",
+        "output": "AI diarahkan memberi langkah pemeriksaan, dan Anda tetap memegang kendali atas verifikasi serta perbaikan.",
+        "explain": "Lima baris ini memisahkan konteks, tujuan, batasan, format, dan rencana verifikasi. Baris terakhir menjaga Anda dari menyalin jawaban tanpa bukti.",
+        "annotations": [
+          {
+            "line": 1,
+            "code": "Konteks  : Saya membuat form login di React dan validasi tidak berjalan.",
+            "note": "Konteks menyebut teknologi dan gejala, bukan asumsi tentang penyebab."
+          },
+          {
+            "line": 2,
+            "code": "Tujuan   : Menemukan penyebab sebelum mengubah kode.",
+            "note": "Tujuan membatasi bantuan pada diagnosis, bukan penulisan ulang seluruh form."
+          },
+          {
+            "line": 3,
+            "code": "Batasan  : Beri petunjuk dan pertanyaan, bukan solusi lengkap.",
+            "note": "Batasan menjaga latihan berpikir tetap pada Anda."
+          },
+          {
+            "line": 4,
+            "code": "Format   : Tiga langkah pemeriksaan yang dapat saya uji.",
+            "note": "Format yang diminta membuat jawaban mudah diperiksa dan dijalankan."
+          },
+          {
+            "line": 5,
+            "code": "Verifikasi: Saya akan mencocokkan saran dengan dokumentasi resmi.",
+            "note": "Rencana verifikasi menyatakan bahwa jawaban AI bukan sumber akhir."
+          }
+        ]
+      },
+      "callouts": [
+        {
+          "tone": "bad",
+          "title": "Jangan pernah menempelkan rahasia",
+          "body": "Kunci API, kata sandi, token, dan data pelanggan tidak boleh masuk ke prompt. Ganti dengan nilai contoh yang tidak nyata."
+        }
+      ],
+      "checkpoint": {
+        "prompt": "Tulis satu prompt empat bagian untuk masalah yang sedang Anda hadapi, lalu tambahkan satu rencana verifikasi.",
+        "success": "Prompt memuat konteks, tujuan, batasan, format, dan sumber independen yang akan Anda periksa."
+      }
+    },
+    {
+      "id": "ai-tutor",
+      "title": "AI sebagai tutor, bukan mesin jawaban",
+      "body": [
+        "AI generatif menghasilkan jawaban dalam hitungan detik, dan itu sumber risikonya. Pola mesin jawaban sederhana: tempel soal, salin solusi, lanjut. Pekerjaan berpikir yang seharusnya melatih Anda justru dilewati. Pola tutor berbeda: Anda meminta petunjuk, pertanyaan pemandu, penjelasan alternatif, atau cara memeriksa pekerjaan sendiri. Tujuannya bukan jawaban tercepat, melainkan memahami mengapa jawaban itu benar.",
+        "Gunakan AI setelah mencoba sendiri. Tulis dugaan, langkah yang sudah dicoba, dan pesan error sebelum membuka percakapan. Mintalah bantuan pada titik terkecil yang macet, misalnya satu baris yang tidak dipahami. Anda juga dapat meminta AI memberi pertanyaan balik, memeriksa penalaran, atau membandingkan dua pendekatan beserta trade-off. Cara ini menjaga Anda sebagai pelaku, bukan penonton.",
+        "Ketergantungan muncul ketika rasa tidak nyaman saat macet selalu diselesaikan dengan bertanya. Beri diri sendiri batas usaha, misalnya lima belas menit, sebelum meminta bantuan. Catat pemahaman dan celahnya. Anda bertanggung jawab atas kode atau keputusan yang dihasilkan; AI tidak menanggung akibatnya. Posisi yang sehat adalah tutor yang membantu berpikir, bukan pengganti berpikir."
+      ],
+      "callouts": [
+        {
+          "tone": "bad",
+          "title": "Menyalin tanpa berpikir",
+          "body": "Menempel soal lalu menyalin jawaban memang cepat, tetapi Anda kehilangan latihan. Coba sendiri dahulu, lalu minta petunjuk."
+        }
+      ],
+      "checkpoint": {
+        "prompt": "Apa perbedaan permintaan 'selesaikan soal ini' dan 'tunjukkan di bagian mana penalaran saya keliru'?",
+        "success": "Anda menjelaskan bahwa permintaan pertama mengambil alih berpikir, sedangkan permintaan kedua memakai AI sebagai tutor."
+      }
+    },
+    {
+      "id": "prompt-konteks",
+      "title": "Prompt dengan konteks dan batasan",
+      "body": [
+        "Prompt terlalu umum menghasilkan jawaban terlalu umum. Pertanyaan 'bagaimana cara membuat website' tidak memberi konteks tentang kemampuan, alat, tujuan, atau batasan Anda. Prompt yang baik memuat lima bagian: tujuan, kondisi saat ini, apa yang sudah dicoba, batasan lingkungan, dan bentuk keluaran. Semakin jelas konteks, semakin kecil ruang bagi AI untuk mengisi celah dengan asumsi yang tidak sesuai.",
+        "Contoh: 'Saya belajar JavaScript dan membuat kalkulator belanja dengan HTML biasa. Fungsi saya mengembalikan NaN ketika input kosong. Saya sudah mencoba Number(), tetapi hasilnya tetap salah. Jelaskan kemungkinan penyebabnya, beri satu petunjuk lebih dahulu, dan sebutkan cara mengujinya tanpa memberi solusi lengkap.' Prompt ini memberi tujuan, konteks, error, batasan, dan bentuk bantuan.",
+        "Percakapan dapat dilanjutkan secara iteratif. Jika jawaban terlalu sulit, minta penjelasan pada tingkat Anda. Jika terlalu umum, beri contoh kode setelah menghapus data sensitif. Minta AI menyatakan asumsi dan mengajukan pertanyaan jika konteks kurang. Anda juga dapat meminta rujukan ke dokumentasi resmi serta daftar hal yang membuat jawaban itu mungkin salah."
+      ],
+      "callouts": [
+        {
+          "tone": "good",
+          "title": "Kerangka lima bagian",
+          "body": "Tujuan, kondisi saat ini, yang sudah dicoba, batasan lingkungan, dan bentuk keluaran. Lima bagian ini mencegah AI menebak terlalu banyak."
+        }
+      ],
+      "checkpoint": {
+        "prompt": "Tulis satu prompt untuk masalah error yang memuat kelima bagian kerangka.",
+        "success": "Anda menyebut tujuan, kondisi kode, upaya sebelumnya, versi atau alat, dan bentuk bantuan yang diminta."
+      }
+    },
+    {
+      "id": "verifikasi-halusinasi",
+      "title": "Verifikasi dokumentasi dan halusinasi",
+      "body": [
+        "Model bahasa memprediksi teks yang tampak masuk akal, bukan memeriksa kebenaran. Karena itu AI dapat berhalusinasi: nama fungsi yang tidak ada, parameter salah, sintaks versi lama, kutipan palsu, atau penjelasan yang terdengar meyakinkan tetapi keliru. Nada percaya diri bukan bukti kebenaran. Semakin spesifik klaimnya, semakin mudah diverifikasi dan semakin penting untuk memeriksanya.",
+        "Verifikasi pertama adalah dokumentasi resmi. Untuk JavaScript gunakan MDN; untuk performa web gunakan web.dev; untuk framework gunakan dokumentasi versi Anda. Periksa nama metode, tipe parameter, nilai kembalian, dan perilaku error. Cocokkan versi karena jawaban AI sering mencampur sintaks lama dan baru. Jika dokumentasi tidak menjawab, jalankan eksperimen kecil yang dapat diulang.",
+        "Eksperimen minimal lebih kuat daripada penjelasan panjang. Jalankan kode di lingkungan yang sama, baca pesan error, uji input normal dan batas, lalu catat hasilnya. Minta AI menunjukkan sumber, lalu buka untuk memastikan keberadaannya. Jika klaim tidak dapat diverifikasi, tandai sebagai belum terverifikasi dan jangan dipakai untuk keputusan penting. Dokumentasi menjadi acuan sampai ada bukti yang dapat diulang."
+      ],
+      "callouts": [
+        {
+          "tone": "bad",
+          "title": "Nada yakin bukan bukti",
+          "body": "Jawaban yang percaya diri tetap bisa salah. Jalankan kode dan buka dokumentasi resmi sebelum memakainya."
+        }
+      ],
+      "checkpoint": {
+        "prompt": "Sebutkan dua cara memverifikasi nama metode yang diberikan AI.",
+        "success": "Anda menyebut memeriksa dokumentasi resmi versi terkait dan menjalankan uji kecil untuk melihat perilakunya."
+      }
+    },
+    {
+      "id": "privasi-data",
+      "title": "Privasi: jangan memasukkan rahasia dan data pribadi",
+      "body": [
+        "Prompt dapat disimpan, dicatat, ditinjau, atau dipakai untuk pelatihan tergantung layanan dan pengaturannya. Perlakukan prompt seperti pesan yang mungkin terbaca orang lain. Jangan menempelkan kunci API, kata sandi, token, data pribadi, data pelanggan, atau kode yang belum dirilis. Satu kunci yang bocor dapat membuka akun, data, atau biaya layanan.",
+        "Sebelum mengirim, redaksi. Ganti nama dengan nilai pengganti, hapus nilai rahasia, dan buat contoh minimal yang hanya memuat bagian relevan. Jika terlanjur mengirim kunci, anggap kunci itu bocor: cabut, ganti, periksa log, dan ikuti prosedur insiden. Untuk pekerjaan sensitif, gunakan alat yang disetujui organisasi atau model lokal sesuai kebijakan.",
+        "NIST AI Risk Management Framework menempatkan privasi, keamanan, dan tata kelola sebagai bagian dari manajemen risiko AI. Sebelum memakai alat, tanyakan data apa yang masuk, siapa yang dapat melihat, berapa lama disimpan, dan apa dampaknya jika bocor. Jika jawabannya tidak jelas, jangan kirim data sensitif."
+      ],
+      "callouts": [
+        {
+          "tone": "bad",
+          "title": "Jangan menempel .env",
+          "body": "File konfigurasi sering berisi kunci dan kata sandi. Gunakan nilai pengganti, lalu simpan rahasia di lingkungan yang aman."
+        }
+      ],
+      "checkpoint": {
+        "prompt": "Sebutkan tiga jenis data yang tidak boleh dimasukkan ke prompt layanan AI publik.",
+        "success": "Anda menyebut kunci atau token, data pribadi, dan kode atau informasi rahasia organisasi."
+      }
+    },
+    {
+      "id": "etika-hak-cipta",
+      "title": "Etika, hak cipta, dan kejujuran akademik",
+      "body": [
+        "Kode yang dihasilkan AI tidak otomatis menjadi milik Anda atau bebas dari kewajiban lisensi. Model dilatih pada banyak sumber, dan potongan keluaran dapat menyerupai kode yang sudah ada. Periksa lisensi proyek, syarat layanan, dan kebijakan tempat Anda bekerja. Jangan menyalin kode yang tidak Anda pahami, terutama kode dengan lisensi yang membatasi penggunaan.",
+        "Dalam pendidikan, aturan kelas dan lembaga tetap berlaku. AI mungkin diizinkan sebagai tutor tetapi tidak untuk menghasilkan tugas yang dikumpulkan. Jika penggunaan AI diizinkan, catat bantuan yang dipakai sesuai kebijakan. Menyerahkan kode hasil AI tanpa pemahaman dan tanpa keterangan dapat dianggap pelanggaran kejujuran akademik, meskipun kode itu berjalan.",
+        "Etika juga mencakup dampak yang lebih luas: bias pada keluaran, biaya lingkungan, kerja manusia di balik data, dan aksesibilitas. Gunakan AI untuk mempercepat pemahaman, bukan menutupi ketidakmampuan. Jika hasilnya dipakai untuk orang lain, pastikan Anda dapat menjelaskan asal-usul, batasan, dan risikonya."
+      ],
+      "callouts": [
+        {
+          "tone": "good",
+          "title": "Tiga pertanyaan sebelum memakai",
+          "body": "Apakah aturan mengizinkan? Apakah saya memahami hasilnya? Apakah saya dapat menjelaskan sumbernya? Jika ada jawaban tidak, tunda."
+        }
+      ],
+      "checkpoint": {
+        "prompt": "Mengapa kode yang berjalan belum tentu boleh dikumpulkan sebagai karya sendiri?",
+        "success": "Anda menyebut aturan akademik, pemahaman penulis, dan kewajiban atribusi atau lisensi."
+      }
+    },
+    {
+      "id": "kapan-tidak-bukti",
+      "title": "Kapan tidak memakai AI dan cara menyimpan bukti penalaran",
+      "body": [
+        "Ada situasi ketika AI tidak tepat dipakai. Ujian atau tugas yang melarangnya, keputusan keamanan yang tidak dapat diuji, urusan medis, hukum, atau keuangan berisiko tinggi, serta pekerjaan dengan data sensitif memerlukan prosedur dan penanggung jawab manusia. AI juga kurang tepat ketika tujuan utamanya melatih keterampilan dasar. Jika Anda belum bisa menilai kebenaran jawaban, bantuan AI justru menambah risiko.",
+        "Untuk tugas yang boleh dibantu, simpan jejak penalaran sendiri. Tulis dugaan dan langkah Anda sebelum bertanya, catat prompt yang dipakai, dan simpan diff atau commit yang menunjukkan perubahan. Bedakan bagian yang Anda tulis, bagian yang diadaptasi, dan bagian yang disarankan AI. Jejak ini melindungi Anda dan membantu melihat pola kesalahan sendiri.",
+        "Bukti penalaran tidak harus rumit. Jurnal singkat, riwayat commit, tautan dokumentasi, hasil tes, dan catatan error sudah cukup. Yang penting adalah Anda dapat menjelaskan setiap baris yang dipertahankan: mengapa ada, apa yang dilakukan, dan bagaimana Anda tahu itu benar. AI boleh membantu berpikir, tetapi Anda harus mampu mempertanggungjawabkan hasilnya. Jika tidak dapat menjelaskannya tanpa membuka jawaban AI, jangan menyerahkannya."
+      ],
+      "callouts": [
+        {
+          "tone": "good",
+          "title": "Aturan satu kalimat",
+          "body": "Jika tidak dapat menjelaskan suatu baris tanpa membuka jawaban AI, jangan memakainya."
+        }
+      ],
+      "checkpoint": {
+        "prompt": "Sebutkan tiga bukti yang dapat menunjukkan bahwa penalaran sebuah solusi berasal dari Anda.",
+        "success": "Anda menyebut catatan sebelum bertanya, riwayat commit atau diff, dan penjelasan ulang tanpa bantuan."
+      }
+    }
+  ],
+  "practice": [
+    {
+      "id": "latihan-1",
+      "title": "Tutor, bukan solusi",
+      "task": "Ambil satu bug kecil, coba selesaikan sendiri selama lima belas menit, lalu minta AI memberi petunjuk tanpa solusi lengkap.",
+      "steps": [
+        "Tulis dugaan awal dan langkah yang sudah dicoba sebelum membuka AI.",
+        "Minta satu petunjuk terkecil, lalu kerjakan kembali tanpa melihat jawaban.",
+        "Catat bagian yang berubah dan apa yang akhirnya Anda pahami."
+      ],
+      "expected": "Catatan percobaan awal, satu petunjuk, dan penjelasan perbaikan dengan kata sendiri.",
+      "stretch": "Ulangi bug serupa tanpa AI untuk melihat apakah pola pemecahannya sudah terbawa.",
+      "level": "guided",
+      "hints": [
+        "Pilih bug kecil yang belum Anda selesaikan.",
+        "Coba sendiri selama lima belas menit sebelum membuka percakapan dengan AI.",
+        "Minta satu petunjuk, lalu tulis perbaikan dengan kata sendiri."
+      ],
+      "starterCode": "Bug:\nPercobaan sendiri:\nPetunjuk yang diminta:\nPerbaikan dengan kata sendiri:",
+      "verification": {
+        "command": "Minta satu petunjuk untuk bug kecil dan tulis ulang penyelesaiannya.",
+        "expected": "Catatan menunjukkan usaha awal, satu petunjuk, dan penjelasan perbaikan tanpa menyalin jawaban.",
+        "evidence": "Simpan catatan percobaan dan penjelasan sendiri."
+      }
+    },
+    {
+      "id": "latihan-2",
+      "title": "Prompt lima bagian",
+      "task": "Tulis dua versi prompt untuk satu tugas: versi singkat dan versi yang memuat tujuan, kondisi, usaha sebelumnya, batasan, dan bentuk keluaran.",
+      "steps": [
+        "Tulis pertanyaan singkat yang biasa Anda gunakan.",
+        "Susun versi lengkap dengan kelima bagian dan minta AI menyatakan asumsinya.",
+        "Bandingkan kualitas, panjang, dan kegunaan kedua jawaban."
+      ],
+      "expected": "Dua prompt dan catatan perbedaan jawaban yang benar-benar berguna.",
+      "stretch": "Minta AI mengajukan tiga pertanyaan klarifikasi sebelum menjawab, lalu jawab pertanyaan itu.",
+      "level": "independent",
+      "hints": [
+        "Tulis versi singkat berisi satu kalimat permintaan.",
+        "Tulis versi lengkap dengan tujuan, kondisi, usaha sebelumnya, batasan, dan format.",
+        "Bandingkan jawaban yang benar-benar membantu, bukan yang paling panjang."
+      ],
+      "starterCode": "Prompt singkat:\n\nPrompt lengkap:\nKonteks:\nTujuan:\nUsaha sebelumnya:\nBatasan:\nFormat:",
+      "verification": {
+        "command": "Bandingkan dua versi prompt untuk satu tugas yang sama.",
+        "expected": "Versi lengkap menghasilkan jawaban yang lebih spesifik dan dapat diuji, dengan perbedaan yang Anda catat.",
+        "evidence": "Simpan kedua prompt dan catatan perbedaan jawabannya."
+      }
+    },
+    {
+      "id": "latihan-3",
+      "title": "Verifikasi satu klaim",
+      "task": "Minta AI menjelaskan satu metode atau API, lalu verifikasi klaimnya di dokumentasi resmi dan dengan uji kecil.",
+      "steps": [
+        "Catat klaim utama dan versi lingkungan yang Anda pakai.",
+        "Buka dokumentasi resmi dan periksa nama, parameter, serta nilai kembalian.",
+        "Jalankan contoh minimal dan tulis hasilnya, termasuk jika gagal."
+      ],
+      "expected": "Tabel kecil berisi klaim, sumber resmi, hasil uji, dan status terverifikasi.",
+      "stretch": "Cari satu klaim yang tidak dapat diverifikasi dan jelaskan mengapa klaim itu tidak boleh dipakai.",
+      "level": "transfer",
+      "hints": [
+        "Pilih satu klaim teknis yang dapat diuji, misalnya perilaku penyimpanan atau format tanggal.",
+        "Cari dokumentasi resmi dan catat versi yang dibahas.",
+        "Jalankan uji kecil untuk membandingkan klaim dengan kenyataan."
+      ],
+      "starterCode": "Klaim:\nSumber resmi:\nVersi:\nUji kecil:\nHasil:\nStatus:",
+      "verification": {
+        "command": "Verifikasi satu klaim AI dengan dokumentasi dan uji kecil.",
+        "expected": "Tabel menunjukkan klaim, sumber, hasil uji, dan status terverifikasi atau ditolak.",
+        "evidence": "Simpan tautan sumber, potongan uji, dan kesimpulan."
+      }
+    }
+  ],
+  "verification": {
+    "mode": "catatan",
+    "command": "Kerjakan Latihan 2 dan Latihan 3, lalu gabungkan hasilnya dalam satu catatan.",
+    "expected": "Anda dapat menunjukkan prompt berkonteks, perbedaan jawaban, dan satu klaim yang sudah diverifikasi secara independen.",
+    "evidence": "Simpan prompt, catatan perbedaan, sumber resmi, dan hasil uji."
+  },
+  "troubleshooting": [
+    {
+      "symptom": "Jawaban AI terdengar benar, tetapi kode gagal saat dijalankan.",
+      "cause": "AI dapat menghasilkan sintaks atau perilaku yang tidak sesuai versi yang Anda pakai.",
+      "fix": "Periksa versi, cocokkan dengan dokumentasi resmi, dan jalankan uji kecil sebelum memakai kode."
+    },
+    {
+      "symptom": "Anda tergoda menempelkan kunci API ke prompt.",
+      "cause": "Kebutuhan konteks terasa lebih penting daripada risiko kebocoran.",
+      "fix": "Ganti rahasia dengan nilai contoh, jelaskan strukturnya tanpa nilai asli, dan rotasi kunci bila sudah telanjur dikirim."
+    },
+    {
+      "symptom": "Anda tidak dapat menjelaskan kode yang dihasilkan AI.",
+      "cause": "Kode dipakai tanpa membaca input, proses, dan output-nya.",
+      "fix": "Tulis ulang bagian penting dengan kata sendiri, tambahkan komentar alasan, dan uji setiap cabang sebelum memakai."
+    },
+    {
+      "symptom": "Dua jawaban AI saling bertentangan.",
+      "cause": "Model dapat menghasilkan klaim berbeda untuk pertanyaan yang sama.",
+      "fix": "Jangan memilih jawaban yang paling meyakinkan. Verifikasi keduanya pada dokumentasi dan uji perilaku nyata."
+    }
+  ],
+  "quiz": {
+    "questions": [
+      {
+        "id": "q1",
+        "type": "recall",
+        "question": "Apa yang dimaksud halusinasi pada AI generatif?",
+        "options": [
+          "AI menolak menjawab pertanyaan yang sulit",
+          "AI selalu memberikan jawaban yang terlalu panjang",
+          "AI menghasilkan klaim yang terdengar meyakinkan tetapi salah"
+        ],
+        "answer": 2,
+        "explanation": "Halusinasi adalah keluaran yang tampak meyakinkan, tetapi tidak sesuai fakta atau dokumentasi."
+      },
+      {
+        "id": "q2",
+        "type": "scenario",
+        "question": "Anda akan meminta bantuan AI untuk error pada kode yang memakai kunci API. Apa yang harus dilakukan sebelum mengirim prompt?",
+        "options": [
+          "Menghapus atau mengganti kunci API dengan nilai pengganti",
+          "Mengirim seluruh file .env agar AI memahami konteks",
+          "Menuliskan kunci API di judul prompt agar mudah dicari"
+        ],
+        "answer": 0,
+        "explanation": "Rahasia tidak boleh masuk ke prompt. Redaksi nilai sensitif dan gunakan contoh minimal."
+      },
+      {
+        "id": "q3",
+        "type": "scenario",
+        "question": "AI memberikan solusi yang tampak benar. Langkah verifikasi paling kuat adalah apa?",
+        "options": [
+          "Meminta AI memastikan bahwa jawabannya benar",
+          "Membandingkan dengan dokumentasi resmi dan menjalankan uji kecil",
+          "Melihat jumlah suka pada jawaban tersebut"
+        ],
+        "answer": 1,
+        "explanation": "Verifikasi yang kuat memakai sumber resmi dan bukti yang dapat dijalankan, bukan keyakinan AI."
+      }
+    ]
+  },
+  "resources": [
+    {
+      "sourceId": "nist-ai-rmf",
+      "note": "Kerangka resmi untuk memahami risiko AI, termasuk privasi, keamanan, dan tata kelola."
+    },
+    {
+      "sourceId": "cornell-gai",
+      "note": "Panduan pusat pembelajaran universitas tentang penggunaan AI sebagai mitra belajar, termasuk pitfall dan kebijakan kelas."
+    }
+  ],
+  "summary": [
+    "AI sebagai tutor memberi petunjuk dan pertanyaan; AI sebagai mesin jawaban mengambil alih latihan berpikir.",
+    "Prompt yang baik memuat konteks, tujuan, batasan, dan format yang dapat diperiksa.",
+    "Setiap klaim teknis diverifikasi pada dokumentasi resmi dan uji kecil, bukan pada AI yang sama.",
+    "Jangan memasukkan rahasia atau data pribadi, patuhi etika dan hak cipta, serta simpan bukti penalaran sendiri."
+  ],
+  "next": "Modul 01 selesai. Berikutnya Modul 02: dekomposisi masalah dan pseudocode. Anda akan memecah masalah besar menjadi langkah yang dapat ditulis dan diuji."
+}

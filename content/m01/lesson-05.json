@@ -1,0 +1,421 @@
+{
+  "id": "m01-l05",
+  "title": "Belajar aktif: mengingat kembali, jeda berulang, dan proyek kecil",
+  "minutes": 90,
+  "level": "Dasar",
+  "depth": "fondasi",
+  "schema": 3.1,
+  "codeLanguage": "text",
+  "outcome": "Setelah pelajaran ini, Anda dapat membedakan membaca pasif dari latihan mengingat, menyusun jadwal ulangan berjeda, merancang latihan terarah dengan umpan balik, dan membangun proyek kecil sebagai bukti kemajuan.",
+  "objectives": [
+    "Membedakan membaca pasif dari retrieval practice dan menjelaskan mengapa upaya mengingat memperkuat pemahaman.",
+    "Menyusun jadwal spaced repetition serta interleaving untuk keterampilan pemrograman.",
+    "Merancang sesi deliberate practice dengan target spesifik, umpan balik, dan tingkat kesulitan yang tepat.",
+    "Membangun proyek kecil, jurnal belajar, dan review mingguan sebagai bukti kemajuan."
+  ],
+  "prerequisites": [
+    {
+      "label": "Apa itu program, perangkat lunak, dan aplikasi",
+      "lessonId": "m01-l01"
+    },
+    {
+      "label": "Klien-server: bagaimana web bekerja",
+      "lessonId": "m01-l02"
+    }
+  ],
+  "terms": [
+    {
+      "term": "Retrieval practice",
+      "definition": "Latihan menarik kembali informasi dari ingatan tanpa melihat catatan, sehingga ingatan diperkuat dan celah pemahaman terlihat."
+    },
+    {
+      "term": "Spaced repetition",
+      "definition": "Menjadwalkan pengulangan pada interval yang makin jarang agar materi diingat lebih lama."
+    },
+    {
+      "term": "Interleaving",
+      "definition": "Mencampur beberapa jenis topik atau soal dalam satu sesi latihan, bukan mengulang satu jenis sampai habis."
+    },
+    {
+      "term": "Deliberate practice",
+      "definition": "Latihan terarah pada bagian yang lemah, dengan target jelas, umpan balik, dan pengulangan yang disesuaikan."
+    },
+    {
+      "term": "Blank page testing",
+      "definition": "Menutup semua materi lalu menulis ulang konsep, langkah, atau kode dari ingatan di halaman kosong."
+    },
+    {
+      "term": "Artefak belajar",
+      "definition": "Hasil nyata yang dapat diperiksa, misalnya catatan, kode, repositori, atau demo, yang menjadi bukti proses belajar."
+    }
+  ],
+  "syntax": [
+    {
+      "token": "tutup catatan → tulis dari ingatan → periksa celah",
+      "readAs": "Baca sebagai satu putaran latihan mengingat: sembunyikan bantuan, hasilkan jawaban sendiri, lalu bandingkan.",
+      "meaning": "Upaya mengingat memaksa otak mengambil kembali informasi, bukan sekadar mengenalinya saat membaca. Perbedaan antara ingatan dan catatan menunjukkan bagian yang perlu diulang.",
+      "example": "Tutup pelajaran, tulis lima istilah, lalu buka catatan dan tandai yang terlewat.",
+      "output": "Daftar celah yang konkret, bukan perasaan sudah paham.",
+      "pitfall": "Membuka catatan terlalu cepat. Rasa familiar saat membaca bukan bukti bahwa Anda dapat menjelaskan tanpa bantuan."
+    },
+    {
+      "token": "Hari 0 / 1 / 3 / 7 / 14",
+      "readAs": "Baca sebagai jadwal ulangan berjeda: latihan pertama, lalu ulangan pada jarak yang makin panjang.",
+      "meaning": "Jeda memberi waktu bagi ingatan untuk melemah sedikit, sehingga upaya mengingat kembali menjadi latihan yang berarti. Jarak yang makin panjang memperkuat ingatan jangka panjang.",
+      "example": "Hari 0 baca, hari 1 jelaskan, hari 3 kerjakan latihan, hari 7 bangun ulang, hari 14 ajarkan.",
+      "output": "Setiap sesi memakai bentuk latihan berbeda dan menghasilkan bukti yang dapat diperiksa.",
+      "pitfall": "Menumpuk semua ulangan pada satu hari. Latihan intensif sekali tidak menggantikan pengulangan berjeda."
+    },
+    {
+      "token": "Target: satu fungsi benar tanpa melihat contoh",
+      "readAs": "Baca sebagai target latihan yang spesifik, terukur, dan dapat diselesaikan dalam satu sesi.",
+      "meaning": "Latihan terarah membutuhkan target sempit, tingkat kesulitan yang sedikit di atas kemampuan, dan umpan balik cepat. Target kabur seperti belajar JavaScript tidak dapat dinilai.",
+      "example": "Target: menulis fungsi validasi email dengan tiga kasus uji dalam 20 menit.",
+      "output": "Anda dapat menyatakan berhasil atau belum berdasarkan bukti, bukan perasaan.",
+      "pitfall": "Memilih target yang terlalu besar lalu berpindah-pindah tanpa menyelesaikan satu pun."
+    }
+  ],
+  "conventions": [
+    "Mulai setiap sesi dengan mengingat kembali materi sebelumnya tanpa membuka catatan.",
+    "Jadwalkan ulangan pada hari 1, 3, 7, dan 14, bukan hanya sekali setelah membaca.",
+    "Campur jenis soal dalam satu sesi agar Anda berlatih memilih pendekatan, bukan mengulang pola yang sama.",
+    "Tetapkan target sesi yang dapat diselesaikan dan dibuktikan dalam waktu terbatas.",
+    "Simpan artefak belajar berupa kode, catatan error, dan penjelasan sendiri.",
+    "Tinjau kemajuan setiap minggu berdasarkan bukti, bukan jumlah jam duduk."
+  ],
+  "sections": [
+    {
+      "id": "cara-membaca",
+      "title": "Cara membaca jadwal ulangan dan bukti belajar",
+      "body": [
+        "Jadwal ulangan bukan kalender hafalan. Setiap sesi harus memiliki bentuk latihan yang berbeda: menjelaskan dari ingatan, mengerjakan soal, membangun ulang dari halaman kosong, lalu mengajarkan kepada orang lain. Perbedaan bentuk memaksa Anda memakai pengetahuan dengan cara yang berbeda.",
+        "Bukti belajar lebih jujur daripada perasaan. Catat apa yang dapat Anda kerjakan tanpa bantuan, bagian yang masih perlu dilihat, dan kesalahan yang berulang. Jika Anda hanya mencatat sudah belajar dua jam, Anda tidak memiliki informasi untuk memperbaiki cara belajar berikutnya.",
+        "Proyek kecil mengubah pengetahuan menjadi artefak. Pilih alat yang dapat selesai dalam beberapa sesi, misalnya pencatat pengeluaran sederhana. Batasi fitur sejak awal, tulis tiga kasus uji, dan akhiri dengan README. Proyek yang selesai lebih berharga daripada proyek besar yang tidak pernah dipakai."
+      ],
+      "code": {
+        "language": "text",
+        "lab": false,
+        "code": "Hari 0  : baca materi dan tulis ringkasan sendiri\nHari 1  : tutup catatan, jelaskan alur dari ingatan\nHari 3  : kerjakan latihan tanpa melihat contoh\nHari 7  : bangun ulang solusi dari halaman kosong\nHari 14 : ajarkan ke orang lain atau tulis panduan singkat",
+        "output": "Lima sesi dengan bentuk latihan berbeda, masing-masing menghasilkan bukti yang dapat diperiksa.",
+        "explain": "Setiap baris menjawab kapan mengulang dan apa yang harus dihasilkan. Jeda makin panjang, tugas makin mandiri.",
+        "annotations": [
+          {
+            "line": 1,
+            "code": "Hari 0  : baca materi dan tulis ringkasan sendiri",
+            "note": "Sesi pertama tetap aktif karena Anda menulis ringkasan dengan kata sendiri."
+          },
+          {
+            "line": 2,
+            "code": "Hari 1  : tutup catatan, jelaskan alur dari ingatan",
+            "note": "Ulangan pertama memakai penjelasan lisan atau tulisan tanpa bantuan."
+          },
+          {
+            "line": 3,
+            "code": "Hari 3  : kerjakan latihan tanpa melihat contoh",
+            "note": "Bentuk latihan berubah dari menjelaskan menjadi mengerjakan."
+          },
+          {
+            "line": 4,
+            "code": "Hari 7  : bangun ulang solusi dari halaman kosong",
+            "note": "Halaman kosong menguji kemampuan memulai tanpa petunjuk."
+          },
+          {
+            "line": 5,
+            "code": "Hari 14 : ajarkan ke orang lain atau tulis panduan singkat",
+            "note": "Mengajarkan menuntut pemahaman yang dapat dipakai ulang, bukan hafalan."
+          }
+        ]
+      },
+      "callouts": [
+        {
+          "tone": "good",
+          "title": "Satu sesi, satu bukti",
+          "body": "Akhiri setiap sesi dengan sesuatu yang dapat ditunjukkan: potongan kode, penjelasan, atau daftar celah. Bukti kecil lebih berguna daripada catatan panjang tanpa hasil."
+        }
+      ],
+      "checkpoint": {
+        "prompt": "Tutup pelajaran ini, lalu tulis lima konsep dan satu contoh kode dari ingatan. Buka kembali catatan dan tandai yang terlewat.",
+        "success": "Anda menghasilkan daftar dari ingatan dan mengenali minimal satu celah yang perlu diulang."
+      }
+    },
+    {
+      "id": "membaca-pasif",
+      "title": "Membaca pasif dan rasa paham yang menipu",
+      "body": [
+        "Membaca materi terasa produktif karena halaman bertambah dan istilah mulai akrab. Namun rasa akrab belum sama dengan kemampuan mengingat. Pengenalan terjadi saat jawaban terlihat; pemanggilan kembali menuntut Anda menghasilkan jawaban tanpa petunjuk. Dalam pemrograman, Anda bisa lancar membaca kode orang lain tetapi bingung menulis fungsi serupa tanpa contoh.",
+        "Membaca, menonton, dan menandai teks berguna untuk paparan awal. Masalah muncul ketika aktivitas itu menjadi satu-satunya cara belajar. Membaca ulang membuat materi makin familiar, tetapi familiarity sering disalahartikan sebagai penguasaan. Stabilo dan catatan rapi juga bisa menunda berpikir tanpa retrieval.",
+        "Cara mendeteksi jebakan ini sederhana. Tutup materi, lalu jelaskan konsep utama dengan kata sendiri atau tulis potongan kode yang baru dipelajari. Jika penjelasan macet, itu informasi tentang bagian yang perlu diulang, bukan tanda kegagalan. Ubah ukuran kemajuan dari seberapa banyak yang dibaca menjadi seberapa banyak yang dapat dihasilkan tanpa bantuan."
+      ],
+      "callouts": [
+        {
+          "tone": "bad",
+          "title": "Rasa paham yang menipu",
+          "body": "Materi yang terasa jelas saat dibaca belum tentu dapat dipakai saat menulis kode. Uji dengan menutup sumber dan membuat ulang dari ingatan."
+        }
+      ],
+      "checkpoint": {
+        "prompt": "Tanpa membuka materi, jelaskan perbedaan pengenalan dan pemanggilan kembali.",
+        "success": "Anda menyebut bahwa pengenalan terjadi saat jawaban terlihat, sedangkan pemanggilan kembali menuntut jawaban tanpa petunjuk."
+      }
+    },
+    {
+      "id": "retrieval-practice",
+      "title": "Retrieval practice: menarik, bukan menempel",
+      "body": [
+        "Retrieval practice adalah latihan mengambil informasi dari ingatan tanpa melihat catatan. Bentuknya bisa menjawab pertanyaan, menulis ringkasan dari halaman kosong, menjelaskan konsep, atau membuat ulang fungsi. Efeknya disebut testing effect: mengeluarkan informasi memperkuat ingatan lebih banyak daripada memasukkannya berulang kali. Kesulitan saat mengingat adalah bagian dari latihan.",
+        "Untuk pemrograman, retrieval harus melibatkan produksi, bukan hanya pengenalan istilah. Setelah membaca tentang loop, tutup materi dan tulis loop yang menghitung total harga. Setelah mempelajari percabangan, tulis aturan diskon tanpa contoh. Bandingkan hasil Anda dengan sumber; perbandingan itu menunjukkan bagian yang benar, yang keliru, dan alasannya.",
+        "Agar tidak menjadi hafalan kosong, sertakan variasi dan konteks. Mintalah diri sendiri memprediksi output, mencari bug, atau menjelaskan trade-off dua pendekatan. Simpan pertanyaan dan jawaban terpisah agar Anda tidak melihat petunjuk. Lakukan retrieval singkat dan sering, lalu catat kesalahan sebagai bahan latihan berikutnya."
+      ],
+      "callouts": [
+        {
+          "tone": "good",
+          "title": "Protokol tiga menit",
+          "body": "Tutup materi, tulis tiga hal yang Anda ingat, satu contoh, dan satu pertanyaan yang masih menggantung. Baru kemudian periksa sumber."
+        }
+      ],
+      "checkpoint": {
+        "prompt": "Sebutkan satu cara melakukan retrieval practice untuk materi fungsi.",
+        "success": "Anda menulis ulang definisi dan contoh fungsi dari ingatan, lalu membandingkannya dengan sumber."
+      }
+    },
+    {
+      "id": "spaced-repetition",
+      "title": "Spaced repetition: mengulang pada waktu yang tepat",
+      "body": [
+        "Spaced repetition menjadwalkan pengulangan pada interval yang makin jarang. Ingatan melemah seiring waktu, dan upaya mengingat kembali saat mulai lupa memperkuat ingatan. Belajar semalam sebelum ujian menempel sementara, tetapi cepat hilang. Jeda beberapa hari terasa lebih sulit karena sebagian materi sudah kabur; usaha mengingat dalam kondisi itulah yang membantu, ditambah peran tidur dalam konsolidasi.",
+        "Jadwal sederhana dimulai pada hari ke-0, 1, 3, 7, 14, dan 30. Hari ke-0 belajar awal; hari ke-1 halaman kosong; hari ke-3 latihan soal atau kode serupa; hari ke-7 proyek kecil; hari ke-14 review campuran; hari ke-30 menjelaskan ulang atau membangun dari nol. Sesuaikan interval dengan tingkat kesulitan, dan ulangi lebih rapat materi yang sering salah.",
+        "Spacing bukan berarti menambah jam tanpa batas. Dua sesi singkat pada dua hari berbeda biasanya lebih baik daripada satu sesi panjang. Letakkan jadwal di kalender sebagai janji. Jika satu sesi terlewat, lanjutkan dari titik terdekat tanpa menumpuk semua materi. Setiap review harus menghasilkan sesuatu yang dapat diperiksa; tanpa keluaran, review mudah menjadi membaca pasif."
+      ],
+      "callouts": [
+        {
+          "tone": "good",
+          "title": "Aturan jeda",
+          "body": "Jika materi masih mudah diingat, tunggu lebih lama. Jika hampir lupa, ulangi lebih cepat. Jadwal melayani ingatan."
+        }
+      ],
+      "checkpoint": {
+        "prompt": "Mengapa mengulang materi pada hari ke-3 dan ke-7 lebih berguna daripada membaca ulang tiga kali dalam satu malam?",
+        "success": "Anda menyebut jeda memaksa retrieval, memberi waktu konsolidasi, dan mengurangi ilusi hafalan jangka pendek."
+      }
+    },
+    {
+      "id": "interleaving-deliberate-practice",
+      "title": "Interleaving dan deliberate practice",
+      "body": [
+        "Interleaving berarti mencampur beberapa jenis topik atau soal dalam satu sesi, bukan mengerjakan satu jenis sampai habis. Contohnya, satu sesi berisi soal array, object, dan fungsi secara bergantian, atau membaca error lalu menulis tes. Awalnya hasilnya terasa lebih buruk karena otak harus memilih pendekatan setiap kali. Namun kemampuan memilih itulah yang dibutuhkan di proyek nyata, ketika jenis masalah tidak diberi label.",
+        "Deliberate practice menambahkan arah pada latihan. Tidak cukup mengulang banyak soal; Anda perlu menargetkan bagian yang lemah. Jika kesalahan sering pada kondisi batas, latih input kosong, angka negatif, dan data berlebih. Jika sulit menjelaskan kode, latih menulis komentar dan penjelasan langkah demi langkah. Target harus spesifik, terukur, dan cukup sulit tetapi masih dapat dicapai.",
+        "Umpan balik membuat latihan terarah. Sumbernya bisa berupa tes otomatis, pesan error, perbandingan dengan solusi rujukan, atau review orang lain. Setelah mendapat umpan balik, ulangi latihan dengan variasi kecil. Jangan hanya membaca penyebab kesalahan; perbaiki, jalankan, lalu ulangi tanpa melihat. Siklus prediksi, eksekusi, bandingkan, dan perbaiki adalah inti deliberate practice."
+      ],
+      "callouts": [
+        {
+          "tone": "bad",
+          "title": "Latihan tanpa target",
+          "body": "Mengerjakan soal acak selama berjam-jam tanpa mencatat pola kesalahan jarang menghasilkan perbaikan. Tentukan satu keterampilan yang ingin diperbaiki."
+        }
+      ],
+      "checkpoint": {
+        "prompt": "Rancang satu latihan deliberate practice untuk kelemahan Anda pada validasi input.",
+        "success": "Anda menyebut target spesifik, contoh kasus, sumber umpan balik, dan rencana pengulangan."
+      }
+    },
+    {
+      "id": "proyek-kecil",
+      "title": "Proyek kecil sebagai laboratorium",
+      "body": [
+        "Proyek kecil mengubah pengetahuan terpisah menjadi keterampilan menyatu. Materi tentang input, validasi, fungsi, dan error baru terasa nyata ketika dipakai dalam satu program. Batasi proyek pada satu tugas pengguna yang jelas dan selesai dalam dua sampai enam jam, misalnya kalkulator belanja atau pencatat pengeluaran. Yang penting bukan kerumitan, melainkan alur lengkap dari input sampai output.",
+        "Mulai dengan spesifikasi satu paragraf: pengguna, input, output, aturan, dan apa yang tidak termasuk. Tentukan definisi selesai sebelum menulis kode. Contohnya: menerima tiga input, menolak input tidak valid dengan pesan jelas, menghasilkan total benar, punya tiga kasus uji, dan README singkat. Dengan batas ini, Anda dapat berhenti pada versi 0.1 tanpa terjebak menambah fitur.",
+        "Kerjakan secara vertikal: buat satu alur tipis dari awal sampai akhir, lalu perbaiki. Hindari membangun semua bagian terpisah tanpa pernah menjalankan keseluruhan. Simpan perubahan dalam commit kecil dengan pesan yang jelas. Setelah selesai, lakukan retrospeksi: bagian mana yang paling sulit, konsep apa yang perlu diulang, dan apa yang akan dicoba lain kali."
+      ],
+      "callouts": [
+        {
+          "tone": "good",
+          "title": "Definisi selesai",
+          "body": "Tuliskan tiga sampai lima kriteria yang dapat diperiksa. Jika kriteria terpenuhi, hentikan penambahan fitur dan simpan versi tersebut."
+        }
+      ],
+      "checkpoint": {
+        "prompt": "Tulis definisi selesai untuk proyek kalkulator belanja versi 0.1.",
+        "success": "Anda menyebut input, aturan validasi, output, kasus uji, dan dokumentasi minimum."
+      }
+    },
+    {
+      "id": "jurnal-review",
+      "title": "Jurnal belajar, review mingguan, dan bukti kemajuan",
+      "body": [
+        "Jurnal belajar adalah alat berpikir, bukan diari harian. Catat tanggal, tujuan sesi, apa yang dicoba, error, sumber, dan satu hal yang dapat dijelaskan ulang tanpa bantuan. Cukup lima sampai sepuluh menit di akhir sesi. Catatan ini menunjukkan topik yang sering salah dan jenis bantuan yang terlalu cepat diambil.",
+        "Review mingguan memberi jarak untuk menilai arah. Sisihkan tiga puluh menit setiap akhir minggu untuk membaca jurnal, memeriksa artefak, dan memilih satu fokus berikutnya. Tanyakan: apa yang sekarang bisa saya kerjakan, apa yang masih rapuh, dan bukti apa yang menunjukkan kemajuan? Dari jawaban itu, susun jadwal spacing dan pilih satu proyek kecil.",
+        "Ukur kemajuan dengan artefak, bukan perasaan sibuk. Artefak dapat berupa program berjalan, repositori dengan riwayat commit, tes yang lulus, README, catatan error, atau rekaman penjelasan. Jam belajar dan jumlah video adalah ukuran masukan. Bandingkan artefak sekarang dengan dua minggu lalu: apakah kode lebih rapi, error lebih cepat ditemukan, atau proyek lebih cepat selesai?"
+      ],
+      "callouts": [
+        {
+          "tone": "good",
+          "title": "Tiga bukti",
+          "body": "Setiap minggu kumpulkan satu artefak, satu catatan error, dan satu penjelasan ulang. Ketiganya menunjukkan hasil, proses, dan pemahaman."
+        }
+      ],
+      "checkpoint": {
+        "prompt": "Sebutkan tiga artefak yang dapat menjadi bukti kemajuan belajar, bukan sekadar jam belajar.",
+        "success": "Anda menyebut hasil yang dapat diperiksa, misalnya program berjalan, riwayat commit, tes, atau penjelasan ulang."
+      }
+    }
+  ],
+  "practice": [
+    {
+      "id": "latihan-1",
+      "title": "Halaman kosong",
+      "task": "Tutup pelajaran ini, lalu tulis dari ingatan delapan konsep dan satu potongan kode.",
+      "steps": [
+        "Siapkan halaman kosong dan batasi waktu sepuluh menit.",
+        "Tulis konsep, contoh, dan satu pertanyaan yang belum terjawab.",
+        "Buka sumber, tandai bagian yang keliru, lalu jadwalkan ulangan besok."
+      ],
+      "expected": "Delapan butir tanpa bantuan dan daftar celah yang jelas.",
+      "stretch": "Ulangi tiga hari kemudian tanpa melihat hasil pertama, lalu bandingkan keduanya.",
+      "level": "guided",
+      "hints": [
+        "Tutup pelajaran sebelum menulis.",
+        "Tulis delapan konsep dan satu potongan kode tanpa membuka catatan.",
+        "Buka catatan, lalu tandai bagian yang salah atau terlewat."
+      ],
+      "starterCode": "Konsep 1:\nKonsep 2:\nKonsep 3:\nKonsep 4:\nKonsep 5:\nKonsep 6:\nKonsep 7:\nKonsep 8:\nKode:",
+      "verification": {
+        "command": "Lakukan satu halaman kosong, lalu bandingkan dengan catatan.",
+        "expected": "Delapan butir ditulis tanpa bantuan dan daftar celah ditandai dengan jelas.",
+        "evidence": "Simpan hasil halaman kosong dan daftar celah."
+      }
+    },
+    {
+      "id": "latihan-2",
+      "title": "Jadwal spacing 14 hari",
+      "task": "Pilih tiga topik, lalu susun ulangan pada hari ke-0, 1, 3, 7, dan 14 dengan keluaran berbeda setiap sesi.",
+      "steps": [
+        "Tentukan tanggal mulai dan tiga topik yang akan diulang.",
+        "Tetapkan keluaran: ringkasan, soal, kode, atau penjelasan lisan.",
+        "Sisipkan sesi campuran yang menggabungkan ketiga topik pada hari ke-7."
+      ],
+      "expected": "Kalender 14 hari dengan lima sesi dan keluaran yang dapat diperiksa.",
+      "stretch": "Tambahkan aturan: topik yang sering salah diulang lebih rapat.",
+      "level": "independent",
+      "hints": [
+        "Pilih tiga topik yang saling terkait.",
+        "Tentukan bentuk latihan berbeda untuk hari 0, 1, 3, 7, dan 14.",
+        "Tulis keluaran yang dapat diperiksa pada setiap sesi."
+      ],
+      "starterCode": "Topik:\nHari 0:\nHari 1:\nHari 3:\nHari 7:\nHari 14:",
+      "verification": {
+        "command": "Susun kalender ulangan 14 hari untuk tiga topik.",
+        "expected": "Lima sesi memiliki bentuk latihan berbeda dan keluaran yang dapat diperiksa.",
+        "evidence": "Simpan kalender dan hasil sesi pertama."
+      }
+    },
+    {
+      "id": "latihan-3",
+      "title": "Proyek kecil 90 menit",
+      "task": "Bangun satu alat kecil yang menerima input, memvalidasinya, dan menghasilkan output, lalu simpan sebagai artefak.",
+      "steps": [
+        "Tulis spesifikasi satu paragraf dan definisi selesai sebelum menulis kode.",
+        "Bangun satu alur vertikal dari input sampai output, lalu uji tiga kasus.",
+        "Simpan kode, README singkat, dan catatan retrospeksi di satu folder."
+      ],
+      "expected": "Program berjalan, tiga kasus uji, README, dan catatan pembelajaran berikutnya.",
+      "stretch": "Minta orang lain menjalankan program tanpa penjelasan, lalu catat bagian yang membingungkan.",
+      "level": "transfer",
+      "hints": [
+        "Pilih alat kecil dengan satu input, satu validasi, dan satu output.",
+        "Batasi fitur agar dapat selesai dalam beberapa sesi.",
+        "Sertakan tiga kasus uji dan README singkat."
+      ],
+      "starterCode": "Nama proyek:\nInput:\nValidasi:\nOutput:\nKasus uji 1:\nKasus uji 2:\nKasus uji 3:",
+      "verification": {
+        "command": "Bangun satu proyek kecil dan jalankan tiga kasus uji.",
+        "expected": "Program berjalan, tiga kasus uji tercatat, dan README menjelaskan cara menjalankannya.",
+        "evidence": "Simpan folder proyek, output uji, dan catatan pembelajaran berikutnya."
+      }
+    }
+  ],
+  "verification": {
+    "mode": "catatan",
+    "command": "Kerjakan Latihan 1 dan Latihan 2, lalu jalankan sesi pertama dari jadwal Anda.",
+    "expected": "Anda memiliki bukti halaman kosong, daftar celah, dan jadwal ulangan yang benar-benar dimulai.",
+    "evidence": "Simpan hasil halaman kosong, kalender, dan catatan sesi pertama."
+  },
+  "troubleshooting": [
+    {
+      "symptom": "Materi terasa jelas saat dibaca, tetapi kosong saat diminta menulis kode.",
+      "cause": "Membaca membangun rasa familiar, bukan kemampuan mengambil kembali informasi.",
+      "fix": "Ganti sebagian waktu membaca dengan halaman kosong, lalu ulangi bagian yang tidak dapat Anda tulis."
+    },
+    {
+      "symptom": "Jadwal ulangan ditinggalkan setelah beberapa hari.",
+      "cause": "Target terlalu besar atau jadwal tidak terhubung dengan aktivitas nyata.",
+      "fix": "Perkecil sesi menjadi 15 sampai 20 menit, tempelkan jadwal pada kalender, dan hubungkan setiap sesi dengan satu keluaran."
+    },
+    {
+      "symptom": "Proyek kecil tidak selesai karena terus menambah fitur.",
+      "cause": "Batasan proyek tidak ditulis sejak awal.",
+      "fix": "Tulis tiga fitur wajib dan daftar fitur yang ditunda. Selesaikan versi pertama sebelum menambah apa pun."
+    },
+    {
+      "symptom": "Latihan terasa mudah sehingga tidak ada kemajuan.",
+      "cause": "Tingkat kesulitan terlalu rendah dan tidak ada umpan balik.",
+      "fix": "Naikkan satu tingkat: hilangkan contoh, tambahkan kasus tepi, atau minta orang lain menilai penjelasan Anda."
+    }
+  ],
+  "quiz": {
+    "questions": [
+      {
+        "id": "q1",
+        "type": "recall",
+        "question": "Apa yang dimaksud dengan retrieval practice?",
+        "options": [
+          "Membaca ulang catatan sampai materi terasa familiar",
+          "Menarik kembali informasi dari ingatan tanpa melihat catatan",
+          "Menonton ulang video dengan kecepatan ganda"
+        ],
+        "answer": 1,
+        "explanation": "Retrieval practice menuntut Anda menghasilkan informasi dari ingatan, bukan sekadar mengenalinya saat jawaban terlihat."
+      },
+      {
+        "id": "q2",
+        "type": "scenario",
+        "question": "Anda sudah membaca materi tiga kali dan merasa paham, tetapi saat menulis fungsi dari nol Anda bingung. Langkah paling tepat adalah apa?",
+        "options": [
+          "Membaca sekali lagi dengan stabilo",
+          "Menonton video lain tentang topik yang sama",
+          "Menutup materi, mencoba menulis ulang, lalu membandingkan dengan sumber"
+        ],
+        "answer": 2,
+        "explanation": "Kebingungan saat menulis menunjukkan pengenalan belum menjadi pemanggilan; menulis dari ingatan memperlihatkan celahnya."
+      },
+      {
+        "id": "q3",
+        "type": "scenario",
+        "question": "Mengapa menjadwalkan ulangan beberapa hari setelah belajar lebih baik daripada belajar semalam sebelum ujian?",
+        "options": [
+          "Karena jeda memaksa retrieval dan memberi waktu konsolidasi ingatan",
+          "Karena belajar semalam membuat otak terlalu penuh",
+          "Karena ulangan hanya efektif pada pagi hari"
+        ],
+        "answer": 0,
+        "explanation": "Jeda membuat ingatan sedikit melemah sehingga upaya mengingat kembali lebih menantang dan lebih memperkuat penyimpanan jangka panjang."
+      }
+    ]
+  },
+  "resources": [
+    {
+      "sourceId": "cornell-study-strategies",
+      "note": "Panduan pusat pembelajaran universitas tentang retrieval practice, blank page testing, interleaving, dan spaced practice."
+    },
+    {
+      "sourceId": "cornell-study-schedule",
+      "note": "Saran praktis untuk menyusun jadwal belajar yang realistis dan berkelanjutan."
+    }
+  ],
+  "summary": [
+    "Membaca pasif membangun rasa familiar; latihan mengingat mengubahnya menjadi kemampuan yang dapat dibuktikan.",
+    "Spacing, interleaving, dan latihan terarah bekerja bersama untuk memperkuat ingatan jangka panjang.",
+    "Target sesi harus spesifik, dapat diselesaikan, dan memiliki bukti.",
+    "Proyek kecil, jurnal belajar, dan tinjauan mingguan menghasilkan artefak yang lebih jujur daripada jumlah jam belajar."
+  ],
+  "next": "Berikutnya: memakai AI sebagai tutor dengan aman. Anda akan menulis prompt berkonteks dan memverifikasi setiap klaim sebelum memakainya."
+}

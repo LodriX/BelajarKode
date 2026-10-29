@@ -1,0 +1,117 @@
+{
+  "id": "m06",
+  "title": "Git dan Kolaborasi",
+  "subtitle": "Riwayat perubahan, branch, review, dan dokumentasi",
+  "weeks": [
+    22,
+    23
+  ],
+  "accent": "#8b5cf6",
+  "goal": "Mengelola kode dengan commit yang bermakna dan dapat kembali ke versi stabil.",
+  "lessons": [
+    {
+      "id": "m06-l01",
+      "title": "Git dan repository",
+      "minutes": 45,
+      "level": "Menengah",
+      "intro": "Git melacak perubahan file secara lokal. Repository menyimpan riwayat commit; GitHub/GitLab adalah layanan hosting repository dan kolaborasi.",
+      "explanation": "Pahami working tree, staging area, commit, dan remote. Git bekerja offline; push memerlukan jaringan dan remote yang tersedia.",
+      "code": "git init\ngit status\ngit add .\ngit commit -m \"feat: buat halaman utama\"",
+      "codeLanguage": "bash",
+      "practice": [
+        "Buat repository latihan dan tiga commit berbeda dengan pesan yang menjelaskan perubahan.",
+        "Ubah satu input atau asumsi pada contoh, catat hasil dan jelaskan alasannya."
+      ],
+      "bestPractice": "Commit kecil, fokus, dan berisi perubahan yang bekerja.",
+      "commonMistake": "Menyatukan seluruh perubahan seminggu dalam satu commit sulit direview.",
+      "quiz": {
+        "question": "Apa prinsip yang paling tepat untuk topik “Git dan repository”?",
+        "options": [
+          "Commit kecil, fokus, dan berisi perubahan yang bekerja.",
+          "Gunakan solusi paling rumit sejak awal, meski kebutuhan belum jelas.",
+          "Lewati pengujian karena contoh kecil pasti benar."
+        ],
+        "answer": 0,
+        "explanation": "Commit kecil, fokus, dan berisi perubahan yang bekerja."
+      }
+    },
+    {
+      "id": "m06-l02",
+      "title": "Branch, merge, dan pull request",
+      "minutes": 45,
+      "level": "Menengah",
+      "intro": "Branch memisahkan pengembangan fitur dari cabang utama. Pull request/MR memberi tempat review sebelum merge.",
+      "explanation": "Gunakan branch feat/nama-fitur atau fix/nama-bug. Baca diff, lakukan review diri, pastikan test lolos sebelum merge. Konflik merge adalah hal normal.",
+      "code": "git switch -c feat/checklist\ngit status\n# setelah perubahan\ngit add .\ngit commit -m \"feat: tambah checklist\"",
+      "codeLanguage": "bash",
+      "practice": [
+        "Buat branch fitur, ubah satu file, commit, lalu merge kembali ke main.",
+        "Ubah satu input atau asumsi pada contoh, catat hasil dan jelaskan alasannya."
+      ],
+      "bestPractice": "Lindungi main dan review diff sebelum menyatukan perubahan.",
+      "commonMistake": "Mengedit langsung di branch produksi untuk setiap eksperimen.",
+      "quiz": {
+        "question": "Apa prinsip yang paling tepat untuk topik “Branch, merge, dan pull request”?",
+        "options": [
+          "Lindungi main dan review diff sebelum menyatukan perubahan.",
+          "Gunakan solusi paling rumit sejak awal, meski kebutuhan belum jelas.",
+          "Lewati pengujian karena contoh kecil pasti benar."
+        ],
+        "answer": 0,
+        "explanation": "Lindungi main dan review diff sebelum menyatukan perubahan."
+      }
+    },
+    {
+      "id": "m06-l03",
+      "title": ".gitignore, secret, dan README",
+      "minutes": 45,
+      "level": "Menengah",
+      "intro": "Tidak semua file pantas masuk Git: .env, private key, token, hasil build, cache, dan dependency vendor umumnya diabaikan. README menjelaskan cara setup dan menjalankan proyek.",
+      "explanation": "Rahasia yang sudah ter-commit harus dianggap bocor dan dirotasi, bukan cukup dihapus dari commit berikutnya. Tulis .env.example tanpa credential sesungguhnya.",
+      "code": "# .gitignore\n.env\nnode_modules/\nvendor/\n.DS_Store\n# commit .env.example tanpa password asli",
+      "codeLanguage": "bash",
+      "practice": [
+        "Buat README berisi tujuan aplikasi, prasyarat, instalasi, struktur folder, dan langkah pengujian.",
+        "Ubah satu input atau asumsi pada contoh, catat hasil dan jelaskan alasannya."
+      ],
+      "bestPractice": "Jangan commit rahasia; sediakan contoh konfigurasi yang aman.",
+      "commonMistake": "Menyertakan password database di repo privat karena dianggap aman.",
+      "quiz": {
+        "question": "Apa prinsip yang paling tepat untuk topik “.gitignore, secret, dan README”?",
+        "options": [
+          "Jangan commit rahasia; sediakan contoh konfigurasi yang aman.",
+          "Gunakan solusi paling rumit sejak awal, meski kebutuhan belum jelas.",
+          "Lewati pengujian karena contoh kecil pasti benar."
+        ],
+        "answer": 0,
+        "explanation": "Jangan commit rahasia; sediakan contoh konfigurasi yang aman."
+      }
+    },
+    {
+      "id": "m06-l04",
+      "title": "Review kode dan konvensi",
+      "minutes": 45,
+      "level": "Menengah",
+      "intro": "Review memeriksa kebenaran, keamanan, keterbacaan, dampak perubahan, dan kecukupan tes. Format otomatis mengurangi debat gaya.",
+      "explanation": "Tulis nama variabel bermakna, batasi fungsi kompleks, dan dokumentasikan keputusan non-obvious. Perhatikan arsitektur sebelum melakukan optimasi mikro.",
+      "code": "// Buruk: x = a * b\n// Lebih baik:\nconst totalHarga = hargaSatuan * jumlahBarang;",
+      "codeLanguage": "javascript",
+      "practice": [
+        "Ambil fungsi lama; ubah nama variabel dan pecah tugas tanpa mengubah hasil.",
+        "Ubah satu input atau asumsi pada contoh, catat hasil dan jelaskan alasannya."
+      ],
+      "bestPractice": "Utamakan kode yang jelas bagi rekan kerja dan diri sendiri di masa depan.",
+      "commonMistake": "Memilih kode tersingkat tetapi sulit dipahami.",
+      "quiz": {
+        "question": "Apa prinsip yang paling tepat untuk topik “Review kode dan konvensi”?",
+        "options": [
+          "Utamakan kode yang jelas bagi rekan kerja dan diri sendiri di masa depan.",
+          "Gunakan solusi paling rumit sejak awal, meski kebutuhan belum jelas.",
+          "Lewati pengujian karena contoh kecil pasti benar."
+        ],
+        "answer": 0,
+        "explanation": "Utamakan kode yang jelas bagi rekan kerja dan diri sendiri di masa depan."
+      }
+    }
+  ]
+}

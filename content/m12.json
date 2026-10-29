@@ -1,0 +1,195 @@
+{
+  "id": "m12",
+  "title": "Proyek Akhir: Bangun Aplikasi Nyata",
+  "subtitle": "Menggabungkan seluruh konsep menjadi proyek portofolio",
+  "weeks": [
+    44,
+    48
+  ],
+  "accent": "#16a34a",
+  "goal": "Menyelesaikan MVP web–API–mobile beserta dokumentasi dan tes.",
+  "lessons": [
+    {
+      "id": "m12-l01",
+      "title": "Menulis PRD dan user story",
+      "minutes": 45,
+      "level": "Lanjutan",
+      "intro": "PRD mencatat masalah, pengguna, tujuan, scope, alur, acceptance criteria, kebutuhan non-fungsional, dan risiko. User story berbunyi: sebagai [peran], saya ingin [aksi], sehingga [manfaat].",
+      "explanation": "Pilih aplikasi manajemen tugas/persediaan sederhana, bukan langsung sistem enterprise. Tentukan MVP jelas dan hal-hal di luar scope. Jadikan acceptance criteria dapat diuji.",
+      "code": "// Story: sebagai pengguna, saya bisa membuat tugas\n// Acceptance:\n// judul wajib, sukses muncul di daftar,\n// error tidak menghilangkan input.",
+      "codeLanguage": "javascript",
+      "practice": [
+        "Buat PRD 1–2 halaman untuk aplikasi task manager web dan Flutter.",
+        "Ubah satu input atau asumsi pada contoh, catat hasil dan jelaskan alasannya."
+      ],
+      "bestPractice": "Definisikan keberhasilan yang bisa diverifikasi, bukan fitur sebanyak mungkin.",
+      "commonMistake": "Memulai coding tanpa merumuskan siapa pengguna dan masalahnya.",
+      "quiz": {
+        "question": "Apa prinsip yang paling tepat untuk topik “Menulis PRD dan user story”?",
+        "options": [
+          "Definisikan keberhasilan yang bisa diverifikasi, bukan fitur sebanyak mungkin.",
+          "Gunakan solusi paling rumit sejak awal, meski kebutuhan belum jelas.",
+          "Lewati pengujian karena contoh kecil pasti benar."
+        ],
+        "answer": 0,
+        "explanation": "Definisikan keberhasilan yang bisa diverifikasi, bukan fitur sebanyak mungkin."
+      }
+    },
+    {
+      "id": "m12-l02",
+      "title": "ERD, data dictionary, dan migrasi",
+      "minutes": 45,
+      "level": "Lanjutan",
+      "intro": "Dari kebutuhan, turunkan tabel, atribut, tipe, constraints, dan relasi. Tulis data dictionary agar nama dan makna kolom seragam.",
+      "explanation": "Pertimbangkan owner_id, created_at, updated_at, status, dan indeks. Jangan menyimpan password sendiri; gunakan mekanisme auth framework.",
+      "code": "users: id, name, email\ntasks: id, user_id, title, status, due_date\nindex: tasks(user_id, status)",
+      "codeLanguage": "javascript",
+      "practice": [
+        "Gambar ERD dan tulis constraints untuk users dan tasks.",
+        "Ubah satu input atau asumsi pada contoh, catat hasil dan jelaskan alasannya."
+      ],
+      "bestPractice": "Review model data sebelum membuat controller dan UI.",
+      "commonMistake": "Mengubah skema produksi langsung tanpa migrasi berversi.",
+      "quiz": {
+        "question": "Apa prinsip yang paling tepat untuk topik “ERD, data dictionary, dan migrasi”?",
+        "options": [
+          "Review model data sebelum membuat controller dan UI.",
+          "Gunakan solusi paling rumit sejak awal, meski kebutuhan belum jelas.",
+          "Lewati pengujian karena contoh kecil pasti benar."
+        ],
+        "answer": 0,
+        "explanation": "Review model data sebelum membuat controller dan UI."
+      }
+    },
+    {
+      "id": "m12-l03",
+      "title": "Membuat API dan test kontrak",
+      "minutes": 45,
+      "level": "Lanjutan",
+      "intro": "Rancang REST endpoints dari kebutuhan, implementasikan Laravel routes, Form Request, policies, Resource, dan tests.",
+      "explanation": "Tentukan error shape, filter, sort, pagination, serta batas akses per user. Gunakan database test terpisah dari produksi.",
+      "code": "GET /api/tasks\nPOST /api/tasks\nPATCH /api/tasks/{id}\nDELETE /api/tasks/{id}",
+      "codeLanguage": "javascript",
+      "practice": [
+        "Bangun endpoint daftar dan tambah tugas dengan status 401, 403, 422, 201 diuji.",
+        "Ubah satu input atau asumsi pada contoh, catat hasil dan jelaskan alasannya."
+      ],
+      "bestPractice": "Kunci perilaku API dengan feature tests sebelum menambah klien mobile.",
+      "commonMistake": "Menguji seluruh API hanya dari Postman secara manual.",
+      "quiz": {
+        "question": "Apa prinsip yang paling tepat untuk topik “Membuat API dan test kontrak”?",
+        "options": [
+          "Kunci perilaku API dengan feature tests sebelum menambah klien mobile.",
+          "Gunakan solusi paling rumit sejak awal, meski kebutuhan belum jelas.",
+          "Lewati pengujian karena contoh kecil pasti benar."
+        ],
+        "answer": 0,
+        "explanation": "Kunci perilaku API dengan feature tests sebelum menambah klien mobile."
+      }
+    },
+    {
+      "id": "m12-l04",
+      "title": "Dashboard web Laravel",
+      "minutes": 45,
+      "level": "Lanjutan",
+      "intro": "Bangun dashboard berbasis Blade/Livewire yang memanfaatkan backend sama. Buat komponen daftar, form, filter, konfirmasi hapus, serta feedback status.",
+      "explanation": "Pisahkan presentasi, request validation dan domain logic. Uji responsive dan akses keyboard. Pastikan halaman privat tidak bocor lewat caching.",
+      "code": "// Screen web:\n// Daftar tugas -> filter -> tambah -> edit\n// state: loading, empty, error, success",
+      "codeLanguage": "javascript",
+      "practice": [
+        "Bangun halaman daftar dan form tambah/edit dengan validasi dan penanda error.",
+        "Ubah satu input atau asumsi pada contoh, catat hasil dan jelaskan alasannya."
+      ],
+      "bestPractice": "Terapkan responsive, aksesibilitas, dan otorisasi di semua aksi.",
+      "commonMistake": "Hanya menyembunyikan menu admin tetapi route backend terbuka.",
+      "quiz": {
+        "question": "Apa prinsip yang paling tepat untuk topik “Dashboard web Laravel”?",
+        "options": [
+          "Terapkan responsive, aksesibilitas, dan otorisasi di semua aksi.",
+          "Gunakan solusi paling rumit sejak awal, meski kebutuhan belum jelas.",
+          "Lewati pengujian karena contoh kecil pasti benar."
+        ],
+        "answer": 0,
+        "explanation": "Terapkan responsive, aksesibilitas, dan otorisasi di semua aksi."
+      }
+    },
+    {
+      "id": "m12-l05",
+      "title": "Flutter client untuk API yang sama",
+      "minutes": 45,
+      "level": "Lanjutan",
+      "intro": "Buat aplikasi Flutter daftar dan detail tugas menggunakan API Laravel. Sertakan login, error state, loading, dan penyimpanan lokal secukupnya.",
+      "explanation": "Gunakan model typed, repository, dan state management sesuai kebutuhan. Uji kondisi API lambat/offline, dan back navigation setelah pengeditan.",
+      "code": "// Arsitektur klien:\n// Widget -> ViewModel -> TaskRepository -> HttpClient\n// Model Task.fromJson mengubah payload API.",
+      "codeLanguage": "javascript",
+      "practice": [
+        "Implementasikan daftar tugas Flutter dan buat skenario API mengembalikan 500.",
+        "Ubah satu input atau asumsi pada contoh, catat hasil dan jelaskan alasannya."
+      ],
+      "bestPractice": "Jangan menaruh rahasia backend dalam binary mobile.",
+      "commonMistake": "Aplikasi crash ketika API gagal atau tidak ada internet.",
+      "quiz": {
+        "question": "Apa prinsip yang paling tepat untuk topik “Flutter client untuk API yang sama”?",
+        "options": [
+          "Jangan menaruh rahasia backend dalam binary mobile.",
+          "Gunakan solusi paling rumit sejak awal, meski kebutuhan belum jelas.",
+          "Lewati pengujian karena contoh kecil pasti benar."
+        ],
+        "answer": 0,
+        "explanation": "Jangan menaruh rahasia backend dalam binary mobile."
+      }
+    },
+    {
+      "id": "m12-l06",
+      "title": "Uji keamanan, deploy, dan backup",
+      "minutes": 45,
+      "level": "Lanjutan",
+      "intro": "Sebelum merilis, lakukan test, static analysis, review akses, review secret, backup, staging migration, healthcheck, dan penilaian risiko.",
+      "explanation": "Gunakan domain HTTPS, log, pemantauan uptime, dan prosedur rollback. Dokumentasikan langkah deploy dalam runbook; uji restore pada tempat terpisah.",
+      "code": "// Checklist go-live:\n// [ ] tests pass\n// [ ] authorization reviewed\n// [ ] secrets safe\n// [ ] backup restore tested\n// [ ] healthcheck & rollback",
+      "codeLanguage": "javascript",
+      "practice": [
+        "Susun runbook go-live, backup, rollback, dan monitoring untuk satu aplikasi Laravel.",
+        "Ubah satu input atau asumsi pada contoh, catat hasil dan jelaskan alasannya."
+      ],
+      "bestPractice": "Rilis terukur dengan bukti pengujian dan prosedur pemulihan.",
+      "commonMistake": "Menyatakan siap produksi hanya karena halaman login bisa dibuka.",
+      "quiz": {
+        "question": "Apa prinsip yang paling tepat untuk topik “Uji keamanan, deploy, dan backup”?",
+        "options": [
+          "Rilis terukur dengan bukti pengujian dan prosedur pemulihan.",
+          "Gunakan solusi paling rumit sejak awal, meski kebutuhan belum jelas.",
+          "Lewati pengujian karena contoh kecil pasti benar."
+        ],
+        "answer": 0,
+        "explanation": "Rilis terukur dengan bukti pengujian dan prosedur pemulihan."
+      }
+    },
+    {
+      "id": "m12-l07",
+      "title": "Refleksi, portfolio, dan langkah lanjut",
+      "minutes": 45,
+      "level": "Lanjutan",
+      "intro": "Portofolio harus menjelaskan masalah, keputusan arsitektur, apa yang diuji, trade-off, dan demonstrasi fungsional. Skill dinilai dari kemampuan memecahkan masalah mandiri.",
+      "explanation": "Setelah capstone, lanjutkan React+TypeScript bila butuh SPA kompleks, Redis untuk antrean/cache, atau deployment lebih maju. Pertahankan satu stack utama sampai kuat.",
+      "code": "// Ringkas dalam README:\n// masalah -> solusi -> arsitektur -> screenshot\n// setup -> test -> deployment -> catatan keamanan",
+      "codeLanguage": "javascript",
+      "practice": [
+        "Tulis README proyek final dan demo 5 menit yang menjelaskan alur data end-to-end.",
+        "Ubah satu input atau asumsi pada contoh, catat hasil dan jelaskan alasannya."
+      ],
+      "bestPractice": "Tunjukkan trade-off dan bukti kemampuan, bukan hanya screenshot UI.",
+      "commonMistake": "Berpindah framework baru sebelum menyelesaikan satu aplikasi.",
+      "quiz": {
+        "question": "Apa prinsip yang paling tepat untuk topik “Refleksi, portfolio, dan langkah lanjut”?",
+        "options": [
+          "Tunjukkan trade-off dan bukti kemampuan, bukan hanya screenshot UI.",
+          "Gunakan solusi paling rumit sejak awal, meski kebutuhan belum jelas.",
+          "Lewati pengujian karena contoh kecil pasti benar."
+        ],
+        "answer": 0,
+        "explanation": "Tunjukkan trade-off dan bukti kemampuan, bukan hanya screenshot UI."
+      }
+    }
+  ]
+}

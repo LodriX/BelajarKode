@@ -1,0 +1,401 @@
+{
+  "id": "m00-l06",
+  "title": "Phishing, malware, dan rekayasa sosial",
+  "minutes": 90,
+  "level": "Dasar",
+  "depth": "fondasi",
+  "schema": 3.1,
+  "codeLanguage": "text",
+  "outcome": "Setelah pelajaran ini, Anda dapat membaca indikator phishing pada email, tautan, dan pesan singkat, membedakan serangan massal dari serangan bertarget, mengenali risiko lampiran serta makro, dan menjalankan langkah respons insiden yang benar.",
+  "objectives": [
+    "Membaca indikator phishing pada email, tautan, dan pesan singkat sebelum bertindak.",
+    "Membedakan phishing massal, spear phishing, smishing, dan halaman login palsu.",
+    "Mengenali jenis malware serta risiko lampiran, makro, dan unduhan tidak resmi.",
+    "Menerapkan kebiasaan verifikasi dan langkah respons insiden yang benar."
+  ],
+  "prerequisites": [
+    {
+      "label": "Akun, kata sandi, pengelola kata sandi, dan verifikasi dua langkah",
+      "lessonId": "m00-l05"
+    }
+  ],
+  "terms": [
+    {
+      "term": "Phishing",
+      "definition": "Pesan palsu yang meniru pihak tepercaya untuk memancing korban menyerahkan data atau menjalankan tindakan berbahaya."
+    },
+    {
+      "term": "Spear phishing",
+      "definition": "Phishing yang disesuaikan dengan informasi pribadi korban sehingga terasa lebih meyakinkan."
+    },
+    {
+      "term": "Smishing",
+      "definition": "Phishing melalui pesan singkat atau aplikasi perpesanan, sering berisi tautan dan batas waktu."
+    },
+    {
+      "term": "Malware",
+      "definition": "Perangkat lunak berbahaya yang dirancang mencuri data, merusak sistem, atau memberi akses kepada penyerang."
+    },
+    {
+      "term": "Ransomware",
+      "definition": "Malware yang mengenkripsi data korban lalu menuntut pembayaran untuk membuka akses."
+    },
+    {
+      "term": "Makro",
+      "definition": "Rangkaian perintah otomatis di dalam dokumen yang dapat menjalankan tindakan berbahaya bila diizinkan."
+    },
+    {
+      "term": "Social engineering",
+      "definition": "Manipulasi psikologis yang membuat korban mengambil keputusan atau membocorkan informasi secara sukarela."
+    }
+  ],
+  "syntax": [
+    {
+      "token": "From: bantuan@layanan-contoh.xyz",
+      "readAs": "Baca alamat pengirim dari kanan ke kiri: domain terakhir adalah xyz, sedangkan layanan-contoh hanyalah subdomain.",
+      "meaning": "Nama tampilan mudah dipalsukan, sedangkan domain sebenarnya menentukan siapa pengirimnya. Domain yang mirip belum tentu domain resmi.",
+      "example": "From: Layanan Keamanan <bantuan@layanan-contoh.xyz>",
+      "output": "Pesan tampak berasal dari layanan resmi, tetapi domain pengirimnya bukan domain layanan tersebut.",
+      "pitfall": "Hanya membaca nama tampilan lalu menyimpulkan pesan asli. Selalu periksa bagian setelah tanda @."
+    },
+    {
+      "token": "Reply-To: pemulihan@akun-aman.top",
+      "readAs": "Baca sebagai alamat yang akan menerima balasan Anda, yang dapat berbeda dari alamat pengirim.",
+      "meaning": "Header Reply-To dipakai agar balasan masuk ke kotak penyerang, sementara tampilan pengirim tetap terlihat meyakinkan.",
+      "example": "Reply-To: tim-it@dukungan-akun.top",
+      "output": "Balasan Anda tidak menuju layanan resmi, melainkan ke domain lain yang dikendalikan penyerang.",
+      "pitfall": "Membalas email mencurigakan untuk meminta konfirmasi. Membalas justru memberi tahu penyerang bahwa alamat Anda aktif."
+    },
+    {
+      "token": "lampiran: bukti-transaksi.docm",
+      "readAs": "Baca ekstensi paling akhir: docm adalah dokumen Word dengan makro yang dapat menjalankan perintah.",
+      "meaning": "Ekstensi ganda dan format berisi makro sering dipakai untuk menyisipkan malware. Berkas yang diminta diaktifkan makronya patut dicurigai.",
+      "example": "invoice.pdf.exe atau laporan.xlsm",
+      "output": "Berkas terlihat seperti dokumen biasa, tetapi ekstensi sebenarnya adalah program atau dokumen bermakro.",
+      "pitfall": "Mengaktifkan makro karena diminta agar dokumen tampil sepenuhnya. Permintaan itu adalah bagian dari serangan."
+    }
+  ],
+  "conventions": [
+    "Periksa domain pengirim dan tautan tujuan sebelum membuka lampiran atau menekan tombol apa pun.",
+    "Jangan membalas pesan mencurigakan; laporkan melalui kanal resmi layanan yang bersangkutan.",
+    "Ketik alamat situs secara manual atau buka dari bookmark, bukan dari tautan di pesan.",
+    "Waspadai urgensi buatan, ancaman penutupan akun, dan permintaan kerahasiaan.",
+    "Jangan pernah mengirim kode 2FA, kata sandi, atau recovery code melalui pesan apa pun.",
+    "Saat ragu, verifikasi melalui nomor atau aplikasi resmi yang Anda cari sendiri, bukan yang diberikan pengirim."
+  ],
+  "sections": [
+    {
+      "id": "cara-membaca",
+      "title": "Cara membaca header, tautan, dan lampiran",
+      "body": [
+        "Pesan phishing bekerja dengan memisahkan apa yang terlihat dari apa yang sebenarnya. Nama pengirim dapat ditulis Layanan Keamanan, tetapi alamat di belakangnya berasal dari domain lain. Tautan dapat menampilkan teks layanan resmi, tetapi mengarah ke domain yang tidak dikenal. Lampiran dapat berikon dokumen, tetapi ekstensinya adalah program atau dokumen bermakro.",
+        "Baca header dari bagian yang paling sulit dipalsukan. Alamat From, domain Reply-To, dan tautan tujuan adalah tiga titik pemeriksaan utama. Jika domain pengirim bukan domain resmi, berhenti di situ. Jika tautan memakai subdomain panjang untuk menyamarkan domain akhir, baca dari kanan ke kiri sampai menemukan domain sebenarnya. Jika lampiran meminta makro atau kata sandi, jangan dibuka di perangkat kerja.",
+        "Serangan bertarget menambahkan konteks yang membuat pesan terasa masuk akal: nama atasan, proyek yang sedang berjalan, atau tagihan yang memang pernah ada. Konteks yang tepat tidak membuktikan keaslian. Justru sebaliknya, serangan bertarget memakai detail itu untuk melewati kecurigaan. Verifikasi lewat kanal lain tetap wajib, terutama untuk permintaan transfer, perubahan rekening, atau akses mendesak."
+      ],
+      "code": {
+        "language": "text",
+        "lab": false,
+        "code": "From     : Layanan Keamanan <bantuan@layanan-contoh.xyz>\nReply-To : pemulihan@akun-aman.top\nSubject  : Verifikasi akun dalam 24 jam\nTautan   : https://layanan-contoh.id.verifikasi-akun.xyz/login\nLampiran : bukti-transaksi.docm",
+        "output": "Pesan memakai nama layanan resmi, tetapi domain pengirim, alamat balasan, tautan, dan lampiran semuanya mengarah ke pihak lain.",
+        "explain": "Lima baris ini cukup untuk menolak pesan. Setiap baris menunjukkan satu lapisan penyamaran yang berbeda.",
+        "annotations": [
+          {
+            "line": 1,
+            "code": "From     : Layanan Keamanan <bantuan@layanan-contoh.xyz>",
+            "note": "Nama tampilan meyakinkan, tetapi domain sebenarnya adalah layanan-contoh.xyz."
+          },
+          {
+            "line": 2,
+            "code": "Reply-To : pemulihan@akun-aman.top",
+            "note": "Balasan diarahkan ke domain lain, tanda bahwa pengirim ingin memisahkan percakapan dari layanan resmi."
+          },
+          {
+            "line": 3,
+            "code": "Subject  : Verifikasi akun dalam 24 jam",
+            "note": "Batas waktu buatan mendorong keputusan cepat tanpa pemeriksaan."
+          },
+          {
+            "line": 4,
+            "code": "Tautan   : https://layanan-contoh.id.verifikasi-akun.xyz/login",
+            "note": "Domain sebenarnya adalah verifikasi-akun.xyz; bagian layanan-contoh.id hanya subdomain."
+          },
+          {
+            "line": 5,
+            "code": "Lampiran : bukti-transaksi.docm",
+            "note": "Ekstensi docm menandakan dokumen bermakro yang dapat menjalankan perintah."
+          }
+        ]
+      },
+      "callouts": [
+        {
+          "tone": "bad",
+          "title": "Jangan uji tautan di perangkat kerja",
+          "body": "Membuka tautan untuk sekadar melihat isinya dapat mencatat alamat IP, jenis perangkat, dan cookie Anda. Gunakan lingkungan terpisah atau laporkan tanpa membuka."
+        }
+      ],
+      "checkpoint": {
+        "prompt": "Ambil satu email mencurigakan dari kotak masuk, lalu tuliskan domain pengirim, domain tautan sebenarnya, dan jenis lampirannya.",
+        "success": "Anda dapat menunjukkan domain sebenarnya di balik nama tampilan dan menjelaskan mengapa pesan itu layak ditolak."
+      }
+    },
+    {
+      "id": "anatomi-phishing",
+      "title": "Anatomi phishing pada email dan tautan",
+      "body": [
+        "Phishing adalah penipuan yang menyamar sebagai komunikasi resmi. Tujuannya bisa berupa kata sandi, kode 2FA, data kartu, atau persetujuan transfer. Pesan dirancang terlihat mendesak dan masuk akal: tagihan gagal, paket tertahan, akun akan ditutup, atau pembayaran belum diterima. Semakin cepat Anda diminta bertindak, semakin besar kemungkinan pesan itu perlu diperiksa dengan tenang.",
+        "Periksa alamat pengirim, bukan hanya nama tampilan. Nama tampilan dapat diubah menjadi nama bank atau atasan, sedangkan alamat sebenarnya memakai domain berbeda. Waspadai domain yang mirip dengan satu huruf diubah, tanda hubung tambahan, subdomain panjang, atau akhiran yang tidak biasa. Tautan dalam pesan juga perlu dibaca tanpa diklik: arahkan kursor untuk melihat tujuan sebenarnya dan bandingkan dengan domain resmi layanan.",
+        "HTTPS dan ikon gembok tidak membuktikan bahwa situs tepercaya. Sertifikat hanya menunjukkan koneksi terenkripsi, bukan identitas pemilik situs. Singkatan tautan dan halaman yang meminta login dari tautan email menambah risiko karena tujuan akhirnya tersembunyi. Kebiasaan paling aman adalah membuka aplikasi atau mengetik alamat resmi secara manual, bukan mengikuti tautan yang dikirim orang lain. Domain yang menyisipkan kata seperti login-aman atau verifikasi-akun di depan nama merek juga patut dicurigai karena kata tambahan itu tidak mengubah pemilik domain sebenarnya."
+      ],
+      "callouts": [
+        {
+          "tone": "good",
+          "title": "Aturan praktis",
+          "body": "Jika pesan meminta login atau pembayaran, tutup pesan itu dan buka layanan melalui aplikasi atau alamat resmi yang Anda ketik sendiri."
+        }
+      ],
+      "checkpoint": {
+        "prompt": "Sebutkan tiga tanda phishing yang dapat diperiksa tanpa mengklik apa pun.",
+        "success": "Anda menyebut alamat pengirim, domain tautan, dan tekanan waktu atau permintaan data."
+      }
+    },
+    {
+      "id": "spear-dan-smishing",
+      "title": "Spear phishing, smishing, dan pesan bertarget",
+      "body": [
+        "Phishing massal menyebar ke banyak orang dengan pesan seragam. Spear phishing sebaliknya memakai informasi tentang Anda: nama proyek, nama rekan kerja, jabatan, atau acara yang baru saja diikuti. Informasi ini mudah dikumpulkan dari media sosial dan situs perusahaan. Karena konteksnya terasa benar, korban lebih mungkin mengabaikan tanda bahaya yang biasanya mencurigakan.",
+        "Smishing memindahkan serangan ke pesan singkat dan aplikasi perpesanan. Modus umumnya adalah paket yang tertahan, tagihan listrik, hadiah, atau bank yang meminta verifikasi. Pesan singkat terasa lebih personal dan sering dibaca cepat. Jangan membalas, jangan menelepon nomor di pesan, dan jangan memasang aplikasi dari tautan. Buka aplikasi resmi atau hubungi nomor layanan yang Anda cari sendiri.",
+        "Serangan bertarget juga dapat memakai telepon atau pesan suara, yang disebut vishing. Penyerang berpura-pura menjadi petugas bank, dukungan teknis, atau atasan yang membutuhkan tindakan segera. Mereka mungkin menyebut sebagian data Anda untuk membangun kepercayaan. Lawan dengan mengakhiri panggilan dan menghubungi pihak terkait melalui saluran resmi yang Anda ketahui, bukan melalui nomor yang diberikan penyerang."
+      ],
+      "callouts": [
+        {
+          "tone": "bad",
+          "title": "Jangan lakukan ini",
+          "body": "Membalas pesan untuk menanyakan keasliannya. Balasan itu memberi tahu penyerang bahwa nomor Anda aktif dan dapat dipakai untuk serangan berikutnya."
+        }
+      ],
+      "checkpoint": {
+        "prompt": "Mengapa spear phishing lebih sulit dikenali daripada phishing massal?",
+        "success": "Anda menyebut penggunaan informasi pribadi dan konteks yang terasa relevan."
+      }
+    },
+    {
+      "id": "login-palsu",
+      "title": "Halaman login palsu dan pencurian sesi",
+      "body": [
+        "Halaman login palsu meniru tampilan layanan resmi untuk mencuri kredensial. Alamatnya sering memakai domain mirip, subdomain yang menyesatkan, atau halaman gratis dengan nama layanan di dalam path. Setelah kata sandi diketik, penyerang langsung memakainya atau menjualnya. Halaman seperti ini juga dapat menampilkan pesan error palsu agar korban mencoba lagi dan mengetik ulang data.",
+        "Password manager membantu karena hanya mengisi otomatis pada domain yang cocok. Jika brankas menolak mengisi atau menampilkan domain yang berbeda, jangan memaksa mengetik manual. Namun autofill bukan jaminan mutlak: ekstensi berbahaya atau halaman yang diretas dapat mengubah perilaku. Selalu periksa bilah alamat dan buka layanan dari aplikasi resmi bila memungkinkan.",
+        "2FA tetap dapat ditipu melalui halaman palsu yang meneruskan kode ke situs asli secara langsung. Security key dan passkey lebih kuat karena terikat pada domain. Jika diminta menyetujui login, kode, atau izin aplikasi yang tidak Anda mulai, tolak dan periksa sesi aktif. Jangan pernah memberikan kode 2FA kepada siapa pun, termasuk pihak yang mengaku sebagai dukungan resmi."
+      ],
+      "callouts": [
+        {
+          "tone": "good",
+          "title": "Sinyal peringatan",
+          "body": "Password manager tidak mengisi otomatis pada halaman login yang seharusnya Anda kenal. Anggap itu sebagai tanda domain sedang tidak cocok."
+        }
+      ],
+      "checkpoint": {
+        "prompt": "Mengapa kode 2FA tidak boleh diberikan kepada orang lain, termasuk yang mengaku dari dukungan resmi?",
+        "success": "Anda menjelaskan bahwa kode dapat dipakai untuk menyelesaikan login di akun Anda."
+      }
+    },
+    {
+      "id": "malware-dan-lampiran",
+      "title": "Malware, lampiran, dan makro",
+      "body": [
+        "Malware adalah perangkat lunak berbahaya yang dapat mencuri data, memata-matai aktivitas, mengenkripsi file, atau memberi kendali jarak jauh. Ransomware menuntut pembayaran setelah mengunci data. Infostealer mengambil kata sandi dan cookie sesi. Trojan menyamar sebagai aplikasi sah, sedangkan worm menyebar sendiri melalui jaringan. Dampaknya tidak selalu langsung terlihat, sehingga pencegahan lebih penting daripada pembersihan.",
+        "Lampiran dan unduhan adalah jalur masuk yang umum. Dokumen kantor dapat berisi makro yang menjalankan perintah saat Anda menekan tombol mengaktifkan konten. Berkas dengan dua ekstensi seperti invoice.pdf.exe atau gambar yang ternyata program adalah tipuan klasik. Arsip terkompresi juga sering dipakai untuk menyembunyikan program berbahaya. Jangan membuka lampiran tak terduga, dan jangan mengaktifkan makro pada dokumen dari luar organisasi. Jika pengirim tidak dapat diverifikasi melalui saluran lain, hapus pesan dan laporkan sebelum membuka berkas apa pun.",
+        "Unduhan dari situs bajakan, pembaruan palsu, dan aplikasi di luar toko resmi membawa risiko besar. Gunakan sumber resmi, aktifkan pembaruan otomatis, dan pertahankan pemindaian keamanan. Jika perangkat mulai lambat, muncul jendela tak dikenal, atau ada file yang berubah nama, jangan langsung membayar tuntutan. Putuskan koneksi jaringan, simpan bukti, dan minta bantuan pemulihan dari pihak yang tepercaya."
+      ],
+      "callouts": [
+        {
+          "tone": "bad",
+          "title": "Kesalahan umum",
+          "body": "Mengaktifkan makro hanya karena dokumen menampilkan tombol enable content. Tombol itu justru sering menjadi bagian dari serangan."
+        }
+      ],
+      "checkpoint": {
+        "prompt": "Sebutkan dua jenis lampiran atau berkas yang perlu diperlakukan dengan sangat hati-hati.",
+        "success": "Anda menyebut dokumen bermakro dan program dengan ekstensi ganda atau arsip tak dikenal."
+      }
+    },
+    {
+      "id": "social-engineering-dan-respons",
+      "title": "Social engineering dan respons insiden",
+      "body": [
+        "Social engineering menyerang manusia, bukan mesin. Penyerang memakai otoritas, rasa takut, rasa hormat, atau keinginan membantu agar korban melanggar prosedur. Pretexting membangun cerita palsu, misalnya auditor yang membutuhkan akses atau atasan yang sedang rapat dan meminta transfer mendesak. Permintaan seperti ini sengaja dibuat sulit diverifikasi melalui balasan email karena balasan dapat diarahkan ke penyerang.",
+        "Verifikasi harus dilakukan melalui saluran lain yang sudah Anda ketahui sebelumnya. Untuk permintaan uang atau data, hubungi orangnya melalui nomor internal atau tatap muka, bukan nomor yang tercantum di pesan. Untuk permintaan dari layanan, buka aplikasi resmi dan periksa pemberitahuan di sana. Jangan menggunakan tautan, nomor, atau alamat yang diberikan oleh pihak yang meminta verifikasi.",
+        "Jika Anda sudah terlanjur mengeklik tautan atau memasukkan data, bertindaklah cepat. Dari perangkat bersih, ganti kata sandi akun terkait, cabut sesi aktif, aktifkan 2FA, dan periksa aturan penerusan serta metode pemulihan. Laporkan ke tim keamanan atau penyedia layanan, simpan pesan asli sebagai bukti, lalu pantau aktivitas akun dan rekening. Jangan menyembunyikan insiden karena rasa malu; laporan cepat mengurangi kerugian."
+      ],
+      "callouts": [
+        {
+          "tone": "good",
+          "title": "Kebiasaan verifikasi",
+          "body": "Untuk setiap permintaan sensitif, berhenti, gunakan saluran komunikasi lain, dan pastikan identitas peminta sebelum bertindak."
+        }
+      ],
+      "checkpoint": {
+        "prompt": "Sebutkan tiga langkah respons setelah Anda memasukkan kata sandi ke halaman yang ternyata palsu.",
+        "success": "Anda menyebut penggantian kata sandi dari perangkat bersih, pencabutan sesi, dan pelaporan insiden."
+      }
+    }
+  ],
+  "practice": [
+    {
+      "id": "latihan-1",
+      "title": "Bedah pesan mencurigakan",
+      "task": "Ambil satu email mencurigakan dari folder spam, lalu periksa pengirim, tautan, dan permintaannya tanpa mengklik.",
+      "steps": [
+        "Baca alamat pengirim lengkap, bukan nama tampilan.",
+        "Arahkan kursor ke tautan dan catat domain tujuannya.",
+        "Tandai permintaan yang memakai tekanan waktu atau data pribadi."
+      ],
+      "expected": "Tiga temuan konkret dan satu alasan mengapa pesan itu berbahaya.",
+      "stretch": "Laporkan pesan tersebut melalui fitur laporan resmi penyedia email.",
+      "level": "guided",
+      "hints": [
+        "Pilih pesan yang terasa mendesak atau meminta data pribadi.",
+        "Periksa domain setelah tanda @, bukan hanya nama tampilan.",
+        "Baca tautan dari kanan ke kiri untuk menemukan domain sebenarnya."
+      ],
+      "starterCode": "Nama tampilan:\nDomain pengirim:\nDomain tautan:\nTanda bahaya:\nKeputusan:",
+      "verification": {
+        "command": "Bedah satu pesan mencurigakan tanpa membuka tautannya.",
+        "expected": "Anda menyebut minimal dua indikator konkret dan memutuskan untuk tidak membalas atau membuka lampiran.",
+        "evidence": "Simpan tangkapan layar header dan catatan analisis tanpa data pribadi."
+      }
+    },
+    {
+      "id": "latihan-2",
+      "title": "Uji prosedur verifikasi",
+      "task": "Tulis prosedur untuk memverifikasi permintaan transfer mendesak yang mengaku berasal dari atasan.",
+      "steps": [
+        "Tentukan saluran verifikasi yang sudah dikenal.",
+        "Tuliskan satu pertanyaan yang tidak dapat dijawab dari informasi publik.",
+        "Tetapkan siapa yang berwenang menyetujui."
+      ],
+      "expected": "Prosedur tiga langkah yang dapat dijalankan orang lain.",
+      "stretch": "Simulasikan prosedur itu dengan rekan dan catat bagian yang membingungkan.",
+      "level": "independent",
+      "hints": [
+        "Pilih satu layanan yang benar-benar Anda pakai dan cari kanal dukungan resminya.",
+        "Tulis skrip verifikasi singkat yang dimulai dari Anda menghubungi layanan, bukan sebaliknya.",
+        "Uji skrip pada pesan simulasi yang Anda buat sendiri."
+      ],
+      "starterCode": "Layanan:\nKanal resmi:\nPertanyaan verifikasi:\nLangkah jika pesan palsu:",
+      "verification": {
+        "command": "Susun dan uji prosedur verifikasi untuk satu layanan.",
+        "expected": "Prosedur dimulai dari kanal resmi yang Anda cari sendiri dan tidak memakai tautan atau nomor dari pesan mencurigakan.",
+        "evidence": "Simpan prosedur dan hasil uji pada pesan simulasi."
+      }
+    },
+    {
+      "id": "latihan-3",
+      "title": "Kartu respons insiden",
+      "task": "Buat satu halaman berisi langkah yang akan Anda lakukan jika mengeklik tautan phishing.",
+      "steps": [
+        "Tuliskan langkah pengamanan akun.",
+        "Tuliskan pihak yang perlu dilaporkan.",
+        "Tuliskan bukti yang perlu disimpan."
+      ],
+      "expected": "Kartu respons yang dapat dibaca dalam satu menit.",
+      "stretch": "Tambahkan langkah khusus untuk akun email utama dan akun perbankan.",
+      "level": "transfer",
+      "hints": [
+        "Bayangkan Anda sudah menekan tautan dan mengetik kata sandi.",
+        "Urutkan tindakan dari yang paling mendesak: putus akses, ganti kredensial, periksa jalur pemulihan.",
+        "Tentukan siapa yang perlu dihubungi jika akun dipakai untuk bekerja."
+      ],
+      "starterCode": "Kejadian:\nTindakan 1:\nTindakan 2:\nTindakan 3:\nPihak yang dihubungi:",
+      "verification": {
+        "command": "Tulis kartu respons insiden untuk satu skenario phishing.",
+        "expected": "Kartu memuat penggantian kata sandi, pencabutan sesi, pemeriksaan jalur pemulihan, dan pelaporan ke pihak berwenang bila perlu.",
+        "evidence": "Simpan kartu respons di catatan belajar."
+      }
+    }
+  ],
+  "verification": {
+    "mode": "catatan",
+    "command": "Kerjakan Latihan 1 dan Latihan 3, lalu gabungkan hasilnya menjadi satu catatan.",
+    "expected": "Anda dapat membedah pesan mencurigakan dan menjelaskan urutan respons jika kredensial sudah sempat diketik.",
+    "evidence": "Simpan analisis pesan, prosedur verifikasi, dan kartu respons insiden dalam satu berkas."
+  },
+  "troubleshooting": [
+    {
+      "symptom": "Sudah mengetik kata sandi di halaman yang mencurigakan.",
+      "cause": "Halaman palsu meniru tampilan login resmi dan langsung mengirim kredensial ke penyerang.",
+      "fix": "Ganti kata sandi dari perangkat bersih, akhiri semua sesi, aktifkan 2FA bila belum, dan periksa aturan penerusan email serta metode pemulihan."
+    },
+    {
+      "symptom": "Lampiran sudah terbuka dan meminta makro.",
+      "cause": "Dokumen bermakro dipakai untuk menjalankan perintah berbahaya setelah pengguna menyetujui.",
+      "fix": "Tolak permintaan makro, tutup dokumen, putuskan koneksi bila perlu, lalu pindai perangkat. Laporkan ke tim keamanan bila ini perangkat kerja."
+    },
+    {
+      "symptom": "Nomor telepon tiba-tiba kehilangan sinyal dan akun mengirim kode ke nomor itu.",
+      "cause": "Kemungkinan SIM swap, yaitu nomor dipindahkan ke kartu baru oleh pihak lain.",
+      "fix": "Hubungi operator segera, minta pembekuan nomor, dan pulihkan akun melalui kanal resmi. Prioritaskan akun yang memakai SMS sebagai faktor kedua."
+    },
+    {
+      "symptom": "Pesan phishing datang dari akun rekan kerja yang asli.",
+      "cause": "Akun rekan kerja mungkin sudah diambil alih dan dipakai mengirim pesan ke kontak tepercaya.",
+      "fix": "Verifikasi lewat kanal lain, beri tahu rekan kerja, dan jangan membuka lampiran atau tautan meskipun pengirimnya dikenal."
+    }
+  ],
+  "quiz": {
+    "questions": [
+      {
+        "id": "q1",
+        "type": "scenario",
+        "question": "Email dari nama bank menampilkan logo resmi dan tautan HTTPS. Tanda yang paling kuat menunjukkan pesan itu phishing adalah apa?",
+        "options": [
+          "Email dikirim pada hari kerja",
+          "Email memakai bahasa Indonesia yang baik",
+          "Domain pengirim dan domain tautan berbeda dari domain resmi bank"
+        ],
+        "answer": 2,
+        "explanation": "Logo dan HTTPS mudah dipalsukan. Perbedaan domain adalah indikator yang jauh lebih kuat."
+      },
+      {
+        "id": "q2",
+        "type": "scenario",
+        "question": "Anda menerima SMS yang menyatakan paket tertahan dan meminta membuka tautan untuk membayar biaya pengiriman. Tindakan paling tepat adalah apa?",
+        "options": [
+          "Buka aplikasi resmi kurir atau hubungi nomor layanan yang Anda cari sendiri",
+          "Balas SMS untuk menanyakan nomor resi",
+          "Klik tautan lalu isi data hanya jika halamannya terlihat resmi"
+        ],
+        "answer": 0,
+        "explanation": "Smishing memancing korban melalui tautan dan tekanan waktu. Verifikasi harus melalui aplikasi atau nomor resmi yang Anda cari sendiri."
+      },
+      {
+        "id": "q3",
+        "type": "scenario",
+        "question": "Dokumen tagihan dari pengirim tak dikenal meminta Anda mengaktifkan makro. Apa yang sebaiknya dilakukan?",
+        "options": [
+          "Aktifkan makro karena dokumen tagihan biasanya aman",
+          "Jangan aktifkan makro, verifikasi pengirim melalui saluran lain, dan laporkan dokumen itu",
+          "Simpan dokumen lalu buka di komputer lain"
+        ],
+        "answer": 1,
+        "explanation": "Makro dapat menjalankan perintah berbahaya. Dokumen tak terduga tidak boleh diaktifkan makronya dan harus diverifikasi."
+      }
+    ]
+  },
+  "resources": [
+    {
+      "sourceId": "cisa-phishing",
+      "note": "Panduan resmi mengenali dan melaporkan phishing."
+    },
+    {
+      "sourceId": "google-phishing",
+      "note": "Cara memeriksa dan melaporkan email phishing di Gmail."
+    }
+  ],
+  "summary": [
+    "Phishing memisahkan yang terlihat dari yang sebenarnya: nama tampilan, teks tautan, dan ikon lampiran dapat menipu.",
+    "Periksa domain pengirim, domain tautan sebenarnya, dan jenis lampiran sebelum bertindak.",
+    "Verifikasi melalui kanal resmi yang Anda cari sendiri, bukan melalui tautan atau nomor dari pesan.",
+    "Respons insiden dimulai dari memutus akses, mengganti kredensial, mencabut sesi, lalu memeriksa jalur pemulihan."
+  ],
+  "next": "Berikutnya: privasi digital, data pribadi, dan UU PDP. Anda akan menilai data apa yang layak diberikan kepada sebuah layanan."
+}

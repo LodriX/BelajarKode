@@ -1,0 +1,195 @@
+{
+  "id": "m07",
+  "title": "Basis Data dan SQL",
+  "subtitle": "Pemodelan data relasional dengan PostgreSQL",
+  "weeks": [
+    25,
+    27
+  ],
+  "accent": "#10b981",
+  "goal": "Merancang skema, query SQL, transaksi, indeks, dan migrasi data yang aman.",
+  "lessons": [
+    {
+      "id": "m07-l01",
+      "title": "Entitas, tabel dan relasi",
+      "minutes": 45,
+      "level": "Menengah",
+      "intro": "Database relasional menyimpan data dalam tabel. Primary key mengidentifikasi baris; foreign key menghubungkan tabel dan menjaga integritas referensial.",
+      "explanation": "Gambarkan ERD lebih dahulu. Contoh users (id, nama) dan tasks (id, user_id, judul). Satu user memiliki banyak tasks. Pilih tipe kolom sesuai domain.",
+      "code": "CREATE TABLE users (\n  id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,\n  name TEXT NOT NULL\n);",
+      "codeLanguage": "sql",
+      "practice": [
+        "Gambarkan ERD pengguna–proyek–tugas dengan kardinalitas relasi.",
+        "Ubah satu input atau asumsi pada contoh, catat hasil dan jelaskan alasannya."
+      ],
+      "bestPractice": "Definisikan kunci primer, foreign key, dan constraint pada database.",
+      "commonMistake": "Menyimpan seluruh data relasional sebagai teks JSON tanpa kebutuhan yang jelas.",
+      "quiz": {
+        "question": "Apa prinsip yang paling tepat untuk topik “Entitas, tabel dan relasi”?",
+        "options": [
+          "Definisikan kunci primer, foreign key, dan constraint pada database.",
+          "Gunakan solusi paling rumit sejak awal, meski kebutuhan belum jelas.",
+          "Lewati pengujian karena contoh kecil pasti benar."
+        ],
+        "answer": 0,
+        "explanation": "Definisikan kunci primer, foreign key, dan constraint pada database."
+      }
+    },
+    {
+      "id": "m07-l02",
+      "title": "CRUD dan parameter query",
+      "minutes": 45,
+      "level": "Menengah",
+      "intro": "CRUD: Create, Read, Update, Delete adalah operasi dasar data. Query SQL harus dibangun aman menggunakan parameter binding, bukan string gabungan dari input pengguna.",
+      "explanation": "SELECT memfilter via WHERE dan mengurutkan dengan ORDER BY. UPDATE/DELETE tanpa WHERE dapat memengaruhi seluruh baris. Uji query pada data percobaan dan gunakan transaksi bila perlu.",
+      "code": "INSERT INTO users (name) VALUES ('Ayu');\nSELECT id, name FROM users ORDER BY id;\nUPDATE users SET name = 'Rina' WHERE id = 1;",
+      "codeLanguage": "sql",
+      "practice": [
+        "Tulis 4 query CRUD untuk tabel tasks menggunakan data contoh.",
+        "Ubah satu input atau asumsi pada contoh, catat hasil dan jelaskan alasannya."
+      ],
+      "bestPractice": "Selalu periksa WHERE dan pakai parameter binding untuk input pengguna.",
+      "commonMistake": "Menyusun SQL menggunakan konkatenasi string dari form.",
+      "quiz": {
+        "question": "Apa prinsip yang paling tepat untuk topik “CRUD dan parameter query”?",
+        "options": [
+          "Selalu periksa WHERE dan pakai parameter binding untuk input pengguna.",
+          "Gunakan solusi paling rumit sejak awal, meski kebutuhan belum jelas.",
+          "Lewati pengujian karena contoh kecil pasti benar."
+        ],
+        "answer": 0,
+        "explanation": "Selalu periksa WHERE dan pakai parameter binding untuk input pengguna."
+      }
+    },
+    {
+      "id": "m07-l03",
+      "title": "JOIN dan agregasi",
+      "minutes": 45,
+      "level": "Menengah",
+      "intro": "JOIN menggabungkan tabel berdasarkan relasi; INNER JOIN hanya baris yang cocok, LEFT JOIN mempertahankan baris kiri. GROUP BY mengelompokkan untuk COUNT/SUM/AVG.",
+      "explanation": "Periksa kardinalitas agar JOIN tidak menggandakan total secara tidak sengaja. COALESCE dapat mengganti NULL pada hasil agregasi.",
+      "code": "SELECT u.name, COUNT(t.id) AS total_tasks\nFROM users u\nLEFT JOIN tasks t ON t.user_id = u.id\nGROUP BY u.id, u.name;",
+      "codeLanguage": "sql",
+      "practice": [
+        "Buat query daftar pengguna dan total tugasnya, termasuk pengguna tanpa tugas.",
+        "Ubah satu input atau asumsi pada contoh, catat hasil dan jelaskan alasannya."
+      ],
+      "bestPractice": "Uji JOIN terhadap kasus relasi kosong dan banyak data.",
+      "commonMistake": "Menggunakan INNER JOIN sehingga data tanpa pasangan hilang dari laporan.",
+      "quiz": {
+        "question": "Apa prinsip yang paling tepat untuk topik “JOIN dan agregasi”?",
+        "options": [
+          "Uji JOIN terhadap kasus relasi kosong dan banyak data.",
+          "Gunakan solusi paling rumit sejak awal, meski kebutuhan belum jelas.",
+          "Lewati pengujian karena contoh kecil pasti benar."
+        ],
+        "answer": 0,
+        "explanation": "Uji JOIN terhadap kasus relasi kosong dan banyak data."
+      }
+    },
+    {
+      "id": "m07-l04",
+      "title": "Normalisasi dan constraints",
+      "minutes": 45,
+      "level": "Menengah",
+      "intro": "Normalisasi memisahkan kelompok data agar mengurangi duplikasi dan inkonsistensi. 1NF–3NF memberi panduan pemodelan. Constraint NOT NULL, UNIQUE, CHECK, FK mengamankan aturan penting.",
+      "explanation": "Jangan membuat tabel terpisah per bulan untuk entitas yang sama tanpa alasan; gunakan kolom tanggal dan indeks. Denormalisasi adalah pilihan terukur untuk kinerja khusus.",
+      "code": "CREATE TABLE products (\n  id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,\n  sku TEXT UNIQUE NOT NULL,\n  price INTEGER NOT NULL CHECK (price >= 0)\n);",
+      "codeLanguage": "sql",
+      "practice": [
+        "Normalisasi tabel pesanan berisi nama pembeli, produk1, produk2 menjadi tiga tabel.",
+        "Ubah satu input atau asumsi pada contoh, catat hasil dan jelaskan alasannya."
+      ],
+      "bestPractice": "Tegakkan integritas data di database, bukan hanya validasi form.",
+      "commonMistake": "Duplikasi data induk pada tiap transaksi hingga sulit diperbarui.",
+      "quiz": {
+        "question": "Apa prinsip yang paling tepat untuk topik “Normalisasi dan constraints”?",
+        "options": [
+          "Tegakkan integritas data di database, bukan hanya validasi form.",
+          "Gunakan solusi paling rumit sejak awal, meski kebutuhan belum jelas.",
+          "Lewati pengujian karena contoh kecil pasti benar."
+        ],
+        "answer": 0,
+        "explanation": "Tegakkan integritas data di database, bukan hanya validasi form."
+      }
+    },
+    {
+      "id": "m07-l05",
+      "title": "Index dan query plan",
+      "minutes": 45,
+      "level": "Menengah",
+      "intro": "Index mempercepat pencarian tertentu tetapi memperlambat sebagian operasi tulis dan menghabiskan ruang. PostgreSQL EXPLAIN ANALYZE membantu memeriksa rencana eksekusi.",
+      "explanation": "Tambahkan indeks berdasarkan pola query nyata (WHERE, JOIN, ORDER BY), bukan semua kolom. Pahami selektivitas dan trade-off; ukur sebelum dan sesudah.",
+      "code": "CREATE INDEX idx_tasks_user_status\nON tasks (user_id, status);\nEXPLAIN ANALYZE SELECT * FROM tasks\nWHERE user_id = 1 AND status = 'open';",
+      "codeLanguage": "sql",
+      "practice": [
+        "Identifikasi query lambat dan usulkan satu indeks yang sesuai filter.",
+        "Ubah satu input atau asumsi pada contoh, catat hasil dan jelaskan alasannya."
+      ],
+      "bestPractice": "Ukur query plan dan dampak index, hindari optimasi berdasarkan tebakan.",
+      "commonMistake": "Membuat index pada semua kolom tanpa pengukuran.",
+      "quiz": {
+        "question": "Apa prinsip yang paling tepat untuk topik “Index dan query plan”?",
+        "options": [
+          "Ukur query plan dan dampak index, hindari optimasi berdasarkan tebakan.",
+          "Gunakan solusi paling rumit sejak awal, meski kebutuhan belum jelas.",
+          "Lewati pengujian karena contoh kecil pasti benar."
+        ],
+        "answer": 0,
+        "explanation": "Ukur query plan dan dampak index, hindari optimasi berdasarkan tebakan."
+      }
+    },
+    {
+      "id": "m07-l06",
+      "title": "Transaction dan konkurensi",
+      "minutes": 45,
+      "level": "Menengah",
+      "intro": "Transaksi menyatukan beberapa perubahan sebagai unit atomik: berhasil semua atau batal semua. ACID membantu menjaga konsistensi saat terjadi kegagalan dan akses paralel.",
+      "explanation": "Contoh transfer saldo harus mengurangi saldo pengirim dan menambah saldo penerima dalam satu transaksi. Pelajari isolation level, lock, dan risiko race condition.",
+      "code": "BEGIN;\nUPDATE accounts SET balance = balance - 5000 WHERE id = 1;\nUPDATE accounts SET balance = balance + 5000 WHERE id = 2;\nCOMMIT;",
+      "codeLanguage": "sql",
+      "practice": [
+        "Jelaskan apa yang harus terjadi jika langkah kedua transfer gagal.",
+        "Ubah satu input atau asumsi pada contoh, catat hasil dan jelaskan alasannya."
+      ],
+      "bestPractice": "Gunakan transaksi untuk operasi bisnis multi-tabel yang harus konsisten.",
+      "commonMistake": "Melakukan dua update kritis terpisah tanpa rollback.",
+      "quiz": {
+        "question": "Apa prinsip yang paling tepat untuk topik “Transaction dan konkurensi”?",
+        "options": [
+          "Gunakan transaksi untuk operasi bisnis multi-tabel yang harus konsisten.",
+          "Gunakan solusi paling rumit sejak awal, meski kebutuhan belum jelas.",
+          "Lewati pengujian karena contoh kecil pasti benar."
+        ],
+        "answer": 0,
+        "explanation": "Gunakan transaksi untuk operasi bisnis multi-tabel yang harus konsisten."
+      }
+    },
+    {
+      "id": "m07-l07",
+      "title": "Migrasi, backup, dan pemulihan",
+      "minutes": 45,
+      "level": "Menengah",
+      "intro": "Migrasi adalah perubahan skema yang berversi dan dapat diuji. Backup tanpa uji restore belum bisa dipercaya; kenali RPO dan RTO.",
+      "explanation": "Gunakan database development untuk percobaan. Siapkan jadwal backup, penyimpanan terpisah, uji restore, dan rencana perubahan skema tanpa downtime ketika aplikasi sudah produksi.",
+      "code": "-- Contoh migrasi sederhana\nALTER TABLE users ADD COLUMN phone TEXT;\n-- Sebelum prod: uji dampak dan backup.",
+      "codeLanguage": "sql",
+      "practice": [
+        "Rancang strategi backup harian dan simulasi restore untuk aplikasi kecil.",
+        "Ubah satu input atau asumsi pada contoh, catat hasil dan jelaskan alasannya."
+      ],
+      "bestPractice": "Uji pemulihan pada lingkungan terpisah secara berkala.",
+      "commonMistake": "Mengira file backup aman tanpa pernah menguji proses restore.",
+      "quiz": {
+        "question": "Apa prinsip yang paling tepat untuk topik “Migrasi, backup, dan pemulihan”?",
+        "options": [
+          "Uji pemulihan pada lingkungan terpisah secara berkala.",
+          "Gunakan solusi paling rumit sejak awal, meski kebutuhan belum jelas.",
+          "Lewati pengujian karena contoh kecil pasti benar."
+        ],
+        "answer": 0,
+        "explanation": "Uji pemulihan pada lingkungan terpisah secara berkala."
+      }
+    }
+  ]
+}

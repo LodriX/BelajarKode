@@ -1,0 +1,256 @@
+{
+  "id": "m02-l06",
+  "title": "Struktur data dan algoritma",
+  "minutes": 90,
+  "level": "Dasar",
+  "depth": "fondasi",
+  "codeLanguage": "text",
+  "outcome": "Setelah pelajaran ini, Anda dapat memilih struktur data yang tepat untuk daftar tugas dan menulis algoritma tambah, cari, dan hapus yang tidak merusak data lain.",
+  "objectives": [
+    "Membedakan daftar (list) dan catatan (record) serta kapan masing-masing dipakai.",
+    "Memilih antara pencarian berurutan dan pencarian langsung memakai kunci.",
+    "Menulis algoritma hapus yang hanya menghapus satu tugas yang cocok."
+  ],
+  "prerequisites": [
+    {
+      "lessonId": "m02-l05",
+      "label": "Perulangan dan iterasi"
+    }
+  ],
+  "terms": [
+    {
+      "term": "List (daftar)",
+      "definition": "Kumpulan nilai berurutan yang diakses memakai posisi atau indeks."
+    },
+    {
+      "term": "Record (catatan)",
+      "definition": "Satu objek yang mengelompokkan beberapa field bernama, misalnya id, judul, dan selesai."
+    },
+    {
+      "term": "Key (kunci)",
+      "definition": "Nilai unik yang dipakai untuk menemukan record tanpa memeriksa seluruh daftar."
+    },
+    {
+      "term": "Pencarian linear",
+      "definition": "Memeriksa elemen satu per satu dari awal sampai ketemu atau sampai habis."
+    }
+  ],
+  "syntax": [
+    {
+      "token": "daftar[i].field",
+      "meaning": "Mengambil field tertentu dari record pada posisi ke-i.",
+      "example": "OUTPUT daftar[1].judul",
+      "output": "Judul tugas pertama (jika indeks dimulai dari 1).",
+      "pitfall": "Indeks di luar jumlah data menghasilkan error; periksa panjang daftar sebelum mengakses."
+    },
+    {
+      "token": "peta[kunci]",
+      "meaning": "Mengambil record langsung berdasarkan kunci unik tanpa memeriksa satu per satu.",
+      "example": "OUTPUT peta[\"t-01\"].judul",
+      "output": "Judul tugas dengan id t-01.",
+      "pitfall": "Kunci yang tidak ada menghasilkan nilai kosong; periksa keberadaan kunci sebelum memakai hasilnya."
+    }
+  ],
+  "sections": [
+    {
+      "id": "list-dan-record",
+      "title": "List berisi record",
+      "body": [
+        "Daftar tugas adalah list yang setiap elemennya berupa record. List menjaga urutan tampilan; record menyimpan field yang saling terkait. Memisahkan dua peran ini membuat data mudah diurutkan tanpa mengubah isi record.",
+        "Jangan menyimpan field yang sama di dua tempat, misalnya jumlah tugas selesai di dalam daftar dan juga di variabel terpisah. Hitung ulang saat dibutuhkan agar tidak ada dua angka yang saling bertentangan."
+      ],
+      "code": {
+        "language": "text",
+        "lab": false,
+        "code": "daftar <- [\n  { id: \"t-01\", judul: \"Belajar\",  selesai: salah },\n  { id: \"t-02\", judul: \"Olahraga\", selesai: benar }\n]\nOUTPUT daftar[1].judul\nOUTPUT panjang(daftar)",
+        "output": "Belajar\n2",
+        "explain": "daftar[1] mengambil record pertama, lalu .judul membaca field judul. panjang(daftar) menghitung jumlah record tanpa menghitung field di dalamnya."
+      },
+      "callouts": [
+        {
+          "tone": "good",
+          "title": "Satu sumber kebenaran",
+          "body": "Simpan data tugas satu kali di list. Angka ringkasan seperti jumlah selesai dihitung dari list, bukan disimpan sebagai salinan terpisah."
+        }
+      ]
+    },
+    {
+      "id": "algoritma-cari",
+      "title": "Pencarian linear dan pencarian langsung",
+      "body": [
+        "Pencarian linear memeriksa record satu per satu. Cocok untuk daftar kecil dan ketika data tidak punya kunci unik. Biayanya bertambah seiring jumlah data, tetapi logikanya sederhana dan jarang salah.",
+        "Jika setiap record punya id unik, buat peta dari id ke record. Pencarian langsung memakai kunci sehingga jumlah pemeriksaan tidak bergantung pada panjang daftar. Peta dibangun sekali, lalu dipakai berkali-kali."
+      ],
+      "code": {
+        "language": "text",
+        "lab": false,
+        "code": "FUNGSI CariLinear(daftar, id)\n  FOR i FROM 1 TO panjang(daftar) DO\n    IF daftar[i].id = id THEN RETURN daftar[i]\n  END FOR\n  RETURN kosong\nEND FUNGSI\n\nFUNGSI CariPeta(peta, id)\n  IF id ada di peta THEN RETURN peta[id]\n  RETURN kosong\nEND FUNGSI",
+        "output": "CariLinear memeriksa hingga n record; CariPeta memeriksa satu kunci.",
+        "explain": "Kedua fungsi mengembalikan kosong jika tidak ditemukan. Perbedaannya ada pada jumlah pemeriksaan, bukan pada hasil."
+      },
+      "checkpoint": {
+        "prompt": "Anda punya 10.000 tugas dan sering mencari berdasarkan id. Struktur mana yang Anda pilih dan mengapa?",
+        "success": "Jawaban memilih peta id ke record karena pencarian langsung tidak perlu memeriksa seluruh daftar."
+      }
+    },
+    {
+      "id": "algoritma-hapus",
+      "title": "Algoritma hapus yang aman",
+      "body": [
+        "Menghapus terlihat sederhana, tetapi mudah salah: menghapus semua record yang cocok, menghapus record yang salah karena indeks bergeser, atau menghapus sambil mengubah daftar yang sedang diperiksa. Tulis urutannya secara eksplisit.",
+        "Pola aman: cari indeks yang cocok terlebih dahulu, hentikan jika tidak ada, baru hapus satu record. Jangan mengubah daftar di tengah perulangan yang sedang memeriksa daftar yang sama."
+      ],
+      "code": {
+        "language": "text",
+        "lab": false,
+        "code": "FUNGSI Hapus(daftar, id)\n  indeks <- kosong\n  FOR i FROM 1 TO panjang(daftar) DO\n    IF daftar[i].id = id DAN indeks = kosong THEN\n      indeks <- i\n    END IF\n  END FOR\n  IF indeks = kosong THEN\n    OUTPUT \"Tugas tidak ditemukan\"\n    RETURN daftar\n  END IF\n  HAPUS daftar[indeks]\n  OUTPUT \"Tugas dihapus\"\n  RETURN daftar\nEND FUNGSI",
+        "output": "Hapus(daftar, \"t-02\") -> Tugas dihapus, daftar tersisa satu record.",
+        "explain": "Pencarian berhenti mencatat indeks pertama yang cocok. Penghapusan dilakukan setelah perulangan agar posisi tidak bergeser saat masih diperiksa."
+      }
+    }
+  ],
+  "practice": [
+    {
+      "id": "latihan-1",
+      "level": "guided",
+      "title": "Pilih struktur data",
+      "task": "Tentukan struktur untuk tiga kebutuhan: menampilkan semua tugas berurutan, mencari tugas berdasarkan id, dan menghitung jumlah tugas selesai.",
+      "steps": [
+        "Tulis kebutuhan satu per baris.",
+        "Pilih list, peta, atau keduanya.",
+        "Jelaskan alasan setiap pilihan."
+      ],
+      "starterCode": "1. tampil semua -> ...\n2. cari id      -> ...\n3. hitung selesai -> ...",
+      "expected": "List untuk tampilan dan hitung; peta untuk pencarian id; alasan menyebut urutan dan kunci unik.",
+      "hints": [
+        "List menjaga urutan, peta tidak.",
+        "Satu aplikasi boleh memakai keduanya sekaligus."
+      ],
+      "verification": {
+        "mode": "manual",
+        "expected": "Setiap pilihan disertai alasan yang mengacu pada operasi yang paling sering dilakukan."
+      }
+    },
+    {
+      "id": "latihan-2",
+      "level": "variasi",
+      "title": "Telusuri pencarian",
+      "task": "Telusuri CariLinear untuk daftar lima tugas dan id yang berada di posisi keempat. Berapa record yang diperiksa?",
+      "steps": [
+        "Tulis urutan id yang diperiksa.",
+        "Hentikan saat id cocok.",
+        "Hitung jumlah pemeriksaan."
+      ],
+      "starterCode": "daftar = [t-01, t-02, t-03, t-04, t-05]\nCariLinear(daftar, \"t-04\")",
+      "expected": "Empat pemeriksaan; t-05 tidak diperiksa karena pencarian berhenti saat cocok.",
+      "hints": [
+        "Pencarian berhenti tepat setelah record ditemukan.",
+        "Hitung record yang dibandingkan, bukan posisi akhir."
+      ],
+      "verification": {
+        "mode": "manual",
+        "expected": "Tabel penelusuran menunjukkan empat baris dan berhenti di t-04."
+      }
+    },
+    {
+      "id": "latihan-3",
+      "level": "transfer",
+      "title": "Hapus tanpa menggeser indeks",
+      "task": "Perbaiki algoritma yang menghapus record di dalam perulangan sehingga tugas setelahnya terlewat.",
+      "steps": [
+        "Temukan baris HAPUS yang berada di dalam FOR.",
+        "Pindahkan penghapusan setelah perulangan.",
+        "Simpan indeks yang cocok lebih dulu.",
+        "Uji dengan daftar tiga tugas."
+      ],
+      "starterCode": "FOR i FROM 1 TO panjang(daftar) DO\n  IF daftar[i].id = id THEN HAPUS daftar[i]\nEND FOR",
+      "expected": "Penghapusan terjadi sekali setelah indeks ditemukan; seluruh tugas lain tetap ada.",
+      "hints": [
+        "Mengubah daftar saat diperiksa membuat posisi bergeser.",
+        "Gunakan variabel indeks untuk menyimpan posisi yang akan dihapus."
+      ],
+      "verification": {
+        "mode": "manual",
+        "expected": "Hasil akhir berisi dua tugas tersisa dan tidak ada yang terlewat."
+      }
+    }
+  ],
+  "verification": {
+    "mode": "manual",
+    "command": "Uji tambah, cari, dan hapus pada daftar contoh",
+    "expected": "Setiap operasi mengubah hanya data yang dimaksud dan jumlah akhir sesuai perhitungan manual.",
+    "evidence": "Simpan tabel uji operasi di dokumen spesifikasi."
+  },
+  "troubleshooting": [
+    {
+      "symptom": "Dua tugas terhapus padahal hanya satu yang dipilih.",
+      "cause": "Penghapusan dilakukan di dalam perulangan yang terus berjalan setelah record pertama dihapus.",
+      "fix": "Catat indeks pertama yang cocok, hentikan pencarian, lalu hapus satu kali setelah perulangan."
+    },
+    {
+      "symptom": "Pencarian id selalu mengembalikan kosong.",
+      "cause": "Perbandingan memakai posisi indeks, bukan nilai id, atau tipe data id berbeda.",
+      "fix": "Pastikan membandingkan field id yang sama tipenya dan tidak memakai indeks sebagai pengganti id."
+    },
+    {
+      "symptom": "Jumlah tugas selesai berbeda antara ringkasan dan daftar.",
+      "cause": "Ada salinan angka yang diperbarui terpisah dari data utama.",
+      "fix": "Hapus salinan dan hitung ulang dari list setiap kali ringkasan ditampilkan."
+    }
+  ],
+  "quiz": {
+    "questions": [
+      {
+        "id": "q1",
+        "type": "recall",
+        "question": "Apa keuntungan utama peta (map) dibanding pencarian linear?",
+        "options": [
+          "Selalu menghemat memori",
+          "Menjaga urutan data secara otomatis",
+          "Menemukan record lewat kunci tanpa memeriksa seluruh daftar"
+        ],
+        "answer": 2,
+        "explanation": "Peta memakai kunci unik sehingga pencarian tidak perlu memeriksa elemen satu per satu."
+      },
+      {
+        "id": "q2",
+        "type": "code-reading",
+        "question": "Pada algoritma Hapus, mengapa penghapusan dilakukan setelah perulangan?",
+        "options": [
+          "Agar kode lebih panjang",
+          "Agar posisi record tidak bergeser saat masih diperiksa",
+          "Agar semua record ikut terhapus"
+        ],
+        "answer": 1,
+        "explanation": "Menghapus di tengah perulangan menggeser indeks dan membuat record berikutnya terlewat."
+      },
+      {
+        "id": "q3",
+        "type": "scenario",
+        "question": "Aplikasi perlu menampilkan tugas sesuai urutan dibuat sekaligus mencari berdasarkan id. Struktur yang tepat adalah...",
+        "options": [
+          "Hanya peta",
+          "List untuk urutan dan peta untuk pencarian",
+          "Dua list terpisah yang disalin manual"
+        ],
+        "answer": 1,
+        "explanation": "List menjaga urutan tampilan, peta mempercepat pencarian; keduanya bisa dipakai bersama."
+      }
+    ]
+  },
+  "resources": [
+    {
+      "sourceId": "mdn-indexed-collections",
+      "note": "Rujukan resmi list dan indeks, termasuk perilaku batas indeks."
+    },
+    {
+      "sourceId": "mdn-objects-guide",
+      "note": "Rujukan resmi record/object dan akses field berdasarkan nama."
+    }
+  ],
+  "summary": [
+    "List menjaga urutan; record mengelompokkan field; peta mempercepat pencarian berdasarkan kunci.",
+    "Pencarian linear memeriksa satu per satu; pencarian peta memakai kunci unik.",
+    "Hapus satu record dengan mencari indeks lebih dulu dan menghapus setelah perulangan selesai."
+  ]
+}

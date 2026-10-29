@@ -1,0 +1,430 @@
+{
+  "id": "m01-l03",
+  "title": "Alur kerja pengembang: editor, terminal, browser, dan Git",
+  "minutes": 90,
+  "level": "Dasar",
+  "depth": "fondasi",
+  "schema": 3.1,
+  "codeLanguage": "bash",
+  "outcome": "Setelah pelajaran ini, Anda dapat menjelaskan siklus edit, jalankan, uji, dan periksa, menentukan peran editor, terminal, browser, dan Git, menyusun folder proyek yang konsisten, serta membatasi perubahan menjadi langkah kecil yang dapat diuji.",
+  "objectives": [
+    "Menjelaskan siklus edit, jalankan, uji, dan periksa sebagai putaran kerja yang pendek.",
+    "Menentukan peran editor, terminal, browser, dan Git dalam satu proyek.",
+    "Menyusun folder proyek yang konsisten dan mudah dijalankan.",
+    "Membatasi perubahan menjadi langkah kecil yang dapat diuji dan dijelaskan."
+  ],
+  "prerequisites": [
+    {
+      "label": "Klien-server: bagaimana web bekerja",
+      "lessonId": "m01-l02"
+    },
+    {
+      "label": "Berkas, folder, jalur, dan terminal dasar",
+      "lessonId": "m00-l02"
+    }
+  ],
+  "terms": [
+    {
+      "term": "Workflow",
+      "definition": "Urutan kebiasaan dan alat yang dipakai untuk mengubah, menjalankan, menguji, dan memeriksa kode."
+    },
+    {
+      "term": "Editor kode",
+      "definition": "Aplikasi untuk membaca dan mengubah berkas teks kode dengan bantuan navigasi dan penyorotan sintaks."
+    },
+    {
+      "term": "Terminal",
+      "definition": "Antarmuka teks untuk menjalankan perintah di dalam direktori kerja tertentu."
+    },
+    {
+      "term": "DevTools",
+      "definition": "Alat di browser untuk memeriksa elemen, pesan console, permintaan jaringan, dan status halaman."
+    },
+    {
+      "term": "Commit",
+      "definition": "Catatan snapshot perubahan proyek pada satu titik waktu beserta pesan penjelasnya."
+    },
+    {
+      "term": "Direktori kerja",
+      "definition": "Folder tempat sebuah perintah dijalankan dan menjadi dasar bagi path relatif."
+    }
+  ],
+  "syntax": [
+    {
+      "token": "npm run dev",
+      "readAs": "Jalankan skrip dev yang didefinisikan di package.json untuk memulai server pengembangan.",
+      "meaning": "Perintah ini membaca bagian scripts pada package.json, lalu menjalankan alat yang tercatat di sana. Anda tidak perlu menghafal seluruh rangkaian alat di baliknya.",
+      "example": "npm run dev",
+      "output": "Server lokal menyala dan menampilkan alamat seperti http://localhost:5173/.",
+      "pitfall": "Menjalankan perintah dari folder yang salah. Pastikan terminal berada di folder yang memuat package.json."
+    },
+    {
+      "token": "git status",
+      "readAs": "Tampilkan berkas yang berubah, berkas baru, dan berkas yang sudah disiapkan untuk commit.",
+      "meaning": "Status adalah pemeriksaan sebelum menyimpan riwayat. Perintah ini menunjukkan apa yang akan masuk ke commit berikutnya.",
+      "example": "git status",
+      "output": "Daftar berkas modified, untracked, atau staged pada branch yang sedang aktif.",
+      "pitfall": "Langsung menjalankan git add . tanpa membaca status, sehingga berkas sementara atau rahasia ikut masuk."
+    },
+    {
+      "token": "git diff",
+      "readAs": "Tampilkan perbedaan antara berkas yang Anda ubah dan versi terakhir yang tercatat.",
+      "meaning": "Diff membantu Anda memeriksa perubahan sebelum commit. Membaca diff adalah bentuk pemeriksaan diri yang paling murah.",
+      "example": "git diff app.js",
+      "output": "Baris yang ditambahkan dan dihapus, lengkap dengan konteks di sekitarnya.",
+      "pitfall": "Membuat commit besar tanpa membaca diff. Kesalahan kecil seperti debug log atau nilai uji ikut tersimpan."
+    }
+  ],
+  "conventions": [
+    "Jaga putaran kerja tetap pendek: ubah sedikit, jalankan, uji, lalu periksa hasilnya.",
+    "Simpan satu proyek dalam satu folder akar yang memuat README dan berkas konfigurasi.",
+    "Jalankan perintah dari folder yang benar dan periksa posisi terminal sebelum mengeksekusi.",
+    "Baca git status dan git diff sebelum setiap commit.",
+    "Tulis pesan commit yang menyatakan maksud perubahan, bukan nama berkas yang disentuh.",
+    "Pisahkan perubahan yang berbeda ke dalam commit yang berbeda agar mudah ditinjau dan dikembalikan."
+  ],
+  "sections": [
+    {
+      "id": "cara-membaca",
+      "title": "Cara membaca satu putaran kerja",
+      "body": [
+        "Satu putaran kerja terdiri dari empat langkah: edit, jalankan, uji, dan periksa. Edit berarti mengubah satu hal kecil. Jalankan berarti memulai program atau memuat ulang halaman. Uji berarti memeriksa perilaku dengan kasus yang jelas. Periksa berarti membaca output, console, atau tampilan untuk memastikan hasilnya sesuai harapan.",
+        "Editor, terminal, browser, dan Git memiliki peran berbeda. Editor mengubah teks. Terminal menjalankan perintah dan menampilkan output. Browser menampilkan hasil serta menyediakan DevTools untuk memeriksa jaringan dan console. Git mencatat riwayat perubahan agar Anda dapat kembali ke versi yang bekerja.",
+        "Putaran yang terlalu panjang menyulitkan pencarian penyebab. Jika Anda mengubah lima berkas sekaligus lalu terjadi error, Anda tidak tahu perubahan mana yang salah. Batasi satu putaran pada satu tujuan kecil. Setelah putaran berhasil, barulah tambahkan perubahan berikutnya atau simpan commit."
+      ],
+      "code": {
+        "language": "text",
+        "lab": false,
+        "code": "$ npm run dev\nVITE v8.0.0  ready in 320 ms\nLocal: http://localhost:5173/\n\n$ git status\nmodified: src/app.js",
+        "output": "Server pengembangan siap di localhost, dan Git menunjukkan satu berkas yang berubah.",
+        "explain": "Blok ini menunjukkan dua alat dalam satu putaran: terminal menjalankan server, lalu Git memeriksa perubahan.",
+        "annotations": [
+          {
+            "line": 1,
+            "code": "$ npm run dev",
+            "note": "Tanda $ adalah prompt, bukan bagian perintah yang diketik."
+          },
+          {
+            "line": 3,
+            "code": "Local: http://localhost:5173/",
+            "note": "Alamat lokal yang dibuka di browser untuk melihat hasil."
+          },
+          {
+            "line": 5,
+            "code": "$ git status",
+            "note": "Pemeriksaan status dilakukan setelah perubahan, sebelum commit."
+          },
+          {
+            "line": 6,
+            "code": "modified: src/app.js",
+            "note": "Satu berkas berubah; diff dapat dibaca sebelum menyimpan riwayat."
+          }
+        ]
+      },
+      "callouts": [
+        {
+          "tone": "good",
+          "title": "Periksa sebelum menyimpan",
+          "body": "Urutan yang aman adalah lihat status, baca diff, jalankan uji, lalu commit. Commit bukan tempat pertama kali Anda memeriksa perubahan."
+        }
+      ],
+      "checkpoint": {
+        "prompt": "Jalankan satu putaran lengkap pada proyek kecil: ubah satu nilai, muat ulang, periksa output, lalu baca git diff.",
+        "success": "Anda dapat menunjukkan perubahan sebelum dan sesudah, serta menjelaskan satu baris yang muncul di diff."
+      }
+    },
+    {
+      "id": "siklus-kerja",
+      "title": "Siklus edit, jalankan, uji, dan periksa",
+      "body": [
+        "Alur kerja developer bukan satu aplikasi ajaib, melainkan putaran pendek: edit, jalankan, uji, lalu periksa. Anda mengubah kode di editor, menjalankan program, menguji perilaku yang diharapkan, dan memeriksa output atau error. Putaran ini bertujuan memberi umpan balik cepat agar kesalahan kecil segera terlihat.",
+        "Contohnya, Anda mengubah fungsi total di app.js. Simpan berkas, jalankan node app.js, lalu bandingkan output dengan perhitungan manual. Jika program memiliki antarmuka, muat ulang halaman dan periksa Console serta Network di DevTools. Jika hasilnya salah, jangan mengubah lima bagian sekaligus. Ubah satu hal, jalankan lagi, dan catat apa yang berubah.",
+        "Setiap alat menjawab pertanyaan berbeda. Editor menjawab kode apa yang Anda tulis. Terminal menjawab apakah perintah berhasil dan apa outputnya. Browser menjawab apa yang dilihat pengguna. DevTools menjawab mengapa tampilan atau permintaan berperilaku demikian. Ketika tahu pertanyaannya, Anda tidak perlu menebak alat yang dibuka."
+      ],
+      "code": {
+        "language": "bash",
+        "code": "node app.js",
+        "output": "Total: 67500",
+        "explain": "Terminal menjalankan berkas dengan Node; output membuktikan kasus itu saja.",
+        "annotations": [
+          {
+            "line": 1,
+            "code": "node app.js",
+            "note": "Menjalankan berkas dengan Node; output hanya membuktikan satu kasus pada satu waktu."
+          }
+        ],
+        "lab": false
+      },
+      "callouts": [
+        {
+          "tone": "good",
+          "title": "Satu perubahan, satu alasan",
+          "body": "Sebelum mengubah kode, tuliskan dalam satu kalimat apa yang Anda harapkan berubah. Setelah menjalankan program, periksa apakah harapan itu terpenuhi."
+        }
+      ],
+      "checkpoint": {
+        "prompt": "Sebutkan empat tahap dalam satu putaran kerja dan satu pertanyaan yang dijawab oleh setiap alat utama.",
+        "success": "Anda menyebut edit, jalankan, uji, dan periksa serta membedakan peran editor, terminal, browser, dan DevTools."
+      }
+    },
+    {
+      "id": "peran-editor",
+      "title": "Editor kode sebagai tempat mengubah teks",
+      "body": [
+        "Editor kode adalah alat untuk membaca dan mengubah teks kode. Fitur seperti penyorotan sintaks, pelengkapan otomatis, pencarian, navigasi ke definisi, format, dan penanda kesalahan membantu Anda memahami berkas yang panjang. Editor juga sering menyediakan terminal terpadu dan panel kontrol versi. Namun editor tidak menjalankan aplikasi dan tidak membuktikan bahwa kode benar. Ia hanya membuat perubahan lebih terkendali.",
+        "Buka folder proyek sebagai workspace, bukan satu berkas lepas. Dengan begitu, daftar berkas, pencarian, path relatif, dan pengaturan editor mengikuti batas proyek yang sama. Perhatikan penanda berkas yang belum disimpan. Autosave mengurangi kelalaian, tetapi mencatat setiap perubahan kecil. Pilih satu kebiasaan dan patuhi secara konsisten agar Anda tidak bingung apakah kode yang dijalankan sudah versi terbaru.",
+        "Pasang sedikit ekstensi yang benar-benar dipakai. Terlalu banyak ekstensi dapat saling bertabrakan, memperlambat editor, atau memformat kode dengan aturan yang berbeda. Jika muncul garis merah atau peringatan, baca pesannya sebelum mematikan aturan. Editor rapi bukan tujuan akhir; tujuannya perubahan yang jelas dan mudah ditinjau."
+      ],
+      "callouts": [
+        {
+          "tone": "bad",
+          "title": "Jangan lakukan ini",
+          "body": "Mengubah berkas di folder yang salah lalu bingung mengapa aplikasi tidak berubah. Pastikan judul workspace dan path berkas menunjukkan proyek yang sedang dijalankan."
+        }
+      ],
+      "checkpoint": {
+        "prompt": "Mengapa sebaiknya Anda membuka folder proyek, bukan satu berkas saja, di editor?",
+        "success": "Anda menjelaskan bahwa workspace menjaga daftar berkas, pencarian, path, dan pengaturan tetap dalam konteks proyek yang sama."
+      }
+    },
+    {
+      "id": "peran-terminal",
+      "title": "Terminal sebagai tempat menjalankan perintah",
+      "body": [
+        "Terminal menjalankan perintah di dalam direktori kerja tertentu. Prompt biasanya menunjukkan folder tempat Anda berada. Perintah di folder berbeda dapat gagal, membaca berkas salah, atau mengubah data yang tidak dimaksudkan. Karena itu, periksa lokasi sebelum menjalankan perintah penting, terutama yang menulis atau menghapus berkas.",
+        "Terminal adalah tempat menjalankan program Node, skrip proyek, pengujian, dan alat pengembangan lain. Output teksnya adalah bukti tentang apa yang terjadi: nilai tercetak, pesan error, kode keluar, atau log server. Baca perintah sebelum menekan Enter, jalankan satu langkah pada satu waktu, dan manfaatkan riwayat serta pelengkapan nama berkas. Menyalin perintah dari internet tanpa memahami efeknya adalah kebiasaan berisiko.",
+        "Proses berjalan lama, seperti server pengembangan, menahan prompt sampai dihentikan. Log server muncul di terminal ini, bukan di Console browser. Jika browser menampilkan error sementara terminal tidak, masalahnya mungkin di sisi client; jika terminal menampilkan error saat server mulai, masalahnya ada di proses atau konfigurasi. Salin pesan error utuh agar mudah dicari atau dibandingkan."
+      ],
+      "callouts": [
+        {
+          "tone": "warn",
+          "title": "Periksa sebelum Enter",
+          "body": "Pahami direktori kerja, nama berkas, dan efek perintah. Jika ragu, jalankan perintah baca seperti menampilkan daftar isi folder terlebih dahulu."
+        }
+      ],
+      "checkpoint": {
+        "prompt": "Apa hubungan antara direktori kerja terminal dan keberhasilan sebuah perintah?",
+        "success": "Anda menjelaskan bahwa perintah membaca path relatif terhadap direktori kerja sehingga folder yang salah dapat menyebabkan kegagalan atau efek yang salah."
+      }
+    },
+    {
+      "id": "peran-browser",
+      "title": "Browser dan DevTools sebagai alat pemeriksa",
+      "body": [
+        "Browser bukan hanya tempat melihat halaman. Browser menjalankan HTML, CSS, dan JavaScript, lalu menyediakan DevTools untuk memeriksa apa yang sebenarnya terjadi. Elements menunjukkan DOM dan gaya yang diterapkan. Console menampilkan log dan error JavaScript. Network mencatat permintaan beserta status dan respons. Sources memungkinkan Anda membaca kode dan memasang breakpoint.",
+        "Gunakan panel yang sesuai dengan pertanyaan Anda. Jika halaman kosong, periksa Console untuk error dan Network untuk permintaan yang gagal. Jika tombol tidak merespons, periksa apakah JavaScript dimuat dan error saat event terjadi. Jika data lama muncul, periksa cache dan status respons. Jangan menyimpulkan penyebab hanya dari tampilan akhir, karena tampilan bisa terlihat benar sementara error tersembunyi di Console.",
+        "Muat ulang halaman setelah mengubah berkas, dan gunakan hard reload ketika cache mencurigakan. Perubahan di panel Elements bersifat sementara dan hilang saat halaman dimuat ulang; perbaikan tetap dilakukan di berkas sumber. Mode responsif membantu menguji lebar layar, tetapi bukan pengganti perangkat nyata. DevTools adalah alat bukti, bukan tempat menebak."
+      ],
+      "callouts": [
+        {
+          "tone": "good",
+          "title": "Tiga panel pertama",
+          "body": "Saat halaman bermasalah, buka Console, Network, dan Elements secara berurutan. Ketiganya menjawab pertanyaan yang berbeda sebelum Anda mengubah kode."
+        }
+      ],
+      "checkpoint": {
+        "prompt": "Panel DevTools mana yang Anda buka untuk mengetahui apakah sebuah permintaan gagal, dan mengapa?",
+        "success": "Anda memilih Network karena panel tersebut menampilkan status, waktu, dan respons setiap permintaan."
+      }
+    },
+    {
+      "id": "git-jaring-pengaman",
+      "title": "Git sebagai jaring pengaman",
+      "body": [
+        "Git menyimpan riwayat perubahan proyek sehingga Anda dapat membandingkan keadaan sebelum dan sesudah perubahan. Konsep intinya adalah commit: snapshot proyek pada satu titik, disertai pesan yang menjelaskan alasan perubahan. Commit bukan tombol simpan berkas. Menyimpan menulis isi terbaru ke disk, sedangkan commit mencatat keadaan proyek ke riwayat yang dapat ditinjau.",
+        "Biasakan membuat commit sebelum eksperimen berisiko dan setelah satu perubahan utuh. Satu commit sebaiknya menjawab satu tujuan, misalnya memperbaiki perhitungan diskon, bukan mencampurnya dengan perubahan warna dan penggantian nama berkas. Pesan commit yang baik menjelaskan alasan, bukan hanya menuliskan update. Riwayat rapi membantu menemukan kapan perilaku berubah dan bagian mana yang perlu diperiksa.",
+        "Git lokal bukan pengganti cadangan; simpan salinan di tempat lain. Jangan memasukkan rahasia, data pribadi, atau folder dependensi yang tidak perlu. Untuk sekarang, pahami commit sebagai titik aman dan kebiasaan mencatat perubahan. Perintah Git lebih lengkap dibahas pada modul khusus."
+      ],
+      "callouts": [
+        {
+          "tone": "warn",
+          "title": "Commit bukan autosave",
+          "body": "Commit dibuat pada momen yang Anda pilih dan diberi penjelasan. Jangan menunggu sampai pekerjaan berantakan baru mencari titik aman."
+        }
+      ],
+      "checkpoint": {
+        "prompt": "Apa perbedaan menyimpan berkas dan membuat commit?",
+        "success": "Anda menjelaskan bahwa menyimpan menulis isi berkas ke disk, sedangkan commit mencatat snapshot proyek beserta pesan ke riwayat."
+      }
+    },
+    {
+      "id": "folder-dan-perubahan-terkontrol",
+      "title": "Folder proyek dan perubahan yang terkendali",
+      "body": [
+        "Satu proyek sebaiknya tinggal dalam satu folder yang jelas. Letakkan README yang menjelaskan cara menjalankan proyek, folder sumber, aset, dan pengujian bila diperlukan. Gunakan nama berkas dan folder yang konsisten, misalnya huruf kecil dengan tanda hubung, agar path tidak membingungkan di sistem operasi berbeda. Buka folder akar proyek di editor dan terminal supaya semua alat bekerja pada batas yang sama. Hindari menyebar berkas di Desktop atau memakai path absolut.",
+        "Perubahan terkendali berarti Anda tahu mengapa setiap baris berubah. Tentukan tujuan satu langkah, ubah bagian terkecil yang mungkin, lalu jalankan pengujian yang sama seperti sebelumnya. Tinjau perbedaan sebelum commit; jika ada perubahan yang tidak dapat Anda jelaskan, hapus atau pisahkan. Jangan memformat ulang seluruh berkas untuk satu baris; perubahan sebenarnya jadi tersembunyi.",
+        "Ketika eksperimen gagal, kembali ke titik aman terakhir lalu coba hipotesis berikutnya. Catat perintah yang dijalankan, error yang muncul, dan hasil yang diamati agar tidak mengulang jalan buntu. Kebiasaan ini menyatukan editor, terminal, browser, dan Git: mengubah dengan sadar, menjalankan dengan bukti, memeriksa dengan alat tepat, dan menyimpan kemajuan pada titik yang dipercaya."
+      ],
+      "callouts": [
+        {
+          "tone": "good",
+          "title": "Catatan sesi",
+          "body": "Tulis tujuan, perintah, error, dan satu temuan untuk setiap putaran. Catatan singkat lebih berguna daripada mengandalkan ingatan."
+        }
+      ],
+      "checkpoint": {
+        "prompt": "Mengapa perubahan besar yang tidak terkendali menyulitkan debugging?",
+        "success": "Anda menjelaskan bahwa banyak perubahan sekaligus menyembunyikan penyebab dan membuat Anda tidak tahu bagian mana yang harus dipertahankan atau dibatalkan."
+      }
+    }
+  ],
+  "practice": [
+    {
+      "id": "latihan-1",
+      "title": "Satu putaran penuh",
+      "task": "Buat proyek kecil berisi satu berkas JavaScript, jalankan dari terminal, lalu ubah satu nilai dan ulangi putarannya.",
+      "steps": [
+        "Buat folder proyek dan berkas app.js yang mencetak total belanja.",
+        "Jalankan berkas dari terminal dan catat outputnya.",
+        "Ubah satu harga, simpan, lalu jalankan lagi tanpa mengubah bagian lain."
+      ],
+      "expected": "Dua output yang berbeda dan satu catatan tentang nilai yang Anda ubah.",
+      "stretch": "Tambahkan satu kasus input tidak valid dan tentukan pesan yang seharusnya muncul.",
+      "level": "guided",
+      "hints": [
+        "Buat satu berkas JavaScript yang mencetak satu nilai ke terminal.",
+        "Ubah nilai itu, lalu jalankan ulang perintah yang sama.",
+        "Catat perbedaan output dan satu hal yang tidak berubah."
+      ],
+      "starterCode": "const total = 67500;\nconsole.log(`Total: ${total}`);",
+      "verification": {
+        "command": "Jalankan berkas dua kali dengan satu nilai yang diubah.",
+        "expected": "Dua output berbeda dan satu catatan perubahan yang jelas.",
+        "evidence": "Simpan kedua output dan catatan perubahan."
+      }
+    },
+    {
+      "id": "latihan-2",
+      "title": "Audit folder proyek",
+      "task": "Rapikan satu folder proyek latihan agar memiliki struktur yang jelas dan dapat dijalankan dari akar folder.",
+      "steps": [
+        "Daftar semua berkas dan tentukan mana yang termasuk sumber, aset, atau catatan.",
+        "Buat README singkat berisi tujuan dan cara menjalankan proyek.",
+        "Pastikan terminal dan editor dibuka pada folder akar yang sama."
+      ],
+      "expected": "Struktur folder yang konsisten dan README yang cukup untuk mengulang langkah menjalankan proyek.",
+      "stretch": "Tentukan berkas atau folder yang tidak boleh dimasukkan ke riwayat Git dan jelaskan alasannya.",
+      "level": "independent",
+      "hints": [
+        "Letakkan README, berkas sumber, dan konfigurasi pada tingkat yang mudah ditemukan.",
+        "Pastikan perintah dijalankan dari akar folder proyek.",
+        "Tulis langkah menjalankan proyek di README, bukan hanya di ingatan."
+      ],
+      "starterCode": "proyek-belajar/\n  README.md\n  package.json\n  src/\n  catatan/",
+      "verification": {
+        "command": "Rapikan satu folder proyek dan tulis README yang cukup untuk mengulang langkah.",
+        "expected": "Struktur konsisten dan orang lain dapat menjalankan proyek hanya dengan membaca README.",
+        "evidence": "Simpan struktur folder dan isi README."
+      }
+    },
+    {
+      "id": "latihan-3",
+      "title": "Rencana commit yang rapi",
+      "task": "Bayangkan Anda memperbaiki perhitungan diskon, memperbarui README, dan mengganti warna tombol. Bagi pekerjaan itu menjadi commit yang masuk akal.",
+      "steps": [
+        "Tuliskan tiga tujuan perubahan secara terpisah.",
+        "Tentukan perubahan mana yang harus menjadi satu commit dan mana yang harus dipisah.",
+        "Tulis pesan commit yang menjelaskan alasan setiap perubahan."
+      ],
+      "expected": "Dua atau tiga commit dengan pesan yang spesifik dan alasan pemisahannya.",
+      "stretch": "Tentukan urutan commit yang paling aman jika perbaikan diskon harus diuji lebih dahulu.",
+      "level": "transfer",
+      "hints": [
+        "Pisahkan perbaikan logika, pembaruan dokumentasi, dan perubahan tampilan.",
+        "Tulis pesan commit yang menyebut maksud, bukan nama berkas.",
+        "Periksa diff setiap commit sebelum melanjutkan."
+      ],
+      "starterCode": "Commit 1:\nCommit 2:\nCommit 3:\nAlasan pemisahan:",
+      "verification": {
+        "command": "Bagi tiga perubahan menjadi commit yang masuk akal.",
+        "expected": "Setiap commit memiliki satu tujuan, pesan spesifik, dan diff yang mudah ditinjau.",
+        "evidence": "Simpan rencana commit dan alasan pemisahannya."
+      }
+    }
+  ],
+  "verification": {
+    "mode": "terminal",
+    "command": "Jalankan Latihan 1 dari terminal, lalu periksa perubahan dengan git diff.",
+    "expected": "Anda dapat menjalankan proyek, melihat output, dan menjelaskan satu baris perubahan sebelum commit.",
+    "evidence": "Simpan perintah, output, dan potongan diff di catatan belajar."
+  },
+  "troubleshooting": [
+    {
+      "symptom": "Perintah npm gagal karena package.json tidak ditemukan.",
+      "cause": "Terminal berada di folder yang salah atau proyek belum diinisialisasi.",
+      "fix": "Jalankan pwd, pindah ke folder proyek yang memuat package.json, lalu ulangi perintah."
+    },
+    {
+      "symptom": "Perubahan tidak terlihat di browser.",
+      "cause": "Server pengembangan belum memuat ulang, cache browser menyimpan versi lama, atau berkas yang diubah bukan berkas yang dipakai.",
+      "fix": "Periksa terminal, muat ulang tanpa cache, dan pastikan jalur berkas sesuai dengan yang diimpor."
+    },
+    {
+      "symptom": "Git menolak commit karena ada perubahan yang belum disiapkan.",
+      "cause": "Berkas belum ditambahkan ke staging area atau ada konflik.",
+      "fix": "Baca git status, siapkan berkas yang benar dengan git add, dan selesaikan konflik sebelum commit."
+    },
+    {
+      "symptom": "Proyek berjalan di komputer sendiri tetapi gagal di mesin lain.",
+      "cause": "Versi runtime, dependensi, atau variabel lingkungan berbeda.",
+      "fix": "Catat versi di README, kunci dependensi, dan sediakan contoh berkas konfigurasi tanpa rahasia."
+    }
+  ],
+  "quiz": {
+    "questions": [
+      {
+        "id": "q1",
+        "type": "recall",
+        "question": "Apa peran utama terminal dalam alur kerja developer?",
+        "options": [
+          "Menyoroti sintaks dan melengkapi nama variabel",
+          "Menjalankan perintah dan menampilkan output atau error",
+          "Menyimpan snapshot proyek ke riwayat"
+        ],
+        "answer": 1,
+        "explanation": "Terminal menjalankan perintah di direktori kerja dan menampilkan output, error, serta log proses."
+      },
+      {
+        "id": "q2",
+        "type": "scenario",
+        "question": "Anda mengubah berkas, tetapi browser masih menampilkan perilaku lama. Tindakan pertama yang paling tepat adalah apa?",
+        "options": [
+          "Menghapus seluruh folder proyek",
+          "Mengganti editor kode",
+          "Memastikan berkas tersimpan, lalu melakukan hard reload dan memeriksa berkas yang dimuat"
+        ],
+        "answer": 2,
+        "explanation": "Versi lama paling sering berasal dari berkas yang belum tersimpan, cache, atau berkas yang salah dimuat."
+      },
+      {
+        "id": "q3",
+        "type": "scenario",
+        "question": "Sebelum mencoba refactor berisiko, langkah pengaman yang paling masuk akal adalah apa?",
+        "options": [
+          "Membuat commit pada keadaan yang sudah diuji",
+          "Menghapus riwayat proyek",
+          "Mematikan terminal agar tidak ada error"
+        ],
+        "answer": 0,
+        "explanation": "Commit memberi titik aman yang dapat dibandingkan atau dikembalikan jika eksperimen gagal."
+      }
+    ]
+  },
+  "resources": [
+    {
+      "sourceId": "git-docs",
+      "note": "Dokumentasi resmi Git untuk memahami konsep riwayat dan commit sebelum memakai perintah lanjutan."
+    },
+    {
+      "sourceId": "chrome-devtools",
+      "note": "Panduan resmi panel DevTools untuk memeriksa elemen, console, jaringan, dan sumber."
+    }
+  ],
+  "summary": [
+    "Putaran kerja yang pendek terdiri dari edit, jalankan, uji, dan periksa.",
+    "Editor mengubah teks, terminal menjalankan perintah, browser menampilkan hasil, dan Git mencatat riwayat.",
+    "Struktur folder yang konsisten dan README membuat proyek dapat dijalankan ulang.",
+    "Baca status dan diff sebelum commit, lalu pisahkan perubahan yang berbeda."
+  ],
+  "next": "Berikutnya: membaca error dan mengatasi bug. Anda akan membedah pesan error dan menyusun hipotesis yang dapat diuji."
+}

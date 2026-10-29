@@ -1,0 +1,25 @@
+{
+  "id": "m00",
+  "title": "Dasar Komputer, Internet, dan Keamanan",
+  "subtitle": "Fondasi digital agar pemrograman tidak terasa seperti hafalan",
+  "weeks": [
+    1,
+    3
+  ],
+  "accent": "#22d3ee",
+  "goal": "Anda memahami cara komputer, berkas, jaringan, browser, akun, dan data pribadi bekerja, serta mampu melindungi perangkat dan belajar dengan aman.",
+  "outcomes": [
+    "Anda dapat menjelaskan perangkat keras, sistem operasi, aplikasi, dan berkas tanpa istilah yang belum dipahami.",
+    "Anda dapat mengelola folder dan jalur proyek dengan terminal tanpa takut kehilangan data.",
+    "Anda dapat menjelaskan perjalanan permintaan dari browser sampai server.",
+    "Anda memakai pengelola kata sandi, verifikasi dua langkah, dan cadangan sebagai kebiasaan, bukan sekadar teori.",
+    "Anda dapat mengenali phishing, malware, dan rekayasa sosial sebelum menjadi korban."
+  ],
+  "entryCheck": "Tidak perlu pengalaman pemrograman. Anda hanya perlu dapat membuka browser dan menyimpan berkas.",
+  "project": {
+    "title": "Peta keamanan digital pribadi",
+    "description": "Buat satu halaman berisi inventaris perangkat, akun penting, status verifikasi dua langkah, lokasi cadangan, dan satu rencana perbaikan."
+  },
+  "exitCheck": "Anda dapat menjelaskan alur data dari berkas lokal sampai halaman web, serta tiga tindakan yang akan Anda lakukan untuk mengamankan akun utama.",
+  "lessons": []
+}

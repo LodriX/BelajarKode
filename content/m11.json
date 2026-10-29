@@ -1,0 +1,221 @@
+{
+  "id": "m11",
+  "title": "Keamanan, Kualitas, dan Deployment",
+  "subtitle": "Praktik produksi yang aman dan dapat dipelihara",
+  "weeks": [
+    40,
+    43
+  ],
+  "accent": "#dc2626",
+  "goal": "Menerapkan kontrol keamanan, testing, container, CI/CD, monitoring, dan backup.",
+  "lessons": [
+    {
+      "id": "m11-l01",
+      "title": "Threat modeling dan OWASP 2025",
+      "minutes": 45,
+      "level": "Lanjutan",
+      "intro": "Threat modeling menanyakan apa yang dilindungi, dari siapa, bagaimana diserang, dan mitigasinya. OWASP Top 10:2025 mencakup access control, misconfiguration, supply chain, injection, dan lain-lain.",
+      "explanation": "Petakan aset penting seperti data pribadi, akun admin, dan token. Utamakan kontrol berdasarkan risiko; jangan mengandalkan scanning semata. Referensi: top10.owasp.org/2025.",
+      "code": "// Checklist threat model:\n// Aset: data pengguna\n// Ancaman: akses tanpa hak\n// Kontrol: authz per-resource + audit log + test",
+      "codeLanguage": "javascript",
+      "practice": [
+        "Buat ancaman dan mitigasi untuk endpoint edit data pegawai.",
+        "Ubah satu input atau asumsi pada contoh, catat hasil dan jelaskan alasannya."
+      ],
+      "bestPractice": "Terapkan otorisasi, validasi, dan pengelolaan secret sejak desain.",
+      "commonMistake": "Beranggapan login sudah cukup untuk mengamankan setiap endpoint.",
+      "quiz": {
+        "question": "Apa prinsip yang paling tepat untuk topik “Threat modeling dan OWASP 2025”?",
+        "options": [
+          "Terapkan otorisasi, validasi, dan pengelolaan secret sejak desain.",
+          "Gunakan solusi paling rumit sejak awal, meski kebutuhan belum jelas.",
+          "Lewati pengujian karena contoh kecil pasti benar."
+        ],
+        "answer": 0,
+        "explanation": "Terapkan otorisasi, validasi, dan pengelolaan secret sejak desain."
+      }
+    },
+    {
+      "id": "m11-l02",
+      "title": "XSS, SQL injection, CSRF",
+      "minutes": 45,
+      "level": "Lanjutan",
+      "intro": "XSS terjadi ketika data tak tepercaya dieksekusi sebagai script; SQL injection saat input memengaruhi struktur query; CSRF menyalahgunakan sesi browser untuk aksi tanpa niat pemiliknya.",
+      "explanation": "Gunakan output escaping, query binding, framework CSRF protection, Content Security Policy terukur, dan validation. Jauhi solusi security homemade tanpa audit.",
+      "code": "// Aman untuk teks pengguna:\nelement.textContent = inputPengguna;\n// Hindari: element.innerHTML = inputPengguna;",
+      "codeLanguage": "javascript",
+      "practice": [
+        "Jelaskan cara membatasi risiko tiga serangan di form komentar.",
+        "Ubah satu input atau asumsi pada contoh, catat hasil dan jelaskan alasannya."
+      ],
+      "bestPractice": "Gunakan escaping, parameterized query, dan perlindungan CSRF sesuai konteks.",
+      "commonMistake": "Menonaktifkan CSRF karena API POST selalu 419.",
+      "quiz": {
+        "question": "Apa prinsip yang paling tepat untuk topik “XSS, SQL injection, CSRF”?",
+        "options": [
+          "Gunakan escaping, parameterized query, dan perlindungan CSRF sesuai konteks.",
+          "Gunakan solusi paling rumit sejak awal, meski kebutuhan belum jelas.",
+          "Lewati pengujian karena contoh kecil pasti benar."
+        ],
+        "answer": 0,
+        "explanation": "Gunakan escaping, parameterized query, dan perlindungan CSRF sesuai konteks."
+      }
+    },
+    {
+      "id": "m11-l03",
+      "title": "Secrets, HTTPS, dan konfigurasi",
+      "minutes": 45,
+      "level": "Lanjutan",
+      "intro": "Konfigurasi penting: HTTPS/TLS, cookie Secure/HttpOnly/SameSite bila cocok, secrets via env/secrets manager, debug mati di production, rate limiting, dan access logs.",
+      "explanation": "Cloudflare/reverse proxy harus mengirim informasi scheme dan trusted proxy secara benar. Batasi akses admin, rotate credential, dan review paket pihak ketiga.",
+      "code": "APP_ENV=production\nAPP_DEBUG=false\n# Contoh konfigurasi; jangan commit .env asli.",
+      "codeLanguage": "bash",
+      "practice": [
+        "Buat checklist pra-publikasi untuk aplikasi Laravel di balik reverse proxy.",
+        "Ubah satu input atau asumsi pada contoh, catat hasil dan jelaskan alasannya."
+      ],
+      "bestPractice": "Pisahkan secret dari kode dan batasi hak akses minimum.",
+      "commonMistake": "Menyimpan credential dalam file JavaScript frontend.",
+      "quiz": {
+        "question": "Apa prinsip yang paling tepat untuk topik “Secrets, HTTPS, dan konfigurasi”?",
+        "options": [
+          "Pisahkan secret dari kode dan batasi hak akses minimum.",
+          "Gunakan solusi paling rumit sejak awal, meski kebutuhan belum jelas.",
+          "Lewati pengujian karena contoh kecil pasti benar."
+        ],
+        "answer": 0,
+        "explanation": "Pisahkan secret dari kode dan batasi hak akses minimum."
+      }
+    },
+    {
+      "id": "m11-l04",
+      "title": "Testing pyramid & kualitas kode",
+      "minutes": 45,
+      "level": "Lanjutan",
+      "intro": "Unit test cepat, integration/feature test menilai interaksi komponen, E2E menguji alur dari sudut pengguna. Static analysis dan formatter mendukung konsistensi.",
+      "explanation": "Jangan mengejar coverage 100% tanpa kualitas; prioritaskan alur bisnis dan akses tidak sah. Test deterministik: tidak tergantung waktu/jaringan tanpa mock.",
+      "code": "// Contoh matriks test:\n// normal: tugas berhasil dibuat\n// invalid: judul kosong -> 422\n// authz: bukan pemilik -> 403",
+      "codeLanguage": "javascript",
+      "practice": [
+        "Tuliskan test plan untuk fitur login, membuat tugas, dan eksport data.",
+        "Ubah satu input atau asumsi pada contoh, catat hasil dan jelaskan alasannya."
+      ],
+      "bestPractice": "Uji perilaku penting, termasuk kasus gagal dan keamanan.",
+      "commonMistake": "Tes hanya happy path dan melewatkan status error.",
+      "quiz": {
+        "question": "Apa prinsip yang paling tepat untuk topik “Testing pyramid & kualitas kode”?",
+        "options": [
+          "Uji perilaku penting, termasuk kasus gagal dan keamanan.",
+          "Gunakan solusi paling rumit sejak awal, meski kebutuhan belum jelas.",
+          "Lewati pengujian karena contoh kecil pasti benar."
+        ],
+        "answer": 0,
+        "explanation": "Uji perilaku penting, termasuk kasus gagal dan keamanan."
+      }
+    },
+    {
+      "id": "m11-l05",
+      "title": "Docker dan environment parity",
+      "minutes": 45,
+      "level": "Lanjutan",
+      "intro": "Container mengemas aplikasi dan dependensi agar mudah direproduksi; Docker Compose mengorkestrasi beberapa service pada development. Container bukan pengganti desain jaringan dan backup.",
+      "explanation": "Pada tahap awal Laravel native juga valid. Pilih Docker jika tim membutuhkan environment konsisten atau multi-service. Tetap dokumentasikan versi, volumes, env, dan healthchecks.",
+      "code": "services:\n  app:\n    image: nginx:alpine\n    ports:\n      - \"8080:80\"",
+      "codeLanguage": "yaml",
+      "practice": [
+        "Bandingkan deployment Laravel native dan Docker berdasarkan kompleksitas, backup, dan troubleshooting.",
+        "Ubah satu input atau asumsi pada contoh, catat hasil dan jelaskan alasannya."
+      ],
+      "bestPractice": "Pilih deployment sesuai kebutuhan operasi, bukan sekadar tren.",
+      "commonMistake": "Menaruh DB tanpa volume persisten dan kehilangan data saat recreate.",
+      "quiz": {
+        "question": "Apa prinsip yang paling tepat untuk topik “Docker dan environment parity”?",
+        "options": [
+          "Pilih deployment sesuai kebutuhan operasi, bukan sekadar tren.",
+          "Gunakan solusi paling rumit sejak awal, meski kebutuhan belum jelas.",
+          "Lewati pengujian karena contoh kecil pasti benar."
+        ],
+        "answer": 0,
+        "explanation": "Pilih deployment sesuai kebutuhan operasi, bukan sekadar tren."
+      }
+    },
+    {
+      "id": "m11-l06",
+      "title": "CI/CD dan release discipline",
+      "minutes": 45,
+      "level": "Lanjutan",
+      "intro": "CI menjalankan linter, test, dan build otomatis tiap perubahan. CD membantu distribusi setelah pemeriksaan. Pipeline sebaiknya memiliki guard terhadap secret dan error.",
+      "explanation": "Rilis gunakan tag/versi, migrasi diuji, backup, healthcheck, rollout, dan rollback. Pisahkan permissions build dari production.",
+      "code": "// Pipeline konseptual:\n// checkout -> install -> lint -> test -> build\n// -> approval -> deploy -> smoke test",
+      "codeLanguage": "javascript",
+      "practice": [
+        "Rancang pipeline untuk Laravel dan Flutter (test di PR, build saat release).",
+        "Ubah satu input atau asumsi pada contoh, catat hasil dan jelaskan alasannya."
+      ],
+      "bestPractice": "Rilis hanya dari commit yang sudah diuji dan bisa dilacak.",
+      "commonMistake": "Deploy langsung dari laptop tanpa tahu commit dan perubahan skema.",
+      "quiz": {
+        "question": "Apa prinsip yang paling tepat untuk topik “CI/CD dan release discipline”?",
+        "options": [
+          "Rilis hanya dari commit yang sudah diuji dan bisa dilacak.",
+          "Gunakan solusi paling rumit sejak awal, meski kebutuhan belum jelas.",
+          "Lewati pengujian karena contoh kecil pasti benar."
+        ],
+        "answer": 0,
+        "explanation": "Rilis hanya dari commit yang sudah diuji dan bisa dilacak."
+      }
+    },
+    {
+      "id": "m11-l07",
+      "title": "Monitoring, log, dan backup",
+      "minutes": 45,
+      "level": "Lanjutan",
+      "intro": "Operasional membutuhkan metrics (CPU/RAM/latency), log terstruktur, error tracking, uptime checks, alerting, serta backup yang diuji.",
+      "explanation": "Log jangan berisi password, token, atau data pribadi tak perlu. Terapkan retensi; gunakan correlation/request ID agar request bisa ditelusuri. Ukur SLA/SLO jika layanan sudah kritikal.",
+      "code": "// Log ideal mencakup:\n// timestamp, level, request_id, endpoint, status, durasi\n// BUKAN password atau access token",
+      "codeLanguage": "javascript",
+      "practice": [
+        "Definisikan tiga metrik dan dua alert untuk API layanan publik.",
+        "Ubah satu input atau asumsi pada contoh, catat hasil dan jelaskan alasannya."
+      ],
+      "bestPractice": "Uji restore berkala serta siapkan dashboard error dan uptime.",
+      "commonMistake": "Memantau hanya server hidup, tetapi endpoint aplikasi ternyata error.",
+      "quiz": {
+        "question": "Apa prinsip yang paling tepat untuk topik “Monitoring, log, dan backup”?",
+        "options": [
+          "Uji restore berkala serta siapkan dashboard error dan uptime.",
+          "Gunakan solusi paling rumit sejak awal, meski kebutuhan belum jelas.",
+          "Lewati pengujian karena contoh kecil pasti benar."
+        ],
+        "answer": 0,
+        "explanation": "Uji restore berkala serta siapkan dashboard error dan uptime."
+      }
+    },
+    {
+      "id": "m11-l08",
+      "title": "Performance & aksesibilitas produksi",
+      "minutes": 45,
+      "level": "Lanjutan",
+      "intro": "Optimasi berbasis pengukuran: respons server, query DB, ukuran asset, caching, dan UX. Kinerja buruk pada koneksi lambat adalah masalah aksesibilitas juga.",
+      "explanation": "Gunakan lazy loading dan pagination, kompresi asset, cache headers, audit Core Web Vitals untuk web. Jangan membuat indeks/cache sebelum menemukan bottleneck.",
+      "code": "// Checklist:\n// p95 latency API, query lambat, ukuran JS,\n// LCP/INP/CLS, uji koneksi lambat",
+      "codeLanguage": "javascript",
+      "practice": [
+        "Ukur halaman aplikasi pada simulasi jaringan lambat lalu pilih 2 optimasi berdasar data.",
+        "Ubah satu input atau asumsi pada contoh, catat hasil dan jelaskan alasannya."
+      ],
+      "bestPractice": "Profiling sebelum optimasi dan uji dampak setelah perubahan.",
+      "commonMistake": "Mengurangi keterbacaan kode untuk optimasi mikro tanpa bukti.",
+      "quiz": {
+        "question": "Apa prinsip yang paling tepat untuk topik “Performance & aksesibilitas produksi”?",
+        "options": [
+          "Profiling sebelum optimasi dan uji dampak setelah perubahan.",
+          "Gunakan solusi paling rumit sejak awal, meski kebutuhan belum jelas.",
+          "Lewati pengujian karena contoh kecil pasti benar."
+        ],
+        "answer": 0,
+        "explanation": "Profiling sebelum optimasi dan uji dampak setelah perubahan."
+      }
+    }
+  ]
+}

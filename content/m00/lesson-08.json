@@ -1,0 +1,449 @@
+{
+  "id": "m00-l08",
+  "title": "Cadangan, pembaruan, mengatasi masalah, dan mencari bantuan",
+  "minutes": 90,
+  "level": "Dasar",
+  "depth": "fondasi",
+  "schema": 3.1,
+  "codeLanguage": "bash",
+  "outcome": "Setelah pelajaran ini, Anda dapat merancang cadangan 3-2-1, menguji pemulihan data, menentukan irama pembaruan yang seimbang, dan menulis laporan bug yang dapat direproduksi oleh orang lain.",
+  "objectives": [
+    "Merancang strategi backup 3-2-1 untuk data yang benar-benar penting.",
+    "Menguji pemulihan data, bukan hanya memastikan proses backup selesai.",
+    "Menentukan irama pembaruan yang seimbang antara keamanan dan stabilitas.",
+    "Membedakan gejala dari penyebab dan menulis laporan bug yang dapat direproduksi."
+  ],
+  "prerequisites": [
+    {
+      "label": "Cara kerja komputer: perangkat, sistem operasi, dan aplikasi",
+      "lessonId": "m00-l01"
+    },
+    {
+      "label": "Privasi digital, data pribadi, dan UU PDP",
+      "lessonId": "m00-l07"
+    }
+  ],
+  "terms": [
+    {
+      "term": "Backup 3-2-1",
+      "definition": "Strategi menyimpan tiga salinan data pada dua jenis media berbeda, dengan satu salinan di lokasi terpisah."
+    },
+    {
+      "term": "Uji pemulihan",
+      "definition": "Percobaan mengembalikan data dari backup ke lokasi lain untuk membuktikan bahwa salinan itu benar-benar dapat dipakai."
+    },
+    {
+      "term": "Irama pembaruan",
+      "definition": "Jadwal tetap untuk memasang pembaruan keamanan dan pembaruan fitur pada sistem, aplikasi, dan perangkat."
+    },
+    {
+      "term": "Log",
+      "definition": "Catatan peristiwa yang dibuat sistem atau aplikasi, biasanya berisi waktu, tingkat keparahan, dan pesan."
+    },
+    {
+      "term": "Laporan bug yang dapat direproduksi",
+      "definition": "Laporan yang memuat langkah pasti sehingga orang lain dapat memunculkan masalah yang sama."
+    }
+  ],
+  "syntax": [
+    {
+      "token": "3 salinan / 2 media / 1 di luar lokasi",
+      "readAs": "Baca sebagai tiga syarat cadangan: jumlah salinan, jenis media, dan lokasi terpisah.",
+      "meaning": "Tiga salinan mengurangi risiko satu kerusakan menghapus semua data. Dua media berbeda menghindari kegagalan perangkat yang sama. Satu salinan di luar lokasi melindungi dari kebakaran, pencurian, atau bencana.",
+      "example": "Laptop + SSD eksternal + penyimpanan cloud",
+      "output": "Data tetap dapat dipulihkan meskipun satu perangkat hilang atau rusak.",
+      "pitfall": "Menganggap sinkronisasi cloud sebagai cadangan. Jika berkas terhapus di satu perangkat, penghapusan ikut tersinkronisasi."
+    },
+    {
+      "token": "versi 1.2.3",
+      "readAs": "Baca sebagai tiga tingkat perubahan: utama, minor, dan perbaikan.",
+      "meaning": "Nomor versi membantu Anda menentukan apakah pembaruan mengandung perbaikan keamanan, fitur baru, atau perubahan yang berpotensi merusak kompatibilitas.",
+      "example": "Aplikasi 2.4.1",
+      "output": "Perubahan 2.4.1 menunjukkan perbaikan kecil, sedangkan 3.0.0 menandakan perubahan besar.",
+      "pitfall": "Mengabaikan pembaruan keamanan karena takut perubahan. Tunda hanya jika ada alasan jelas dan rencana pemulihan."
+    },
+    {
+      "token": "Langkah: 1) buka menu 2) klik simpan 3) pilih format",
+      "readAs": "Baca sebagai urutan tindakan yang dapat diulang orang lain tanpa menebak.",
+      "meaning": "Laporan bug yang berguna memuat langkah reproduksi, hasil yang diharapkan, hasil sebenarnya, dan lingkungan. Tanpa langkah yang jelas, pengembang tidak dapat mengulang masalah.",
+      "example": "1) Buka Beranda 2) Klik Materi 3) Pilih pelajaran pertama",
+      "output": "Pengembang dapat mengikuti urutan yang sama dan melihat masalah yang Anda laporkan.",
+      "pitfall": "Menulis aplikasi rusak tanpa menyebut langkah, versi, dan pesan error. Laporan seperti itu sulit ditindaklanjuti."
+    }
+  ],
+  "conventions": [
+    "Cadangkan data penting, bukan seluruh isi disk; tentukan folder dan berkas yang benar-benar sulit dibuat ulang.",
+    "Simpan minimal satu salinan di luar lokasi dan satu salinan yang tidak selalu terhubung ke perangkat.",
+    "Uji pemulihan secara berkala, bukan hanya memeriksa status cadangan berhasil."
+  ],
+  "sections": [
+    {
+      "id": "cara-membaca",
+      "title": "Cara membaca rencana cadangan dan laporan bug",
+      "body": [
+        "Rencana cadangan yang baik menjawab tiga pertanyaan: apa yang dicadangkan, ke mana salinannya pergi, dan kapan pemulihan terakhir diuji. Rencana yang hanya menyebut aplikasi cadangan belum dapat dinilai. Mulailah dari data yang paling mahal dibuat ulang, misalnya catatan proyek dan berkas kerja.",
+        "Saat membaca status cadangan, jangan berhenti pada tanda centang berhasil. Tanda itu hanya berarti penyalinan selesai. Pemulihan yang diuji membuktikan berkas dapat dibuka, isinya utuh, dan izin aksesnya benar. Uji satu folder kecil, lalu perluas setelah prosedurnya terbukti.",
+        "Laporan bug dibaca sebagai instruksi, bukan keluhan. Pembaca harus dapat mengikuti langkah sampai masalah muncul tanpa pengetahuan tambahan. Tuliskan hasil yang diharapkan dan hasil yang benar-benar terjadi. Tambahkan versi, sistem operasi, dan pesan error apa adanya. Laporan yang dapat direproduksi lebih berharga daripada laporan panjang yang tidak dapat diulang."
+      ],
+      "code": {
+        "language": "text",
+        "lab": false,
+        "code": "Judul     : Tombol simpan tidak merespons di halaman catatan\nVersi     : 1.4.2 (Windows 11, Chrome 141)\nLangkah   : 1) Buka catatan 2) Ubah judul 3) Klik Simpan\nHarapan   : Catatan tersimpan dan muncul konfirmasi\nHasil     : Tombol tidak bereaksi, konsol menampilkan TypeError\nFrekuensi : Selalu terjadi setelah judul diubah",
+        "output": "Laporan memuat konteks, langkah, harapan, hasil, dan frekuensi yang cukup untuk direproduksi.",
+        "explain": "Enam baris ini adalah kerangka laporan bug. Setiap baris menjawab pertanyaan yang akan diajukan pengembang jika bagian itu tidak ada.",
+        "annotations": [
+          {
+            "line": 1,
+            "code": "Judul     : Tombol simpan tidak merespons di halaman catatan",
+            "note": "Judul menyebut gejala spesifik dan lokasinya, bukan kata rusak yang umum."
+          },
+          {
+            "line": 2,
+            "code": "Versi     : 1.4.2 (Windows 11, Chrome 141)",
+            "note": "Versi aplikasi, sistem operasi, dan browser mempersempit kemungkinan penyebab."
+          },
+          {
+            "line": 3,
+            "code": "Langkah   : 1) Buka catatan 2) Ubah judul 3) Klik Simpan",
+            "note": "Langkah bernomor dapat diikuti ulang tanpa menebak urutan."
+          },
+          {
+            "line": 4,
+            "code": "Harapan   : Catatan tersimpan dan muncul konfirmasi",
+            "note": "Harapan menjelaskan perilaku yang dianggap benar oleh pengguna."
+          },
+          {
+            "line": 5,
+            "code": "Hasil     : Tombol tidak bereaksi, konsol menampilkan TypeError",
+            "note": "Hasil sebenarnya menyertakan pesan error apa adanya, bukan interpretasi."
+          },
+          {
+            "line": 6,
+            "code": "Frekuensi : Selalu terjadi setelah judul diubah",
+            "note": "Frekuensi membantu membedakan bug yang konsisten dari masalah jaringan sesaat."
+          }
+        ]
+      },
+      "callouts": [
+        {
+          "tone": "good",
+          "title": "Uji sebelum menambah salinan",
+          "body": "Menambah salinan tanpa menguji pemulihan hanya menambah biaya dan rasa aman semu. Uji satu folder lebih dulu."
+        }
+      ],
+      "checkpoint": {
+        "prompt": "Tulis satu baris rencana cadangan untuk data proyek Anda: apa yang dicadangkan, ke media apa, dan kapan terakhir diuji.",
+        "success": "Anda menyebut data spesifik, media berbeda, dan tanggal uji pemulihan yang nyata."
+      }
+    },
+    {
+      "id": "mengapa-backup",
+      "title": "Mengapa backup berbeda dari sinkronisasi",
+      "body": [
+        "Data bisa hilang karena disk rusak, perangkat hilang, salah hapus, malware, bug aplikasi, atau kesalahan sinkronisasi. Backup adalah salinan terpisah yang dapat dipakai ketika sumber utama tidak lagi tersedia. Tidak semua data memiliki nilai yang sama, sehingga langkah pertama adalah menentukan apa yang benar-benar perlu diselamatkan.",
+        "Sinkronisasi bukan backup. Layanan cloud yang menyamakan isi folder akan ikut menghapus file ketika Anda menghapusnya di perangkat lain, dan dapat ikut menyimpan file yang sudah dienkripsi ransomware. Riwayat versi membantu bila tersedia dan retensinya cukup panjang, tetapi tetap bukan pengganti salinan yang terpisah.",
+        "Buat daftar data penting: kode proyek, dokumen, foto, basis data, konfigurasi, dan kunci pemulihan akun. Catat di mana data itu berada dan aplikasi apa yang membukanya. Data yang hanya ada di satu ponsel atau satu folder tanpa salinan adalah risiko yang paling mudah diperbaiki.",
+        "Periksa juga asumsi Anda. File yang tampak ada di cloud mungkin hanya tersedia saat daring, atau berada di akun yang bisa terkunci. Simpan kode pemulihan autentikasi dua faktor di tempat aman yang tidak bergantung pada perangkat yang sama."
+      ],
+      "callouts": [
+        {
+          "tone": "good",
+          "title": "Mulai dari yang paling mahal",
+          "body": "Jika data hilang hari ini, apa yang paling sulit dibuat ulang? Prioritaskan data itu, bukan folder unduhan yang bisa diambil kembali."
+        }
+      ],
+      "checkpoint": {
+        "prompt": "Sebutkan tiga penyebab kehilangan data yang tidak akan tertolong oleh sinkronisasi biasa.",
+        "success": "Anda menyebut penghapusan yang ikut tersinkron, ransomware, atau kehilangan akses akun."
+      }
+    },
+    {
+      "id": "aturan-3-2-1",
+      "title": "Aturan 3-2-1 dan salinan yang tahan gangguan",
+      "body": [
+        "Aturan 3-2-1 berarti tiga salinan data, dua jenis media berbeda, dan satu salinan di lokasi terpisah. Salinan asli di laptop, salinan di SSD eksternal, dan salinan di penyimpanan cloud memenuhi pola ini bila dikelola dengan benar. Dua partisi pada disk yang sama bukan dua media, karena kerusakan disk memengaruhi keduanya.",
+        "Salinan di lokasi terpisah melindungi dari kebakaran, pencurian, dan gangguan listrik. Namun salinan yang selalu terhubung bisa terkena ransomware, jadi pertahankan satu salinan yang terputus atau tidak dapat diubah. Enkripsi backup agar aman bila media hilang, lalu simpan kunci dekripsi terpisah.",
+        "Tentukan jadwal sesuai laju perubahan data. Proyek yang berubah setiap hari membutuhkan salinan harian, sedangkan arsip foto cukup mingguan. Simpan beberapa versi, jangan menimpa satu-satunya salinan. Beri nama folder dengan tanggal dan catat keberhasilan backup terakhir.",
+        "Contoh perintah berikut menyalin proyek ke folder backup bertanggal, lalu menghitung checksum satu file untuk verifikasi. Sesuaikan path dengan sistem Anda dan jangan menambahkan opsi penghapusan sebelum Anda memahami dampaknya."
+      ],
+      "code": {
+        "language": "bash",
+        "code": "mkdir -p /backup/proyek-2026-10-28\nrsync -av --exclude 'node_modules' ~/proyek/ /backup/proyek-2026-10-28/\nsha256sum /backup/proyek-2026-10-28/catatan.md",
+        "output": "Daftar file yang disalin dan nilai checksum catatan.md.",
+        "explain": "rsync menyalin isi folder, sedangkan checksum membantu memastikan file salinan tidak berubah.",
+        "lab": false,
+        "annotations": [
+          {
+            "line": 1,
+            "code": "mkdir -p /backup/proyek-2026-10-28",
+            "note": "Membuat folder cadangan bertanggal agar setiap salinan dapat dibedakan."
+          },
+          {
+            "line": 2,
+            "code": "rsync -av --exclude 'node_modules' ~/proyek/ /backup/proyek-2026-10-28/",
+            "note": "Menyalin isi proyek sambil melewati folder yang dapat dibuat ulang, seperti node_modules."
+          },
+          {
+            "line": 3,
+            "code": "sha256sum /backup/proyek-2026-10-28/catatan.md",
+            "note": "Menghitung checksum untuk membandingkan berkas asli dan salinan."
+          }
+        ]
+      },
+      "callouts": [
+        {
+          "tone": "bad",
+          "title": "Kesalahan umum",
+          "body": "Menganggap drive eksternal yang selalu terpasang sebagai backup yang aman. Ransomware dapat mengenkripsi drive itu juga."
+        }
+      ],
+      "checkpoint": {
+        "prompt": "Jelaskan arti angka 3, 2, dan 1 dalam aturan 3-2-1 dengan contoh Anda sendiri.",
+        "success": "Anda menyebut tiga salinan, dua media berbeda, dan satu lokasi terpisah."
+      }
+    },
+    {
+      "id": "uji-restore",
+      "title": "Uji pemulihan, bukan hanya status berhasil",
+      "body": [
+        "Backup baru terbukti setelah data berhasil dipulihkan. Banyak orang baru mengetahui salinannya rusak ketika sedang panik. Uji pemulihan berarti mengembalikan beberapa file ke folder atau perangkat lain, lalu membukanya untuk memastikan isinya utuh. Jangan menguji dengan menimpa data asli.",
+        "Lakukan uji pertama segera setelah backup dibuat, lalu ulangi setelah mengubah konfigurasi dan secara berkala, misalnya setiap kuartal. Uji beberapa file kecil, satu folder besar, dan bila ada, satu basis data. Periksa checksum, buka dokumen, dan pastikan izin file tidak menghalangi akses.",
+        "Ukur dua hal sederhana: berapa banyak data yang boleh hilang dan berapa lama pemulihan wajar dilakukan. Dari situ Anda dapat menentukan frekuensi backup dan menyiapkan langkah pemulihan. Tulis prosedurnya di tempat yang dapat dibaca tanpa membuka sistem yang sedang bermasalah, misalnya catatan tercetak atau ponsel.",
+        "Kegagalan uji biasanya berasal dari salinan tidak lengkap, path yang salah, izin akses, kunci enkripsi yang hilang, atau arsip yang korup. Catat setiap kegagalan dan perbaiki sebelum insiden nyata. Backup yang belum diuji adalah harapan, bukan rencana."
+      ],
+      "callouts": [
+        {
+          "tone": "good",
+          "title": "Aturan uji",
+          "body": "Pulihkan ke lokasi berbeda, buka filenya, lalu bandingkan checksum. Jangan pernah menguji dengan menimpa satu-satunya data asli."
+        }
+      ],
+      "checkpoint": {
+        "prompt": "Mengapa memulihkan satu file ke folder lain lebih aman daripada menimpanya langsung ke lokasi asli?",
+        "success": "Anda menjelaskan bahwa uji tidak merusak data asli dan kegagalan backup tetap dapat diperiksa."
+      }
+    },
+    {
+      "id": "irama-pembaruan",
+      "title": "Irama pembaruan yang sehat",
+      "body": [
+        "Pembaruan menutup celah keamanan, memperbaiki bug, dan kadang mengubah perilaku aplikasi. Sistem operasi dan peramban sebaiknya diperbarui otomatis karena keduanya menghadap internet. Aplikasi lain dapat mengikuti jadwal bulanan, sedangkan firmware diperbarui ketika ada perbaikan keamanan atau masalah yang relevan. Restart diperlukan agar banyak pembaruan benar-benar aktif.",
+        "Menunda pembaruan keamanan terlalu lama meningkatkan risiko, tetapi memasang semuanya seketika pada sistem kritis juga bisa mengganggu pekerjaan. Untuk perangkat penting, ikuti catatan rilis, buat backup, dan pasang pada waktu yang memberi ruang pemulihan. Jangan mematikan pembaruan otomatis hanya karena tidak ingin restart.",
+        "Perhatikan masa dukungan. Sistem operasi atau aplikasi yang sudah tidak didukung tidak lagi menerima perbaikan keamanan, sehingga tetap memakainya adalah risiko yang tumbuh setiap hari. Rencanakan migrasi sebelum batas dukungan berakhir, bukan setelah fitur mulai rusak.",
+        "Pasang pembaruan dari pengaturan resmi, toko aplikasi resmi, atau situs vendor. Waspadai jendela palsu yang menyuruh mengunduh pembaruan peramban dari tautan asing. Sebelum memperbarui alat penting, catat versi saat ini dan pastikan Anda tahu cara kembali."
+      ],
+      "callouts": [
+        {
+          "tone": "bad",
+          "title": "Kesalahan umum",
+          "body": "Menonaktifkan pembaruan permanen agar tidak terganggu. Lebih baik jadwalkan restart daripada membiarkan celah keamanan terbuka."
+        }
+      ],
+      "checkpoint": {
+        "prompt": "Sebutkan dua risiko menunda pembaruan dan dua persiapan sebelum memperbarui sistem penting.",
+        "success": "Anda menyebut celah keamanan serta ketidakcocokan, lalu backup dan pencatatan versi sebagai persiapan."
+      }
+    },
+    {
+      "id": "gejala-dan-penyebab",
+      "title": "Membaca log dan memisahkan gejala dari penyebab",
+      "body": [
+        "Gejala adalah apa yang terlihat, sedangkan penyebab adalah alasan di baliknya. Aplikasi yang menutup sendiri adalah gejala; penyebabnya bisa kehabisan memori, ekstensi yang tidak kompatibel, konfigurasi rusak, atau izin file. Berhenti pada gejala membuat Anda mengganti hal acak tanpa pernah menyentuh akar masalah.",
+        "Log memberi petunjuk tentang urutan peristiwa. Perhatikan waktu, tingkat keparahan, pesan pertama yang muncul, dan konteks di sekitarnya. Membaca hanya baris terakhir sering menyesatkan karena error lanjutan bisa jadi akibat, bukan sebab. Jangan membagikan seluruh log tanpa memeriksa token, alamat surel, dan path pribadi di dalamnya.",
+        "Reproduksi masalah dengan langkah yang dapat diulang. Catat apa yang Anda lakukan tepat sebelum masalah muncul, seberapa sering terjadi, dan apakah terjadi di perangkat lain. Ubah satu variabel pada satu waktu, lalu bandingkan kondisi yang berhasil dengan yang gagal. Periksa juga perubahan terbaru: pembaruan, ekstensi baru, atau konfigurasi yang baru diubah.",
+        "Safe mode atau clean boot membantu menonaktifkan driver dan program pihak ketiga untuk sementara, sehingga Anda dapat menguji apakah masalah berasal dari luar sistem inti. Jika masalah hilang di safe mode, kembalikan komponen satu per satu. Hindari pembersih registri, skrip acak, atau mematikan perlindungan keamanan sebagai langkah pertama."
+      ],
+      "callouts": [
+        {
+          "tone": "good",
+          "title": "Urutan berpikir",
+          "body": "Apa yang berubah, apa yang bisa diulang, dan apa yang dikatakan log? Tiga pertanyaan ini lebih berguna daripada menebak."
+        }
+      ],
+      "checkpoint": {
+        "prompt": "Bedakan gejala dan penyebab dari kasus aplikasi yang lambat saat dibuka.",
+        "success": "Anda menyebut lambat sebagai gejala dan memilih kandidat penyebab seperti disk penuh, memori, atau ekstensi."
+      }
+    },
+    {
+      "id": "bertanya-dan-melapor",
+      "title": "Mencari bantuan dan menulis laporan yang berguna",
+      "body": [
+        "Sebelum bertanya, cari dokumentasi resmi dan pesan error persis. Banyak masalah sudah dijawab di pusat bantuan vendor. Jika belum, tulis pertanyaan yang memuat tujuan, lingkungan, versi, langkah yang sudah dicoba, hasil yang diharapkan, dan hasil yang terjadi. Sertakan teks error lengkap, bukan hanya kalimat bahwa aplikasi tidak bisa dipakai.",
+        "Laporan bug yang baik dapat direproduksi orang lain. Sederhanakan langkah menjadi urutan terpendek, jelaskan frekuensi, dampak, dan apakah ada solusi sementara. Satu laporan sebaiknya membahas satu masalah. Judul yang spesifik dan langkah bernomor lebih mudah ditindaklanjuti daripada cerita panjang tanpa urutan.",
+        "Pilih saluran yang tepat: dukungan resmi, pelacak masalah proyek, forum komunitas, atau dokumentasi. Jangan menempelkan kata sandi, token akses, kunci API, atau data pribadi di tempat publik. Sensor tangkapan layar dan potong log seperlunya. Untuk celah keamanan, ikuti kebijakan pelaporan privat vendor, bukan mempublikasikannya sebelum diperbaiki.",
+        "Setelah mengirim laporan, pantau tanggapan dan tuliskan solusi yang berhasil agar orang lain dapat memakainya."
+      ],
+      "callouts": [
+        {
+          "tone": "bad",
+          "title": "Jangan lakukan ini",
+          "body": "Mengirim seluruh isi log atau tangkapan layar tanpa sensor. Log dapat memuat token, surel, dan informasi perangkat yang sensitif."
+        }
+      ],
+      "checkpoint": {
+        "prompt": "Sebutkan lima bagian yang harus ada dalam laporan bug yang dapat direproduksi.",
+        "success": "Anda menyebut langkah reproduksi, hasil yang diharapkan, hasil sebenarnya, lingkungan atau versi, dan pesan error."
+      }
+    }
+  ],
+  "practice": [
+    {
+      "id": "latihan-1",
+      "title": "Rancang backup 3-2-1",
+      "task": "Buat rencana backup 3-2-1 untuk data pribadi Anda, termasuk media, lokasi, jadwal, dan siapa yang bertanggung jawab.",
+      "steps": [
+        "Daftar tiga kelompok data paling penting dan perkirakan ukurannya.",
+        "Tentukan tiga lokasi salinan dengan dua jenis media berbeda.",
+        "Tetapkan jadwal backup dan satu tanggal uji pemulihan."
+      ],
+      "expected": "Tabel rencana dengan kolom data, salinan 1, salinan 2, salinan 3, jadwal, dan uji restore.",
+      "stretch": "Jalankan backup pertama dan catat waktu serta ukuran yang benar-benar tersalin.",
+      "level": "guided",
+      "hints": [
+        "Tuliskan data yang paling mahal untuk dibuat ulang, bukan seluruh isi disk.",
+        "Tentukan tiga lokasi salinan dan pastikan minimal satu berada di luar lokasi utama.",
+        "Catat kapan pemulihan terakhir diuji dan siapa yang bertanggung jawab."
+      ],
+      "starterCode": "Data penting:\nSalinan 1:\nSalinan 2:\nSalinan 3:\nUji pemulihan terakhir:",
+      "verification": {
+        "command": "Susun rencana cadangan 3-2-1 untuk satu proyek.",
+        "expected": "Rencana menyebut tiga salinan pada dua media berbeda, satu di luar lokasi, dan tanggal uji pemulihan.",
+        "evidence": "Simpan rencana dan daftar data yang dilindungi."
+      }
+    },
+    {
+      "id": "latihan-2",
+      "title": "Uji pemulihan satu folder",
+      "task": "Pulihkan satu folder dari backup ke lokasi berbeda, lalu buktikan bahwa isinya utuh.",
+      "steps": [
+        "Pilih folder kecil yang berisi beberapa jenis file.",
+        "Salin kembali ke folder uji, bukan ke lokasi asli.",
+        "Buka file, periksa jumlah file, dan bandingkan checksum bila tersedia."
+      ],
+      "expected": "Folder uji yang dapat dibuka dan catatan hasil verifikasi.",
+      "stretch": "Ulangi uji untuk satu file besar dan satu arsip terkompresi.",
+      "level": "independent",
+      "hints": [
+        "Pilih satu folder kecil yang berisi berkas penting.",
+        "Salin ke media lain, lalu pulihkan ke folder baru dengan nama berbeda.",
+        "Buka beberapa berkas hasil pemulihan dan bandingkan isinya."
+      ],
+      "starterCode": "Folder sumber:\nTujuan pemulihan:\nJumlah berkas:\nHasil pemeriksaan:",
+      "verification": {
+        "command": "Lakukan satu uji pemulihan nyata dan periksa hasilnya.",
+        "expected": "Berkas hasil pemulihan dapat dibuka, jumlahnya sesuai, dan isinya tidak berubah.",
+        "evidence": "Catat perintah, jumlah berkas, dan hasil pemeriksaan."
+      }
+    },
+    {
+      "id": "latihan-3",
+      "title": "Tulis laporan bug",
+      "task": "Pilih satu masalah nyata di komputer atau aplikasi, lalu tulis laporan bug yang dapat direproduksi.",
+      "steps": [
+        "Tuliskan lingkungan, versi aplikasi, dan langkah bernomor.",
+        "Sertakan hasil yang diharapkan, hasil sebenarnya, dan pesan error.",
+        "Sensor data pribadi dan tandai informasi yang belum Anda ketahui."
+      ],
+      "expected": "Laporan satu halaman dengan langkah, bukti, dan dampak yang jelas.",
+      "stretch": "Minta orang lain mengikuti laporan Anda tanpa penjelasan tambahan.",
+      "level": "transfer",
+      "hints": [
+        "Pilih satu bug nyata di aplikasi yang Anda pakai, sekecil apa pun.",
+        "Tulis langkah reproduksi secara bernomor tanpa menyebut dugaan penyebab.",
+        "Sertakan versi, sistem operasi, dan pesan error apa adanya."
+      ],
+      "starterCode": "Judul:\nVersi:\nLangkah:\nHarapan:\nHasil:\nFrekuensi:",
+      "verification": {
+        "command": "Tulis satu laporan bug lengkap dan minta orang lain mengikutinya.",
+        "expected": "Orang lain dapat mengulang langkah dan melihat masalah yang sama tanpa penjelasan tambahan.",
+        "evidence": "Simpan laporan dan catatan hasil uji oleh pembaca lain."
+      }
+    }
+  ],
+  "verification": {
+    "mode": "catatan",
+    "command": "Kerjakan Latihan 2 dan Latihan 3, lalu gabungkan hasilnya dalam satu catatan.",
+    "expected": "Anda dapat menunjukkan bukti pemulihan yang berhasil dan laporan bug yang dapat diikuti orang lain.",
+    "evidence": "Simpan rencana cadangan, bukti uji pemulihan, dan laporan bug dalam satu berkas."
+  },
+  "troubleshooting": [
+    {
+      "symptom": "Cadangan berstatus berhasil, tetapi berkas tidak dapat dibuka.",
+      "cause": "Proses penyalinan selesai tanpa verifikasi, atau berkas rusak saat ditulis.",
+      "fix": "Uji pemulihan ke folder baru, bandingkan checksum, dan periksa ruang serta kesehatan media penyimpanan."
+    },
+    {
+      "symptom": "Aplikasi berhenti berfungsi setelah pembaruan.",
+      "cause": "Perubahan versi membawa ketidakcocokan dengan pengaturan, ekstensi, atau sistem operasi.",
+      "fix": "Catat versi baru, baca catatan rilis, kembali ke versi sebelumnya bila memungkinkan, dan laporkan masalah dengan langkah reproduksi."
+    },
+    {
+      "symptom": "Sinkronisasi menghapus berkas di semua perangkat.",
+      "cause": "Sinkronisasi menyebarkan penghapusan, berbeda dari cadangan yang menyimpan salinan terpisah.",
+      "fix": "Pulihkan dari cadangan yang tidak tersinkronisasi, lalu pisahkan strategi sinkronisasi dari strategi cadangan."
+    },
+    {
+      "symptom": "Laporan bug diabaikan karena tidak dapat direproduksi.",
+      "cause": "Laporan tidak memuat versi, langkah, atau kondisi awal yang cukup.",
+      "fix": "Lengkapi laporan dengan versi, langkah bernomor, hasil yang diharapkan, hasil sebenarnya, dan pesan error lengkap."
+    }
+  ],
+  "quiz": {
+    "questions": [
+      {
+        "id": "q1",
+        "type": "recall",
+        "question": "Apa arti aturan backup 3-2-1?",
+        "options": [
+          "Tiga backup per bulan, dua akun cloud, satu hard disk",
+          "Tiga salinan data, dua media berbeda, satu salinan di lokasi terpisah",
+          "Tiga perangkat, dua kata sandi, satu administrator"
+        ],
+        "answer": 1,
+        "explanation": "3-2-1 berarti tiga salinan, dua jenis media, dan satu salinan berada di lokasi terpisah."
+      },
+      {
+        "id": "q2",
+        "type": "scenario",
+        "question": "Pembaruan sistem membuat aplikasi penting gagal dibuka. Langkah pertama yang paling tepat adalah apa?",
+        "options": [
+          "Mematikan semua pembaruan selamanya",
+          "Menghapus seluruh data aplikasi tanpa backup",
+          "Memeriksa catatan rilis dan memulihkan versi sebelumnya bila memungkinkan"
+        ],
+        "answer": 2,
+        "explanation": "Catatan rilis memberi konteks, dan pemulihan versi sebelumnya membatasi dampak tanpa mengorbankan keamanan jangka panjang."
+      },
+      {
+        "id": "q3",
+        "type": "scenario",
+        "question": "Bagian laporan bug yang paling menentukan agar masalah dapat direproduksi adalah apa?",
+        "options": [
+          "Langkah bernomor yang dapat diikuti orang lain",
+          "Jumlah emoji dalam judul laporan",
+          "Nama pengguna yang melaporkan"
+        ],
+        "answer": 0,
+        "explanation": "Reproduksi bergantung pada langkah yang jelas, disertai lingkungan dan hasil yang diharapkan."
+      }
+    ]
+  },
+  "resources": [
+    {
+      "sourceId": "cisa-stopransomware",
+      "note": "Panduan backup luring dan terenkripsi, pengujian pemulihan, serta pembaruan perangkat lunak."
+    },
+    {
+      "sourceId": "ms-windows-support",
+      "note": "Pusat bantuan resmi untuk backup, pembaruan, dan pemecahan masalah Windows."
+    }
+  ],
+  "summary": [
+    "Cadangan berbeda dari sinkronisasi; cadangan menyimpan salinan terpisah yang tidak ikut terhapus.",
+    "Aturan 3-2-1 memberi tiga salinan pada dua media, dengan satu salinan di luar lokasi.",
+    "Pemulihan harus diuji; status berhasil belum membuktikan apa pun.",
+    "Laporan bug memuat reproduksi, harapan, hasil nyata, versi, frekuensi."
+  ],
+  "next": "Modul 00 selesai. Berikutnya Modul 01: apa itu program, perangkat lunak, dan aplikasi. Anda akan melihat bagaimana kode berubah menjadi perilaku yang terlihat di layar."
+}

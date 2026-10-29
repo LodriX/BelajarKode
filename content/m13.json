@@ -1,0 +1,117 @@
+{
+  "id": "m13",
+  "title": "Pendalaman Opsional & Teknologi Baru",
+  "subtitle": "Memilih teknologi sesuai kebutuhan, bukan ikut tren",
+  "weeks": [
+    50,
+    52
+  ],
+  "accent": "#64748b",
+  "goal": "Mengenali kapan perlu React, Redis, AI integration, PWA, dan arsitektur lanjutan.",
+  "lessons": [
+    {
+      "id": "m13-l01",
+      "title": "React dan ekosistem frontend modern",
+      "minutes": 45,
+      "level": "Lanjutan",
+      "intro": "React memodelkan UI sebagai komponen dan state; TypeScript membantu pada kode besar. Framework meta seperti Next.js dapat menambah server rendering dan routing.",
+      "explanation": "Pelajari React setelah HTML/CSS/JS murni, bukan sebagai pengganti fundamental. Pertimbangkan Laravel + Livewire jika kebutuhan utama adalah CRUD administratif.",
+      "code": "// React konseptual:\nfunction Counter(){\n  const [n, setN] = React.useState(0);\n  return <button onClick={() => setN(n+1)}>{n}</button>;\n}",
+      "codeLanguage": "jsx",
+      "practice": [
+        "Bandingkan kebutuhan dashboard CRUD vs UI kompleks sebelum memilih Livewire atau React.",
+        "Ubah satu input atau asumsi pada contoh, catat hasil dan jelaskan alasannya."
+      ],
+      "bestPractice": "Pilih kompleksitas frontend berdasarkan kebutuhan interaksi tim dan produk.",
+      "commonMistake": "Menganggap SPA selalu lebih baik daripada server-rendered pages.",
+      "quiz": {
+        "question": "Apa prinsip yang paling tepat untuk topik “React dan ekosistem frontend modern”?",
+        "options": [
+          "Pilih kompleksitas frontend berdasarkan kebutuhan interaksi tim dan produk.",
+          "Gunakan solusi paling rumit sejak awal, meski kebutuhan belum jelas.",
+          "Lewati pengujian karena contoh kecil pasti benar."
+        ],
+        "answer": 0,
+        "explanation": "Pilih kompleksitas frontend berdasarkan kebutuhan interaksi tim dan produk."
+      }
+    },
+    {
+      "id": "m13-l02",
+      "title": "Redis, background workers, dan event",
+      "minutes": 45,
+      "level": "Lanjutan",
+      "intro": "Redis sering dipakai untuk cache, queue, dan rate limiting. Event dan job mengurangi coupling untuk proses asinkron.",
+      "explanation": "Bukan pengganti database relasional sistem-of-record. Tetapkan invalidasi cache, retry worker, observability, dan shutdown aman.",
+      "code": "// Alur:\n// API simpan pesanan -> dispatch job\n// worker kirim notifikasi\n// redis queue sebagai perantara",
+      "codeLanguage": "javascript",
+      "practice": [
+        "Rancang tugas ekspor laporan besar dengan antrean, status, dan retry.",
+        "Ubah satu input atau asumsi pada contoh, catat hasil dan jelaskan alasannya."
+      ],
+      "bestPractice": "Tambahkan Redis ketika ada kebutuhan cache atau antrean yang terukur.",
+      "commonMistake": "Mengandalkan cache sebagai penyimpanan utama data transaksi.",
+      "quiz": {
+        "question": "Apa prinsip yang paling tepat untuk topik “Redis, background workers, dan event”?",
+        "options": [
+          "Tambahkan Redis ketika ada kebutuhan cache atau antrean yang terukur.",
+          "Gunakan solusi paling rumit sejak awal, meski kebutuhan belum jelas.",
+          "Lewati pengujian karena contoh kecil pasti benar."
+        ],
+        "answer": 0,
+        "explanation": "Tambahkan Redis ketika ada kebutuhan cache atau antrean yang terukur."
+      }
+    },
+    {
+      "id": "m13-l03",
+      "title": "AI API dan integrasi LLM",
+      "minutes": 45,
+      "level": "Lanjutan",
+      "intro": "AI API dapat merangkum, mengklasifikasi, atau membantu pencarian dokumen. Sistem harus memperlakukan hasil model sebagai masukan tidak tepercaya dan memverifikasi fakta.",
+      "explanation": "Simpan API key di backend, bukan browser/Flutter. Batasi biaya, token, rate, logging, data sensitif, prompt injection, dan evaluasi kualitas hasil. Buat fallback saat provider gagal.",
+      "code": "// Flow aman:\n// Browser/Flutter -> Laravel -> AI provider\n// Laravel: validasi, rate limit, log biaya,\n// redaksi data sensitif, verifikasi output.",
+      "codeLanguage": "javascript",
+      "practice": [
+        "Desain fitur ringkasan berita yang memiliki konfirmasi manusia dan batas biaya.",
+        "Ubah satu input atau asumsi pada contoh, catat hasil dan jelaskan alasannya."
+      ],
+      "bestPractice": "Jalankan pemanggilan provider AI dari server dan evaluasi hasilnya.",
+      "commonMistake": "Menyematkan API key provider di aplikasi Flutter atau file JS publik.",
+      "quiz": {
+        "question": "Apa prinsip yang paling tepat untuk topik “AI API dan integrasi LLM”?",
+        "options": [
+          "Jalankan pemanggilan provider AI dari server dan evaluasi hasilnya.",
+          "Gunakan solusi paling rumit sejak awal, meski kebutuhan belum jelas.",
+          "Lewati pengujian karena contoh kecil pasti benar."
+        ],
+        "answer": 0,
+        "explanation": "Jalankan pemanggilan provider AI dari server dan evaluasi hasilnya."
+      }
+    },
+    {
+      "id": "m13-l04",
+      "title": "PWA, native app, dan interoperabilitas",
+      "minutes": 45,
+      "level": "Lanjutan",
+      "intro": "PWA memakai web manifest dan service worker agar web dapat diinstal serta bekerja offline. Flutter membangun aplikasi native lintas platform. Pilihan bergantung fitur perangkat, distribusi, dan biaya maintenance.",
+      "explanation": "PWA offline perlu strategi cache dan update; file:// tidak mendukung service worker. Aplikasi web offline tidak otomatis memiliki sinkronisasi antarperangkat tanpa backend.",
+      "code": "// PWA memerlukan:\n// index.html + manifest.json + sw.js\n// HTTPS atau localhost untuk service worker.",
+      "codeLanguage": "javascript",
+      "practice": [
+        "Tentukan apakah katalog offline lebih cocok PWA statis atau Flutter dengan alasan.",
+        "Ubah satu input atau asumsi pada contoh, catat hasil dan jelaskan alasannya."
+      ],
+      "bestPractice": "Mulai dari platform paling sederhana yang memenuhi kebutuhan pengguna.",
+      "commonMistake": "Menganggap localStorage otomatis tersinkron antar perangkat.",
+      "quiz": {
+        "question": "Apa prinsip yang paling tepat untuk topik “PWA, native app, dan interoperabilitas”?",
+        "options": [
+          "Mulai dari platform paling sederhana yang memenuhi kebutuhan pengguna.",
+          "Gunakan solusi paling rumit sejak awal, meski kebutuhan belum jelas.",
+          "Lewati pengujian karena contoh kecil pasti benar."
+        ],
+        "answer": 0,
+        "explanation": "Mulai dari platform paling sederhana yang memenuhi kebutuhan pengguna."
+      }
+    }
+  ]
+}

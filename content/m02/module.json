@@ -1,0 +1,25 @@
+{
+  "id": "m02",
+  "title": "Logika dan Algoritma",
+  "subtitle": "Memecah masalah sebelum menulis kode",
+  "weeks": [
+    6,
+    8
+  ],
+  "accent": "#8FAE6E",
+  "goal": "Mampu memecah masalah menjadi langkah yang bisa diuji, menuliskannya dalam pseudocode, dan memilih struktur data serta aturan validasi yang tepat untuk Aplikasi Catatan Tugas.",
+  "outcomes": [
+    "Memecah satu fitur besar menjadi langkah input, proses, dan output yang bisa diuji satu per satu.",
+    "Menulis pseudocode dan flowchart yang bisa dibaca orang lain tanpa menebak maksudnya.",
+    "Menentukan tipe data, aturan validasi, dan keputusan boolean untuk setiap field tugas.",
+    "Memakai perulangan dan struktur data untuk menambah, mencari, dan menghapus tugas.",
+    "Menilai biaya langkah algoritma serta menemukan edge case sebelum kode ditulis."
+  ],
+  "entryCheck": "Anda sudah menyelesaikan M01 dan bisa menjelaskan apa itu program, input, proses, dan output. Tidak perlu bisa menulis JavaScript; modul ini memakai pseudocode.",
+  "project": {
+    "title": "Aturan logika Aplikasi Catatan Tugas",
+    "description": "Satu dokumen berisi model data tugas, aturan validasi, pseudocode tambah-cari-hapus, dan daftar edge case. Dokumen ini menjadi spesifikasi yang akan diterjemahkan menjadi JavaScript di M03."
+  },
+  "exitCheck": "Anda dapat menjelaskan alur sebuah tugas dari input sampai tersimpan, menunjukkan di mana setiap aturan validasi diperiksa, dan menyebutkan edge case yang harus diuji sebelum menulis kode.",
+  "lessons": []
+}

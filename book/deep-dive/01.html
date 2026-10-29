@@ -1,0 +1,310 @@
+<div id="pendalaman-1"><div class="panel"><b>PENDALAMAN 1</b> · 01 pengantar dan roadmap</div><h1>Buku Belajar Pemrograman dari Nol ke Full-Stack Web dan Mobile</h1>
+<p><strong>Edisi:</strong> Oktober 2026<br />
+<strong>Bahasa:</strong> Indonesia<br />
+<strong>Jalur utama:</strong> fundamental → HTML/CSS/JavaScript → SQL/PostgreSQL → PHP/Laravel → REST API → Dart/Flutter → quality, security, deployment.<br />
+<strong>Sasaran:</strong> pemula mandiri yang ingin mampu merancang, membangun, menguji, dan memelihara aplikasi web dan mobile.</p>
+<blockquote>
+<p><strong>Cara menggunakan buku:</strong> Baca secara berurutan, ketik sendiri contoh kode, jalankan, ubah, lakukan latihan tanpa melihat solusi, catat kesalahan, dan simpan hasil dalam Git. Buku ini bisa dibaca offline; untuk memasang SDK, paket, emulator, atau mengakses dokumentasi resmi, tetap diperlukan internet pada saat persiapan.</p>
+</blockquote>
+<h2>Pengantar: kemampuan yang akan Anda dapatkan</h2>
+<p>Setelah menyelesaikan jalur ini, Anda seharusnya dapat: menerjemahkan masalah menjadi algoritma; membaca dan menulis kode dengan struktur jelas; membuat halaman web yang responsif dan aksesibel; merancang database relasional; membangun API dengan autentikasi dan otorisasi; menghubungkan Flutter dengan API; menguji perilaku sistem; menyiapkan deployment, backup, logging, dan prosedur rollback. <strong>Kemampuan yang diukur adalah hasil kerja dan penjelasan Anda, bukan jumlah jam menonton tutorial.</strong></p>
+<p><strong>Estimasi realistis:</strong> 52 minggu × 4-5 jam ≈ 210-260 jam. Modul inti (m00 sampai m12) diperuntukkan 49 minggu; 3 minggu terakhir untuk modul opsional, dan 1 minggu buffer di ekor kurikulum untuk melengkapi gerbang yang belum lulus. Ini adalah target belajar, bukan jaminan penguasaan. Bila Anda baru mulai benar-benar dari nol, tambah waktu sesuai kebutuhan. Bila sudah tahu dasar HTML atau Laravel, tetap ikuti tes keluar setiap fase sebelum melompat.</p>
+<h2>Mengapa satu jalur teknologi?</h2>
+<p>Pemula sering terjebak mempelajari React, Angular, Vue, Next.js, Node, PHP, Go, Python, Flutter, Kotlin, sekaligus. Masalahnya bukan kualitas teknologinya, tetapi pergantian konteks yang menghalangi penguasaan konsep. Jalur yang digunakan buku ini sengaja fokus:</p>
+<ul>
+<li><strong>Bahasa pertama praktik:</strong> JavaScript, karena langsung terlihat di browser dan membangun kebiasaan logika serta event-driven programming.</li>
+<li><strong>Fundamental web:</strong> HTML semantik, CSS, JavaScript tanpa framework, lalu TypeScript sebagai pendalaman keamanan tipe.</li>
+<li><strong>Data:</strong> SQL dan PostgreSQL, termasuk relasi, indeks, transaksi, dan pemodelan. MySQL tetap valid bila proyek membutuhkan; SQL fundamentalnya dapat ditransfer.</li>
+<li><strong>Backend utama:</strong> PHP modern dan Laravel (version 13 sebagai rujukan 2026); untuk web awal gunakan Blade, lanjut Livewire bila sesuai kebutuhan.</li>
+<li><strong>Mobile:</strong> Dart dan Flutter; mulai setelah API matang supaya Anda memahami batas antara klien, layanan, dan penyimpanan data.</li>
+<li><strong>Tahap pilihan:</strong> React + TypeScript untuk aplikasi antarmuka kompleks, Redis untuk cache/antrian, Docker untuk lingkungan yang konsisten; tidak wajib untuk proyek pertama.</li>
+</ul>
+<p><strong>Catatan versi per 28 Oktober 2026:</strong> Laravel 13 stabil (membutuhkan PHP 8.3+; lihat matriks kompatibilitas resmi); PHP 8.5 didukung; Flutter 3.47 stabil (rilis Agustus 2026; 3.50 dijadwalkan November); Node.js 24 berstatus LTS, sedangkan Node 26 masih Current; PostgreSQL 18 stabil, PostgreSQL 19 masih RC dan GA direncanakan November; OWASP Top 10:2025 adalah rujukan keamanan web terkini. <em>Jangan menyamakan versi terbaru dengan pilihan produksi terbaik; pilih rilis stabil didukung dan cocok dengan library serta lingkungan proyek.</em></p>
+<h2>Cara belajar: siklus 5 langkah</h2>
+<ol>
+<li><strong>Pahami:</strong> definisikan masalah, masukan, keluaran, batasan, dan contoh kasus.</li>
+<li><strong>Prediksi:</strong> sebelum menjalankan contoh, tuliskan perkiraan hasilnya.</li>
+<li><strong>Implementasikan:</strong> ketik, jalankan, dan amati hasil; jangan hanya salin-tempel.</li>
+<li><strong>Uji dan perbaiki:</strong> coba input kosong, angka negatif, data besar, gagal jaringan, dan akses tanpa izin.</li>
+<li><strong>Jelaskan dan simpan:</strong> tulis README singkat, commit di Git, dan terangkan keputusan desain dengan bahasa sendiri.</li>
+</ol>
+<p>Ritme setiap minggu: 2 jam teori + 4–6 jam praktik + 1–2 jam debugging dan review + 1–2 jam proyek. Satu latihan tanpa bantuan AI pada setiap modul agar pemahaman tidak semu. Gunakan AI untuk penjelasan alternatif, review kode, dan merumuskan test case; <strong>jangan menyerahkan keputusan keamanan atau hasil pengujian pada AI tanpa verifikasi.</strong></p>
+<h2>Roadmap 52 minggu</h2>
+<table>
+<thead>
+<tr>
+<th>Pekan</th>
+<th>Fokus</th>
+<th>Artefak wajib / tolok ukur</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>Cara kerja komputer dan sistem operasi</td>
+<td>Diagram perangkat, sistem operasi, aplikasi, dan file</td>
+</tr>
+<tr>
+<td>2</td>
+<td>File, folder, path, dan terminal</td>
+<td>Struktur folder proyek dan 10 perintah terminal</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Internet, browser, keamanan akun, dan DevTools</td>
+<td>Menjelaskan perjalanan request dan menyelesaikan checklist keamanan akun</td>
+</tr>
+<tr>
+<td>4</td>
+<td>Program, aplikasi, dan model komputasi</td>
+<td>Diagram input-proses-output untuk satu aplikasi</td>
+</tr>
+<tr>
+<td>5</td>
+<td>Workflow developer, debugging, dan cara belajar aktif</td>
+<td>Alur edit-jalankan-uji, jadwal belajar, dan catatan error pertama</td>
+</tr>
+<tr>
+<td>6</td>
+<td>Dekomposisi masalah dan pseudocode</td>
+<td>Pseudocode untuk tiga masalah nyata</td>
+</tr>
+<tr>
+<td>7</td>
+<td>Percabangan, iterasi, dan struktur data algoritma</td>
+<td>Flowchart dengan kondisi gagal yang terdaftar</td>
+</tr>
+<tr>
+<td>8</td>
+<td>Aturan validasi, edge case, dan uji manual</td>
+<td>Tabel uji kasus untuk logika catatan tugas</td>
+</tr>
+<tr>
+<td>9</td>
+<td>Variabel, tipe data, dan operator JavaScript</td>
+<td>Kalkulator prioritas tugas dengan validasi tipe</td>
+</tr>
+<tr>
+<td>10</td>
+<td>Function, scope, dan modularitas</td>
+<td>Refactor program menjadi fungsi kecil</td>
+</tr>
+<tr>
+<td>11</td>
+<td>Array, object, dan destructuring</td>
+<td>Pengolah daftar tugas dari data object</td>
+</tr>
+<tr>
+<td>12</td>
+<td>Operator lanjutan dan error handling</td>
+<td>Logika catatan tugas tahan terhadap input rusak</td>
+</tr>
+<tr>
+<td>13</td>
+<td>Gerbang fondasi: dari logika ke program lengkap</td>
+<td>Program logika catatan tugas lulus gerbang fondasi</td>
+</tr>
+<tr>
+<td>14</td>
+<td>HTML semantik dan form</td>
+<td>Form catatan tugas yang aksesibel dan tervalidasi HTML</td>
+</tr>
+<tr>
+<td>15</td>
+<td>CSS box model, flex, dan grid</td>
+<td>Halaman daftar tugas responsif</td>
+</tr>
+<tr>
+<td>16</td>
+<td>Aksesibilitas dan desain responsif</td>
+<td>Perbaikan keyboard, kontras, dan tampilan mobile</td>
+</tr>
+<tr>
+<td>17</td>
+<td>Perakitan halaman: dari desain ke HTML/CSS final</td>
+<td>Halaman web catatan tugas versi statis selesai</td>
+</tr>
+<tr>
+<td>18</td>
+<td>DOM, event, dan state UI</td>
+<td>Daftar tugas interaktif</td>
+</tr>
+<tr>
+<td>19</td>
+<td>JSON, localStorage, dan state tersimpan</td>
+<td>Aplikasi menyimpan dan memuat data aman</td>
+</tr>
+<tr>
+<td>20</td>
+<td>Promise, async/await, dan fetch</td>
+<td>Ambil data asinkron dengan error state</td>
+</tr>
+<tr>
+<td>21</td>
+<td>TypeScript dan testing JavaScript</td>
+<td>Model data strict dan unit test</td>
+</tr>
+<tr>
+<td>22</td>
+<td>Git, commit, dan branch</td>
+<td>Repo dengan riwayat commit yang rapi</td>
+</tr>
+<tr>
+<td>23</td>
+<td>Pull request, review, dan dokumentasi</td>
+<td>PR dengan README dan review checklist</td>
+</tr>
+<tr>
+<td>24</td>
+<td>Gerbang web: rilis web app catatan tugas versi lokal</td>
+<td>Web app offline dengan localStorage lulus gerbang web</td>
+</tr>
+<tr>
+<td>25</td>
+<td>Skema tabel dan relasi database</td>
+<td>ERD dan create table PostgreSQL untuk tugas dan pengguna</td>
+</tr>
+<tr>
+<td>26</td>
+<td>SQL CRUD, JOIN, dan laporan</td>
+<td>Query laporan dari dua tabel</td>
+</tr>
+<tr>
+<td>27</td>
+<td>Index, transaksi, migrasi, dan backup</td>
+<td>Simulasi transaksi dan restore</td>
+</tr>
+<tr>
+<td>28</td>
+<td>PHP modern, tipe, dan Composer</td>
+<td>Program CLI PHP dengan dependensi</td>
+</tr>
+<tr>
+<td>29</td>
+<td>Laravel route, controller, dan MVC</td>
+<td>API status dan halaman sederhana</td>
+</tr>
+<tr>
+<td>30</td>
+<td>Migration, Eloquent, dan relasi</td>
+<td>Task API dengan database</td>
+</tr>
+<tr>
+<td>31</td>
+<td>Validasi, autentikasi, dan otorisasi</td>
+<td>Route privat dan tes hak akses</td>
+</tr>
+<tr>
+<td>32</td>
+<td>API resource, queue, dan feature test</td>
+<td>Feature test Laravel lulus</td>
+</tr>
+<tr>
+<td>33</td>
+<td>REST, status code, error, dan versioning</td>
+<td>Kontrak API tertulis</td>
+</tr>
+<tr>
+<td>34</td>
+<td>Autentikasi API, pagination, dan retry</td>
+<td>API list dengan error state</td>
+</tr>
+<tr>
+<td>35</td>
+<td>Gerbang backend: API tugas dan test kontrak</td>
+<td>API catatan tugas lulus gerbang backend dengan feature test</td>
+</tr>
+<tr>
+<td>36</td>
+<td>Dart, null safety, dan model data</td>
+<td>Program Dart CLI dengan model tugas</td>
+</tr>
+<tr>
+<td>37</td>
+<td>Flutter widget tree dan layout</td>
+<td>Halaman daftar responsif</td>
+</tr>
+<tr>
+<td>38</td>
+<td>State management, form, dan navigasi</td>
+<td>UI CRUD lokal di Flutter</td>
+</tr>
+<tr>
+<td>39</td>
+<td>HTTP, JSON, penyimpanan lokal, dan test di Flutter</td>
+<td>Flutter terhubung API Laravel</td>
+</tr>
+<tr>
+<td>40</td>
+<td>Keamanan: OWASP Top 10 dan threat modeling</td>
+<td>Threat model dan security test</td>
+</tr>
+<tr>
+<td>41</td>
+<td>Perbaikan XSS, SQL injection, CSRF, dan SSRF</td>
+<td>Empat perbaikan kerentanan</td>
+</tr>
+<tr>
+<td>42</td>
+<td>Secrets, HTTPS, header, dan supply chain</td>
+<td>Checklist konfigurasi aman</td>
+</tr>
+<tr>
+<td>43</td>
+<td>Privasi, UU PDP, dan security testing</td>
+<td>Data map dan rencana insiden</td>
+</tr>
+<tr>
+<td>44</td>
+<td>Proyek akhir: PRD, ERD, dan arsitektur</td>
+<td>Dokumen produk dan arsitektur</td>
+</tr>
+<tr>
+<td>45</td>
+<td>Proyek akhir: integrasi web dan API</td>
+<td>Web app terhubung API</td>
+</tr>
+<tr>
+<td>46</td>
+<td>Proyek akhir: aplikasi Flutter terhubung API</td>
+<td>Mobile app terhubung API yang sama</td>
+</tr>
+<tr>
+<td>47</td>
+<td>Proyek akhir: QA keamanan, deployment, dan demo</td>
+<td>Demo, runbook, dan README proyek akhir</td>
+</tr>
+<tr>
+<td>48</td>
+<td>Proyek akhir: review, perbaikan, dan serah terima</td>
+<td>Catatan belajar, portofolio, dan arsip keputusan desain</td>
+</tr>
+<tr>
+<td>49</td>
+<td>Buffer: melengkapi gerbang yang belum lulus dan pola ulang</td>
+<td>Checklist gerbang fondasi, web, backend, mobile semua hijau</td>
+</tr>
+<tr>
+<td>50</td>
+<td>Opsional: React, PWA, dan penyimpanan lanjutan</td>
+<td>Riset singkat ditulis sebagai catatan</td>
+</tr>
+<tr>
+<td>51</td>
+<td>Opsional: AI API, antrian, dan caching</td>
+<td>Draf fitur lanjutan untuk catatan tugas</td>
+</tr>
+<tr>
+<td>52</td>
+<td>Opsional: mengevaluasi langkah berikutnya</td>
+<td>Rencana belajar atau portofolio 3 bulan ke depan</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Gerbang kompetensi:</strong> akhir minggu 13 Anda dapat menyelesaikan algoritma tanpa tutorial; minggu 24 web app catatan tugas berjalan offline dengan penyimpanan lokal; minggu 35 API lulus feature test; minggu 39 aplikasi Flutter menampilkan data dari API; minggu 48 proyek akhir dioperasikan beserta dokumentasinya. Bila satu gerbang belum lulus, gunakan minggu 49 sebagai buffer untuk menutupnya sebelum masuk modul opsional.</p>
+<h2>Struktur proyek akhir</h2>
+<p>Proyek <strong>Buku Kebutuhan Siaga</strong>: pengguna menentukan jumlah anggota keluarga; aplikasi menghitung kebutuhan default, pengguna menyesuaikan item; tersedia kategori dan subkategori, checklist, stok, tanggal kedaluwarsa, informasi kesiapsiagaan, dan mode offline mobile terbatas. Pelajari sebagai kasus rekayasa perangkat lunak, bukan sumber tunggal saran keselamatan. Kebutuhan bencana harus disesuaikan dengan panduan resmi dan kondisi wilayah.</p>
+<p><strong>Artefak:</strong> PRD singkat, ERD, API contract, repo backend, repo Flutter, migration, seed, test, keamanan dasar, README, hasil pengujian, backup, panduan deployment. Uraian lebih lengkap pada bab proyek.</p>
+<h2>Definisi selesai dan aturan kelulusan</h2>
+<p>Sebuah tugas <strong>belum</strong> selesai jika hanya tampil bagus. Definisi selesai: memenuhi kriteria penerimaan, tidak ada error kritis, validasi server bekerja, respons kesalahan ditangani, tes utama lulus, dokumentasi perintah instalasi tersedia, kode di-commit, dan bisa dijalankan ulang dari lingkungan bersih. Jangan lanjut ke fase berikut bila tidak bisa menjelaskan sendiri contoh yang ditulis.</p>
+</div>

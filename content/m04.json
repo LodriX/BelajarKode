@@ -1,0 +1,195 @@
+{
+  "id": "m04",
+  "title": "Web: HTML, CSS, dan Aksesibilitas",
+  "subtitle": "Membuat antarmuka web yang semantik dan responsif",
+  "weeks": [
+    14,
+    17
+  ],
+  "accent": "#ec4899",
+  "goal": "Membangun antarmuka tanpa framework, siap digunakan di layar HP dan keyboard.",
+  "lessons": [
+    {
+      "id": "m04-l01",
+      "title": "HTML semantik",
+      "minutes": 45,
+      "level": "Dasar",
+      "intro": "HTML mendeskripsikan struktur dan makna. Gunakan header, nav, main, section, article, form, button, label sesuai peran daripada semua memakai div.",
+      "explanation": "Heading disusun berurutan berdasarkan struktur konten. Tombol untuk aksi; anchor untuk navigasi. Semantik membantu screen reader, SEO, dan pemeliharaan.",
+      "code": "<!doctype html>\n<html lang=\"id\">\n<body>\n  <main>\n    <h1>Daftar Tugas</h1>\n    <button type=\"button\">Tambah</button>\n  </main>\n</body>\n</html>",
+      "codeLanguage": "html",
+      "practice": [
+        "Buat struktur halaman profil dengan header, nav, main, artikel, dan footer.",
+        "Ubah satu input atau asumsi pada contoh, catat hasil dan jelaskan alasannya."
+      ],
+      "bestPractice": "Gunakan elemen sesuai makna dan fungsi, bukan hanya bentuk.",
+      "commonMistake": "Membuat tombol klik menggunakan div tanpa akses keyboard.",
+      "quiz": {
+        "question": "Apa prinsip yang paling tepat untuk topik “HTML semantik”?",
+        "options": [
+          "Gunakan elemen sesuai makna dan fungsi, bukan hanya bentuk.",
+          "Gunakan solusi paling rumit sejak awal, meski kebutuhan belum jelas.",
+          "Lewati pengujian karena contoh kecil pasti benar."
+        ],
+        "answer": 0,
+        "explanation": "Gunakan elemen sesuai makna dan fungsi, bukan hanya bentuk."
+      }
+    },
+    {
+      "id": "m04-l02",
+      "title": "Form dan validasi",
+      "minutes": 45,
+      "level": "Dasar",
+      "intro": "Form mengumpulkan input. label yang terhubung dengan id memudahkan akses; type, required, min, max membantu validasi browser.",
+      "explanation": "Validasi sisi klien meningkatkan UX tetapi tidak cukup untuk keamanan: backend wajib memvalidasi kembali. Pesan kesalahan harus jelas, dekat field, dan bukan hanya warna.",
+      "code": "<form>\n  <label for=\"email\">Email</label>\n  <input id=\"email\" type=\"email\" required>\n  <button type=\"submit\">Daftar</button>\n</form>",
+      "codeLanguage": "html",
+      "practice": [
+        "Buat form daftar nama, email, dan usia dengan label dan validasi HTML.",
+        "Ubah satu input atau asumsi pada contoh, catat hasil dan jelaskan alasannya."
+      ],
+      "bestPractice": "Validasi pada browser dan ulangi di backend untuk data tepercaya.",
+      "commonMistake": "Menggunakan placeholder sebagai pengganti label.",
+      "quiz": {
+        "question": "Apa prinsip yang paling tepat untuk topik “Form dan validasi”?",
+        "options": [
+          "Validasi pada browser dan ulangi di backend untuk data tepercaya.",
+          "Gunakan solusi paling rumit sejak awal, meski kebutuhan belum jelas.",
+          "Lewati pengujian karena contoh kecil pasti benar."
+        ],
+        "answer": 0,
+        "explanation": "Validasi pada browser dan ulangi di backend untuk data tepercaya."
+      }
+    },
+    {
+      "id": "m04-l03",
+      "title": "CSS box model dan selector",
+      "minutes": 45,
+      "level": "Dasar",
+      "intro": "CSS menentukan presentasi. Box model terdiri dari content, padding, border, margin. Selector memilih elemen; specificity menentukan aturan yang menang.",
+      "explanation": "Gunakan box-sizing: border-box global supaya ukuran lebih mudah diprediksi. Prioritaskan class dan variabel CSS; hindari !important sebagai solusi utama.",
+      "code": "* { box-sizing: border-box; }\n.kartu {\n  padding: 16px;\n  border: 1px solid #ddd;\n  border-radius: 12px;\n}",
+      "codeLanguage": "css",
+      "practice": [
+        "Buat kartu berukuran maksimal 320px dengan padding dan border.",
+        "Ubah satu input atau asumsi pada contoh, catat hasil dan jelaskan alasannya."
+      ],
+      "bestPractice": "Gunakan ukuran konsisten dan hindari specificity berlebihan.",
+      "commonMistake": "Mengira width menghitung padding secara otomatis tanpa border-box.",
+      "quiz": {
+        "question": "Apa prinsip yang paling tepat untuk topik “CSS box model dan selector”?",
+        "options": [
+          "Gunakan ukuran konsisten dan hindari specificity berlebihan.",
+          "Gunakan solusi paling rumit sejak awal, meski kebutuhan belum jelas.",
+          "Lewati pengujian karena contoh kecil pasti benar."
+        ],
+        "answer": 0,
+        "explanation": "Gunakan ukuran konsisten dan hindari specificity berlebihan."
+      }
+    },
+    {
+      "id": "m04-l04",
+      "title": "Flexbox, Grid, dan layout",
+      "minutes": 45,
+      "level": "Dasar",
+      "intro": "Flexbox cocok untuk penataan satu dimensi (baris/kolom), Grid untuk layout dua dimensi. minmax dan auto-fit dapat membuat grid adaptif.",
+      "explanation": "Mulai dari tata letak sederhana lalu tingkatkan. Gunakan gap untuk jarak item dan hindari margin acak antar elemen. Uji saat teks panjang.",
+      "code": ".grid {\n  display: grid;\n  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));\n  gap: 16px;\n}",
+      "codeLanguage": "css",
+      "practice": [
+        "Buat galeri kartu yang berubah dari 3 kolom menjadi 1 kolom pada layar sempit.",
+        "Ubah satu input atau asumsi pada contoh, catat hasil dan jelaskan alasannya."
+      ],
+      "bestPractice": "Pilih Flexbox atau Grid sesuai struktur, bukan karena kebiasaan.",
+      "commonMistake": "Menentukan lebar kartu tetap sehingga terjadi overflow di HP.",
+      "quiz": {
+        "question": "Apa prinsip yang paling tepat untuk topik “Flexbox, Grid, dan layout”?",
+        "options": [
+          "Pilih Flexbox atau Grid sesuai struktur, bukan karena kebiasaan.",
+          "Gunakan solusi paling rumit sejak awal, meski kebutuhan belum jelas.",
+          "Lewati pengujian karena contoh kecil pasti benar."
+        ],
+        "answer": 0,
+        "explanation": "Pilih Flexbox atau Grid sesuai struktur, bukan karena kebiasaan."
+      }
+    },
+    {
+      "id": "m04-l05",
+      "title": "Responsive design dan mobile-first",
+      "minutes": 45,
+      "level": "Dasar",
+      "intro": "Responsive design menyesuaikan UI dengan ruang layar, bukan mendeteksi merek perangkat. Pendekatan mobile-first memulai dari layout kecil lalu menambah aturan untuk layar besar.",
+      "explanation": "Gunakan viewport meta, unit fleksibel, media query saat dibutuhkan, dan gambar yang tidak melebihi kontainer. Uji di DevTools dengan berbagai ukuran termasuk zoom 200%.",
+      "code": "body { padding: 16px; }\n@media (min-width: 768px) {\n  body { padding: 32px; }\n}",
+      "codeLanguage": "css",
+      "practice": [
+        "Buat navigasi yang dapat dipakai di layar 360px dan 1280px.",
+        "Ubah satu input atau asumsi pada contoh, catat hasil dan jelaskan alasannya."
+      ],
+      "bestPractice": "Uji konten pada viewport sempit, besar, dan zoom tinggi.",
+      "commonMistake": "Membuat UI hanya nyaman pada resolusi laptop sendiri.",
+      "quiz": {
+        "question": "Apa prinsip yang paling tepat untuk topik “Responsive design dan mobile-first”?",
+        "options": [
+          "Uji konten pada viewport sempit, besar, dan zoom tinggi.",
+          "Gunakan solusi paling rumit sejak awal, meski kebutuhan belum jelas.",
+          "Lewati pengujian karena contoh kecil pasti benar."
+        ],
+        "answer": 0,
+        "explanation": "Uji konten pada viewport sempit, besar, dan zoom tinggi."
+      }
+    },
+    {
+      "id": "m04-l06",
+      "title": "Aksesibilitas WCAG dan UX",
+      "minutes": 45,
+      "level": "Dasar",
+      "intro": "Aksesibilitas adalah kemampuan orang dengan kebutuhan beragam menggunakan aplikasi. Fokus keyboard, label form, kontras, teks alternatif, dan status error yang jelas.",
+      "explanation": "Prinsip POUR: perceivable, operable, understandable, robust. Periksa urutan Tab, fokus terlihat, serta bahwa informasi tidak hanya berdasarkan warna. WCAG 2.2 AA berguna sebagai target.",
+      "code": "button:focus-visible {\n  outline: 3px solid #4f46e5;\n  outline-offset: 3px;\n}",
+      "codeLanguage": "css",
+      "practice": [
+        "Coba menavigasi form latihan hanya memakai tombol Tab, Shift+Tab, Enter.",
+        "Ubah satu input atau asumsi pada contoh, catat hasil dan jelaskan alasannya."
+      ],
+      "bestPractice": "Bangun semantik dan navigasi keyboard sejak awal, bukan sebagai patch akhir.",
+      "commonMistake": "Menyembunyikan outline fokus agar tampak rapi.",
+      "quiz": {
+        "question": "Apa prinsip yang paling tepat untuk topik “Aksesibilitas WCAG dan UX”?",
+        "options": [
+          "Bangun semantik dan navigasi keyboard sejak awal, bukan sebagai patch akhir.",
+          "Gunakan solusi paling rumit sejak awal, meski kebutuhan belum jelas.",
+          "Lewati pengujian karena contoh kecil pasti benar."
+        ],
+        "answer": 0,
+        "explanation": "Bangun semantik dan navigasi keyboard sejak awal, bukan sebagai patch akhir."
+      }
+    },
+    {
+      "id": "m04-l07",
+      "title": "Design system kecil",
+      "minutes": 45,
+      "level": "Dasar",
+      "intro": "Design system mendefinisikan token warna, spasi, radius, tipografi, dan komponen UI. Konsistensi mempercepat perubahan dan mengurangi kesalahan visual.",
+      "explanation": "Gunakan CSS custom properties untuk nilai desain yang berulang. Bedakan state hover, active, focus, disabled, loading, success, error dan empty state.",
+      "code": ":root {\n  --primary: #4f46e5;\n  --space: 8px;\n}\n.btn { padding: var(--space) calc(var(--space)*2); }",
+      "codeLanguage": "css",
+      "practice": [
+        "Rancang token untuk 3 warna, 4 ukuran spasi, dan tombol primer/sekunder.",
+        "Ubah satu input atau asumsi pada contoh, catat hasil dan jelaskan alasannya."
+      ],
+      "bestPractice": "Tetapkan token desain bersama dan siapkan semua state interaksi.",
+      "commonMistake": "Menentukan warna dan spasi baru di setiap halaman tanpa konsistensi.",
+      "quiz": {
+        "question": "Apa prinsip yang paling tepat untuk topik “Design system kecil”?",
+        "options": [
+          "Tetapkan token desain bersama dan siapkan semua state interaksi.",
+          "Gunakan solusi paling rumit sejak awal, meski kebutuhan belum jelas.",
+          "Lewati pengujian karena contoh kecil pasti benar."
+        ],
+        "answer": 0,
+        "explanation": "Tetapkan token desain bersama dan siapkan semua state interaksi."
+      }
+    }
+  ]
+}

@@ -1,0 +1,195 @@
+{
+  "id": "m02",
+  "title": "Logika & Algoritma",
+  "subtitle": "Dekomposisi masalah sebelum mengetik kode",
+  "weeks": [
+    6,
+    8
+  ],
+  "accent": "#0ea5e9",
+  "goal": "Mampu merancang algoritma sederhana serta menilai edge case dan kompleksitas.",
+  "lessons": [
+    {
+      "id": "m02-l01",
+      "title": "Dekomposisi masalah",
+      "minutes": 45,
+      "level": "Dasar",
+      "intro": "Masalah besar dapat dipecah menjadi submasalah yang lebih mudah dipahami. Untuk presensi, pisahkan data pegawai, waktu scan, validasi aturan, dan rekap.",
+      "explanation": "Nyatakan input, output, batasan, dan contoh normal/ekstrem. Dekomposisi membuat fungsi memiliki tanggung jawab jelas dan memudahkan pengujian.",
+      "code": "function totalBelanja(harga, qty) {\n  return harga * qty;\n}\nconsole.log(totalBelanja(25000, 3));",
+      "codeLanguage": "javascript",
+      "practice": [
+        "Pecah fitur keranjang menjadi minimal lima bagian dan jelaskan input-output masing-masing.",
+        "Ubah satu input atau asumsi pada contoh, catat hasil dan jelaskan alasannya."
+      ],
+      "bestPractice": "Satu fungsi sebaiknya punya satu tanggung jawab yang bisa diuji.",
+      "commonMistake": "Menulis seluruh aturan bisnis dalam satu fungsi sangat panjang.",
+      "quiz": {
+        "question": "Apa prinsip yang paling tepat untuk topik “Dekomposisi masalah”?",
+        "options": [
+          "Satu fungsi sebaiknya punya satu tanggung jawab yang bisa diuji.",
+          "Gunakan solusi paling rumit sejak awal, meski kebutuhan belum jelas.",
+          "Lewati pengujian karena contoh kecil pasti benar."
+        ],
+        "answer": 0,
+        "explanation": "Satu fungsi sebaiknya punya satu tanggung jawab yang bisa diuji."
+      }
+    },
+    {
+      "id": "m02-l02",
+      "title": "Pseudocode dan flowchart",
+      "minutes": 45,
+      "level": "Dasar",
+      "intro": "Pseudocode menuliskan langkah program dengan bahasa manusia; flowchart memvisualkan keputusan dan pengulangan. Keduanya independen dari bahasa pemrograman.",
+      "explanation": "Contoh validasi: baca umur → jika di bawah 17 tolak → jika tidak, lanjutkan. Petakan setiap cabang serta keluaran ketika data tidak valid.",
+      "code": "// Pseudocode:\n// INPUT umur\n// IF umur >= 17 THEN\n//   PRINT \"Diizinkan\"\n// ELSE\n//   PRINT \"Belum diizinkan\"",
+      "codeLanguage": "javascript",
+      "practice": [
+        "Tulis pseudocode memeriksa kelulusan dari nilai dan batas minimum.",
+        "Ubah satu input atau asumsi pada contoh, catat hasil dan jelaskan alasannya."
+      ],
+      "bestPractice": "Pastikan seluruh cabang keputusan memiliki hasil yang terdefinisi.",
+      "commonMistake": "Flowchart terlalu rumit padahal aturan dapat dijelaskan dengan 4 langkah.",
+      "quiz": {
+        "question": "Apa prinsip yang paling tepat untuk topik “Pseudocode dan flowchart”?",
+        "options": [
+          "Pastikan seluruh cabang keputusan memiliki hasil yang terdefinisi.",
+          "Gunakan solusi paling rumit sejak awal, meski kebutuhan belum jelas.",
+          "Lewati pengujian karena contoh kecil pasti benar."
+        ],
+        "answer": 0,
+        "explanation": "Pastikan seluruh cabang keputusan memiliki hasil yang terdefinisi."
+      }
+    },
+    {
+      "id": "m02-l03",
+      "title": "Tipe data, input, dan validasi",
+      "minutes": 45,
+      "level": "Dasar",
+      "intro": "Data memiliki tipe: angka, teks, boolean, koleksi, dan nilai kosong. Operasi hanya bermakna jika tipe sesuai. Input pengguna tidak pernah otomatis tepercaya.",
+      "explanation": "Misalnya kuantitas \"3\" dari formulir adalah string. Ubah menjadi number dan cek Number.isFinite sebelum menghitung. Pertimbangkan nilai kosong, negatif, dan salah format.",
+      "code": "function validQty(input) {\n  const n = Number(input);\n  return Number.isInteger(n) && n > 0;\n}\nconsole.log(validQty(\"3\"));",
+      "codeLanguage": "javascript",
+      "practice": [
+        "Tulis aturan validasi umur 0–120, termasuk input kosong dan huruf.",
+        "Ubah satu input atau asumsi pada contoh, catat hasil dan jelaskan alasannya."
+      ],
+      "bestPractice": "Validasi jenis, rentang, dan aturan bisnis di batas sistem.",
+      "commonMistake": "Menerima nilai hasil konversi NaN dan menggunakannya dalam perhitungan.",
+      "quiz": {
+        "question": "Apa prinsip yang paling tepat untuk topik “Tipe data, input, dan validasi”?",
+        "options": [
+          "Validasi jenis, rentang, dan aturan bisnis di batas sistem.",
+          "Gunakan solusi paling rumit sejak awal, meski kebutuhan belum jelas.",
+          "Lewati pengujian karena contoh kecil pasti benar."
+        ],
+        "answer": 0,
+        "explanation": "Validasi jenis, rentang, dan aturan bisnis di batas sistem."
+      }
+    },
+    {
+      "id": "m02-l04",
+      "title": "Percabangan dan boolean",
+      "minutes": 45,
+      "level": "Dasar",
+      "intro": "if, else, dan operator logika memungkinkan keputusan berdasarkan kondisi. AND (&&) menuntut seluruh syarat benar, OR (||) cukup salah satu.",
+      "explanation": "Gunakan tanda kurung saat kondisi kompleks dan beri nama boolean yang jelas. Syarat yang salah dapat membuka hak akses atau menghasilkan laporan keliru.",
+      "code": "const sudahBayar = true;\nconst tiketValid = true;\nif (sudahBayar && tiketValid) {\n  console.log(\"Boleh masuk\");\n} else {\n  console.log(\"Ditolak\");\n}",
+      "codeLanguage": "javascript",
+      "practice": [
+        "Buat logika diskon hanya bila anggota aktif DAN belanja minimal 100000.",
+        "Ubah satu input atau asumsi pada contoh, catat hasil dan jelaskan alasannya."
+      ],
+      "bestPractice": "Jelaskan kondisi dengan nama variabel yang mengungkapkan maksud.",
+      "commonMistake": "Menggunakan OR saat kebijakan mensyaratkan AND.",
+      "quiz": {
+        "question": "Jika dua syarat harus terpenuhi bersamaan, operator yang dipakai adalah ...",
+        "options": [
+          "&&",
+          "||",
+          "!"
+        ],
+        "answer": 0,
+        "explanation": "Operator AND (&&) mengembalikan true hanya ketika kedua syarat true."
+      }
+    },
+    {
+      "id": "m02-l05",
+      "title": "Perulangan dan iterasi",
+      "minutes": 45,
+      "level": "Dasar",
+      "intro": "Perulangan digunakan untuk memproses data berulang. for cocok saat jumlah iterasi diketahui; for...of mudah untuk elemen array; while ketika kondisi berhenti dinamis.",
+      "explanation": "Pastikan ada kondisi berhenti. Perulangan tanpa batas dapat membekukan aplikasi. Uji array kosong dan satu elemen.",
+      "code": "let total = 0;\nfor (const nilai of [80, 90, 75]) {\n  total += nilai;\n}\nconsole.log(total / 3);",
+      "codeLanguage": "javascript",
+      "practice": [
+        "Hitung jumlah nilai di atas 75 dari daftar [60, 80, 90, 74, 100].",
+        "Ubah satu input atau asumsi pada contoh, catat hasil dan jelaskan alasannya."
+      ],
+      "bestPractice": "Pilih bentuk iterasi paling sederhana dan uji kondisi berhenti.",
+      "commonMistake": "Loop tanpa perubahan kondisi yang mengakibatkan infinite loop.",
+      "quiz": {
+        "question": "Apa prinsip yang paling tepat untuk topik “Perulangan dan iterasi”?",
+        "options": [
+          "Pilih bentuk iterasi paling sederhana dan uji kondisi berhenti.",
+          "Gunakan solusi paling rumit sejak awal, meski kebutuhan belum jelas.",
+          "Lewati pengujian karena contoh kecil pasti benar."
+        ],
+        "answer": 0,
+        "explanation": "Pilih bentuk iterasi paling sederhana dan uji kondisi berhenti."
+      }
+    },
+    {
+      "id": "m02-l06",
+      "title": "Struktur data dan algoritma",
+      "minutes": 45,
+      "level": "Dasar",
+      "intro": "Array menyimpan urutan, object menyimpan pasangan kunci–nilai, Set menjaga keunikan, Map memasangkan kunci dan nilai yang fleksibel.",
+      "explanation": "Pemilihan struktur data memengaruhi kejelasan serta kinerja. Array.find mencari linear; Map.get rata-rata cepat untuk pencarian berdasarkan kunci. Jangan optimasi prematur.",
+      "code": "const pegawai = new Map();\npegawai.set(\"001\", { nama: \"Ayu\" });\nconsole.log(pegawai.get(\"001\").nama);",
+      "codeLanguage": "javascript",
+      "practice": [
+        "Bandingkan cara mencari produk dengan array.find dan Map.get.",
+        "Ubah satu input atau asumsi pada contoh, catat hasil dan jelaskan alasannya."
+      ],
+      "bestPractice": "Pilih representasi data berdasarkan pola baca/tulis, bukan tren.",
+      "commonMistake": "Menggunakan banyak array paralel yang indeksnya mudah tidak sinkron.",
+      "quiz": {
+        "question": "Apa prinsip yang paling tepat untuk topik “Struktur data dan algoritma”?",
+        "options": [
+          "Pilih representasi data berdasarkan pola baca/tulis, bukan tren.",
+          "Gunakan solusi paling rumit sejak awal, meski kebutuhan belum jelas.",
+          "Lewati pengujian karena contoh kecil pasti benar."
+        ],
+        "answer": 0,
+        "explanation": "Pilih representasi data berdasarkan pola baca/tulis, bukan tren."
+      }
+    },
+    {
+      "id": "m02-l07",
+      "title": "Kompleksitas dan edge case",
+      "minutes": 45,
+      "level": "Dasar",
+      "intro": "Big O mengestimasi pertumbuhan biaya algoritma saat ukuran input membesar. O(1) konstan, O(n) linear, O(n²) kuadratik.",
+      "explanation": "Sebelum optimasi, pastikan hasil benar. Buat tes untuk nol item, satu item, input duplikat, input tidak valid, nilai negatif, dan volume lebih besar.",
+      "code": "const angka = [5, 2, 9];\nconsole.log(Math.max(...angka)); // 9\n// Untuk data sangat besar, hindari spread array raksasa.",
+      "codeLanguage": "javascript",
+      "practice": [
+        "Catat cara mencari nilai maksimum tanpa sort; hitung jumlah operasi terhadap banyaknya elemen.",
+        "Ubah satu input atau asumsi pada contoh, catat hasil dan jelaskan alasannya."
+      ],
+      "bestPractice": "Uji edge case sebelum menyimpulkan algoritma benar.",
+      "commonMistake": "Menyimpulkan program benar hanya karena satu contoh berhasil.",
+      "quiz": {
+        "question": "Apa prinsip yang paling tepat untuk topik “Kompleksitas dan edge case”?",
+        "options": [
+          "Uji edge case sebelum menyimpulkan algoritma benar.",
+          "Gunakan solusi paling rumit sejak awal, meski kebutuhan belum jelas.",
+          "Lewati pengujian karena contoh kecil pasti benar."
+        ],
+        "answer": 0,
+        "explanation": "Uji edge case sebelum menyimpulkan algoritma benar."
+      }
+    }
+  ]
+}

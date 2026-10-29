@@ -1,0 +1,384 @@
+{
+  "id": "m00-l04",
+  "title": "Browser, cookie, cache, dan DevTools",
+  "minutes": 90,
+  "level": "Dasar",
+  "depth": "fondasi",
+  "schema": 3.1,
+  "codeLanguage": "text",
+  "outcome": "Setelah pelajaran ini, Anda dapat menjelaskan jalur render browser, membedakan cache, cookie, localStorage, dan sessionStorage, serta memakai empat panel DevTools untuk memeriksa halaman dengan terarah.",
+  "objectives": [
+    "Menjelaskan tugas mesin render dan mesin JavaScript di dalam browser.",
+    "Menghubungkan tab, proses, dan isolasi situs dengan stabilitas serta keamanan.",
+    "Membedakan cache, cookie, localStorage, dan sessionStorage.",
+    "Menggunakan tab Elements, Console, Network, dan Application untuk diagnosis."
+  ],
+  "prerequisites": [
+    {
+      "label": "Internet, IP, DNS, dan HTTP/HTTPS",
+      "lessonId": "m00-l03"
+    }
+  ],
+  "terms": [
+    {
+      "term": "Mesin render",
+      "definition": "Komponen browser yang mengubah HTML dan CSS menjadi halaman yang terlihat di layar."
+    },
+    {
+      "term": "Cache",
+      "definition": "Salinan sementara sebuah response agar tidak perlu diambil ulang dari server."
+    },
+    {
+      "term": "Cookie",
+      "definition": "Data kecil per origin yang dikirim browser bersama request yang cocok."
+    },
+    {
+      "term": "localStorage",
+      "definition": "Penyimpanan key-value per origin yang bertahan setelah tab ditutup dan tidak dikirim otomatis ke server."
+    },
+    {
+      "term": "DevTools",
+      "definition": "Perangkat di browser untuk memeriksa DOM, menjalankan perintah, menganalisis jaringan, dan mengelola penyimpanan."
+    }
+  ],
+  "syntax": [
+    {
+      "token": "Cache-Control: max-age=3600",
+      "readAs": "Izinkan browser memakai salinan respons selama 3600 detik sebelum meminta ulang.",
+      "meaning": "Header cache memberi tahu browser dan proxy berapa lama salinan boleh dipakai. Nilai yang salah dapat membuat pengguna melihat versi lama.",
+      "example": "Cache-Control: no-store",
+      "output": "Browser tidak menyimpan respons sebagai cache, cocok untuk data sensitif.",
+      "pitfall": "Menganggap cache selalu mempercepat. Cache yang terlalu agresif menyembunyikan pembaruan dan menyulitkan debugging."
+    },
+    {
+      "token": "Set-Cookie: sesi=abc123; HttpOnly; Secure; SameSite=Lax",
+      "readAs": "Server meminta browser menyimpan cookie bernama sesi dengan atribut keamanan HttpOnly, Secure, dan SameSite.",
+      "meaning": "Cookie membawa data kecil antarpermintaan. Atribut menentukan apakah JavaScript dapat membacanya dan kapan cookie dikirim.",
+      "example": "Set-Cookie: tema=gelap; Path=/; Max-Age=86400",
+      "output": "Browser menyimpan preferensi tema selama satu hari untuk jalur situs.",
+      "pitfall": "Menyimpan token sesi di cookie tanpa HttpOnly dan Secure meningkatkan risiko pencurian melalui skrip atau koneksi tidak aman."
+    },
+    {
+      "token": "localStorage.setItem(\"tema\", \"gelap\")",
+      "readAs": "Simpan pasangan kunci tema dengan nilai gelap di localStorage.",
+      "meaning": "localStorage menyimpan string per origin dan tetap ada setelah tab ditutup. Data ini dapat dibaca JavaScript di halaman yang sama.",
+      "example": "localStorage.getItem(\"tema\")",
+      "output": "gelap",
+      "pitfall": "Menyimpan kata sandi atau token rahasia di localStorage karena data itu dapat dibaca skrip mana pun di halaman."
+    }
+  ],
+  "conventions": [
+    "Gunakan cookie untuk data yang perlu dikirim ke server, dan localStorage atau sessionStorage untuk preferensi yang hanya dipakai di browser.",
+    "Jangan menyimpan token rahasia, kata sandi, atau data pribadi sensitif di localStorage.",
+    "Tandai cookie sesi dengan HttpOnly, Secure, dan SameSite yang sesuai.",
+    "Saat mengubah tampilan, uji dengan cache dinonaktifkan agar Anda tidak menilai versi lama.",
+    "Bersihkan data situs secara selektif; hapus cookie dan storage hanya untuk origin yang bermasalah.",
+    "Catat origin, nama kunci, dan masa berlaku saat memeriksa data browser agar tidak tertukar antar-situs."
+  ],
+  "sections": [
+    {
+      "id": "cara-membaca",
+      "title": "Cara membaca penyimpanan browser",
+      "body": [
+        "Browser menyimpan beberapa jenis data dengan aturan berbeda. Cache menyimpan salinan respons agar permintaan berikutnya lebih cepat. Cookie menyimpan potongan data yang dapat ikut dikirim ke server. localStorage dan sessionStorage menyimpan data di sisi klien, dengan masa hidup dan cakupan yang berbeda.",
+        "Panel Network menunjukkan permintaan dan respons, termasuk status, ukuran, dan sumber cache. Panel Application menunjukkan cookie, localStorage, sessionStorage, dan service worker. Panel Console dipakai untuk menjalankan ekspresi dan melihat error. Panel Elements dipakai untuk memeriksa struktur halaman, bukan untuk menyimpan data.",
+        "Saat halaman terasa aneh, tentukan dulu jenis data yang dicurigai. Jika perubahan kode tidak terlihat, periksa cache. Jika status login berubah, periksa cookie dan storage. Jika elemen tidak muncul, periksa Elements dan Console. Memilih panel yang tepat menghemat waktu lebih banyak daripada menebak."
+      ],
+      "code": {
+        "language": "text",
+        "lab": false,
+        "code": "Cache-Control: max-age=3600\nSet-Cookie: sesi=abc123; HttpOnly; Secure; SameSite=Lax\nlocalStorage.setItem(\"tema\", \"gelap\")",
+        "output": "Browser boleh memakai cache satu jam, menyimpan cookie sesi yang tidak dapat dibaca JavaScript, dan menyimpan preferensi tema di localStorage.",
+        "explain": "Tiga baris mewakili tiga tempat penyimpanan berbeda. Membaca nama dan atributnya menentukan siapa yang dapat mengakses data.",
+        "annotations": [
+          {
+            "line": 1,
+            "code": "Cache-Control: max-age=3600",
+            "note": "Cache berlaku satu jam; setelah itu browser meminta versi baru."
+          },
+          {
+            "line": 2,
+            "code": "Set-Cookie: sesi=abc123; HttpOnly; Secure; SameSite=Lax",
+            "note": "HttpOnly mencegah akses JavaScript, Secure membatasi pengiriman pada HTTPS, dan SameSite mengurangi risiko permintaan lintas situs."
+          },
+          {
+            "line": 3,
+            "code": "localStorage.setItem(\"tema\", \"gelap\")",
+            "note": "localStorage hanya menyimpan string dan dapat dibaca JavaScript di origin yang sama."
+          }
+        ]
+      },
+      "checkpoint": {
+        "prompt": "Sebuah halaman menyimpan status login di cookie dan preferensi tema di localStorage. Jelaskan mengapa kedua data tidak sebaiknya ditukar tempat.",
+        "success": "Anda menjelaskan bahwa cookie dapat dikirim ke server dan dilindungi HttpOnly, sedangkan localStorage hanya di sisi klien dan mudah dibaca skrip."
+      }
+    },
+    {
+      "id": "mesin-browser",
+      "title": "Mesin browser dan jalur render",
+      "body": [
+        "Browser bukan sekadar jendela yang menampilkan halaman. Di dalamnya ada beberapa komponen: antarmuka pengguna, mesin render, mesin JavaScript, lapisan jaringan, dan penyimpanan. Mesin render mengubah HTML dan CSS menjadi tampilan. Mesin JavaScript menjalankan skrip. Lapisan jaringan mengambil sumber daya, sedangkan penyimpanan menahan cookie, cache, dan data situs.",
+        "Saat HTML diterima, browser memprosesnya menjadi struktur pohon bernama DOM. CSS diproses menjadi CSSOM. Keduanya digabungkan menjadi render tree, lalu browser menghitung ukuran dan posisi setiap elemen pada tahap layout. Setelah itu, piksel digambar pada tahap paint dan disusun pada tahap compositing. Rangkaian ini disebut critical rendering path.",
+        "JavaScript dapat memengaruhi proses tersebut. Skrip yang berjalan terlalu lama menahan main thread, sehingga halaman tidak merespons klik atau gulir. Skrip juga dapat mengubah DOM dan memicu layout ulang. Karena itu, performa bukan hanya soal kecepatan jaringan. Cara kode dijalankan dan seberapa sering DOM diubah sama pentingnya.",
+        "Browser modern memakai mesin berbeda: Chromium memakai Blink dan V8, Firefox memakai Gecko dan SpiderMonkey, sedangkan Safari memakai WebKit dan JavaScriptCore. Standar web menyamakan perilaku, tetapi detail dan dukungan fitur dapat berbeda. Uji halaman pada browser yang benar-benar dipakai pengguna, bukan hanya pada satu browser favorit Anda."
+      ],
+      "callouts": [
+        {
+          "tone": "good",
+          "title": "Kebiasaan yang membantu",
+          "body": "Saat halaman terasa berat, periksa dulu apakah masalahnya jaringan, render, atau JavaScript. Ketiganya memiliki gejala dan alat diagnosis yang berbeda."
+        }
+      ],
+      "checkpoint": {
+        "prompt": "Sebutkan urutan dari HTML dan CSS sampai piksel muncul di layar.",
+        "success": "Urutan Anda mencakup DOM, CSSOM, render tree, layout, paint, dan compositing."
+      }
+    },
+    {
+      "id": "tab-dan-proses",
+      "title": "Tab, proses, dan isolasi situs",
+      "body": [
+        "Browser modern memakai arsitektur multi-proses. Ada proses untuk antarmuka browser, proses renderer untuk halaman, proses GPU untuk komposisi grafis, proses jaringan, dan proses utilitas. Memisahkan pekerjaan ke beberapa proses membuat satu halaman yang bermasalah tidak otomatis mematikan seluruh browser. Tab yang crash dapat ditutup tanpa kehilangan tab lain.",
+        "Renderer berjalan di dalam sandbox dengan akses terbatas ke sistem. Site isolation menempatkan situs dari origin berbeda pada proses terpisah, sehingga kode berbahaya di satu situs lebih sulit membaca data situs lain. Isolasi ini menambah penggunaan memori, tetapi memberi batas keamanan yang penting. Keamanan browser adalah hasil dari banyak lapisan pembatas.",
+        "Tidak semua tab selalu memakai proses sendiri. Browser dapat menggabungkan beberapa tab dari situs yang sama, dan iframe dapat berbagi proses dengan halaman induknya. Ekstensi juga berjalan pada konteks tersendiri dan dapat memengaruhi halaman. Karena itu, masalah pada satu tab kadang berasal dari ekstensi, bukan dari situs yang sedang dibuka.",
+        "Banyak tab berarti banyak memori dan banyak pekerjaan latar belakang. Browser dapat menangguhkan tab yang lama tidak aktif, lalu memuatnya kembali saat dibuka. Fitur ini membantu, tetapi tidak menghapus kebutuhan untuk menutup tab yang benar-benar tidak dipakai. Jika komputer terasa lambat, periksa tab dan ekstensi sebelum menyimpulkan bahwa perangkatnya rusak."
+      ],
+      "callouts": [
+        {
+          "tone": "warn",
+          "title": "Bukan pengganti keamanan",
+          "body": "Isolasi proses mengurangi dampak serangan, tetapi tidak menggantikan pembaruan browser, situs HTTPS, dan kebiasaan tidak membuka berkas mencurigakan."
+        }
+      ],
+      "checkpoint": {
+        "prompt": "Mengapa satu tab yang crash tidak selalu membuat seluruh browser berhenti?",
+        "success": "Anda menyebut pemisahan proses dan sandbox yang membatasi dampak kegagalan."
+      }
+    },
+    {
+      "id": "cache",
+      "title": "Cache: salinan yang mempercepat dan menjebak",
+      "body": [
+        "Cache menyimpan salinan response agar browser tidak perlu mengambil ulang semuanya dari server. Cache dapat berada di memori, di disk, pada service worker, atau di CDN antara pengguna dan server. Semakin dekat salinan ke pengguna, semakin cepat halaman terasa. Namun salinan yang salah dapat menampilkan versi lama setelah situs diperbarui.",
+        "Header menentukan perilaku cache. Cache-Control dengan max-age memberi tahu berapa lama response dianggap segar. no-store melarang penyimpanan, sedangkan no-cache mewajibkan validasi ulang sebelum dipakai. ETag dan Last-Modified memungkinkan browser mengirim permintaan bersyarat. Bila salinan masih valid, server membalas 304 Not Modified dan browser memakai salinan lokal.",
+        "Service worker menambahkan lapisan cache yang dikendalikan kode. Lapisan ini memungkinkan pengalaman offline dan pemuatan cepat, tetapi juga dapat menyajikan berkas lama jika strategi pembaruannya salah. Setelah deploy, pengguna bisa terjebak pada versi sebelumnya karena service worker masih aktif. Uji pembaruan, bukan hanya pemuatan pertama.",
+        "Untuk aset seperti CSS dan JavaScript, hash pada nama berkas membantu memastikan versi baru memiliki URL baru. Untuk HTML, cache biasanya dibuat lebih pendek agar perubahan cepat terlihat. Jangan mengandalkan pengguna untuk membersihkan cache secara manual. Rancang strategi cache yang membuat versi baru dapat diambil tanpa mengorbankan kecepatan."
+      ],
+      "callouts": [
+        {
+          "tone": "bad",
+          "title": "Kesalahan umum",
+          "body": "Menyimpulkan bahwa kode tidak berubah hanya karena halaman masih lama. Periksa header cache, service worker, dan apakah DevTools sedang menonaktifkan cache."
+        }
+      ],
+      "checkpoint": {
+        "prompt": "Apa arti status 304 dalam konteks cache?",
+        "success": "Anda menjelaskan bahwa salinan lokal masih valid dan browser tidak perlu mengunduh body baru."
+      }
+    },
+    {
+      "id": "cookie-dan-penyimpanan",
+      "title": "Cookie, localStorage, dan sessionStorage",
+      "body": [
+        "Cookie adalah data kecil yang disimpan per origin dan dikirim browser bersama request yang cocok. Server dapat mengirim header Set-Cookie, lalu browser menyimpannya dan melampirkannya kembali. Cookie dipakai untuk sesi login, preferensi, dan pelacakan. Karena dikirim otomatis, ukuran cookie harus kecil dan isinya tidak boleh dianggap rahasia dari server.",
+        "Atribut cookie menentukan perilakunya. Secure membatasi pengiriman pada HTTPS. HttpOnly membuat cookie tidak dapat dibaca JavaScript halaman. SameSite membantu membatasi pengiriman pada request lintas situs. Domain, Path, dan masa berlaku menentukan cakupan serta umur cookie. Atribut yang salah dapat membuat login gagal atau mengurangi perlindungan.",
+        "localStorage menyimpan key-value per origin tanpa tanggal kedaluwarsa dan tidak dikirim otomatis ke server. sessionStorage mirip, tetapi terbatas pada satu tab dan hilang saat tab ditutup. IndexedDB menyediakan penyimpanan lebih besar dan operasi asinkron untuk data terstruktur. Pilihan penyimpanan harus mengikuti kebutuhan, bukan sekadar yang paling mudah dipanggil.",
+        "Dari sisi keamanan, localStorage dapat dibaca JavaScript, sehingga skrip berbahaya akibat XSS dapat mencuri isinya. Cookie HttpOnly tidak dapat dibaca JavaScript, tetapi tetap perlu perlindungan terhadap CSRF dan penyalahgunaan sesi. Karena itu, jangan menyimpan token sensitif di localStorage tanpa memahami risikonya. Bersihkan data situs saat memakai komputer bersama."
+      ],
+      "callouts": [
+        {
+          "tone": "warn",
+          "title": "Privasi",
+          "body": "Cookie pihak ketiga dapat dipakai untuk melacak aktivitas antar situs. Periksa pengaturan privasi browser dan gunakan mode yang sesuai dengan tingkat sensitivitas pekerjaan Anda."
+        }
+      ],
+      "checkpoint": {
+        "prompt": "Sebutkan dua perbedaan utama antara cookie dan localStorage.",
+        "success": "Anda menyebut cookie dikirim otomatis ke server dan berukuran kecil, sedangkan localStorage tidak dikirim otomatis dan dapat menyimpan data lebih besar."
+      }
+    },
+    {
+      "id": "devtools",
+      "title": "Empat tab DevTools yang wajib dikenal",
+      "body": [
+        "Tab Elements menampilkan DOM yang sedang aktif, bukan file HTML asli di server. Anda dapat memilih elemen, melihat aturan CSS yang berlaku, memeriksa computed style, dan mengubah nilai sementara. Perubahan di Elements hilang saat halaman dimuat ulang karena hanya mengubah keadaan di memori. Gunakan tab ini untuk memahami mengapa suatu elemen tampil berbeda dari yang Anda harapkan.",
+        "Tab Console menampilkan pesan error, peringatan, dan hasil perintah JavaScript. Anda dapat memeriksa nilai variabel atau memanggil fungsi untuk menguji dugaan. Console juga menjadi tempat pertama untuk melihat error yang tidak terlihat di antarmuka. Jangan menempelkan kode dari sumber yang tidak dipercaya ke Console, karena kode tersebut berjalan dengan hak akses halaman.",
+        "Tab Network mencatat request beserta status, header, payload, dan waktu. Di sini Anda dapat membedakan kegagalan DNS, respons 404, error server, dan request yang lambat. Filter membantu memisahkan dokumen, gambar, skrip, dan font. Aktifkan preserve log bila ingin mempertahankan catatan setelah navigasi, dan gunakan throttling untuk menguji koneksi lambat.",
+        "Tab Application memperlihatkan cookie, localStorage, sessionStorage, IndexedDB, cache storage, service worker, dan manifest. Tab ini berguna untuk memeriksa mengapa sesi hilang atau data lama masih tersimpan. Perlu diingat bahwa siapa pun yang memakai perangkat yang sama dapat membuka DevTools dan membaca data situs. DevTools adalah alat transparansi, bukan alat yang menyembunyikan data dari pengguna lain."
+      ],
+      "callouts": [
+        {
+          "tone": "good",
+          "title": "Urutan diagnosis",
+          "body": "Mulai dari Console untuk error, lanjut ke Network untuk request yang gagal, lalu ke Application untuk cookie dan cache. Elements dipakai saat masalahnya tampilan."
+        }
+      ],
+      "checkpoint": {
+        "prompt": "Tab mana yang Anda buka untuk melihat cookie dan isi localStorage?",
+        "success": "Anda menjawab Application dan menyebut bagian Storage di dalamnya."
+      }
+    }
+  ],
+  "practice": [
+    {
+      "id": "latihan-1",
+      "title": "Tur satu halaman",
+      "task": "Buka satu situs, lalu gunakan empat tab DevTools untuk mencatat satu temuan pada masing-masing tab.",
+      "steps": [
+        "Di Elements, pilih judul utama dan catat satu aturan CSS yang berlaku.",
+        "Di Console, catat satu error atau peringatan bila ada.",
+        "Di Network, catat jumlah request dan satu status code.",
+        "Di Application, catat satu cookie atau satu key localStorage."
+      ],
+      "expected": "Empat catatan singkat, satu untuk setiap tab DevTools.",
+      "stretch": "Ubah satu warna di Elements, lalu jelaskan mengapa perubahan itu hilang setelah reload.",
+      "level": "guided",
+      "hints": [
+        "Buka DevTools dengan F12 atau menu Inspect.",
+        "Kunjungi satu halaman, lalu periksa tab Network dan Application.",
+        "Catat satu permintaan, satu cookie, dan satu kunci localStorage yang Anda temukan."
+      ],
+      "starterCode": "Halaman:\nPermintaan:\nStatus:\nCookie:\nlocalStorage:",
+      "verification": {
+        "command": "Buka DevTools dan periksa satu halaman.",
+        "expected": "Anda menemukan minimal satu permintaan jaringan dan satu jenis penyimpanan.",
+        "evidence": "Simpan catatan panel, nama kunci, dan nilai yang tidak sensitif."
+      }
+    },
+    {
+      "id": "latihan-2",
+      "title": "Bandingkan cookie dan localStorage",
+      "task": "Simpan nilai uji pada cookie dan localStorage, lalu bandingkan perilakunya setelah reload.",
+      "steps": [
+        "Di Console, jalankan localStorage.setItem('uji', 'satu').",
+        "Buat cookie uji melalui Application atau Console tanpa data sensitif.",
+        "Muat ulang halaman dan periksa kedua nilai di Application.",
+        "Di Network, pilih request dokumen dan periksa apakah cookie ikut terkirim."
+      ],
+      "expected": "Catatan yang menunjukkan localStorage bertahan dan cookie terlihat pada request.",
+      "stretch": "Tutup tab, buka kembali, lalu bandingkan hasilnya dengan sessionStorage.",
+      "level": "independent",
+      "hints": [
+        "Gunakan halaman latihan milik Anda sendiri, bukan situs orang lain.",
+        "Simpan satu nilai di localStorage dan satu nilai di sessionStorage.",
+        "Tutup lalu buka kembali tab untuk melihat mana yang bertahan."
+      ],
+      "starterCode": "localStorage.setItem(\"latihan\", \"bertahan\")\nsessionStorage.setItem(\"latihan\", \"sementara\")\nconsole.log(localStorage.getItem(\"latihan\"))\nconsole.log(sessionStorage.getItem(\"latihan\"))",
+      "verification": {
+        "command": "Jalankan kode di Console halaman latihan, lalu tutup dan buka tab.",
+        "expected": "Nilai localStorage tetap ada, sedangkan sessionStorage hilang setelah tab ditutup.",
+        "evidence": "Catat hasil sebelum dan sesudah tab dibuka ulang."
+      }
+    },
+    {
+      "id": "latihan-3",
+      "title": "Uji cache dan hard reload",
+      "task": "Amati perbedaan pemuatan biasa, pemuatan dengan cache dinonaktifkan, dan hard reload pada satu halaman.",
+      "steps": [
+        "Buka Network, muat ulang halaman, lalu catat status dan ukuran transfer.",
+        "Aktifkan Disable cache, muat ulang, lalu bandingkan hasilnya.",
+        "Lakukan hard reload dan catat perbedaannya.",
+        "Periksa header Cache-Control pada salah satu aset."
+      ],
+      "expected": "Tabel perbandingan tiga mode pemuatan dan satu nilai Cache-Control.",
+      "stretch": "Cari satu aset yang memakai ETag dan jelaskan kapan server membalas 304.",
+      "level": "transfer",
+      "hints": [
+        "Ubah satu berkas CSS atau teks di halaman latihan Anda.",
+        "Muat ulang dengan cache dinonaktifkan, lalu bandingkan dengan muat ulang biasa.",
+        "Catat header cache yang terlihat di panel Network."
+      ],
+      "starterCode": "1. Ubah satu teks di halaman.\n2. Muat ulang biasa.\n3. Nonaktifkan cache, muat ulang lagi.\n4. Catat perbedaannya.",
+      "verification": {
+        "command": "Bandingkan muat ulang biasa dan muat ulang tanpa cache.",
+        "expected": "Anda dapat menjelaskan kapan perubahan terlihat dan header mana yang memengaruhi cache.",
+        "evidence": "Simpan catatan header dan hasil kedua mode muat ulang."
+      }
+    }
+  ],
+  "verification": {
+    "mode": "browser",
+    "command": "Kerjakan Latihan 2 di halaman latihan Anda sendiri, lalu periksa panel Application.",
+    "expected": "Anda dapat menunjukkan cookie, localStorage, dan sessionStorage serta menjelaskan masa hidupnya.",
+    "evidence": "Simpan catatan nama kunci, nilai non-sensitif, dan hasil setelah tab dibuka ulang."
+  },
+  "troubleshooting": [
+    {
+      "symptom": "Perubahan kode tidak terlihat setelah memuat ulang.",
+      "cause": "Browser memakai cache lama, atau service worker menyajikan versi sebelumnya.",
+      "fix": "Nonaktifkan cache di panel Network, lakukan hard reload, lalu periksa service worker di panel Application."
+    },
+    {
+      "symptom": "Pengguna tetap masuk padahal sudah logout.",
+      "cause": "Cookie sesi atau token di localStorage belum dihapus, atau ada beberapa origin yang dipakai.",
+      "fix": "Hapus cookie dan storage untuk origin yang benar, lalu pastikan server juga membatalkan sesi."
+    },
+    {
+      "symptom": "Data hilang setelah tab ditutup.",
+      "cause": "Data disimpan di sessionStorage, yang memang berakhir bersama tab.",
+      "fix": "Gunakan localStorage untuk preferensi yang perlu bertahan, atau simpan di server jika data harus lintas perangkat."
+    },
+    {
+      "symptom": "Halaman menampilkan data pengguna lain.",
+      "cause": "Cache atau cookie tercampur antar-origin, atau kunci storage terlalu umum.",
+      "fix": "Periksa origin, bersihkan data situs, dan gunakan nama kunci yang spesifik. Jangan menyimpan data sensitif di storage klien."
+    }
+  ],
+  "quiz": {
+    "questions": [
+      {
+        "id": "q1",
+        "type": "recall",
+        "question": "Tab DevTools untuk memeriksa cookie, localStorage, dan service worker adalah apa?",
+        "options": [
+          "Elements",
+          "Network",
+          "Application"
+        ],
+        "answer": 2,
+        "explanation": "Tab Application memuat bagian Storage yang menampilkan cookie, localStorage, IndexedDB, cache, dan service worker."
+      },
+      {
+        "id": "q2",
+        "type": "scenario",
+        "question": "Setelah deploy, sebagian pengguna masih melihat versi lama situs. Penyebab paling mungkin adalah apa?",
+        "options": [
+          "Alamat IP server berubah menjadi IPv6",
+          "Cache browser atau CDN masih menyajikan salinan lama",
+          "Port 443 ditutup untuk semua pengguna"
+        ],
+        "answer": 1,
+        "explanation": "Cache yang belum kedaluwarsa atau service worker lama dapat menyajikan aset versi sebelumnya setelah deploy."
+      },
+      {
+        "id": "q3",
+        "type": "recall",
+        "question": "Cookie dengan atribut HttpOnly berarti apa?",
+        "options": [
+          "Cookie tidak dapat dibaca oleh JavaScript di halaman",
+          "Cookie selalu dikirim ke semua domain",
+          "Cookie disimpan permanen tanpa masa berlaku"
+        ],
+        "answer": 0,
+        "explanation": "HttpOnly mencegah akses melalui document.cookie, sehingga mengurangi risiko pencurian cookie oleh skrip XSS."
+      }
+    ]
+  },
+  "resources": [
+    {
+      "sourceId": "chrome-devtools",
+      "note": "Panduan tab Elements, Console, Network, Application, dan alur debugging."
+    },
+    {
+      "sourceId": "mdn-http-caching",
+      "note": "Penjelasan header cache, validasi, dan perilaku cache browser."
+    }
+  ],
+  "summary": [
+    "Browser memakai cache untuk mempercepat, cookie untuk data antarpermintaan, dan storage untuk data sisi klien.",
+    "localStorage bertahan setelah tab ditutup; sessionStorage berakhir bersama tab.",
+    "Atribut cookie seperti HttpOnly, Secure, dan SameSite menentukan akses serta pengirimannya.",
+    "DevTools membantu memisahkan masalah cache, cookie, storage, dan render sebelum Anda mengubah kode."
+  ],
+  "next": "Berikutnya: akun, kata sandi, pengelola kata sandi, dan verifikasi dua langkah. Anda akan menyusun prioritas keamanan akun yang benar-benar dipakai."
+}

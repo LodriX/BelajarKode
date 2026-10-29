@@ -1,0 +1,421 @@
+{
+  "id": "m01-l02",
+  "title": "Klien-server: bagaimana web bekerja",
+  "minutes": 90,
+  "level": "Dasar",
+  "depth": "fondasi",
+  "schema": 3.1,
+  "codeLanguage": "text",
+  "outcome": "Setelah pelajaran ini, Anda dapat menjelaskan peran klien dan server, membaca URL serta membedakan path, query, dan fragment, menghubungkan metode HTTP dengan status code, dan membedakan konten statis dari konten dinamis.",
+  "objectives": [
+    "Menjelaskan peran client dan server dalam aplikasi web.",
+    "Membaca URL serta membedakan path, query, dan fragment.",
+    "Menghubungkan metode HTTP dan status code dengan perilaku aplikasi.",
+    "Membedakan konten statis dan dinamis serta menjelaskan peran database."
+  ],
+  "prerequisites": [
+    {
+      "label": "Apa itu program, perangkat lunak, dan aplikasi",
+      "lessonId": "m01-l01"
+    }
+  ],
+  "terms": [
+    {
+      "term": "Client",
+      "definition": "Perangkat atau program yang meminta data atau layanan kepada server."
+    },
+    {
+      "term": "Server",
+      "definition": "Program yang menerima permintaan, memprosesnya, dan mengirim respons melalui jaringan."
+    },
+    {
+      "term": "Request",
+      "definition": "Pesan dari client yang berisi metode, alamat sumber daya, header, dan kadang body."
+    },
+    {
+      "term": "Response",
+      "definition": "Pesan balasan server yang berisi status, header, dan body."
+    },
+    {
+      "term": "URL",
+      "definition": "Alamat yang menunjukkan protokol, host, path, dan parameter sebuah sumber daya web."
+    },
+    {
+      "term": "HTTP",
+      "definition": "Protokol request-response yang mengatur pertukaran data di web."
+    },
+    {
+      "term": "Status code",
+      "definition": "Angka tiga digit pada respons yang merangkum hasil pemrosesan permintaan."
+    }
+  ],
+  "syntax": [
+    {
+      "token": "GET /produk?kategori=buku&halaman=2 HTTP/1.1",
+      "readAs": "Minta daftar produk kategori buku halaman kedua memakai metode GET dan versi HTTP 1.1.",
+      "meaning": "Baris permintaan memuat metode, jalur, query, dan versi protokol. Server memakai bagian-bagian itu untuk menentukan data yang dikirim.",
+      "example": "GET /api/tugas?status=selesai HTTP/1.1",
+      "output": "Server membalas dengan daftar tugas berstatus selesai, biasanya dalam format JSON.",
+      "pitfall": "Menaruh kata sandi atau token di query karena URL tercatat di riwayat browser, log server, dan log proxy."
+    },
+    {
+      "token": "POST /api/tugas HTTP/1.1",
+      "readAs": "Kirim data baru ke jalur /api/tugas memakai metode POST.",
+      "meaning": "POST dipakai ketika permintaan mengubah keadaan, misalnya membuat data. Body permintaan memuat data yang dikirim.",
+      "example": "POST /api/tugas HTTP/1.1\nContent-Type: application/json",
+      "output": "Server membuat sumber daya baru dan biasanya membalas 201 Created.",
+      "pitfall": "Memakai GET untuk operasi yang mengubah data. Perayap, prefetch, atau muat ulang dapat mengulang permintaan tanpa sengaja."
+    },
+    {
+      "token": "HTTP/1.1 404 Not Found",
+      "readAs": "Server membalas dengan versi protokol, kode status 404, dan alasan singkat.",
+      "meaning": "Kode status memberi tahu hasil permintaan. 2xx berhasil, 3xx pengalihan, 4xx kesalahan dari sisi klien, dan 5xx kesalahan dari sisi server.",
+      "example": "HTTP/1.1 500 Internal Server Error",
+      "output": "Permintaan diterima, tetapi server gagal memprosesnya; masalahnya bukan pada alamat yang diminta.",
+      "pitfall": "Menganggap halaman yang tampil selalu berarti status 200. Halaman error dapat dikirim dengan status 404 atau 500."
+    }
+  ],
+  "conventions": [
+    "Gunakan HTTPS untuk semua permintaan yang membawa data pribadi atau kredensial.",
+    "Pilih metode sesuai maksud: GET untuk membaca, POST untuk membuat, PATCH untuk mengubah sebagian, DELETE untuk menghapus.",
+    "Baca status code sebelum menafsirkan isi respons.",
+    "Jangan menaruh rahasia di query string yang mudah tercatat di log dan riwayat.",
+    "Bedakan konten statis yang sama untuk semua pengguna dari konten dinamis yang dirakit dari data.",
+    "Saat halaman gagal, bedakan masalah jaringan, status error, dan masalah render di browser."
+  ],
+  "sections": [
+    {
+      "id": "cara-membaca",
+      "title": "Cara membaca satu pertukaran klien-server",
+      "body": [
+        "Pertukaran web adalah percakapan singkat. Klien mengirim permintaan berisi metode, alamat, header, dan kadang body. Server memeriksa permintaan, menjalankan logika, lalu membalas dengan status, header, dan body. Anda dapat membaca percakapan ini tanpa membuka seluruh isi halaman melalui panel Network atau perintah curl.",
+        "URL menentukan tujuan, sedangkan status menentukan hasil. Path menunjuk sumber daya, query memberi parameter, dan fragment biasanya hanya dipakai browser untuk menggulir ke bagian tertentu. Fragment tidak ikut dikirim ke server. Jika halaman terlihat kosong, periksa status dan body respons lebih dulu sebelum menyalahkan tampilan.",
+        "Konten statis dikirim apa adanya dari berkas, misalnya gambar atau CSS. Konten dinamis dirakit server dari data yang dapat berubah, misalnya daftar tugas milik satu pengguna. Perbedaan ini penting saat memilih strategi cache: konten statis aman di-cache lebih lama, sedangkan data pribadi harus lebih hati-hati."
+      ],
+      "code": {
+        "language": "text",
+        "lab": false,
+        "code": "GET /produk?kategori=buku&halaman=2 HTTP/1.1\nHost: toko.contoh.id\nAccept: application/json\n\nHTTP/1.1 200 OK\nContent-Type: application/json",
+        "output": "Permintaan meminta produk kategori buku halaman kedua, lalu server membalas 200 dengan data JSON.",
+        "explain": "Enam baris ini memisahkan permintaan dan respons. Baris kosong menandai akhir header permintaan.",
+        "annotations": [
+          {
+            "line": 1,
+            "code": "GET /produk?kategori=buku&halaman=2 HTTP/1.1",
+            "note": "Metode GET, jalur /produk, query kategori dan halaman, serta versi HTTP."
+          },
+          {
+            "line": 2,
+            "code": "Host: toko.contoh.id",
+            "note": "Header Host menentukan server virtual yang dituju."
+          },
+          {
+            "line": 3,
+            "code": "Accept: application/json",
+            "note": "Klien memberi tahu format respons yang diinginkan."
+          },
+          {
+            "line": 5,
+            "code": "HTTP/1.1 200 OK",
+            "note": "Baris status menunjukkan permintaan berhasil diproses."
+          },
+          {
+            "line": 6,
+            "code": "Content-Type: application/json",
+            "note": "Header respons menyatakan bahwa body berisi JSON."
+          }
+        ]
+      },
+      "callouts": [
+        {
+          "tone": "warn",
+          "title": "Status lebih dulu, isi kemudian",
+          "body": "Respons error juga dapat berisi HTML yang rapi. Membaca status lebih dulu mencegah Anda menafsirkan halaman error sebagai data yang sah."
+        }
+      ],
+      "checkpoint": {
+        "prompt": "Ambil satu URL, lalu tuliskan path, query, dan fragment-nya. Bagian mana yang tidak dikirim ke server?",
+        "success": "Anda memisahkan ketiga bagian dengan benar dan menjelaskan bahwa fragment biasanya hanya dipakai browser."
+      }
+    },
+    {
+      "id": "client-server",
+      "title": "Dua peran: client dan server",
+      "body": [
+        "Web adalah sistem komunikasi antara dua peran: client dan server. Client meminta sesuatu, server memproses permintaan dan mengembalikan hasil. Client umumnya browser, tetapi bisa juga aplikasi mobile, alat command line, atau layanan lain. Server adalah program yang berjalan di komputer yang dapat diakses melalui jaringan, bukan sebutan untuk ruangan atau perangkat fisik semata.",
+        "Tanggung jawab client adalah menampilkan antarmuka, menerima input, mengirim permintaan, dan merender respons. Server menangani routing, autentikasi, aturan bisnis, akses data, dan integrasi. Client tidak boleh dipercaya untuk menjaga rahasia atau memutuskan izin. Apa pun yang dikirim client dapat diperiksa dan diubah, sehingga keputusan penting harus diambil di server.",
+        "Satu server dapat melayani banyak jenis client melalui kontrak yang sama. Browser dan aplikasi mobile bisa memanggil API yang sama, lalu merender hasilnya dengan cara berbeda. Di balik satu nama domain, server bisa berupa beberapa mesin dengan load balancer. Dari sudut pandang client, semuanya tampak seperti satu layanan."
+      ],
+      "callouts": [
+        {
+          "tone": "good",
+          "title": "Batas kepercayaan",
+          "body": "Anggap semua data dari client sebagai masukan yang belum terverifikasi sampai server memeriksanya."
+        }
+      ],
+      "checkpoint": {
+        "prompt": "Sebutkan dua tugas yang harus dilakukan server dan tidak boleh diserahkan sepenuhnya ke client.",
+        "success": "Anda menyebut pemeriksaan izin dan validasi aturan bisnis sebagai tanggung jawab server."
+      }
+    },
+    {
+      "id": "request-response",
+      "title": "Request dan response",
+      "body": [
+        "Request adalah pesan yang dikirim client. Pesan ini memuat metode, alamat sumber daya, header, dan kadang body. Response adalah pesan balasan server yang memuat status, header, dan body. HTTP mengatur format dan aturan pertukaran ini. Anda tidak perlu menghafal setiap header, tetapi perlu tahu bahwa keduanya membawa metadata selain isi utama.",
+        "Analogi restoran membantu. Anda memesan menu, dapur menyiapkan, lalu pelayan membawa hasil. Anda tidak perlu tahu cara dapur bekerja, tetapi Anda perlu tahu apa yang dipesan dan bagaimana mengenali pesanan yang salah. Pada web, request adalah pesanan, response adalah hidangan, dan status code adalah tanda apakah pesanan diterima, ditolak, atau gagal diproses.",
+        "HTTP bersifat stateless: setiap request berdiri sendiri, dan server tidak otomatis mengingat request sebelumnya. Sesi login dipertahankan melalui cookie atau token yang dikirim ulang pada setiap request. Karena itu, keamanan cookie, masa berlaku token, dan perilaku cache menjadi bagian penting dari desain. Stateless bukan berarti tidak ada state, melainkan state disimpan di client atau datastore."
+      ],
+      "checkpoint": {
+        "prompt": "Mengapa server tidak dapat mengandalkan request sebelumnya untuk mengetahui siapa pengguna?",
+        "success": "Anda menjelaskan sifat stateless HTTP dan peran cookie atau token untuk membawa identitas."
+      }
+    },
+    {
+      "id": "url",
+      "title": "Membaca URL",
+      "body": [
+        "URL adalah alamat sumber daya di web. Contoh lengkap: https://belajarkode.id:443/kursus/javascript?level=dasar#materi. Bagian https adalah scheme, belajarkode.id adalah host, 443 adalah port, /kursus/javascript adalah path, level=dasar adalah query, dan materi adalah fragment. Setiap bagian memiliki peran berbeda dalam request.",
+        "Scheme menentukan protokol, misalnya http atau https. Host diterjemahkan menjadi alamat IP melalui DNS. Port menentukan layanan di server; banyak port default tidak ditulis. Path menunjukkan sumber daya, sedangkan query mengirim parameter tambahan. Fragment hanya dipakai browser untuk menunjuk bagian halaman dan tidak dikirim ke server dalam request HTTP.",
+        "Gunakan path untuk identitas sumber daya dan query untuk filter atau opsi. Jangan menaruh password atau token sensitif di URL karena URL tersimpan di riwayat browser, log server, dan header referrer. Karakter khusus seperti spasi perlu dienkode. URL yang jelas juga membantu debugging karena menunjukkan apa yang sebenarnya diminta."
+      ],
+      "callouts": [
+        {
+          "tone": "bad",
+          "title": "Kesalahan umum",
+          "body": "Menganggap fragment ikut dikirim ke server. Fragment diproses browser dan tidak menjadi bagian request HTTP."
+        }
+      ],
+      "checkpoint": {
+        "prompt": "Sebutkan bagian URL yang menentukan host dan bagian yang menentukan sumber daya.",
+        "success": "Anda membedakan host sebagai nama server dari path sebagai lokasi sumber daya."
+      }
+    },
+    {
+      "id": "metode-status",
+      "title": "Metode HTTP dan status code",
+      "body": [
+        "Metode HTTP menyatakan niat terhadap sumber daya. GET mengambil data tanpa mengubahnya. POST mengirim data untuk membuat sumber daya atau memicu proses. PUT dan PATCH memperbarui, sedangkan DELETE menghapus. Pemilihan metode bukan sekadar gaya; client, cache, dan alat jaringan memakai metode untuk menentukan perilaku.",
+        "Status code adalah angka tiga digit yang merangkum hasil. 2xx berarti berhasil, misalnya 200 dan 201. 3xx berarti pengalihan atau cache, misalnya 301 dan 304. 4xx berarti kesalahan dari sisi client, misalnya 400, 401, 403, 404, dan 422. 5xx berarti kesalahan server, misalnya 500, 502, dan 503.",
+        "Jangan mengembalikan 200 untuk semua respons, termasuk saat gagal. Frontend, monitoring, dan cache membaca status untuk mengambil keputusan. 401 berarti identitas belum terbukti, sedangkan 403 berarti identitas dikenali tetapi tidak berhak. 404 berarti sumber daya tidak ditemukan, sedangkan 500 berarti server gagal memproses. Status yang tepat mempercepat diagnosis dan membuat API lebih dapat diandalkan."
+      ],
+      "checkpoint": {
+        "prompt": "Apa perbedaan 401 dan 403?",
+        "success": "Anda menjelaskan bahwa 401 berarti belum terautentikasi, sedangkan 403 berarti sudah dikenali tetapi tidak memiliki izin."
+      }
+    },
+    {
+      "id": "statis-dinamis",
+      "title": "Konten statis, dinamis, dan database",
+      "body": [
+        "Konten statis adalah konten yang sama untuk semua pengguna, misalnya file CSS, gambar, dan artikel yang jarang berubah. Konten ini mudah di-cache dan dapat disajikan dari CDN. Konten dinamis dihasilkan saat request diproses, misalnya daftar pesanan pengguna, harga real-time, atau halaman yang bergantung pada status login.",
+        "Database menyimpan data secara terstruktur dan tahan lama. Backend membaca dan menulis database, menjalankan validasi, serta menjaga transaksi. Client tidak boleh mengakses database secara langsung karena akan membocorkan kredensial dan melewati aturan. Peran database adalah sumber kebenaran, bukan tempat menaruh logika presentasi.",
+        "Banyak halaman menggabungkan keduanya. Kerangka halaman bisa statis, sedangkan bagian tertentu diambil sebagai JSON dari API. Pola ini memungkinkan personalisasi tanpa membangun ulang seluruh halaman. Namun setiap permintaan tambahan menambah waktu dan titik gagal. Pertimbangkan cache, jumlah query, dan pengalaman saat data terlambat atau gagal dimuat."
+      ],
+      "callouts": [
+        {
+          "tone": "good",
+          "title": "Aturan praktis",
+          "body": "Sajikan statis jika kontennya sama untuk semua orang; gunakan proses dinamis hanya ketika hasilnya memang bergantung pada pengguna, waktu, atau data terbaru."
+        }
+      ],
+      "checkpoint": {
+        "prompt": "Mengapa client tidak boleh terhubung langsung ke database?",
+        "success": "Anda menyebut risiko kebocoran kredensial dan hilangnya pemeriksaan aturan serta izin di backend."
+      }
+    },
+    {
+      "id": "dns-cdn",
+      "title": "DNS, CDN, dan perjalanan data",
+      "body": [
+        "DNS menerjemahkan nama domain menjadi alamat IP. Prosesnya hierarkis: resolver bertanya ke server authoritative melalui serangkaian langkah, lalu menyimpan hasil sementara sesuai TTL. Perubahan DNS tidak selalu langsung terlihat karena cache. Jika situs baru tidak terbuka, periksa DNS sebelum menyalahkan kode aplikasi.",
+        "CDN menyimpan salinan konten di server edge yang dekat dengan pengguna. Permintaan pertama mungkin diteruskan ke origin, lalu hasilnya di-cache. Permintaan berikutnya dapat dilayani dari edge sehingga lebih cepat dan mengurangi beban origin. CDN juga menangani TLS dan dapat menyerap lonjakan trafik.",
+        "Cache CDN bisa menyajikan konten lama jika TTL terlalu panjang atau purge tidak dilakukan. Sebaliknya, TTL terlalu pendek membuat beban origin naik. Pahami cache key, header cache-control, dan strategi invalidasi. Untuk konten dinamis, CDN dapat mempercepat koneksi tanpa menyimpan body, tetapi tetap perlu konfigurasi yang tepat.",
+        "HTTPS membungkus HTTP dengan TLS. Sebelum data bertukar, client dan server melakukan handshake, memverifikasi sertifikat, dan menyepakati kunci enkripsi. Proses ini menambah beberapa perjalanan jaringan pada koneksi pertama, tetapi melindungi isi request dan response dari penyadapan. Sertifikat yang kedaluwarsa atau tidak cocok dengan domain akan memicu peringatan browser, jadi periksa masa berlaku dan rantai sertifikat saat situs gagal dibuka."
+      ],
+      "checkpoint": {
+        "prompt": "Mengapa perubahan DNS atau konten CDN tidak selalu langsung terlihat?",
+        "success": "Anda menyebut cache dan TTL sebagai alasan hasil lama masih disajikan sementara."
+      }
+    },
+    {
+      "id": "rendering-browser",
+      "title": "Apa yang dilakukan browser",
+      "body": [
+        "Browser menerima HTML, mem-parse-nya menjadi DOM, lalu memproses CSS menjadi CSSOM. Keduanya digabung menjadi render tree, dihitung layout-nya, digambar, dan dikomposit ke layar. JavaScript dapat mengubah DOM dan CSSOM setelah halaman tampil. Memahami urutan ini menjelaskan mengapa halaman kadang berkedip atau bergeser saat dimuat.",
+        "CSS di head umumnya menghambat render agar halaman tidak tampil tanpa gaya. JavaScript tanpa async atau defer menghambat parsing HTML. Gambar dan font dimuat terpisah dan dapat menyebabkan pergeseran layout. Gunakan ukuran eksplisit, lazy loading untuk gambar di bawah lipatan, dan font-display yang sesuai agar pengalaman awal tetap stabil.",
+        "Respons yang diterima browser belum tentu langsung menjadi halaman final. Aplikasi satu halaman mengirim kerangka HTML, lalu JavaScript mengambil data dan merender konten. Jika API gagal, halaman bisa tampak kosong meskipun status HTML 200. Karena itu, periksa tab Network dan Console, bukan hanya tampilan akhir. Pelajaran berikutnya akan memakai model ini untuk debugging."
+      ],
+      "callouts": [
+        {
+          "tone": "bad",
+          "title": "Jangan lakukan ini",
+          "body": "Menyimpulkan backend rusak hanya dari halaman kosong. Periksa status request, respons API, dan error JavaScript sebelum menentukan lapisan yang bermasalah."
+        }
+      ],
+      "checkpoint": {
+        "prompt": "Mengapa status HTML 200 belum menjamin bahwa data yang dilihat pengguna berhasil dimuat?",
+        "success": "Anda menjelaskan bahwa data tambahan dapat diambil setelah HTML dan request tersebut bisa gagal."
+      }
+    }
+  ],
+  "practice": [
+    {
+      "id": "latihan-1",
+      "title": "Bedah satu URL",
+      "task": "Ambil satu URL dari browser, lalu pecah menjadi scheme, host, port, path, query, dan fragment.",
+      "steps": [
+        "Tulis URL lengkapnya tanpa menyingkat.",
+        "Beri label pada setiap bagian.",
+        "Tandai bagian yang tidak dikirim ke server."
+      ],
+      "expected": "Enam label yang benar dan satu penjelasan tentang fragment.",
+      "stretch": "Ubah query menjadi dua filter dan jelaskan bagaimana server membacanya.",
+      "level": "guided",
+      "hints": [
+        "Salin URL lengkap dari bilah alamat, termasuk tanda tanya bila ada.",
+        "Beri label scheme, host, port, path, query, dan fragment.",
+        "Tandai bagian yang tidak ada dengan kata tidak ada, bukan dibiarkan kosong."
+      ],
+      "starterCode": "URL:\nScheme:\nHost:\nPort:\nPath:\nQuery:\nFragment:",
+      "verification": {
+        "command": "Pecah satu URL nyata menjadi enam bagian.",
+        "expected": "Semua label terisi atau ditandai tidak ada, dan fragment dijelaskan.",
+        "evidence": "Simpan URL dan hasil pemecahannya."
+      }
+    },
+    {
+      "id": "latihan-2",
+      "title": "Simulasi request-response",
+      "task": "Rancang request untuk mencari produk dengan kata kunci dan halaman kedua, lalu tentukan respons yang diharapkan.",
+      "steps": [
+        "Pilih metode HTTP yang tepat.",
+        "Tulis path dan query yang dipakai.",
+        "Tentukan status code untuk hasil ditemukan, input salah, dan server gagal."
+      ],
+      "expected": "Satu request lengkap dan tiga status code dengan alasannya.",
+      "stretch": "Tambahkan skenario ketika pengguna belum login dan tentukan status yang tepat.",
+      "level": "independent",
+      "hints": [
+        "Tentukan metode yang tepat untuk mencari data dan untuk membuat data.",
+        "Tuliskan request line, host, dan header Accept.",
+        "Pilih status yang masuk akal untuk hasil ditemukan, tidak ditemukan, dan gagal di server."
+      ],
+      "starterCode": "Request:\nMethod:\nPath:\nQuery:\nStatus jika ditemukan:\nStatus jika tidak ditemukan:\nStatus jika server gagal:",
+      "verification": {
+        "command": "Rancang satu permintaan pencarian dan tiga kemungkinan respons.",
+        "expected": "Metode dan path sesuai maksud, serta status 200, 404, dan 500 dijelaskan dengan alasan berbeda.",
+        "evidence": "Simpan rancangan request dan alasan setiap status."
+      }
+    },
+    {
+      "id": "latihan-3",
+      "title": "Rancang halaman dinamis",
+      "task": "Pilih satu halaman profil pengguna dan tentukan bagian statis, bagian dinamis, serta data yang berasal dari database.",
+      "steps": [
+        "Daftar elemen yang sama untuk semua pengguna.",
+        "Daftar elemen yang berubah sesuai akun.",
+        "Tentukan data mana yang perlu di-cache dan mana yang tidak."
+      ],
+      "expected": "Tiga daftar yang jelas dan satu alasan cache.",
+      "stretch": "Jelaskan apa yang ditampilkan jika request data profil gagal.",
+      "level": "transfer",
+      "hints": [
+        "Pilih halaman profil yang menampilkan nama, foto, dan daftar aktivitas.",
+        "Tentukan bagian yang sama untuk semua pengunjung dan bagian yang bergantung pada pengguna.",
+        "Tandai data yang berasal dari database dan data yang aman di-cache."
+      ],
+      "starterCode": "Halaman:\nBagian statis:\nBagian dinamis:\nData dari database:\nData yang aman di-cache:",
+      "verification": {
+        "command": "Rancang pembagian konten statis dan dinamis untuk satu halaman.",
+        "expected": "Pembagian masuk akal dan satu alasan cache menyebut risiko data pribadi.",
+        "evidence": "Simpan rancangan dan alasannya."
+      }
+    }
+  ],
+  "verification": {
+    "mode": "browser",
+    "command": "Buka panel Network pada satu situs, lalu periksa satu permintaan dan responsnya.",
+    "expected": "Anda dapat menyebut metode, path, status, dan jenis konten yang diterima.",
+    "evidence": "Catat satu permintaan, status, dan header Content-Type tanpa data sensitif."
+  },
+  "troubleshooting": [
+    {
+      "symptom": "Halaman menampilkan data lama setelah diperbarui.",
+      "cause": "Browser atau proxy memakai salinan cache yang belum kedaluwarsa.",
+      "fix": "Periksa header cache di panel Network, muat ulang tanpa cache, dan sesuaikan Cache-Control untuk data yang sering berubah."
+    },
+    {
+      "symptom": "Permintaan gagal dengan status 401 atau 403.",
+      "cause": "Klien tidak mengirim kredensial yang sah, atau akun tidak memiliki izin.",
+      "fix": "Periksa header Authorization, masa berlaku token, dan hak akses akun sebelum mengubah kode tampilan."
+    },
+    {
+      "symptom": "Server membalas 500 padahal permintaan terlihat benar.",
+      "cause": "Kesalahan terjadi di server, misalnya data tidak sesuai atau layanan lain gagal.",
+      "fix": "Baca log server, periksa body respons, dan reproduksi dengan data yang sama. Jangan menyalahkan browser lebih dulu."
+    },
+    {
+      "symptom": "Data pengguna lain muncul di halaman.",
+      "cause": "Cache atau query tidak membatasi data berdasarkan identitas pengguna.",
+      "fix": "Pastikan server memfilter data berdasarkan sesi, tandai respons pribadi sebagai tidak dapat di-cache, dan bersihkan cache lama."
+    }
+  ],
+  "quiz": {
+    "questions": [
+      {
+        "id": "q1",
+        "type": "recall",
+        "question": "Apa arti status code 404?",
+        "options": [
+          "Server sedang sibuk",
+          "Permintaan berhasil diproses",
+          "Sumber daya yang diminta tidak ditemukan"
+        ],
+        "answer": 2,
+        "explanation": "404 menunjukkan bahwa server tidak menemukan sumber daya pada alamat yang diminta."
+      },
+      {
+        "id": "q2",
+        "type": "recall",
+        "question": "Metode HTTP yang umum untuk mengambil data tanpa mengubahnya adalah apa?",
+        "options": [
+          "GET",
+          "POST",
+          "DELETE"
+        ],
+        "answer": 0,
+        "explanation": "GET dipakai untuk membaca sumber daya dan tidak dimaksudkan mengubah data di server."
+      },
+      {
+        "id": "q3",
+        "type": "scenario",
+        "question": "Halaman menampilkan kerangka dengan benar, tetapi daftar pesanan kosong. Pemeriksaan pertama yang paling tepat adalah apa?",
+        "options": [
+          "Mengganti warna tombol",
+          "Memeriksa status request API dan error di Console",
+          "Menghapus database"
+        ],
+        "answer": 1,
+        "explanation": "Kerangka yang tampil menunjukkan HTML berhasil, sehingga masalah berikutnya paling mungkin ada pada request data atau render JavaScript."
+      }
+    ]
+  },
+  "resources": [
+    {
+      "sourceId": "mdn-how-web-works",
+      "note": "Gambaran resmi tentang client, server, DNS, dan perjalanan request."
+    },
+    {
+      "sourceId": "mdn-client-server",
+      "note": "Penjelasan rinci tentang request dinamis, server, database, dan response."
+    }
+  ],
+  "summary": [
+    "Klien mengirim permintaan; server memproses dan membalas dengan status, header, dan body.",
+    "URL memisahkan path, query, dan fragment; fragment biasanya tidak dikirim ke server.",
+    "Metode HTTP menyatakan maksud, sedangkan status code menyatakan hasil.",
+    "Konten statis dapat di-cache lebih agresif daripada data dinamis yang bersifat pribadi."
+  ],
+  "next": "Berikutnya: alur kerja pengembang. Anda akan menjalani satu putaran edit, jalankan, uji, dan periksa dengan editor, terminal, browser, dan Git."
+}

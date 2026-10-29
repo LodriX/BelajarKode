@@ -1,0 +1,26 @@
+{
+  "id": "m01",
+  "title": "Orientasi dan Cara Belajar",
+  "subtitle": "Membentuk model mental, alur kerja, dan kebiasaan belajar yang mandiri",
+  "weeks": [
+    4,
+    5
+  ],
+  "accent": "#6ee7b7",
+  "goal": "Anda mengubah rasa ingin tahu menjadi alur belajar yang terukur: memahami program, menjalankan proyek kecil, membaca error, dan memakai bantuan secara kritis.",
+  "outcomes": [
+    "Anda dapat membedakan program, perangkat lunak, aplikasi, dan sistem yang lebih besar.",
+    "Anda dapat menjelaskan alur klien-server dan peran browser, server, serta basis data.",
+    "Anda dapat menjalankan siklus kerja edit, jalankan, uji, dan periksa.",
+    "Anda dapat membaca pesan error dan merumuskan hipotesis debugging.",
+    "Anda memakai latihan mengingat, jeda ulang, dan proyek kecil untuk belajar lebih efektif.",
+    "Anda memakai AI sebagai tutor dengan batas verifikasi yang jelas."
+  ],
+  "entryCheck": "Selesaikan halaman Mulai atau setidaknya siapkan browser dan editor. Materi ini tetap dapat dibaca sebelum semua alat terpasang.",
+  "project": {
+    "title": "Jurnal belajar 14 hari",
+    "description": "Catat satu sesi belajar per hari: tujuan, yang dicoba, error, sumber yang dipakai, dan satu hal yang dapat Anda jelaskan ulang."
+  },
+  "exitCheck": "Anda dapat menjelaskan satu aplikasi kecil dari input sampai output, menunjukkan cara membaca error, dan menulis rencana belajar mingguan.",
+  "lessons": []
+}

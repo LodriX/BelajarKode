@@ -1,0 +1,412 @@
+{
+  "id": "m00-l03",
+  "title": "Internet, IP, DNS, dan HTTP/HTTPS",
+  "minutes": 90,
+  "level": "Dasar",
+  "depth": "fondasi",
+  "schema": 3.1,
+  "codeLanguage": "bash",
+  "outcome": "Setelah pelajaran ini, Anda dapat menjelaskan perjalanan permintaan dari browser ke server, membaca peran IP, DNS, port, HTTP, dan TLS, serta mengenali gejala kegagalan jaringan yang umum.",
+  "objectives": [
+    "Menjelaskan perjalanan permintaan dari browser menuju server dan kembali.",
+    "Membaca peran alamat IP, paket, port, dan DNS dalam sebuah koneksi.",
+    "Membedakan request dan response HTTP serta status code yang umum.",
+    "Mengenali gejala kegagalan DNS, timeout, dan sertifikat TLS."
+  ],
+  "prerequisites": [
+    {
+      "label": "Berkas, folder, jalur, dan terminal dasar",
+      "lessonId": "m00-l02"
+    }
+  ],
+  "terms": [
+    {
+      "term": "Alamat IP",
+      "definition": "Nomor yang mengidentifikasi sebuah perangkat atau antarmuka pada jaringan."
+    },
+    {
+      "term": "Paket",
+      "definition": "Potongan kecil data yang membawa alamat asal, alamat tujuan, dan sebagian isi pesan."
+    },
+    {
+      "term": "DNS",
+      "definition": "Sistem yang menerjemahkan nama domain menjadi alamat IP yang dapat dihubungi."
+    },
+    {
+      "term": "HTTP",
+      "definition": "Protokol request-response yang mengatur pertukaran data antara client dan server web."
+    },
+    {
+      "term": "TLS",
+      "definition": "Lapisan keamanan yang mengenkripsi dan memverifikasi koneksi pada HTTPS."
+    }
+  ],
+  "syntax": [
+    {
+      "token": "https://contoh.id:443/belajar?topik=js#latihan",
+      "readAs": "Baca dari kiri ke kanan: protokol, nama host, port, jalur, query, lalu fragment.",
+      "meaning": "URL memuat beberapa bagian yang menentukan ke mana permintaan dikirim dan bagian mana yang diminta.",
+      "example": "https://belajarkode.id/modul/javascript?level=dasar#latihan",
+      "output": "Permintaan menuju host belajarkode.id melalui HTTPS, meminta jalur /modul/javascript dengan query level=dasar.",
+      "pitfall": "Menganggap fragment #latihan dikirim ke server. Fragment biasanya dipakai browser untuk menunjuk bagian halaman dan tidak ikut dikirim dalam request HTTP."
+    },
+    {
+      "token": "GET /belajar HTTP/1.1",
+      "readAs": "Minta jalur /belajar dengan metode GET memakai versi HTTP 1.1.",
+      "meaning": "Baris permintaan menyebut metode, jalur, dan versi protokol. Header menyusul di baris berikutnya.",
+      "example": "GET /api/tugas?status=selesai HTTP/1.1",
+      "output": "Server menerima permintaan baca untuk daftar tugas yang sudah selesai.",
+      "pitfall": "Menaruh data sensitif di query string karena URL dapat tersimpan di log, riwayat browser, dan riwayat proxy."
+    },
+    {
+      "token": "HTTP/1.1 404 Not Found",
+      "readAs": "Server menjawab dengan versi HTTP, kode status, dan alasan singkat.",
+      "meaning": "Kode status memberi tahu hasil permintaan. Kelas 2xx berhasil, 3xx pengalihan, 4xx kesalahan dari sisi klien, dan 5xx kesalahan dari sisi server.",
+      "example": "HTTP/1.1 200 OK",
+      "output": "Permintaan berhasil dan server mengirim representasi sumber daya.",
+      "pitfall": "Menganggap semua respons dengan halaman HTML berarti berhasil. Halaman error juga dapat dikirim dengan status 404 atau 500."
+    }
+  ],
+  "conventions": [
+    "Selalu periksa skema URL sebelum mengirim data. HTTPS melindungi isi koneksi; HTTP biasa tidak.",
+    "Gunakan metode HTTP sesuai maksud: GET untuk membaca, POST untuk membuat, PUT atau PATCH untuk memperbarui, DELETE untuk menghapus.",
+    "Baca kode status sebelum membaca isi respons. Status memberi konteks apakah isi itu hasil sukses atau pesan error.",
+    "Jangan menaruh token, kata sandi, atau data pribadi di query string yang mudah tercatat di log.",
+    "Saat situs tidak dapat dibuka, bedakan kegagalan DNS, koneksi, TLS, dan respons server sebelum mengubah pengaturan.",
+    "Gunakan curl -I atau panel Network untuk memeriksa header tanpa mengunduh seluruh isi halaman."
+  ],
+  "sections": [
+    {
+      "id": "cara-membaca",
+      "title": "Cara membaca URL dan pertukaran HTTP",
+      "body": [
+        "URL adalah alamat terstruktur, bukan satu teks acak. Protokol menentukan aturan komunikasi. Host adalah nama server. Port adalah pintu layanan pada server. Jalur menunjuk sumber daya. Query memberi parameter tambahan. Fragment menunjuk bagian di dalam halaman dan biasanya tidak dikirim ke server.",
+        "Setelah URL, baca pertukaran HTTP sebagai percakapan. Klien mengirim baris permintaan, header, lalu mungkin body. Server membalas dengan baris status, header, dan body. Setiap bagian punya peran. Status 200 berarti permintaan diproses; 404 berarti sumber daya tidak ditemukan; 500 berarti server gagal memproses permintaan yang tampak sah.",
+        "HTTPS menambahkan lapisan TLS di atas HTTP. Lapisan ini mengenkripsi isi koneksi dan memverifikasi identitas server melalui sertifikat. Jika sertifikat kedaluwarsa, nama domain tidak cocok, atau jam perangkat salah, browser menampilkan peringatan. Jangan mematikan peringatan itu tanpa memahami sebabnya."
+      ],
+      "code": {
+        "language": "text",
+        "lab": false,
+        "code": "Protokol : https\nHost     : contoh.id\nPort     : 443\nPath     : /belajar/javascript\nQuery    : ?topik=tipe\nFragment : #latihan",
+        "output": "URL menunjuk host contoh.id melalui HTTPS di port 443, meminta jalur /belajar/javascript dengan parameter topik=tipe.",
+        "explain": "Setiap baris memecah satu bagian URL. Membaca bagian demi bagian mencegah Anda menebak alamat tujuan.",
+        "annotations": [
+          {
+            "line": 1,
+            "code": "Protokol : https",
+            "note": "Protokol menentukan aturan komunikasi; https berarti HTTP di atas TLS."
+          },
+          {
+            "line": 2,
+            "code": "Host     : contoh.id",
+            "note": "Host adalah nama domain yang akan diterjemahkan DNS menjadi alamat IP."
+          },
+          {
+            "line": 3,
+            "code": "Port     : 443",
+            "note": "Port 443 adalah port bawaan HTTPS. Port lain dapat ditulis eksplisit setelah host."
+          },
+          {
+            "line": 4,
+            "code": "Path     : /belajar/javascript",
+            "note": "Jalur menunjuk sumber daya yang diminta di dalam server."
+          },
+          {
+            "line": 5,
+            "code": "Query    : ?topik=tipe",
+            "note": "Query memberi parameter tambahan; nilainya terlihat di URL dan dapat tercatat di log."
+          },
+          {
+            "line": 6,
+            "code": "Fragment : #latihan",
+            "note": "Fragment biasanya dipakai browser untuk menunjuk bagian halaman dan tidak dikirim ke server."
+          }
+        ]
+      },
+      "checkpoint": {
+        "prompt": "Pecah URL https://contoh.id:443/belajar?topik=js#latihan menjadi enam bagian. Bagian mana yang biasanya tidak dikirim ke server?",
+        "success": "Anda menyebut protokol, host, port, jalur, query, dan fragment, serta menjelaskan bahwa fragment biasanya tidak dikirim."
+      }
+    },
+    {
+      "id": "dari-url-ke-server",
+      "title": "Dari URL ke server",
+      "body": [
+        "Ketika Anda mengetik https://example.com pada address bar, browser tidak langsung menghubungi server. Browser membaca URL lebih dulu, memisahkan skema, nama host, port, path, dan query. Skema https memberi tahu browser bahwa koneksi harus memakai TLS. Nama host example.com belum berupa alamat yang dapat dihubungi, sehingga browser perlu menerjemahkannya menjadi alamat IP.",
+        "Urutan kasarnya begini: browser memeriksa cache, mencari alamat IP melalui DNS, membuka koneksi TCP ke port tujuan, melakukan handshake TLS, mengirim request HTTP, menerima response, lalu merender isi halaman. Setiap tahap dapat gagal dengan gejala yang berbeda. Memahami urutan ini membuat pesan error lebih mudah ditafsirkan dan tidak sekadar ditebak.",
+        "Internet bekerja dengan prinsip best effort. Tidak ada satu kabel pusat yang menghubungkan semua komputer. Data berpindah melalui banyak jaringan yang saling terhubung, dan router memilih jalur berdasarkan tabel routing. Jalur tersebut dapat berubah tanpa Anda sadari, sehingga koneksi bisa berhasil pada satu waktu dan terasa lambat pada waktu lain.",
+        "Di rumah, perangkat Anda biasanya memakai alamat IP privat, lalu router menerjemahkannya ke alamat publik melalui NAT. Server di internet melihat alamat publik tersebut, bukan alamat privat perangkat. Konsep ini menjelaskan mengapa alamat IP yang terlihat oleh situs berbeda dari alamat yang tercantum pada pengaturan jaringan Anda."
+      ],
+      "callouts": [
+        {
+          "tone": "good",
+          "title": "Membaca gejala",
+          "body": "DNS gagal berarti nama tidak ditemukan, timeout berarti koneksi tidak menjawab, dan error sertifikat berarti identitas server tidak dipercaya."
+        }
+      ],
+      "checkpoint": {
+        "prompt": "Sebutkan lima tahap utama dari mengetik URL sampai halaman tampil.",
+        "success": "Urutan Anda mencakup cache, DNS, koneksi, request HTTP, dan render."
+      }
+    },
+    {
+      "id": "alamat-ip-dan-paket",
+      "title": "Alamat IP, paket, dan port",
+      "body": [
+        "Alamat IP adalah identitas numerik perangkat pada jaringan. IPv4 terdiri dari empat kelompok angka, sedangkan IPv6 lebih panjang dan dirancang untuk mengatasi keterbatasan IPv4. Alamat publik dapat berubah, sehingga manusia lebih nyaman memakai nama domain. Alamat privat dipakai di jaringan lokal dan tidak dirutekan langsung di internet publik.",
+        "Data tidak dikirim sebagai satu blok besar. Data dipecah menjadi paket kecil yang masing-masing membawa alamat asal, alamat tujuan, dan informasi urutan. Paket dapat melewati jalur berbeda dan tiba tidak berurutan. Protokol seperti TCP menyusun ulang paket dan meminta pengiriman ulang bila ada paket yang hilang di perjalanan.",
+        "Port adalah nomor yang membedakan layanan pada satu alamat IP. HTTP umumnya memakai port 80, HTTPS memakai port 443, dan server pengembangan sering memakai 3000, 5173, atau 8000. Bayangkan alamat IP sebagai alamat gedung dan port sebagai nomor pintu layanan. Tanpa port, satu server tidak dapat melayani banyak aplikasi secara rapi.",
+        "UDP juga membawa paket, tetapi tidak menjamin urutan maupun pengiriman ulang. UDP lebih ringan dan dipakai untuk video, permainan, serta sebagian query DNS. Untuk halaman web, TCP dan TLS memberi jaminan yang dibutuhkan agar teks dan data tidak rusak. Memilih protokol adalah soal kebutuhan, bukan soal mana yang lebih modern."
+      ],
+      "callouts": [
+        {
+          "tone": "warn",
+          "title": "Port bukan keamanan",
+          "body": "Mengganti port tidak membuat layanan aman. Keamanan tetap bergantung pada autentikasi, otorisasi, validasi input, dan TLS."
+        }
+      ],
+      "checkpoint": {
+        "prompt": "Mengapa alamat IP saja tidak cukup untuk menentukan layanan yang dituju?",
+        "success": "Anda menjelaskan bahwa port membedakan layanan pada alamat IP yang sama."
+      }
+    },
+    {
+      "id": "dns",
+      "title": "DNS: menerjemahkan nama menjadi alamat",
+      "body": [
+        "Manusia mengingat nama, sedangkan komputer memakai alamat. DNS menjembatani keduanya. Saat Anda meminta example.com, resolver DNS mencari jawaban secara bertahap: server root, server TLD, lalu server otoritatif untuk domain tersebut. Hasilnya berupa record, misalnya alamat IPv4 pada record A atau alamat IPv6 pada record AAAA.",
+        "Resolver biasanya menyimpan hasil sementara sesuai TTL. TTL pendek membuat perubahan alamat cepat terlihat, tetapi menambah jumlah query. TTL panjang mengurangi beban, tetapi perubahan bisa tertunda. Browser dan sistem operasi juga memiliki cache sendiri, sehingga perubahan DNS tidak selalu langsung terasa di perangkat Anda.",
+        "Record lain memiliki fungsi berbeda. CNAME memberi alias, MX menunjuk server email, dan TXT menyimpan verifikasi atau kebijakan. Untuk pengembangan web, Anda akan sering berurusan dengan A, AAAA, dan CNAME. Memahami jenis record mencegah kebingungan saat menyiapkan domain, subdomain, atau layanan hosting baru.",
+        "Kegagalan DNS muncul sebagai pesan nama tidak ditemukan atau server tidak dapat dijangkau. Penyebabnya bisa salah ketik, domain kedaluwarsa, record belum tersebar, atau resolver bermasalah. Mengganti resolver kadang membantu, tetapi jangan langsung menyimpulkan bahwa DNS selalu penyebabnya. Periksa juga koneksi dan status domain."
+      ],
+      "callouts": [
+        {
+          "tone": "bad",
+          "title": "Kesalahan umum",
+          "body": "Mengubah record DNS lalu menganggap situs harus langsung berubah. Cache resolver dapat menahan jawaban lama sampai TTL berakhir."
+        }
+      ],
+      "checkpoint": {
+        "prompt": "Apa fungsi TTL pada record DNS, dan apa dampaknya bila nilainya sangat panjang?",
+        "success": "Anda menyebut cache lebih lama dan perubahan alamat bisa tertunda."
+      }
+    },
+    {
+      "id": "http-request-response",
+      "title": "HTTP: request, response, dan status code",
+      "body": [
+        "HTTP adalah aturan percakapan antara client dan server. Client mengirim request berisi metode, path, versi, header, dan kadang body. Server membalas dengan status code, header, dan body. Metode GET meminta data, POST mengirim data baru, PUT mengganti, PATCH mengubah sebagian, dan DELETE menghapus. Metode membantu server memahami maksud permintaan.",
+        "Status code dikelompokkan. 2xx berarti berhasil, 3xx berarti pengalihan, 4xx berarti masalah dari sisi client, dan 5xx berarti masalah di server. Kode 200 berarti OK, 301 berarti pindah permanen, 404 berarti sumber daya tidak ditemukan, 401 berarti belum terautentikasi, dan 500 berarti server gagal memproses. Membaca status code lebih cepat daripada menebak dari tampilan.",
+        "Header membawa metadata seperti tipe konten, panjang konten, cookie, bahasa, aturan cache, dan informasi keamanan. Body membawa data sebenarnya, misalnya HTML, JSON, atau gambar. Pada request POST berisi JSON, header Content-Type memberi tahu server format body. Server yang salah membaca Content-Type dapat menolak atau salah menafsirkan data.",
+        "HTTP bersifat stateless. Server tidak otomatis mengingat percakapan sebelumnya. Karena itu, aplikasi memakai cookie, token, atau sesi untuk mengenali pengguna. Status code, header, dan cookie adalah jejak yang akan Anda periksa di DevTools pada pelajaran berikutnya. Memahami sifat stateless mencegah kebingungan saat mempelajari login dan API."
+      ],
+      "code": {
+        "language": "bash",
+        "code": "curl -I https://example.com",
+        "output": "HTTP/2 200\ncontent-type: text/html; charset=UTF-8\ncache-control: max-age=86000",
+        "explain": "Opsi -I hanya meminta header, sehingga Anda dapat membaca status dan metadata tanpa mengunduh seluruh halaman.",
+        "lab": false,
+        "annotations": [
+          {
+            "line": 1,
+            "code": "curl -I https://example.com",
+            "note": "Opsi -I meminta header saja, sehingga status dan metadata dapat dibaca tanpa mengunduh seluruh halaman."
+          }
+        ]
+      },
+      "callouts": [
+        {
+          "tone": "good",
+          "title": "Kebiasaan yang membantu",
+          "body": "Saat halaman gagal, periksa status code sebelum membaca isi response. Status 404, 401, dan 500 memiliki penyebab yang sangat berbeda."
+        }
+      ],
+      "checkpoint": {
+        "prompt": "Apa perbedaan status 401 dan 403?",
+        "success": "Anda menjelaskan bahwa 401 berarti identitas belum terbukti, sedangkan 403 berarti identitas dikenali tetapi aksesnya ditolak."
+      }
+    },
+    {
+      "id": "https-tls",
+      "title": "HTTPS, TLS, dan kegagalan koneksi",
+      "body": [
+        "HTTPS adalah HTTP yang berjalan di atas TLS. TLS mengenkripsi data sehingga pihak di tengah tidak dapat membaca isi percakapan. TLS juga memverifikasi identitas server melalui sertifikat. Sertifikat ditandatangani oleh certificate authority yang dipercaya browser. Bila tanda tangan tidak valid, browser menampilkan peringatan dan meminta Anda berhenti.",
+        "Handshake TLS terjadi sebelum request HTTP dikirim. Client dan server menyepakati versi protokol, algoritme kriptografi, dan kunci sesi. Proses ini menambah waktu, tetapi dapat dipersingkat dengan TLS 1.3 dan koneksi yang sudah dibuka. Enkripsi melindungi kata sandi, token, dan data pribadi dari penyadapan di jaringan publik.",
+        "Sertifikat memiliki masa berlaku dan nama domain yang harus cocok. Sertifikat kedaluwarsa, nama tidak cocok, atau rantai sertifikat tidak lengkap menyebabkan error keamanan. Jangan memaksa browser melanjutkan koneksi pada situs yang sertifikatnya bermasalah, terutama jika situs itu meminta kata sandi atau data pembayaran.",
+        "Kegagalan koneksi juga bisa berupa timeout. Timeout berarti client menunggu balasan terlalu lama, bukan tentu server mati. Penyebabnya dapat berupa firewall, rute jaringan, server sibuk, atau alamat yang salah. Membedakan error DNS, timeout, dan sertifikat adalah keterampilan dasar yang membuat diagnosis jauh lebih terarah."
+      ],
+      "callouts": [
+        {
+          "tone": "bad",
+          "title": "Jangan lakukan ini",
+          "body": "Menekan tombol lanjutkan pada peringatan sertifikat di situs yang meminta data sensitif. Peringatan itu menandakan identitas server tidak dapat dipastikan."
+        }
+      ],
+      "checkpoint": {
+        "prompt": "Sebutkan tiga penyebab umum error sertifikat TLS.",
+        "success": "Anda menyebut sertifikat kedaluwarsa, nama domain tidak cocok, dan rantai sertifikat tidak lengkap."
+      }
+    }
+  ],
+  "practice": [
+    {
+      "id": "latihan-1",
+      "title": "Telusuri satu domain",
+      "task": "Pilih satu domain resmi, cari alamat IP-nya, lalu catat status code dan waktu muat dari browser.",
+      "steps": [
+        "Jalankan Resolve-DnsName example.com di PowerShell atau dig example.com di macOS dan Linux.",
+        "Catat satu alamat IP yang muncul.",
+        "Buka halaman di browser, buka DevTools pada tab Network, lalu muat ulang.",
+        "Catat status code dan durasi request pertama."
+      ],
+      "expected": "Catatan berisi domain, alamat IP, status code, dan durasi muat.",
+      "stretch": "Ulangi dari jaringan berbeda dan bandingkan alamat IP yang muncul.",
+      "level": "guided",
+      "hints": [
+        "Pilih satu situs yang Anda kenal, lalu salin URL lengkapnya.",
+        "Tandai protokol, host, jalur, dan query dengan label berbeda.",
+        "Jelaskan bagian mana yang akan berubah jika Anda membuka halaman lain di situs yang sama."
+      ],
+      "starterCode": "URL:\nProtokol:\nHost:\nPort:\nPath:\nQuery:\nFragment:",
+      "verification": {
+        "command": "Buka satu situs, salin URL, lalu pecah bagiannya.",
+        "expected": "Setiap bagian URL diberi label yang benar, termasuk bagian yang tidak ada.",
+        "evidence": "Simpan URL dan hasil pemecahannya."
+      }
+    },
+    {
+      "id": "latihan-2",
+      "title": "Baca header response",
+      "task": "Gunakan curl untuk membaca header satu halaman, lalu jelaskan tiga header yang Anda temukan.",
+      "steps": [
+        "Jalankan curl -I pada alamat halaman.",
+        "Tandai status code, content-type, dan cache-control.",
+        "Tuliskan arti masing-masing dalam satu kalimat."
+      ],
+      "expected": "Tiga header dengan penjelasan yang sesuai dengan nilainya.",
+      "stretch": "Bandingkan header halaman HTML dengan header file gambar.",
+      "level": "independent",
+      "hints": [
+        "Gunakan curl -I pada satu situs yang aman.",
+        "Catat baris status, content-type, dan cache-control.",
+        "Bandingkan hasil untuk URL yang ada dan URL yang sengaja salah."
+      ],
+      "starterCode": "curl -I https://example.com\ncurl -I https://example.com/halaman-tidak-ada",
+      "verification": {
+        "command": "Jalankan dua permintaan curl -I.",
+        "expected": "Anda dapat membedakan status 200 dan 404 serta menjelaskan arti header yang muncul.",
+        "evidence": "Simpan kedua output dan catatan perbedaannya."
+      }
+    },
+    {
+      "id": "latihan-3",
+      "title": "Simulasi tiga kegagalan",
+      "task": "Amati perbedaan gejala DNS gagal, timeout, dan sertifikat bermasalah tanpa memakai data penting.",
+      "steps": [
+        "Buka domain yang sengaja salah ketik dan catat pesan errornya.",
+        "Aktifkan mode offline di DevTools, muat ulang halaman, lalu catat gejalanya.",
+        "Buka situs uji sertifikat kedaluwarsa dan baca peringatan browser.",
+        "Susun tabel gejala dan dugaan penyebab."
+      ],
+      "expected": "Tabel tiga baris yang membedakan pesan DNS, timeout, dan sertifikat.",
+      "stretch": "Tuliskan satu pemeriksaan tambahan untuk memastikan dugaan Anda benar.",
+      "level": "transfer",
+      "hints": [
+        "Pilih tiga gejala: nama domain tidak ditemukan, koneksi timeout, dan sertifikat tidak valid.",
+        "Tentukan lapisan yang gagal untuk setiap gejala.",
+        "Tulis satu pemeriksaan awal yang tidak mengubah pengaturan sistem."
+      ],
+      "starterCode": "Gejala 1:\nPenyebab mungkin:\nPemeriksaan:\n\nGejala 2:\nPenyebab mungkin:\nPemeriksaan:",
+      "verification": {
+        "command": "Susun tabel diagnosis untuk tiga gejala jaringan.",
+        "expected": "Setiap gejala dipetakan ke lapisan DNS, koneksi, TLS, atau server dengan pemeriksaan yang sesuai.",
+        "evidence": "Simpan tabel diagnosis dan alasan pemetaannya."
+      }
+    }
+  ],
+  "verification": {
+    "mode": "terminal",
+    "command": "Jalankan Latihan 2 dengan curl -I pada satu URL valid dan satu URL yang tidak ada.",
+    "expected": "Anda dapat membaca status, membedakan 200 dan 404, serta menjelaskan peran header tanpa membuka isi halaman.",
+    "evidence": "Simpan output curl, pemecahan URL, dan tabel diagnosis."
+  },
+  "troubleshooting": [
+    {
+      "symptom": "Situs tidak dapat dibuka dan muncul pesan nama domain tidak ditemukan.",
+      "cause": "DNS gagal menerjemahkan nama domain, koneksi internet terputus, atau domain memang salah ketik.",
+      "fix": "Periksa ejaan domain, koneksi internet, lalu coba nslookup atau ping ke domain lain untuk memisahkan masalah DNS dari masalah jaringan."
+    },
+    {
+      "symptom": "Koneksi berputar lama lalu timeout.",
+      "cause": "Server tidak merespons, port tertutup, atau jaringan memblokir koneksi.",
+      "fix": "Pastikan host dan port benar, coba jaringan lain, lalu periksa apakah layanan sedang mengalami gangguan."
+    },
+    {
+      "symptom": "Browser menampilkan peringatan sertifikat TLS.",
+      "cause": "Sertifikat kedaluwarsa, nama domain tidak cocok, rantai sertifikat tidak lengkap, atau jam perangkat salah.",
+      "fix": "Periksa tanggal dan waktu perangkat, buka situs dari jaringan tepercaya, dan jangan memaksa melanjutkan jika situs meminta data sensitif."
+    },
+    {
+      "symptom": "Halaman tampil, tetapi data yang diminta tidak muncul.",
+      "cause": "Permintaan mencapai server, tetapi status atau body berisi error yang tidak terlihat di tampilan.",
+      "fix": "Buka panel Network atau gunakan curl, lalu periksa status, header, dan body respons sebelum menyimpulkan bahwa server tidak merespons."
+    }
+  ],
+  "quiz": {
+    "questions": [
+      {
+        "id": "q1",
+        "type": "recall",
+        "question": "Sistem yang menerjemahkan nama domain menjadi alamat IP disebut apa?",
+        "options": [
+          "HTTP",
+          "DNS",
+          "TLS"
+        ],
+        "answer": 1,
+        "explanation": "DNS adalah sistem penamaan yang memetakan nama domain ke alamat IP."
+      },
+      {
+        "id": "q2",
+        "type": "scenario",
+        "question": "Anda membuka situs perbankan dan browser menampilkan peringatan sertifikat. Tindakan paling tepat adalah apa?",
+        "options": [
+          "Melanjutkan karena semua situs HTTPS pasti aman",
+          "Mematikan TLS pada browser agar halaman terbuka",
+          "Berhenti dan memeriksa sertifikat sebelum memasukkan data sensitif"
+        ],
+        "answer": 2,
+        "explanation": "Peringatan sertifikat berarti identitas server tidak dapat dipastikan. Data sensitif tidak boleh dimasukkan sebelum masalahnya jelas."
+      },
+      {
+        "id": "q3",
+        "type": "code-reading",
+        "question": "Sebuah response menampilkan status 301. Apa arti status tersebut?",
+        "options": [
+          "Sumber daya dipindahkan secara permanen ke alamat lain",
+          "Server mengalami kegagalan internal",
+          "Pengguna belum terautentikasi"
+        ],
+        "answer": 0,
+        "explanation": "301 adalah pengalihan permanen. Server menunjukkan lokasi baru melalui header Location."
+      }
+    ]
+  },
+  "resources": [
+    {
+      "sourceId": "mdn-how-web-works",
+      "note": "Gambaran resmi tentang client, server, DNS, dan perjalanan request."
+    },
+    {
+      "sourceId": "mdn-http-overview",
+      "note": "Ringkasan request, response, metode, status code, dan header HTTP."
+    }
+  ],
+  "summary": [
+    "URL memuat protokol, host, port, jalur, query, dan fragment yang memiliki peran berbeda.",
+    "DNS menerjemahkan nama domain menjadi alamat IP sebelum koneksi dibuat.",
+    "HTTP memakai metode, status code, dan header untuk bertukar permintaan serta respons.",
+    "HTTPS menambahkan enkripsi dan verifikasi identitas melalui TLS; peringatan sertifikat tidak boleh diabaikan."
+  ],
+  "next": "Berikutnya: browser, cookie, cache, dan DevTools. Anda akan memeriksa apa yang disimpan browser dan mengapa perubahan kadang tidak terlihat."
+}

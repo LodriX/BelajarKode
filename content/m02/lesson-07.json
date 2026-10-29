@@ -1,0 +1,263 @@
+{
+  "id": "m02-l07",
+  "title": "Kompleksitas dan edge case",
+  "minutes": 90,
+  "level": "Dasar",
+  "depth": "fondasi",
+  "codeLanguage": "text",
+  "outcome": "Setelah pelajaran ini, Anda dapat memperkirakan biaya langkah sebuah algoritma dan menyusun daftar edge case sebelum menulis kode.",
+  "objectives": [
+    "Menghitung jumlah langkah sebuah algoritma berdasarkan ukuran input.",
+    "Membedakan biaya tetap, linear, dan kuadratik dengan contoh nyata.",
+    "Menyusun daftar edge case untuk Aplikasi Catatan Tugas."
+  ],
+  "prerequisites": [
+    {
+      "lessonId": "m02-l06",
+      "label": "Struktur data dan algoritma"
+    }
+  ],
+  "terms": [
+    {
+      "term": "Kompleksitas",
+      "definition": "Gambaran bagaimana jumlah langkah algoritma bertambah ketika jumlah data bertambah."
+    },
+    {
+      "term": "O(1)",
+      "definition": "Biaya tetap: jumlah langkah tidak berubah berapa pun banyaknya data."
+    },
+    {
+      "term": "O(n)",
+      "definition": "Biaya linear: jumlah langkah bertambah sebanding dengan jumlah data n."
+    },
+    {
+      "term": "Edge case",
+      "definition": "Kasus batas yang jarang terjadi tetapi tetap harus ditangani, misalnya daftar kosong atau judul sangat panjang."
+    }
+  ],
+  "syntax": [
+    {
+      "token": "O(1)",
+      "meaning": "Operasi dengan jumlah langkah tetap, tidak bergantung pada jumlah data.",
+      "example": "Ambil tugas dari peta berdasarkan id unik.",
+      "output": "Satu pemeriksaan untuk 10 tugas maupun 10.000 tugas.",
+      "pitfall": "O(1) tidak berarti cepat secara mutlak; yang tetap adalah jumlah langkahnya."
+    },
+    {
+      "token": "O(n)",
+      "meaning": "Operasi yang memeriksa seluruh data satu per satu.",
+      "example": "FOR i FROM 1 TO panjang(daftar) DO periksa daftar[i]",
+      "output": "10 tugas berarti 10 pemeriksaan; 10.000 tugas berarti 10.000 pemeriksaan.",
+      "pitfall": "Perulangan bersarang di dalam perulangan O(n) menghasilkan O(n\u00b2), bukan O(n)."
+    },
+    {
+      "token": "O(n\u00b2)",
+      "meaning": "Operasi dengan perulangan di dalam perulangan; langkah bertambah kuadratik.",
+      "example": "FOR setiap tugas DO FOR setiap tugas lain DO bandingkan",
+      "output": "10 tugas berarti sekitar 100 perbandingan; 100 tugas berarti 10.000.",
+      "pitfall": "Membandingkan semua pasangan untuk mencari duplikat akan melambat drastis pada data besar."
+    }
+  ],
+  "sections": [
+    {
+      "id": "hitung-langkah",
+      "title": "Menghitung langkah, bukan milidetik",
+      "body": [
+        "Waktu eksekusi bergantung pada perangkat, browser, dan beban sistem, sehingga tidak bisa dipakai untuk membandingkan algoritma. Yang bisa dibandingkan adalah jumlah langkah sebagai fungsi dari jumlah data n.",
+        "Hitung operasi yang dominan: berapa kali data diperiksa, dibandingkan, atau ditulis. Konstanta kecil diabaikan karena yang penting adalah pola pertumbuhannya saat data bertambah besar."
+      ],
+      "code": {
+        "language": "text",
+        "lab": false,
+        "code": "ALGORITMA A\n  OUTPUT panjang(daftar)\n  -- 1 langkah, O(1)\n\nALGORITMA B\n  jumlah <- 0\n  FOR i FROM 1 TO panjang(daftar) DO\n    jumlah <- jumlah + 1\n  END FOR\n  -- n langkah, O(n)",
+        "output": "A selalu satu langkah; B bertambah satu langkah untuk setiap tugas.",
+        "explain": "A membaca satu nilai yang sudah tersedia. B memeriksa setiap elemen, sehingga jumlah langkahnya sebanding dengan n."
+      },
+      "callouts": [
+        {
+          "tone": "good",
+          "title": "Fokus pada pola",
+          "body": "Bertanya \u201capa yang terjadi jika data menjadi 10 kali lebih banyak?\u201d jauh lebih berguna daripada mengukur milidetik di satu perangkat."
+        }
+      ]
+    },
+    {
+      "id": "bandingkan-algoritma",
+      "title": "Membandingkan dua cara menyelesaikan masalah",
+      "body": [
+        "Masalah yang sama sering punya beberapa algoritma dengan biaya berbeda. Mencari tugas duplikat dengan membandingkan setiap pasangan membutuhkan sekitar n \u00d7 n pemeriksaan. Memakai peta judul yang sudah terlihat hanya membutuhkan satu pemeriksaan per tugas.",
+        "Pilih algoritma yang cukup cepat untuk ukuran data nyata, bukan yang paling rumit. Untuk 50 tugas, perbedaan O(n) dan O(n\u00b2) mungkin tidak terasa; untuk 50.000 data, perbedaannya menjadi sangat besar."
+      ],
+      "code": {
+        "language": "text",
+        "lab": false,
+        "code": "CARA 1: bandingkan semua pasangan\n  FOR i FROM 1 TO n DO\n    FOR j FROM i + 1 TO n DO\n      IF judul[i] = judul[j] THEN OUTPUT \"Duplikat\"\n  -- sekitar n x n pemeriksaan\n\nCARA 2: catat yang sudah terlihat\n  terlihat <- himpunan kosong\n  FOR i FROM 1 TO n DO\n    IF judul[i] ada di terlihat THEN OUTPUT \"Duplikat\"\n    TAMBAH judul[i] ke terlihat\n  -- n pemeriksaan",
+        "output": "Kedua cara menemukan duplikat, tetapi cara kedua memeriksa data jauh lebih sedikit.",
+        "explain": "Cara pertama membandingkan setiap tugas dengan semua tugas lain. Cara kedua menyimpan judul yang sudah dilihat sehingga setiap tugas cukup diperiksa sekali."
+      },
+      "checkpoint": {
+        "prompt": "Sebuah algoritma memakai dua perulangan bersarang yang masing-masing berjalan n kali. Berapa perkiraan jumlah pemeriksaan untuk n = 100?",
+        "success": "Jawaban menyebut sekitar 10.000 pemeriksaan dan menjelaskan bahwa biayanya kuadratik."
+      }
+    },
+    {
+      "id": "edge-case",
+      "title": "Daftar edge case untuk Aplikasi Catatan Tugas",
+      "body": [
+        "Edge case adalah kasus yang jarang muncul tetapi tetap bisa merusak aplikasi. Daftar ini ditulis sebelum kode dibuat agar tidak ditemukan kebetulan saat pengujian.",
+        "Untuk setiap edge case, tulis perilaku yang diharapkan. Tanpa keputusan yang jelas, dua pengembang bisa menangani kasus yang sama dengan cara berbeda."
+      ],
+      "code": {
+        "language": "text",
+        "lab": false,
+        "code": "EDGE CASE                    PERILAKU YANG DIHARAPKAN\n---------------------------------------------------------\nDaftar kosong                Tampilkan pesan \"Belum ada tugas\"\nJudul spasi saja             Tolak dengan \"Judul wajib diisi\"\nJudul 121 karakter           Tolak dengan batas 120 karakter\nDua tugas judul sama         Izinkan, tetapi beri id berbeda\nTenggat 29 Februari          Tolak jika tahun bukan kabisat\nHapus tugas yang sama 2x     Hapus pertama sukses, kedua beri pesan\nPrioritas tidak dikenal      Tolak dan sebutkan pilihan valid",
+        "output": "Tujuh edge case dengan perilaku yang bisa diuji satu per satu.",
+        "explain": "Setiap baris menggabungkan kondisi batas dengan hasil yang diharapkan. Baris terakhir mencegah nilai prioritas asing merusak filter."
+      }
+    }
+  ],
+  "practice": [
+    {
+      "id": "latihan-1",
+      "level": "guided",
+      "title": "Klasifikasikan biaya",
+      "task": "Klasifikasikan tiga operasi berikut sebagai O(1), O(n), atau O(n\u00b2): mengambil tugas dari peta berdasarkan id, menghitung semua tugas selesai, membandingkan semua pasangan judul.",
+      "steps": [
+        "Tentukan apakah jumlah langkah bergantung pada n.",
+        "Periksa apakah ada perulangan bersarang.",
+        "Tulis klasifikasi beserta alasan singkat."
+      ],
+      "starterCode": "1. peta[id]            -> ...\n2. hitung semua selesai -> ...\n3. semua pasangan       -> ...",
+      "expected": "O(1), O(n), O(n\u00b2) dengan alasan masing-masing.",
+      "hints": [
+        "Akses peta memakai kunci langsung.",
+        "Menghitung semua tugas memerlukan satu perulangan.",
+        "Perulangan di dalam perulangan berarti kuadratik."
+      ],
+      "verification": {
+        "mode": "manual",
+        "expected": "Tiga klasifikasi benar dan alasannya mengacu pada jumlah pemeriksaan."
+      }
+    },
+    {
+      "id": "latihan-2",
+      "level": "variasi",
+      "title": "Tambahkan edge case",
+      "task": "Tambahkan tiga edge case untuk fitur edit tugas yang belum ada di daftar contoh.",
+      "steps": [
+        "Pikirkan nilai batas: kosong, terlalu panjang, format salah.",
+        "Pikirkan urutan aksi: edit lalu hapus, edit dua kali.",
+        "Tulis perilaku yang diharapkan untuk masing-masing."
+      ],
+      "starterCode": "EDGE CASE | PERILAKU\n... | ...",
+      "expected": "Tiga edge case baru dengan perilaku yang spesifik dan bisa diuji.",
+      "hints": [
+        "Edit tugas yang sudah dihapus adalah kasus urutan yang sering terlewat.",
+        "Judul yang sama setelah edit tidak boleh menghasilkan id baru."
+      ],
+      "verification": {
+        "mode": "manual",
+        "expected": "Setiap edge case punya kondisi awal dan hasil yang bisa diamati."
+      }
+    },
+    {
+      "id": "latihan-3",
+      "level": "transfer",
+      "title": "Pilih algoritma yang cukup",
+      "task": "Untuk 100 tugas, pilih cara mencari duplikat judul dan jelaskan alasan biayanya.",
+      "steps": [
+        "Bandingkan perkiraan langkah kedua cara.",
+        "Pertimbangkan ukuran data nyata aplikasi.",
+        "Pilih cara yang cukup cepat dan sederhana."
+      ],
+      "starterCode": "n = 100\ncara 1: n x n = ...\ncara 2: n = ...",
+      "expected": "Cara kedua dipilih dengan alasan sekitar 100 pemeriksaan versus 10.000.",
+      "hints": [
+        "n x n untuk 100 adalah 10.000.",
+        "Algoritma yang lebih sederhana tetap menang jika data kecil dan sudah cukup cepat."
+      ],
+      "verification": {
+        "mode": "manual",
+        "expected": "Alasan menyebut perkiraan jumlah langkah dan ukuran data nyata."
+      }
+    }
+  ],
+  "verification": {
+    "mode": "manual",
+    "command": "Tinjau daftar edge case dan klasifikasi biaya",
+    "expected": "Setiap fitur punya minimal tiga edge case dan setiap algoritma punya perkiraan biaya yang masuk akal.",
+    "evidence": "Simpan daftar edge case di dokumen spesifikasi; daftar ini menjadi test case di M03."
+  },
+  "troubleshooting": [
+    {
+      "symptom": "Aplikasi terasa lambat setelah data bertambah banyak.",
+      "cause": "Ada perulangan bersarang yang membandingkan semua pasangan data.",
+      "fix": "Ganti dengan struktur pencarian seperti peta atau himpunan agar setiap data diperiksa sekali."
+    },
+    {
+      "symptom": "Aplikasi error saat daftar masih kosong.",
+      "cause": "Kode mengakses elemen pertama tanpa memeriksa jumlah data.",
+      "fix": "Tambahkan penanganan daftar kosong sebelum mengakses indeks apa pun."
+    },
+    {
+      "symptom": "Dua pengguna melihat perilaku berbeda untuk kasus yang sama.",
+      "cause": "Edge case tidak pernah dituliskan, sehingga masing-masing menebak.",
+      "fix": "Catat edge case dan perilaku yang diharapkan di dokumen spesifikasi sebelum implementasi."
+    }
+  ],
+  "quiz": {
+    "questions": [
+      {
+        "id": "q1",
+        "type": "recall",
+        "question": "Apa arti O(n) pada sebuah algoritma?",
+        "options": [
+          "Jumlah langkahnya tetap",
+          "Jumlah langkahnya bertambah sebanding dengan jumlah data",
+          "Jumlah langkahnya bertambah kuadratik"
+        ],
+        "answer": 1,
+        "explanation": "O(n) berarti biaya tumbuh linear terhadap jumlah data n."
+      },
+      {
+        "id": "q2",
+        "type": "code-reading",
+        "question": "Dua perulangan bersarang yang masing-masing berjalan n kali memiliki perkiraan biaya...",
+        "options": [
+          "O(1)",
+          "O(n)",
+          "O(n\u00b2)"
+        ],
+        "answer": 2,
+        "explanation": "n langkah dikalikan n langkah menghasilkan n\u00b2 pemeriksaan."
+      },
+      {
+        "id": "q3",
+        "type": "scenario",
+        "question": "Sebelum menulis kode hapus tugas, langkah yang paling tepat adalah...",
+        "options": [
+          "Menulis kode secepat mungkin lalu memperbaiki error",
+          "Mendaftar edge case seperti id tidak ditemukan dan daftar kosong beserta perilakunya",
+          "Menambah fitur lain agar aplikasi terlihat lengkap"
+        ],
+        "answer": 1,
+        "explanation": "Edge case yang ditulis lebih dulu menjadi test case dan mencegah perilaku yang ditebak-tebak."
+      }
+    ]
+  },
+  "resources": [
+    {
+      "sourceId": "mdn-indexed-collections",
+      "note": "Rujukan operasi list dan biaya pemeriksaan elemen."
+    },
+    {
+      "sourceId": "mdn-objects-guide",
+      "note": "Rujukan struktur object yang menjadi dasar peta kunci-nilai."
+    }
+  ],
+  "summary": [
+    "Kompleksitas dibandingkan lewat pertumbuhan jumlah langkah, bukan waktu eksekusi di satu perangkat.",
+    "O(1) tetap, O(n) linear, dan O(n\u00b2) muncul dari perulangan bersarang.",
+    "Edge case ditulis sebelum kode dan menjadi test case saat implementasi."
+  ]
+}

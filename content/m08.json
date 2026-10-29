@@ -1,0 +1,247 @@
+{
+  "id": "m08",
+  "title": "PHP Modern & Laravel",
+  "subtitle": "Backend utama untuk aplikasi web dan layanan API",
+  "weeks": [
+    28,
+    31
+  ],
+  "accent": "#ef4444",
+  "goal": "Membuat aplikasi Laravel dengan validasi, autentikasi, otorisasi, dan test.",
+  "lessons": [
+    {
+      "id": "m08-l01",
+      "title": "Dasar PHP modern",
+      "minutes": 45,
+      "level": "Menengah",
+      "intro": "PHP berjalan di server untuk membuat respons HTTP. Pelajari variabel, array, function, class, type declarations, exception, dan dependency management Composer.",
+      "explanation": "Gunakan versi PHP yang didukung framework. Aktifkan type hints saat memungkinkan, linting, dan jangan campur semua logika bisnis dengan HTML.",
+      "code": "<?php\ndeclare(strict_types=1);\nfunction total(int $harga, int $qty): int {\n    return $harga * $qty;\n}\necho total(12000, 3);",
+      "codeLanguage": "php",
+      "practice": [
+        "Buat fungsi PHP validasi dan perhitungan harga secara terpisah.",
+        "Ubah satu input atau asumsi pada contoh, catat hasil dan jelaskan alasannya."
+      ],
+      "bestPractice": "Gunakan type declaration dan pisahkan domain logic dari tampilan.",
+      "commonMistake": "Mencampur query database, HTML, dan otorisasi dalam satu file.",
+      "quiz": {
+        "question": "Apa prinsip yang paling tepat untuk topik “Dasar PHP modern”?",
+        "options": [
+          "Gunakan type declaration dan pisahkan domain logic dari tampilan.",
+          "Gunakan solusi paling rumit sejak awal, meski kebutuhan belum jelas.",
+          "Lewati pengujian karena contoh kecil pasti benar."
+        ],
+        "answer": 0,
+        "explanation": "Gunakan type declaration dan pisahkan domain logic dari tampilan."
+      }
+    },
+    {
+      "id": "m08-l02",
+      "title": "Request lifecycle dan routing",
+      "minutes": 45,
+      "level": "Menengah",
+      "intro": "Laravel menerima request lewat entry point, middleware, routing, controller, lalu menghasilkan response. Route memetakan URL + method HTTP ke handler.",
+      "explanation": "Gunakan GET untuk baca, POST untuk membuat, PUT/PATCH untuk mengubah, DELETE untuk menghapus. Pakai named route, route model binding, dan middleware pada area terlindungi.",
+      "code": "<?php\nuse Illuminate\\Support\\Facades\\Route;\nRoute::get(\"/status\", function () {\n    return response()->json([\"status\" => \"ok\"]);\n});",
+      "codeLanguage": "php",
+      "practice": [
+        "Rancang route list/get/create/update/delete untuk resource tasks.",
+        "Ubah satu input atau asumsi pada contoh, catat hasil dan jelaskan alasannya."
+      ],
+      "bestPractice": "Gunakan HTTP method dan nama route yang konsisten.",
+      "commonMistake": "Menggunakan GET untuk aksi menghapus data.",
+      "quiz": {
+        "question": "Apa prinsip yang paling tepat untuk topik “Request lifecycle dan routing”?",
+        "options": [
+          "Gunakan HTTP method dan nama route yang konsisten.",
+          "Gunakan solusi paling rumit sejak awal, meski kebutuhan belum jelas.",
+          "Lewati pengujian karena contoh kecil pasti benar."
+        ],
+        "answer": 0,
+        "explanation": "Gunakan HTTP method dan nama route yang konsisten."
+      }
+    },
+    {
+      "id": "m08-l03",
+      "title": "MVC, service, dan dependency injection",
+      "minutes": 45,
+      "level": "Menengah",
+      "intro": "MVC memisahkan model, view, controller. Controller sebaiknya mengorkestrasi request; business rule yang kompleks dipindahkan ke service/domain layer.",
+      "explanation": "Dependency injection membuat ketergantungan eksplisit dan memudahkan test. Hindari abstraksi berlebihan sebelum ada kebutuhan nyata.",
+      "code": "<?php\n// Contoh tanggung jawab controller:\n// 1 validasi -> 2 panggil service -> 3 response\n// Jangan taruh ratusan baris logika bisnis di controller.",
+      "codeLanguage": "php",
+      "practice": [
+        "Pecah rancangan controller pesanan menjadi validasi, layanan checkout, dan response.",
+        "Ubah satu input atau asumsi pada contoh, catat hasil dan jelaskan alasannya."
+      ],
+      "bestPractice": "Tempatkan aturan bisnis di lokasi yang bisa digunakan ulang dan dites.",
+      "commonMistake": "Fat controller yang melakukan validasi, query, email, dan formatting sekaligus.",
+      "quiz": {
+        "question": "Apa prinsip yang paling tepat untuk topik “MVC, service, dan dependency injection”?",
+        "options": [
+          "Tempatkan aturan bisnis di lokasi yang bisa digunakan ulang dan dites.",
+          "Gunakan solusi paling rumit sejak awal, meski kebutuhan belum jelas.",
+          "Lewati pengujian karena contoh kecil pasti benar."
+        ],
+        "answer": 0,
+        "explanation": "Tempatkan aturan bisnis di lokasi yang bisa digunakan ulang dan dites."
+      }
+    },
+    {
+      "id": "m08-l04",
+      "title": "Migration, Eloquent, dan relationship",
+      "minutes": 45,
+      "level": "Menengah",
+      "intro": "Migration membuat skema berversi. Eloquent ORM memetakan tabel ke model dan relasi hasMany/belongsTo; gunakan eager loading untuk menghindari N+1.",
+      "explanation": "Sebelum melakukan query masif, pelajari SQL yang dihasilkan. Gunakan pagination untuk koleksi besar; hindari Model::all() pada tabel besar.",
+      "code": "<?php\n// App\\Models\\User.php\npublic function tasks() {\n    return $this->hasMany(Task::class);\n}\n// User::with(\"tasks\")->paginate(20);",
+      "codeLanguage": "php",
+      "practice": [
+        "Rancang model User–Task, migration, dan relasi dua arah.",
+        "Ubah satu input atau asumsi pada contoh, catat hasil dan jelaskan alasannya."
+      ],
+      "bestPractice": "Gunakan eager loading ketika relasi dipakai pada daftar.",
+      "commonMistake": "Query tambahan per baris (N+1) di halaman daftar.",
+      "quiz": {
+        "question": "Apa prinsip yang paling tepat untuk topik “Migration, Eloquent, dan relationship”?",
+        "options": [
+          "Gunakan eager loading ketika relasi dipakai pada daftar.",
+          "Gunakan solusi paling rumit sejak awal, meski kebutuhan belum jelas.",
+          "Lewati pengujian karena contoh kecil pasti benar."
+        ],
+        "answer": 0,
+        "explanation": "Gunakan eager loading ketika relasi dipakai pada daftar."
+      }
+    },
+    {
+      "id": "m08-l05",
+      "title": "Validation dan Form Request",
+      "minutes": 45,
+      "level": "Menengah",
+      "intro": "Laravel Request validation memeriksa format, panjang, tipe, dan aturan bisnis sebelum pemrosesan. Form Request menampung aturan serta otorisasi untuk request kompleks.",
+      "explanation": "Validasi semua data dari internet dan integrasi; batas upload, tipe file yang benar, dan unique rules sesuai kebutuhan. Jangan percaya validasi JavaScript saja.",
+      "code": "<?php\n$data = $request->validate([\n  \"title\" => [\"required\", \"string\", \"max:150\"],\n  \"done\" => [\"sometimes\", \"boolean\"],\n]);",
+      "codeLanguage": "php",
+      "practice": [
+        "Definisikan aturan createTask dan updateTask (judul, status, prioritas).",
+        "Ubah satu input atau asumsi pada contoh, catat hasil dan jelaskan alasannya."
+      ],
+      "bestPractice": "Validasi di server dan gunakan pesan kesalahan yang dapat dipahami pengguna.",
+      "commonMistake": "Hanya memeriksa isian di browser, tidak di backend.",
+      "quiz": {
+        "question": "Apa prinsip yang paling tepat untuk topik “Validation dan Form Request”?",
+        "options": [
+          "Validasi di server dan gunakan pesan kesalahan yang dapat dipahami pengguna.",
+          "Gunakan solusi paling rumit sejak awal, meski kebutuhan belum jelas.",
+          "Lewati pengujian karena contoh kecil pasti benar."
+        ],
+        "answer": 0,
+        "explanation": "Validasi di server dan gunakan pesan kesalahan yang dapat dipahami pengguna."
+      }
+    },
+    {
+      "id": "m08-l06",
+      "title": "Authentication vs authorization",
+      "minutes": 45,
+      "level": "Menengah",
+      "intro": "Authentication membuktikan siapa pengguna; authorization menentukan apa yang boleh mereka lakukan. Policies dan Gates memeriksa hak akses per aksi/resource.",
+      "explanation": "Jangan hanya menyembunyikan tombol edit di frontend: endpoint backend wajib memverifikasi hak untuk objek yang diminta. Session cocok untuk web; token yang dikelola tepat cocok untuk API.",
+      "code": "<?php\n// Contoh otorisasi pada controller\n$this->authorize(\"update\", $task);\n// Policy memastikan pemilik atau admin berhak mengubah.",
+      "codeLanguage": "php",
+      "practice": [
+        "Definisikan 3 role dan izin terhadap tasks milik pengguna lain.",
+        "Ubah satu input atau asumsi pada contoh, catat hasil dan jelaskan alasannya."
+      ],
+      "bestPractice": "Selalu lakukan otorisasi server-side pada tiap resource sensitif.",
+      "commonMistake": "Menampilkan tombol hanya untuk admin tetapi endpoint tetap bisa diakses semua orang.",
+      "quiz": {
+        "question": "Apa prinsip yang paling tepat untuk topik “Authentication vs authorization”?",
+        "options": [
+          "Selalu lakukan otorisasi server-side pada tiap resource sensitif.",
+          "Gunakan solusi paling rumit sejak awal, meski kebutuhan belum jelas.",
+          "Lewati pengujian karena contoh kecil pasti benar."
+        ],
+        "answer": 0,
+        "explanation": "Selalu lakukan otorisasi server-side pada tiap resource sensitif."
+      }
+    },
+    {
+      "id": "m08-l07",
+      "title": "REST API Laravel dan Resource",
+      "minutes": 45,
+      "level": "Menengah",
+      "intro": "API mengirim JSON dengan status HTTP yang tepat. API Resource menata bentuk payload dan mencegah pembocoran field internal. Gunakan pagination, filter, dan dokumentasi.",
+      "explanation": "Pilih struktur error yang konsisten, misalnya message, errors, code. Jangan mengembalikan password hash, secret atau data yang tidak diperlukan.",
+      "code": "<?php\nreturn response()->json([\n  \"data\" => [\"id\" => 1, \"title\" => \"Belajar API\"],\n], 200);",
+      "codeLanguage": "php",
+      "practice": [
+        "Tentukan kontrak JSON untuk list, detail, create, dan error validasi tasks.",
+        "Ubah satu input atau asumsi pada contoh, catat hasil dan jelaskan alasannya."
+      ],
+      "bestPractice": "Tetapkan kontrak respons yang stabil dan minim field sensitif.",
+      "commonMistake": "Mengembalikan seluruh kolom database apa adanya ke mobile.",
+      "quiz": {
+        "question": "Apa prinsip yang paling tepat untuk topik “REST API Laravel dan Resource”?",
+        "options": [
+          "Tetapkan kontrak respons yang stabil dan minim field sensitif.",
+          "Gunakan solusi paling rumit sejak awal, meski kebutuhan belum jelas.",
+          "Lewati pengujian karena contoh kecil pasti benar."
+        ],
+        "answer": 0,
+        "explanation": "Tetapkan kontrak respons yang stabil dan minim field sensitif."
+      }
+    },
+    {
+      "id": "m08-l08",
+      "title": "Queue, jobs, caching, dan file",
+      "minutes": 45,
+      "level": "Menengah",
+      "intro": "Pekerjaan lambat (email, laporan besar) sebaiknya memakai queue bila memerlukan respons cepat. Cache mempercepat data yang dapat digunakan ulang tetapi butuh strategi invalidasi.",
+      "explanation": "File upload harus divalidasi tipe/ukuran dan disimpan di disk sesuai kebutuhan. Jangan mempercayai nama file dari pengguna. Jalankan worker dengan pengelolaan proses pada produksi.",
+      "code": "<?php\n// Contoh konsep:\n// ReportJob::dispatch($reportId);\n// Respons HTTP tidak harus menunggu laporan selesai.",
+      "codeLanguage": "php",
+      "practice": [
+        "Pilih proses yang perlu background job, lalu jelaskan bagaimana melacak sukses/gagal.",
+        "Ubah satu input atau asumsi pada contoh, catat hasil dan jelaskan alasannya."
+      ],
+      "bestPractice": "Gunakan queue untuk beban lambat dan pantau retry serta kegagalannya.",
+      "commonMistake": "Mengirim laporan berat pada satu request hingga timeout.",
+      "quiz": {
+        "question": "Apa prinsip yang paling tepat untuk topik “Queue, jobs, caching, dan file”?",
+        "options": [
+          "Gunakan queue untuk beban lambat dan pantau retry serta kegagalannya.",
+          "Gunakan solusi paling rumit sejak awal, meski kebutuhan belum jelas.",
+          "Lewati pengujian karena contoh kecil pasti benar."
+        ],
+        "answer": 0,
+        "explanation": "Gunakan queue untuk beban lambat dan pantau retry serta kegagalannya."
+      }
+    },
+    {
+      "id": "m08-l09",
+      "title": "Testing Laravel dan deployment",
+      "minutes": 45,
+      "level": "Menengah",
+      "intro": "Feature test menguji endpoint, database, autentikasi, dan kebijakan akses. Unit test menguji fungsi/domain. Deployment memerlukan env, APP_KEY, migrate, cache, worker, log, backup.",
+      "explanation": "Jalankan test sebelum merilis perubahan. Bedakan development/staging/production, jangan mengaktifkan debug di publik, dan pastikan prosedur rollback.",
+      "code": "php artisan test\nphp artisan migrate --force\n# jalankan di lingkungan yang sudah diverifikasi",
+      "codeLanguage": "bash",
+      "practice": [
+        "Rancang test API: guest tidak boleh edit, owner boleh edit, non-owner ditolak.",
+        "Ubah satu input atau asumsi pada contoh, catat hasil dan jelaskan alasannya."
+      ],
+      "bestPractice": "Otomatisasi test dan verifikasi migrasi sebelum deployment.",
+      "commonMistake": "Menjalankan migration destruktif di produksi tanpa backup/rollback.",
+      "quiz": {
+        "question": "Apa prinsip yang paling tepat untuk topik “Testing Laravel dan deployment”?",
+        "options": [
+          "Otomatisasi test dan verifikasi migrasi sebelum deployment.",
+          "Gunakan solusi paling rumit sejak awal, meski kebutuhan belum jelas.",
+          "Lewati pengujian karena contoh kecil pasti benar."
+        ],
+        "answer": 0,
+        "explanation": "Otomatisasi test dan verifikasi migrasi sebelum deployment."
+      }
+    }
+  ]
+}

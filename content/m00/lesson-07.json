@@ -1,0 +1,421 @@
+{
+  "id": "m00-l07",
+  "title": "Privasi digital, data pribadi, dan UU PDP",
+  "minutes": 90,
+  "level": "Dasar",
+  "depth": "fondasi",
+  "schema": 3.1,
+  "codeLanguage": "text",
+  "outcome": "Setelah pelajaran ini, Anda dapat membedakan data pribadi umum dan spesifik, menerapkan minimalisasi data, menilai permintaan izin serta pelacak, dan menyusun langkah awal ketika data pribadi diduga bocor.",
+  "objectives": [
+    "Membedakan data pribadi umum dan spesifik serta menilai risikonya bila bocor.",
+    "Menerapkan minimalisasi data dan pembatasan tujuan saat mengisi formulir atau merancang aplikasi.",
+    "Menilai permintaan izin, cookie, dan pelacak sebelum memberikan persetujuan.",
+    "Menyusun langkah awal yang tepat ketika data pribadi diduga bocor."
+  ],
+  "prerequisites": [
+    {
+      "label": "Cara kerja komputer: perangkat, sistem operasi, dan aplikasi",
+      "lessonId": "m00-l01"
+    },
+    {
+      "label": "Berkas, folder, jalur, dan terminal dasar",
+      "lessonId": "m00-l02"
+    }
+  ],
+  "terms": [
+    {
+      "term": "Data pribadi",
+      "definition": "Setiap informasi tentang orang yang teridentifikasi atau dapat diidentifikasi, baik sendiri maupun bila digabungkan dengan data lain."
+    },
+    {
+      "term": "Minimalisasi data",
+      "definition": "Prinsip mengumpulkan data secukupnya, tidak lebih banyak dari yang benar-benar diperlukan untuk tujuan yang jelas."
+    },
+    {
+      "term": "Pembatasan tujuan",
+      "definition": "Prinsip bahwa data hanya dipakai untuk tujuan yang telah dijelaskan dan disepakati saat data dikumpulkan."
+    },
+    {
+      "term": "Persetujuan",
+      "definition": "Pernyataan yang sadar, spesifik, dan dapat ditarik kembali dari subjek data untuk pemrosesan tertentu."
+    },
+    {
+      "term": "Pelacak",
+      "definition": "Mekanisme seperti cookie pihak ketiga, skrip, atau sidik jari peramban yang merekam aktivitas pengguna antarsitus."
+    }
+  ],
+  "syntax": [
+    {
+      "token": "Data pribadi umum: nama, email, nomor telepon",
+      "readAs": "Baca sebagai kategori data yang bila bocor dapat memicu penipuan, tetapi biasanya tidak langsung mengungkap kondisi sensitif.",
+      "meaning": "Data umum tetap perlu dilindungi. Kombinasi nama, email, dan nomor telepon cukup untuk menyusun pesan phishing yang meyakinkan.",
+      "example": "Nama lengkap, alamat email, nomor telepon, alamat rumah.",
+      "output": "Kebocoran data umum memungkinkan penyerang menyusun pesan bertarget dan mencoba mengambil alih akun.",
+      "pitfall": "Menganggap data umum tidak berbahaya sehingga membagikannya di formulir yang tidak jelas tujuannya."
+    },
+    {
+      "token": "Data pribadi spesifik: kesehatan, biometrik, keuangan",
+      "readAs": "Baca sebagai kategori data yang memerlukan perlindungan lebih ketat dan dasar pemrosesan yang jelas.",
+      "meaning": "Data spesifik dapat menimbulkan diskriminasi, kerugian finansial, atau risiko keselamatan bila bocor. Persetujuan saja sering tidak cukup; dasar hukum dan pengamanan harus jelas.",
+      "example": "Riwayat penyakit, sidik jari, nomor rekening, orientasi seksual.",
+      "output": "Layanan wajib membatasi akses, menyimpan lebih singkat, dan menjelaskan tujuan pemrosesan secara rinci.",
+      "pitfall": "Mengisi formulir kesehatan atau keuangan di situs yang tidak menjelaskan siapa pengendali data dan berapa lama data disimpan."
+    },
+    {
+      "token": "Tujuan: verifikasi akun / Disimpan: 30 hari",
+      "readAs": "Baca sebagai pasangan tujuan dan masa simpan yang harus disebutkan sebelum Anda memberikan data.",
+      "meaning": "Minimalisasi data berarti hanya meminta data yang benar-benar diperlukan untuk tujuan yang jelas. Masa simpan membatasi kerugian jika terjadi kebocoran.",
+      "example": "Tujuan: pengiriman paket / Disimpan: sampai paket diterima",
+      "output": "Data yang tidak lagi diperlukan dihapus, bukan disimpan tanpa batas untuk kemungkinan pemakaian lain.",
+      "pitfall": "Menyetujui tujuan yang ditulis samar seperti untuk meningkatkan layanan tanpa penjelasan data apa yang diproses."
+    }
+  ],
+  "conventions": [
+    "Tanyakan tiga hal sebelum mengisi formulir: data apa yang diminta, untuk tujuan apa, dan berapa lama disimpan.",
+    "Berikan data paling sedikit yang cukup untuk menyelesaikan tugas, bukan seluruh data yang diminta.",
+    "Jangan memakai satu alamat email untuk semua layanan bila Anda ingin memisahkan identitas dan mengurangi pelacakan.",
+    "Simpan bukti permintaan penghapusan atau koreksi data agar dapat ditindaklanjuti."
+  ],
+  "sections": [
+    {
+      "id": "cara-membaca",
+      "title": "Cara membaca pemberitahuan privasi dan permintaan izin",
+      "body": [
+        "Pemberitahuan privasi yang baik menjawab lima pertanyaan: data apa yang dikumpulkan, mengapa, siapa yang menerima, berapa lama disimpan, dan bagaimana Anda menghapusnya. Jika dokumen hanya berisi kalimat panjang tanpa jawaban konkret, tujuan pemrosesan belum jelas.",
+        "Permintaan izin perlu dibaca sebagai pertukaran, bukan sebagai formalitas. Aplikasi peta meminta lokasi karena itu fungsi utamanya; aplikasi senter yang meminta kontak dan mikrofon tidak punya alasan kuat. Di ponsel, izin dapat dicabut kapan saja, dan banyak aplikasi tetap berfungsi dengan izin yang lebih terbatas.",
+        "Pelacak bekerja di balik halaman. Cookie pihak ketiga, piksel, dan skrip analitik mengumpulkan perilaku lintas situs. Tidak semua perlu dihapus, tetapi Anda perlu tahu mana yang hanya membangun profil iklan. Gunakan pengaturan privasi browser dan pemblokir pelacak untuk pekerjaan sensitif."
+      ],
+      "code": {
+        "language": "text",
+        "lab": false,
+        "code": "Data diminta   : nama, email, nomor telepon\nTujuan         : verifikasi akun dan pengiriman notifikasi\nPihak ketiga   : penyedia layanan email\nMasa simpan    : 30 hari setelah akun dihapus\nCara menghapus : menu Pengaturan > Hapus akun",
+        "output": "Pemberitahuan menyebut data, tujuan, penerima, masa simpan, dan cara penghapusan secara konkret.",
+        "explain": "Lima baris ini adalah ukuran minimum pemberitahuan yang dapat Anda nilai. Jika salah satu baris tidak ada, tanyakan sebelum memberikan data.",
+        "annotations": [
+          {
+            "line": 1,
+            "code": "Data diminta   : nama, email, nomor telepon",
+            "note": "Daftar data harus spesifik; frasa data pribadi saja tidak cukup."
+          },
+          {
+            "line": 2,
+            "code": "Tujuan         : verifikasi akun dan pengiriman notifikasi",
+            "note": "Tujuan harus terbatas dan terkait langsung dengan layanan yang diminta."
+          },
+          {
+            "line": 3,
+            "code": "Pihak ketiga   : penyedia layanan email",
+            "note": "Anda berhak tahu siapa saja yang menerima atau memproses data Anda."
+          },
+          {
+            "line": 4,
+            "code": "Masa simpan    : 30 hari setelah akun dihapus",
+            "note": "Masa simpan membatasi dampak jika terjadi kebocoran di kemudian hari."
+          },
+          {
+            "line": 5,
+            "code": "Cara menghapus : menu Pengaturan > Hapus akun",
+            "note": "Hak penghapusan harus dapat dilakukan, bukan hanya ditulis dalam kebijakan."
+          }
+        ]
+      },
+      "callouts": [
+        {
+          "tone": "warn",
+          "title": "Persetujuan bukan satu-satunya dasar",
+          "body": "Banyak pemrosesan diperlukan untuk layanan. Nilailah apakah data yang diminta benar-benar diperlukan."
+        }
+      ],
+      "checkpoint": {
+        "prompt": "Buka satu formulir pendaftaran, lalu catat data yang diminta, tujuan, masa simpan, dan apakah Anda membutuhkan layanan itu.",
+        "success": "Anda dapat menunjukkan satu data yang tidak diperlukan dan memutuskan apakah layanan itu layak dilanjutkan."
+      }
+    },
+    {
+      "id": "apa-itu-data-pribadi",
+      "title": "Apa yang dimaksud data pribadi",
+      "body": [
+        "Data pribadi bukan hanya nomor induk kependudukan atau kartu kredit. Nama, surel, nomor telepon, alamat IP, pengenal perangkat, lokasi, foto, suara, dan riwayat pencarian termasuk data pribadi bila dapat dikaitkan dengan seseorang, baik langsung maupun melalui kombinasi data lain.",
+        "UU PDP membagi data pribadi menjadi dua kelompok. Data spesifik meliputi kesehatan, biometrik, genetika, catatan kejahatan, data anak, dan data keuangan pribadi. Data umum meliputi nama lengkap, jenis kelamin, kewarganegaraan, agama, status perkawinan, dan data yang bila digabungkan dapat mengidentifikasi seseorang.",
+        "Data tentang orang lain yang Anda simpan juga data pribadi. Screenshot percakapan, daftar kontak, foto bersama, dan catatan rapat dapat memuat nama, nomor, atau wajah. Metadata waktu dan lokasi ikut merekam konteks, sehingga tangkapan layar perlu disensor.",
+        "Pahami data pribadi lewat siklus hidupnya: dikumpulkan, disimpan, dipakai, dibagikan, lalu dihapus. Setiap tahap punya risiko dan kewajiban. Anda tidak otomatis berhak menyimpan data hanya karena data itu mudah diperoleh."
+      ],
+      "callouts": [
+        {
+          "tone": "good",
+          "title": "Uji sederhana",
+          "body": "Sebelum membagikan informasi, tanyakan: jika data ini bocor, siapa yang bisa dirugikan dan apa yang bisa dilakukan orang itu?"
+        }
+      ],
+      "checkpoint": {
+        "prompt": "Sebutkan dua contoh data pribadi spesifik dan dua contoh data pribadi umum.",
+        "success": "Anda membedakan data kesehatan atau biometrik dari nama atau kewarganegaraan."
+      }
+    },
+    {
+      "id": "minimalisasi-data",
+      "title": "Minimalisasi data dan pembatasan tujuan",
+      "body": [
+        "Minimalisasi data berarti hanya mengumpulkan data yang diperlukan untuk tujuan yang ditetapkan. Formulir sering meminta tanggal lahir, penghasilan, atau nomor telepon padahal layanan hanya membutuhkan nama dan surel. Setiap kolom tambahan menambah risiko kebocoran dan beban bagi pengguna.",
+        "Pembatasan tujuan melengkapi minimalisasi. Data untuk mengirim nota tidak boleh dipakai diam-diam untuk iklan atau dijual kepada mitra. Jika muncul kebutuhan baru, pengendali data perlu dasar pemrosesan baru, bukan alasan bahwa data sudah tersedia.",
+        "Penyimpanan perlu batas waktu. Tetapkan berapa lama data disimpan, siapa yang dapat mengakses, dan kapan data dihapus. Backup membuat penghapusan tidak instan, sehingga jadwal retensi harus mencakup salinan cadangan. Anonimisasi mengurangi risiko, tetapi data agregat masih dapat diidentifikasi ulang.",
+        "Bagi pengguna, minimalisasi berarti berhenti mengisi kolom yang tidak relevan dan memakai surel terpisah untuk layanan berbeda. Bagi calon developer, minimalisasi berarti merancang formulir dan skema basis data dengan sengaja. Data yang tidak pernah dikumpulkan tidak bisa bocor."
+      ],
+      "callouts": [
+        {
+          "tone": "bad",
+          "title": "Kesalahan umum",
+          "body": "Mengumpulkan data sebanyak mungkin agar tidak perlu meminta ulang di masa depan. Pola ini memperbesar risiko dan melanggar prinsip minimalisasi."
+        }
+      ],
+      "checkpoint": {
+        "prompt": "Untuk formulir pendaftaran kelas daring, data apa yang benar-benar diperlukan dan data apa yang sebaiknya tidak diminta?",
+        "success": "Anda hanya mempertahankan data yang mendukung tujuan pendaftaran dan menyebut alasan untuk kolom yang dihapus."
+      }
+    },
+    {
+      "id": "persetujuan",
+      "title": "Persetujuan yang bermakna",
+      "body": [
+        "Persetujuan yang sah bukan sekadar klik pada banner. Persetujuan perlu diberikan secara sadar, untuk tujuan spesifik, dan dapat ditarik kembali. Pengguna harus tahu data apa yang diproses, untuk apa, siapa penerimanya, dan berapa lama data disimpan.",
+        "Banyak situs memakai pola desain yang menyulitkan penolakan. Tombol terima semua dibuat mencolok, sementara pilihan tolak disembunyikan di menu kecil. Ada juga banner yang terus muncul sampai pengguna menyerah. Pola ini disebut dark pattern: persetujuan tampak sah secara teknis, tetapi tidak lahir dari pilihan yang bebas.",
+        "Persetujuan bukan satu-satunya dasar pemrosesan. Ada pelaksanaan kontrak, kewajiban hukum, kepentingan vital, dan tugas kepentingan publik. Menolak cookie iklan tidak selalu berarti layanan inti berhenti. Pengendali data juga harus mampu membuktikan bahwa persetujuan memang diberikan.",
+        "Data anak dan data pribadi spesifik mendapat perlindungan lebih ketat, termasuk persetujuan orang tua atau wali dalam kondisi yang diatur. Persetujuan untuk satu tujuan tidak berlaku otomatis untuk tujuan lain. Jika Anda membangun aplikasi, sediakan pusat preferensi untuk melihat, mengubah, dan menarik persetujuan."
+      ],
+      "callouts": [
+        {
+          "tone": "good",
+          "title": "Kebiasaan yang membantu",
+          "body": "Cari tombol kelola preferensi atau tolak opsional. Pilih hanya kategori yang benar-benar Anda butuhkan, lalu periksa kembali setelah beberapa bulan."
+        }
+      ],
+      "checkpoint": {
+        "prompt": "Sebutkan tiga ciri persetujuan yang tidak bermakna.",
+        "success": "Anda menyebut kotak terisi otomatis, penolakan yang tersembunyi, atau persetujuan menyeluruh untuk tujuan yang tidak dijelaskan."
+      }
+    },
+    {
+      "id": "uu-pdp",
+      "title": "UU PDP dalam praktik sehari-hari",
+      "body": [
+        "Indonesia mengatur pelindungan data pribadi melalui UU Nomor 27 Tahun 2022 tentang Pelindungan Data Pribadi. Undang-undang ini disahkan pada 17 Oktober 2022 dan mengatur jenis data, hak subjek data, pemrosesan, kewajiban pengendali dan prosesor, transfer, sanksi, serta kelembagaan. Masa peralihan dua tahun telah berakhir.",
+        "Subjek data berhak memperoleh informasi, mengakses dan menyalin data, meminta pembetulan, meminta penghapusan, menarik persetujuan, mengajukan keberatan atas keputusan otomatis yang berdampak signifikan, dan memperoleh ganti rugi. Hak ini tidak berlaku tanpa batas karena ada pengecualian yang diatur.",
+        "Pengendali wajib memiliki dasar pemrosesan sah, menjaga keamanan data, dan memberi tahu subjek data serta lembaga pengawas jika terjadi kegagalan pelindungan. Dalam ketentuan yang diatur, pemberitahuan dilakukan paling lambat tiga kali dua puluh empat jam. Pelanggaran dapat dikenai sanksi administratif dan ketentuan pidana.",
+        "Bagi pengguna, pemahaman ini membantu membaca kebijakan privasi secara kritis dan memakai hak ketika data disalahgunakan. Bagi developer, pemahaman ini harus muncul di tahap desain. Materi ini literasi, bukan nasihat hukum. Periksa teks resmi di JDIH BPK dan saluran Komdigi, lalu konsultasikan kasus nyata dengan ahli."
+      ],
+      "callouts": [
+        {
+          "tone": "good",
+          "title": "Sumber resmi",
+          "body": "Baca teks UU 27/2022 melalui JDIH BPK dan pantau penjelasan resmi Komdigi. Hindari menyimpulkan kewajiban hukum hanya dari utas media sosial."
+        }
+      ],
+      "checkpoint": {
+        "prompt": "Sebutkan tiga hak subjek data yang diatur UU PDP dan satu kewajiban pengendali data.",
+        "success": "Anda menyebut akses, pembetulan, penghapusan, atau penarikan persetujuan, serta kewajiban menjaga keamanan atau memberi tahu kebocoran."
+      }
+    },
+    {
+      "id": "pengaturan-pelacak",
+      "title": "Pengaturan privasi dan pelacak",
+      "body": [
+        "Cookie adalah file kecil yang disimpan situs di peramban. Cookie pihak pertama membantu situs mengingat sesi login dan preferensi. Cookie pihak ketiga berasal dari domain lain, misalnya jaringan iklan atau analitik, dan dapat melacak Anda saat berpindah situs.",
+        "Pelacakan tidak hanya memakai cookie. Piksel pelacak mencatat kapan surel dibuka, skrip analitik merekam klik, dan parameter tautan membawa identitas kampanye. Sidik jari peramban menggabungkan jenis huruf, resolusi layar, dan versi peramban untuk mengenali perangkat tanpa cookie. Menghapus cookie saja belum tentu menghilangkan semua pelacakan.",
+        "Mulai dari pengaturan peramban: blokir cookie pihak ketiga, aktifkan perlindungan pelacakan, dan tinjau izin lokasi, kamera, mikrofon, serta notifikasi. Mode privat mengurangi jejak lokal, tetapi tidak membuat Anda anonim bagi situs yang dikunjungi.",
+        "Periksa pengaturan akun: siapa yang dapat melihat unggahan, apakah iklan dipersonalisasi, dan aplikasi pihak ketiga apa yang masih terhubung. Cabut akses yang tidak dipakai. Untuk layanan pesan, pertimbangkan enkripsi cadangan dan pesan yang hilang otomatis."
+      ],
+      "callouts": [
+        {
+          "tone": "good",
+          "title": "Mulai kecil",
+          "body": "Tinjau satu layanan setiap minggu: cabut akses yang tidak dipakai, matikan iklanpersonal, dan periksa perangkat yang masih login."
+        }
+      ],
+      "checkpoint": {
+        "prompt": "Apa perbedaan cookie pihak pertama dan pihak ketiga, serta mengapa pihak ketiga lebih sering menjadi perhatian privasi?",
+        "success": "Anda menjelaskan bahwa cookie pihak ketiga berasal dari domain lain dan dapat melacak aktivitas antarsitus."
+      }
+    },
+    {
+      "id": "respons-kebocoran",
+      "title": "Bila data pribadi diduga bocor",
+      "body": [
+        "Kebocoran tidak selalu diawali pengumuman resmi. Tanda yang perlu diperhatikan antara lain surel pemberitahuan, permintaan reset kata sandi yang tidak Anda lakukan, peringatan login dari lokasi asing, atau transaksi mencurigakan. Jangan menunggu konfirmasi sempurna sebelum mengamankan akun.",
+        "Langkah pertama adalah menahan dampak. Ganti kata sandi akun terkait dari perangkat tepercaya dan jangan memakai kata sandi yang sama di layanan lain. Akhiri semua sesi aktif, periksa alamat pemulihan, lalu aktifkan autentikasi dua faktor. Jika data keuangan terdampak, hubungi bank melalui saluran resmi dan pertimbangkan pemblokiran sementara.",
+        "Setelah itu, pantau dan dokumentasikan. Periksa riwayat akses akun, catat waktu, layanan terdampak, dan tindakan yang sudah dilakukan. Waspadai surel atau telepon yang memanfaatkan kebocoran untuk meminta kode verifikasi. Jangan membayar pihak yang mengancam menyebarkan data. Beri tahu orang lain bila datanya ikut terekspos.",
+        "Laporkan ke penyedia layanan dan, bila relevan, ke saluran pengaduan resmi Komdigi. Untuk penipuan keuangan, hubungi bank dan otoritas berwenang. Simpan tangkapan layar, surel, dan nomor tiket. Pencegahan melalui kata sandi unik dan 2FA jauh lebih murah daripada menangani dampaknya."
+      ],
+      "callouts": [
+        {
+          "tone": "bad",
+          "title": "Jangan lakukan ini",
+          "body": "Mengklik tautan verifikasi di surel pemberitahuan bocor. Buka layanan secara langsung dari alamat resmi, bukan dari tautan yang dikirim orang lain."
+        }
+      ],
+      "checkpoint": {
+        "prompt": "Anda menerima surel bahwa layanan cloud Anda bocor. Sebutkan tiga tindakan pertama yang aman.",
+        "success": "Anda menyebut mengganti kata sandi dari perangkat tepercaya, mengakhiri sesi, dan mengaktifkan 2FA melalui situs resmi."
+      }
+    }
+  ],
+  "practice": [
+    {
+      "id": "latihan-1",
+      "title": "Audit izin aplikasi ponsel",
+      "task": "Tinjau izin lima aplikasi di ponsel Anda dan tentukan izin mana yang tidak sesuai dengan fungsi utamanya.",
+      "steps": [
+        "Buka pengaturan aplikasi dan catat lima aplikasi yang paling sering dipakai.",
+        "Untuk setiap aplikasi, lihat izin lokasi, kontak, mikrofon, kamera, dan file.",
+        "Cabut satu izin yang tidak diperlukan dan ubah lokasi menjadi hanya saat dipakai bila memungkinkan."
+      ],
+      "expected": "Daftar lima aplikasi dengan izin yang dipertahankan dan izin yang dicabut.",
+      "stretch": "Ulangi audit setelah satu minggu dan catat apakah ada fitur yang benar-benar terganggu.",
+      "level": "guided",
+      "hints": [
+        "Buka pengaturan izin pada ponsel, lalu pilih tiga aplikasi yang paling sering dipakai.",
+        "Catat izin yang aktif dan alasan fungsinya.",
+        "Cabut satu izin yang tidak diperlukan dan lihat apakah aplikasi tetap berfungsi."
+      ],
+      "starterCode": "Aplikasi | Izin aktif | Alasan fungsi | Keputusan\n--- | --- | --- | ---",
+      "verification": {
+        "command": "Audit izin tiga aplikasi ponsel.",
+        "expected": "Tabel menunjukkan izin yang benar-benar diperlukan dan minimal satu izin yang dicabut atau dipertimbangkan untuk dicabut.",
+        "evidence": "Simpan tabel audit dan catatan hasil setelah izin dicabut."
+      }
+    },
+    {
+      "id": "latihan-2",
+      "title": "Tinjau cookie dan pelacak",
+      "task": "Buka satu situs berita atau toko, lalu periksa kategori cookie yang diminta dan pilihan yang tersedia.",
+      "steps": [
+        "Cari menu kelola preferensi atau pengaturan cookie.",
+        "Catat kategori yang ada, misalnya esensial, analitik, dan iklan.",
+        "Tolak kategori opsional, lalu periksa apakah situs tetap dapat dipakai."
+      ],
+      "expected": "Catatan kategori cookie dan keputusan yang Anda ambil beserta alasannya.",
+      "stretch": "Bandingkan dua situs dan tunjukkan mana yang menawarkan pilihan penolakan lebih jelas.",
+      "level": "independent",
+      "hints": [
+        "Kunjungi satu situs berita atau toko, lalu buka pengaturan cookie.",
+        "Bedakan cookie yang diperlukan dari cookie iklan dan analitik.",
+        "Bandingkan tampilan situs setelah cookie non-esensial ditolak."
+      ],
+      "starterCode": "Situs:\nCookie esensial:\nCookie iklan:\nCookie analitik:\nKeputusan:",
+      "verification": {
+        "command": "Tinjau banner cookie pada satu situs dan pilih hanya kategori yang diperlukan.",
+        "expected": "Anda dapat menjelaskan perbedaan kategori cookie dan memilih opsi yang tidak mengorbankan fungsi utama.",
+        "evidence": "Catat kategori, pilihan Anda, dan apakah situs tetap berfungsi."
+      }
+    },
+    {
+      "id": "latihan-3",
+      "title": "Inventaris data dan retensi",
+      "task": "Buat inventaris data pribadi yang Anda serahkan ke lima layanan, beserta alasan penyimpanan dan rencana penghapusan.",
+      "steps": [
+        "Tulis nama layanan, data yang diberikan, dan tujuan layanan.",
+        "Tandai layanan yang tidak lagi dipakai.",
+        "Tulis langkah penghapusan akun atau data untuk satu layanan yang paling tidak penting."
+      ],
+      "expected": "Tabel lima baris dengan kolom layanan, data, tujuan, status, dan tindakan.",
+      "stretch": "Kirim satu permintaan penghapusan data melalui saluran resmi dan simpan buktinya.",
+      "level": "transfer",
+      "hints": [
+        "Pilih satu layanan yang menyimpan data penting Anda.",
+        "Tentukan data yang benar-benar perlu disimpan dan yang dapat dihapus.",
+        "Tulis tanggal tinjauan berikutnya dan cara menghapus akun bila diperlukan."
+      ],
+      "starterCode": "Layanan:\nData disimpan:\nData yang diperlukan:\nData yang dapat dihapus:\nTanggal tinjauan:",
+      "verification": {
+        "command": "Susun inventaris data dan retensi untuk satu layanan.",
+        "expected": "Inventaris membedakan data yang diperlukan dari yang berlebihan dan menetapkan tindakan serta tanggal tinjauan.",
+        "evidence": "Simpan inventaris dan catatan tindakan yang sudah dilakukan."
+      }
+    }
+  ],
+  "verification": {
+    "mode": "catatan",
+    "command": "Kerjakan Latihan 1 dan Latihan 3, lalu hubungkan hasilnya dengan satu risiko konkret.",
+    "expected": "Anda dapat menjelaskan data yang tidak perlu diberikan, izin yang dapat dicabut, dan tindakan yang akan diambil bila data bocor.",
+    "evidence": "Simpan tabel audit izin, inventaris data, dan catatan risiko dalam satu berkas."
+  },
+  "troubleshooting": [
+    {
+      "symptom": "Aplikasi menolak berfungsi setelah izin dicabut.",
+      "cause": "Izin tersebut ternyata diperlukan untuk fungsi utama, atau aplikasi meminta izin berlebihan sebagai syarat.",
+      "fix": "Aktifkan kembali hanya izin yang benar-benar diperlukan. Jika aplikasi tetap menuntut izin yang tidak relevan, pertimbangkan mencari alternatif."
+    },
+    {
+      "symptom": "Email mulai menerima banyak pesan penawaran setelah mendaftar satu layanan.",
+      "cause": "Alamat email dibagikan ke mitra pemasaran atau dicantumkan dalam kebijakan yang tidak dibaca.",
+      "fix": "Gunakan alamat khusus untuk pendaftaran, berhenti berlangganan, dan periksa pengaturan komunikasi pemasaran."
+    },
+    {
+      "symptom": "Data pribadi muncul di hasil pencarian.",
+      "cause": "Data pernah dipublikasikan atau bocor dari layanan lain, lalu diindeks mesin pencari.",
+      "fix": "Ajukan penghapusan melalui alat penghapusan mesin pencari, hubungi pengelola situs, dan pantau apakah data muncul kembali."
+    },
+    {
+      "symptom": "Menerima pesan yang menyebut data pribadi Anda secara rinci.",
+      "cause": "Kemungkinan data bocor dari layanan lain dan dipakai untuk membangun kepercayaan palsu.",
+      "fix": "Jangan membalas, verifikasi melalui kanal resmi, dan periksa apakah akun terkait perlu mengganti kata sandi serta mengaktifkan 2FA."
+    }
+  ],
+  "quiz": {
+    "questions": [
+      {
+        "id": "q1",
+        "type": "recall",
+        "question": "Prinsip yang menuntut pengumpulan data sebatas kebutuhan tujuan yang jelas disebut apa?",
+        "options": [
+          "Pembatasan tujuan",
+          "Minimalisasi data",
+          "Portabilitas data"
+        ],
+        "answer": 1,
+        "explanation": "Minimalisasi data membatasi jumlah dan jenis data yang dikumpulkan agar sesuai kebutuhan."
+      },
+      {
+        "id": "q2",
+        "type": "scenario",
+        "question": "Anda menerima pemberitahuan resmi bahwa layanan surel Anda mengalami kebocoran. Tindakan pertama yang paling tepat adalah apa?",
+        "options": [
+          "Mengirim data akun ke teman agar bisa diperiksa",
+          "Menunggu sampai ada transaksi mencurigakan",
+          "Mengganti kata sandi dari perangkat tepercaya dan mengakhiri sesi aktif"
+        ],
+        "answer": 2,
+        "explanation": "Mengganti kata sandi dan mengakhiri sesi membatasi akses penyusup sebelum ia memakai data yang bocor."
+      },
+      {
+        "id": "q3",
+        "type": "recall",
+        "question": "Manakah yang termasuk hak subjek data dalam UU PDP?",
+        "options": [
+          "Meminta penghapusan data pribadi dalam kondisi yang diatur",
+          "Mengubah data pribadi pengguna lain tanpa izin",
+          "Menuntut layanan gratis dari pengendali data"
+        ],
+        "answer": 0,
+        "explanation": "UU PDP memberikan hak untuk meminta penghapusan data, dengan pengecualian yang diatur undang-undang."
+      }
+    ]
+  },
+  "resources": [
+    {
+      "sourceId": "uu-pdp",
+      "note": "Teks resmi undang-undang beserta abstrak dan metadata."
+    },
+    {
+      "sourceId": "nist-privacy-framework",
+      "note": "Kerangka resmi untuk mengelola risiko privasi dan data pribadi."
+    }
+  ],
+  "summary": [
+    "Data pribadi umum dan spesifik memiliki risiko berbeda; keduanya tetap perlu dibatasi sesuai tujuan.",
+    "Minimalisasi data dan pembatasan tujuan mengurangi kerugian bila terjadi kebocoran.",
+    "Izin, cookie, dan pelacak harus dinilai dari manfaat nyata, bukan dari kemudahan menekan tombol Izinkan.",
+    "Saat data diduga bocor, utamakan verifikasi resmi, penggantian kredensial, dan pencatatan tindakan."
+  ],
+  "next": "Berikutnya: cadangan, pembaruan, mengatasi masalah, dan mencari bantuan. Anda akan menyiapkan rencana pemulihan yang sudah diuji, bukan sekadar disimpan."
+}

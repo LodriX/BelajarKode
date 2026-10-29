@@ -1,0 +1,131 @@
+<div id="pendalaman-5"><div class="panel"><b>PENDALAMAN 5</b> · 05 flutter mobile</div><h1>Bagian IV — Dart dan Flutter untuk Aplikasi Mobile</h1>
+<h2>24. Dart: tipe, null safety, collection, class</h2>
+<p>Dart adalah bahasa yang digunakan Flutter. Dart memakai <em>sound null safety</em>: variabel secara default tidak menerima <code>null</code>; tambahkan <code>?</code> bila null memang keadaan yang sah. Gunakan <code>final</code> untuk variabel yang tidak diganti, <code>const</code> untuk nilai konstan waktu kompilasi, <code>late</code> hanya bila alasan inisialisasi tertunda jelas. Tipe umum: <code>int</code>, <code>double</code>, <code>num</code>, <code>String</code>, <code>bool</code>, <code>List&lt;T&gt;</code>, <code>Set&lt;T&gt;</code>, <code>Map&lt;K,V&gt;</code>. Pelajari <code>if</code>, <code>for</code>, functions, class, <code>enum</code>, nullable types, dan generic.</p>
+<pre><code class="language-dart">class Item {
+  final String id;
+  final String nama;
+  final int jumlah;
+  final bool selesai;
+
+  const Item({
+    required this.id,
+    required this.nama,
+    required this.jumlah,
+    this.selesai = false,
+  });
+
+  Item copyWith({String? nama, int? jumlah, bool? selesai}) =&gt; Item(
+    id: id,
+    nama: nama ?? this.nama,
+    jumlah: jumlah ?? this.jumlah,
+    selesai: selesai ?? this.selesai,
+  );
+}
+
+void main() {
+  final item = Item(id: 'a1', nama: 'Air', jumlah: 6);
+  print(item.copyWith(selesai: true).selesai); // true
+}
+</code></pre>
+<p><code>copyWith</code> adalah pola menghasilkan object baru; pada contoh sederhana ia tidak memungkinkan mengubah field nullable menjadi <code>null</code> melalui parameter biasa. Untuk model dengan field nullable yang kompleks gunakan mekanisme sentinel/generator bila diperlukan. <strong>Pelajaran penting:</strong> tipe compile-time memperkecil kesalahan, tetapi JSON dari internet tetap harus divalidasi ketika diubah menjadi object.</p>
+<p><strong>Praktik:</strong> tulis versi Dart dari fungsi kasir dan kebutuhan item. Buat <code>List&lt;Item&gt;</code>, filter selesai, jumlahkan stok, urut berdasarkan nama. Uji item kosong dan nilai negatif. <strong>Tes keluar:</strong> mampu menjelaskan kapan memakai <code>String?</code> dibanding <code>String</code>.</p>
+<h2>25. Future, async/await, error, dan Stream</h2>
+<p><code>Future&lt;T&gt;</code> merepresentasikan pekerjaan asinkron tunggal, <code>Stream&lt;T&gt;</code> urutan peristiwa dari waktu ke waktu. Panggilan HTTP mengembalikan Future. Tangani <code>try/catch</code>, berikan timeout, dan bedakan error jaringan, parsing, autentikasi, dan server. Jangan menelan exception dengan <code>catch (_) {}</code> tanpa logging atau aksi yang jelas. Hindari memperbarui UI setelah widget dispose; gunakan mekanisme lifecycle sesuai arsitektur.</p>
+<pre><code class="language-dart">Future&lt;String&gt; ambilNama() async {
+  await Future&lt;void&gt;.delayed(const Duration(milliseconds: 100));
+  return 'Checklist siap';
+}
+
+Future&lt;void&gt; main() async {
+  try {
+    final hasil = await ambilNama();
+    print(hasil);
+  } catch (error) {
+    print('Gagal memuat: $error');
+  }
+}
+</code></pre>
+<p><strong>Praktik:</strong> buat simulasi API yang kadang sukses, timeout, dan error; tampilkan state loading/ready/failed dan kemampuan retry terbatas. <strong>Tes keluar:</strong> tahu mengapa <code>Future</code> tidak berarti tugas dijalankan thread baru secara otomatis.</p>
+<h2>26. Dasar Flutter: widget tree, state, layout</h2>
+<p>Flutter membangun antarmuka dari widget. <code>MaterialApp</code> mengatur aplikasi, <code>Scaffold</code> struktur layar, <code>Column</code>/<code>Row</code> layout, <code>Expanded</code> membagi ruang, <code>ListView</code> untuk konten gulir, <code>TextField</code> menerima input, <code>ElevatedButton</code> untuk tindakan. <code>StatelessWidget</code> tampilan berdasarkan konfigurasi; <code>StatefulWidget</code> mempunyai lifecycle dan state lokal. Untuk UI kompleks, pindahkan aturan bisnis ke ViewModel/Controller, bukan memenuhi metode <code>build()</code> dengan HTTP dan SQL.</p>
+<pre><code class="language-dart">import 'package:flutter/material.dart';
+
+void main() =&gt; runApp(const ChecklistApp());
+
+class ChecklistApp extends StatelessWidget {
+  const ChecklistApp({super.key});
+
+  @override
+  Widget build(BuildContext context) =&gt; MaterialApp(
+    debugShowCheckedModeBanner: false,
+    home: Scaffold(
+      appBar: AppBar(title: const Text('Belajar Flutter')),
+      body: const Center(child: Text('Halo, Flutter!')),
+    ),
+  );
+}
+</code></pre>
+<p><strong>Praktik:</strong> halaman daftar item dengan AppBar, cards, floating button untuk tambah, halaman detail, dialog konfirmasi hapus. Gunakan theme untuk warna/typography, bukan mengulang style di semua widget. <strong>Tes keluar:</strong> UI tidak overflow pada layar sempit dan ketika ukuran teks sistem diperbesar.</p>
+<h2>27. Navigation, form, validasi, dan state management</h2>
+<p>Navigasi adalah perpindahan antar layar beserta parameter dan pengelolaan riwayat. Untuk aplikasi bertumbuh, pertimbangkan <code>go_router</code> sebagaimana rekomendasi dokumentasi Flutter; untuk latihan awal Navigator bawaan cukup. Form memakai <code>Form</code>, <code>GlobalKey&lt;FormState&gt;</code>, <code>TextFormField</code>, validator, dan pengendalian state. Jangan menaruh input password/token di log. Cegah double submit dengan status loading dan penonaktifan tombol.</p>
+<p><strong>State:</strong> <em>ephemeral/local state</em> seperti tab terpilih dapat menggunakan <code>setState</code>; <em>application state</em> seperti sesi user dan daftar tersinkron sebaiknya disimpan di ViewModel/repository sesuai skala. Riverpod, Bloc, Provider adalah opsi yang berbeda, bukan tingkatan wajib. Buku ini menggunakan konsep MVVM dan ChangeNotifier pada tahap dasar; library eksternal dipilih setelah kebutuhan nyata jelas. <strong>Dependency injection</strong> dapat sederhana: kirim repository lewat constructor.</p>
+<p><strong>Praktik:</strong> form tambah item: nama minimal 2 karakter, jumlah nonnegatif, kategori wajib, tombol disabled saat menyimpan, tampilkan error dekat field. Tulis langkah pengguna dari isi form sampai sukses dan gagal. <strong>Tes keluar:</strong> penekanan tombol dua kali tidak membuat item duplikat.</p>
+<h2>28. Arsitektur Flutter: View → ViewModel → Repository → Service</h2>
+<p>Dokumentasi Flutter menganjurkan pemisahan <strong>UI layer</strong> (View, ViewModel) dan <strong>Data layer</strong> (Repository, Service) agar logic dapat diuji dan dikembangkan. <em>View</em> menampilkan data dan memanggil command; <em>ViewModel</em> menyiapkan state UI; <em>Repository</em> menjadi sumber kebenaran data dan mengatur cache/fallback; <em>Service</em> melakukan HTTP, file, atau akses sistem. Tambahkan domain/use-case layer hanya bila aturan bisnis menjadi kompleks; jangan membuat banyak abstraction tanpa manfaat.</p>
+<pre><code class="language-text">lib/
+  main.dart
+  app/
+    app.dart
+  features/
+    items/
+      data/
+        item_api_service.dart
+        item_repository.dart
+      domain/
+        item.dart
+      presentation/
+        items_screen.dart
+        items_view_model.dart
+  shared/
+    network/
+    ui/
+</code></pre>
+<p><strong>Alur satu arah:</strong> pengguna tekan Simpan → View memanggil ViewModel → ViewModel memanggil Repository → Repository memanggil Service HTTP → server validasi &amp; simpan → Repository memperbarui source of truth → ViewModel memberi state baru → UI merender. <strong>Perhatikan</strong> otorisasi selalu diverifikasi di server, bukan cukup dengan menyembunyikan fitur di Flutter.</p>
+<p><strong>Praktik:</strong> buat <code>FakeItemRepository</code> untuk test dan <code>ApiItemRepository</code> untuk jaringan. Tukar dependency tanpa mengubah layar. <strong>Tes keluar:</strong> dapat menulis unit test ViewModel tanpa menjalankan server.</p>
+<h2>29. Integrasi REST API dari Flutter</h2>
+<p>HTTP request memakai base URL dari environment build/config, bukan password yang ditanam di aplikasi. <code>localhost</code> pada emulator Android menunjuk perangkat emulator, bukan selalu laptop host; untuk Android Emulator biasanya host machine dapat diakses melalui <code>10.0.2.2</code>, sementara perangkat fisik butuh alamat server yang dapat dijangkau. Verifikasi kebutuhan jaringan pada platform yang dipakai. <strong>Gunakan HTTPS untuk API nyata</strong>, dan jangan menonaktifkan pemeriksaan sertifikat hanya agar request berhasil.</p>
+<pre><code class="language-dart">// Contoh pemanggilan memakai package:http (pasang package sebelum menjalankan).
+import 'dart:convert';
+import 'package:http/http.dart' as http;
+
+Future&lt;List&lt;dynamic&gt;&gt; fetchItems(Uri url, String token) async {
+  final response = await http.get(url, headers: {
+    'Accept': 'application/json',
+    'Authorization': 'Bearer $token',
+  }).timeout(const Duration(seconds: 10));
+  if (response.statusCode == 401) {
+    throw StateError('Sesi berakhir, silakan login lagi');
+  }
+  if (response.statusCode != 200) {
+    throw StateError('Server gagal: ${response.statusCode}');
+  }
+  final decoded = jsonDecode(response.body);
+  if (decoded is! Map || decoded['data'] is! List) {
+    throw const FormatException('Format respons API tidak sesuai');
+  }
+  return decoded['data'] as List&lt;dynamic&gt;;
+}
+</code></pre>
+<p><strong>Contoh hanya service sederhana</strong>, belum production-ready: seharusnya service dipisahkan dari domain model, token diambil dari secure storage melalui dependency, schema data item divalidasi per field, HTTP client ditutup/dikelola, error dipetakan menjadi jenis yang jelas, dan pengujian menggunakan fake client. Untuk data list besar, tangani pagination.</p>
+<p><strong>Praktik:</strong> panggil API daftar dan tambah item, beri indikator sinkronisasi, implementasikan refresh. Saat offline, tampilkan daftar terakhir yang valid (jika disimpan) dan tanda waktu sinkronisasi. <strong>Tes keluar:</strong> ketika API memberi 401, UI tidak diam-diam menampilkan data milik akun sebelumnya.</p>
+<h2>30. Offline-first, konflik sinkronisasi, dan keamanan perangkat</h2>
+<p>Offline-first <strong>bukan</strong> hanya men-cache halaman: definisikan data apa yang dapat dibaca offline, operasi yang boleh diantre, model identitas perubahan, waktu perangkat vs server, resolusi konflik, dan mekanisme retry. Gunakan penyimpanan lokal yang sesuai (misalnya SQLite atau solusi penyimpanan terstruktur lain) untuk data item. Token gunakan secure storage platform bila sesuai. Informasikan data yang belum tersinkron, jangan mengklaim sinkron berhasil hanya karena disimpan lokal.</p>
+<p><strong>Strategi awal aman:</strong> operasi baca menggunakan cache terakhir; operasi tulis online-only dulu. Setelah sistem stabil, tambahkan <em>outbox queue</em> lokal untuk create/update yang idempotent, identitas request unik, versi record (<code>updated_at</code>/version), dan kebijakan konflik eksplisit. Untuk catatan pribadi pengguna, strategi last-write-wins mungkin dapat diterima jika diberi peringatan; untuk stok/presensi/transaksi yang kritis, butuh kontrol konkurensi kuat. Jangan menganggap timestamp device selalu benar.</p>
+<p><strong>Praktik:</strong> buat daftar status koneksi, waktu sinkron terakhir, dan skenario konflik (edit sama pada dua perangkat). Tulis kebijakan konflik dalam satu paragraf yang bisa dimengerti pengguna. <strong>Tes keluar:</strong> tidak terjadi silent data loss saat dua perubahan saling bertentangan.</p>
+<h2>31. Testing Flutter, release, dan operasional</h2>
+<p><strong>Unit test:</strong> aturan bisnis dan ViewModel; <strong>widget test:</strong> tampilan dan interaksi widget dalam lingkungan terisolasi; <strong>integration test:</strong> alur aplikasi yang berjalan pada perangkat/emulator. Gunakan <code>flutter analyze</code>, <code>dart format</code>, <code>flutter test</code>, dan periksa accessibility/semantics. Bangun Android/iOS melalui panduan resmi yang sesuai SDK dan target platform; signing key adalah rahasia yang tidak boleh di-commit. Periksa izin aplikasi minimal, ukuran APK, network security config, privacy policy, dan crash reporting sesuai kebutuhan.</p>
+<p><strong>Praktik:</strong> test jumlah 0 ditolak, loading berubah menjadi hasil, empty state benar, tapping Simpan memanggil repository satu kali. Di perangkat, uji mode pesawat, rotasi layar, font besar, penolakan izin, dan jaringan lambat. <strong>Tes keluar:</strong> ada checklist rilis dan prosedur menaikkan versi tanpa kehilangan data lokal.</p>
+<h2>Proyek 3 — Companion Mobile</h2>
+<p>Aplikasi Flutter login dan menampilkan checklist per akun; pengguna dapat melihat kategori/subkategori, menambah/mengubah/menandai item, mengubah jumlah anggota, serta melihat progres. Web tetap Laravel/Blade; Flutter memakai API Laravel yang sama. Jangan menduplikasi logika pemberian izin di Flutter sebagai satu-satunya kontrol keamanan.</p>
+<p><strong>Kriteria penerimaan:</strong> autentikasi/token berfungsi dan dapat dicabut, loading/empty/error terlihat, tidak ada secret dalam repo, pergantian akun membersihkan cache sensitif, offline behavior didokumentasikan, dan test dasar UI+service lulus.</p>
+</div>

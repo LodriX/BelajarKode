@@ -1,0 +1,120 @@
+<div id="pendalaman-4"><div class="panel"><b>PENDALAMAN 4</b> · 04 database backend</div><h1>Bagian III — Database, PHP, dan Laravel</h1>
+<h2>16. Memodelkan data dengan ERD dan normalisasi</h2>
+<p>Relational database menyimpan data dalam tabel dengan relasi. <strong>Primary key (PK)</strong> mengidentifikasi baris secara unik; <strong>foreign key (FK)</strong> menjaga hubungan; <strong>unique</strong> membatasi duplikat; <strong>not null</strong> melarang kosong; <strong>check</strong> membatasi nilai. Model data mengikuti kebutuhan bisnis, bukan struktur halaman UI. Satu tabel raksasa dengan kolom <code>kategori1</code>, <code>kategori2</code>, <code>item1</code>, <code>item2</code> adalah desain sulit berkembang.</p>
+<p>Contoh model aplikasi checklist multi-pengguna:</p>
+<ul>
+<li><code>users(id, name, email, password_hash, created_at)</code>; email unik, password hanya berupa hash kuat dari mekanisme bawaan framework.</li>
+<li><code>categories(id, user_id, parent_id, name)</code>; <code>parent_id</code> nullable untuk mendukung subkategori dan FK ke categories sendiri.</li>
+<li><code>items(id, user_id, category_id, name, unit, default_qty, current_qty, checked, expires_on)</code>.</li>
+<li><code>checklist_events(id, item_id, actor_user_id, event_type, occurred_at)</code> untuk audit perubahan relevan.</li>
+</ul>
+<p>Relasi <code>users 1:N items</code>, <code>categories 1:N items</code>, <code>categories 1:N categories</code>. Jika template kebutuhan global digunakan bersama banyak pengguna, pisahkan <code>template_items</code> dari <code>user_items</code> sehingga perubahan default tidak menimpa kustomisasi pengguna. <strong>Normalisasi</strong> menghindari duplikasi dan <em>update anomaly</em>: simpan nama kategori di tabel kategori dan referensikan <code>category_id</code>, jangan salin teks kategori di seluruh item tanpa alasan. Denormalisasi boleh dilakukan bila ada kebutuhan performa terukur.</p>
+<p><strong>Praktik:</strong> gambar ERD dengan crow's foot untuk <code>users</code>, <code>categories</code>, <code>items</code>, <code>item_logs</code>; tentukan bagaimana sistem mencegah item milik user A menunjuk kategori milik user B. <strong>Tes keluar:</strong> dapat menjelaskan constraint mana yang dijamin database dan mana yang wajib divalidasi lapisan aplikasi.</p>
+<h2>17. SQL: membuat tabel dan mengambil data</h2>
+<p><strong>DDL</strong> seperti <code>CREATE TABLE</code>, <strong>DML</strong> seperti <code>INSERT/UPDATE/DELETE</code>, <strong>query</strong> seperti <code>SELECT</code>. SQL memakai logika set; jangan selalu memikirkan pemrosesan baris demi baris. Gunakan <code>WHERE</code> sebelum <code>UPDATE</code> dan <code>DELETE</code>, serta transaction pada perubahan banyak tabel. Contoh berikut menggunakan PostgreSQL.</p>
+<pre><code class="language-sql">CREATE TABLE categories (
+  id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+  name VARCHAR(120) NOT NULL UNIQUE
+);
+CREATE TABLE items (
+  id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+  category_id BIGINT NOT NULL REFERENCES categories(id),
+  name VARCHAR(120) NOT NULL,
+  quantity INTEGER NOT NULL DEFAULT 0 CHECK (quantity &gt;= 0),
+  checked BOOLEAN NOT NULL DEFAULT FALSE
+);
+INSERT INTO categories(name) VALUES ('P3K'), ('Air dan Pangan');
+INSERT INTO items(category_id,name,quantity)
+VALUES (1,'Perban',2), (2,'Air kemasan',6);
+SELECT c.name AS category, i.name, i.quantity
+FROM items i JOIN categories c ON c.id = i.category_id
+WHERE i.quantity &gt; 0 ORDER BY c.name, i.name;
+</code></pre>
+<p><strong>Query lanjut:</strong> <code>GROUP BY</code> untuk agregasi; <code>HAVING</code> menyaring hasil grup; <code>LEFT JOIN</code> menampilkan kategori yang belum punya item; <code>COALESCE</code> menangani null dengan nilai pengganti; <code>ORDER BY ... LIMIT ... OFFSET</code> untuk halaman data sederhana (pada data besar pertimbangkan keyset pagination). Jangan membangun SQL dengan menggabungkan string input pengguna: gunakan parameter binding atau ORM.</p>
+<pre><code class="language-sql">SELECT c.name, COUNT(i.id) AS banyak_item,
+       COALESCE(SUM(i.quantity), 0) AS total_unit
+FROM categories c LEFT JOIN items i ON i.category_id = c.id
+GROUP BY c.id, c.name
+ORDER BY banyak_item DESC;
+</code></pre>
+<p><strong>Praktik:</strong> tulis 25 query: 5 CRUD, 5 WHERE/ORDER, 5 JOIN, 5 agregasi, 5 kasus null/pagination. Buat juga query untuk mencari item kedaluwarsa dan kategori tanpa item. <strong>Tes keluar:</strong> tahu perbedaan filter <code>WHERE</code> sebelum agregasi dan <code>HAVING</code> setelah agregasi.</p>
+<h2>18. Transaksi, konkurensi, indeks, dan backup</h2>
+<p>Transaksi mengelompokkan perubahan atomik: semua berhasil atau semuanya dibatalkan. <strong>ACID</strong>: Atomicity, Consistency, Isolation, Durability. Contoh transfer stok dari gudang A ke B perlu mengurangi A dan menambah B dalam satu transaksi dengan pengecekan saldo. Perhatikan race condition: dua permintaan bersamaan dapat melewati pengecekan bila tanpa locking atau strategi atomik.</p>
+<pre><code class="language-sql">BEGIN;
+UPDATE items SET quantity = quantity - 1
+WHERE id = 1 AND quantity &gt;= 1
+RETURNING quantity;
+-- Di aplikasi: jika tidak ada baris ter-update, ROLLBACK, jangan lanjut.
+-- Operasi terkait lain dilakukan hanya bila pengurangan berhasil.
+COMMIT;
+</code></pre>
+<p><strong>Indeks</strong> mempercepat pola baca tertentu tetapi membutuhkan ruang dan memperlambat sebagian write. Buat berdasarkan query nyata: FK sering perlu indeks tersendiri, kolom filter/sort populer dapat diindeks, cek dengan <code>EXPLAIN (ANALYZE, BUFFERS)</code> pada lingkungan aman dan data representatif. Jangan mempublikasikan hasil <code>EXPLAIN ANALYZE</code> yang membocorkan data sensitif.</p>
+<p><strong>Backup bukan sekadar file dump:</strong> tetapkan RPO (berapa kehilangan data yang bisa ditoleransi) dan RTO (berapa lama layanan bisa dipulihkan), jadwalkan backup, enkripsi dan batasi akses, simpan salinan terpisah, serta <strong>uji restore</strong>. Untuk database besar pertimbangkan physical backup/WAL sesuai kebijakan; latihan awal cukup <code>pg_dump</code> dan <code>pg_restore</code> ke database uji, jangan melakukan restore langsung ke produksi.</p>
+<p><strong>Praktik:</strong> buat transaksi stok dan simulasikan error, pastikan seluruh perubahan batal. Buat indeks untuk query filter, bandingkan rencana eksekusi secara kritis. Dokumentasikan prosedur restore staging. <strong>Tes keluar:</strong> dapat menjelaskan mengapa dua request bersamaan memerlukan desain khusus.</p>
+<h2>19. PHP: dari skrip menjadi kode terstruktur</h2>
+<p>PHP berjalan di server, sedangkan JavaScript halaman berjalan di browser. PHP modern mendukung strict types, type declarations, enum, class, interface, exception, namespace, Composer dan autoloading. Pelajari ini <strong>sebelum</strong> bergantung pada Laravel. Gunakan <code>declare(strict_types=1)</code> pada contoh untuk membangun kebiasaan tipe yang eksplisit.</p>
+<pre><code class="language-php">&lt;?php
+declare(strict_types=1);
+
+function hitungTotal(int $harga, int $jumlah): int
+{
+    if ($harga &lt; 0 || $jumlah &lt; 1) {
+        throw new InvalidArgumentException('Input tidak valid');
+    }
+    return $harga * $jumlah;
+}
+
+echo hitungTotal(25000, 3); // 75000
+</code></pre>
+<p><strong>OOP:</strong> object menggabungkan data dan perilaku; class blueprint, constructor menginisialisasi, interface adalah kontrak, dependency injection memberikan dependensi dari luar agar testable. Jangan membuat inheritance dalam-dalam ketika composition lebih sederhana. Controller bukan tempat semua SQL dan aturan bisnis ditumpuk. Mulailah dari fungsi kecil dan class sewajarnya.</p>
+<p><strong>Praktik:</strong> buat <code>Item</code>, <code>ItemRepositoryInterface</code>, dan <code>InMemoryItemRepository</code>; uji tambah/hapus tanpa database. <strong>Tes keluar:</strong> jelaskan keuntungan interface terhadap penggantian implementasi repository.</p>
+<h2>20. Laravel request lifecycle, MVC, Blade</h2>
+<p>Laravel mengatur request melalui entry point, middleware, router, controller, service/model, kemudian response. <strong>Route</strong> memilih handler; <strong>controller</strong> mengatur alur request; <strong>request validation</strong> memeriksa data masuk; <strong>model/Eloquent</strong> merepresentasikan data; <strong>view Blade</strong> merender HTML. Pelajari <code>php artisan route:list</code>, <code>php artisan migrate</code>, <code>php artisan test</code>, <code>composer install</code>, dan file konfigurasi <code>config/</code>. Jangan memodifikasi kode di <code>vendor/</code>.</p>
+<pre><code class="language-php">// routes/web.php (sebagai contoh setelah proyek Laravel dibuat)
+use App\Http\Controllers\ItemController;
+use Illuminate\Support\Facades\Route;
+
+Route::middleware('auth')-&gt;group(function () {
+    Route::get('/items', [ItemController::class, 'index'])-&gt;name('items.index');
+});
+</code></pre>
+<p><strong>Tata letak minimal:</strong> <code>routes/web.php</code> untuk web session, <code>routes/api.php</code> untuk API setelah scaffolding yang sesuai, <code>app/Http/Controllers</code>, <code>app/Models</code>, <code>database/migrations</code>, <code>resources/views</code>, <code>tests/Feature</code>. Perhatikan struktur starter kit bisa berbeda per versi; cek perintah resmi proyek terpasang.</p>
+<p><strong>Praktik:</strong> buat halaman daftar dan form item dengan Blade, gunakan layout konsisten, validasi feedback, serta token CSRF pada form browser. <strong>Tes keluar:</strong> dapat menjelaskan beda 302 redirect ke login, 401 response API, dan 403 akses terlarang.</p>
+<h2>21. Laravel migrations, Eloquent, validation, authorization</h2>
+<p><strong>Migration</strong> mendefinisikan evolusi struktur database secara version-controlled, <strong>seeder</strong> memuat data contoh/default, <strong>factory</strong> membuat data pengujian. Eloquent memudahkan CRUD dan relasi, tetapi tetap perlu memahami SQL agar menghindari <strong>N+1 query</strong>. Gunakan eager loading (<code>with</code>) bila menampilkan banyak relasi. Model memiliki <code>$fillable</code>/atribut guarded; jangan menerima seluruh field dari request tanpa membatasi yang boleh diubah.</p>
+<pre><code class="language-php">// Contoh logika controller setelah model + migration + policy tersedia
+public function store(\Illuminate\Http\Request $request)
+{
+    $data = $request-&gt;validate([
+        'name' =&gt; ['required', 'string', 'min:2', 'max:120'],
+        'quantity' =&gt; ['required', 'integer', 'min:0', 'max:100000'],
+    ]);
+
+    $item = $request-&gt;user()-&gt;items()-&gt;create($data);
+    return response()-&gt;json(['data' =&gt; $item], 201);
+}
+</code></pre>
+<p><strong>Kode contoh parsial</strong>, bukan controller lengkap: memerlukan relasi <code>items()</code> pada model User, migration, auth middleware dan konfigurasi API. <code>user_id</code> sengaja <strong>diambil dari sesi/token terautentikasi</strong>, bukan input client. Untuk membaca/mengubah item berdasarkan ID, gunakan query yang dibatasi pemilik atau Policy/Gate (<code>authorize</code>): mengetahui ID tidak berarti berhak mengakses. Jangan sekadar menyembunyikan tombol admin di UI karena pemeriksaan tetap wajib di server.</p>
+<p><strong>Praktik:</strong> buat policies untuk view/update/delete item; uji dua pengguna yang mencoba mengubah item satu sama lain. <strong>Tes keluar:</strong> 403/404 sesuai desain dan data tidak berubah saat akses ditolak.</p>
+<h2>22. Authentication, session, API token dan keamanan</h2>
+<p><strong>Authentication</strong> menjawab siapa pengguna; <strong>authorization</strong> menjawab apa yang boleh dilakukan. Pada aplikasi web Laravel tradisional gunakan session/cookie + CSRF protection. Untuk mobile via API, Laravel Sanctum dapat menerbitkan token per perangkat melalui jalur resmi yang terdokumentasi; token dikirim via <code>Authorization: Bearer ...</code> melalui HTTPS. Simpan token mobile menggunakan penyimpanan aman platform, bukan hardcoded, log, URL query, atau repository. Desain logout/revoke token dan token expiry sesuai risiko.</p>
+<p>Praktik keamanan dasar: validasi sisi server; output escaping; periksa ownership setiap resource; hash password melalui fasilitas framework; gunakan TLS; rate-limit login; jangan tampilkan stack trace produksi; simpan secrets di environment/secret manager; lakukan rotasi kredensial; update dependensi; audit semua upload file (jenis, ukuran, lokasi), aktifkan pembatasan CORS sesuai asal yang dipercaya.</p>
+<p><strong>OWASP Top 10:2025</strong> mencakup broken access control, security misconfiguration, software supply chain failures, cryptographic failures, injection, insecure design, authentication failures, integrity failures, logging and alerting failures, serta mishandling of exceptional conditions. Ini adalah kerangka risiko; bukan daftar periksa yang otomatis membuktikan aman.</p>
+<p><strong>Praktik:</strong> uji IDOR: user B meminta <code>/api/v1/items/{id-milik-A}</code>. Harus ditolak. Periksa respons validasi HTML/JSON, escape output, rate limit, dan masa hidup token. <strong>Tes keluar:</strong> memahami perbedaan 401 vs 403, CSRF vs XSS, SQL injection vs IDOR.</p>
+<h2>23. Testing dan rekayasa kode Laravel</h2>
+<p>Testing pyramid: <strong>unit</strong> untuk fungsi murni, <strong>feature/integration</strong> untuk request+DB dan otorisasi, <strong>end-to-end</strong> untuk perjalanan pengguna. Test tidak hanya <em>happy path</em>: coba input invalid, race condition, user lain, item hilang, DB error, jaringan gagal. PHP ecosystem menyediakan PHPUnit/Pest; Laravel mendukung feature tests dengan request helpers dan refresh database.</p>
+<pre><code class="language-php">// Contoh pola feature test (sesuaikan factory, auth, dan route proyek)
+it('rejects negative quantity', function () {
+    $user = \App\Models\User::factory()-&gt;create();
+    $this-&gt;actingAs($user)
+        -&gt;postJson('/api/v1/items', ['name' =&gt; 'Perban', 'quantity' =&gt; -1])
+        -&gt;assertUnprocessable()
+        -&gt;assertJsonValidationErrors('quantity');
+});
+</code></pre>
+<p>Lakukan formatting/linting (<code>Laravel Pint</code>, PHPStan/Larastan bila relevan), code review kecil, analisis static, pengujian sebelum merge. Hindari <em>overengineering</em>: service/repository layer hanya bila memecahkan kebutuhan nyata, bukan demi diagram kelas. Catat trade-off di ADR singkat (<em>Architecture Decision Record</em>): konteks, opsi, keputusan, konsekuensi.</p>
+<p><strong>Praktik:</strong> setidaknya 3 unit tests, 5 feature tests termasuk IDOR dan validasi, 1 test proses login. <strong>Tes keluar:</strong> tes tetap stabil ketika dijalankan ulang dan tidak bergantung pada urutan eksekusi.</p>
+<h2>Proyek 2 — Backend web + REST API</h2>
+<p>Bangun aplikasi checklist multi-user: register/login (gunakan starter kit bila cocok), CRUD kategori dan item, kategori bertingkat, query filter, pagination, seeder default, log tindakan penting, halaman Blade. Buat API JSON untuk mobile di bawah <code>/api/v1</code>. Pilih satu sumber logika dan database; <strong>jangan membuat logika perhitungan terpisah yang menghasilkan angka berbeda antara web dan mobile</strong>.</p>
+<p><strong>Definisi selesai:</strong> migration dari nol berhasil; seed dapat dijalankan ulang dengan aman; user tidak mengakses item user lain; validasi 422; daftar terpaginasikan; contract response konsisten; test inti berjalan otomatis; README berisi perintah setup, contoh request, serta environment variables tanpa nilai rahasia.</p>
+</div>

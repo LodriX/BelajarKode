@@ -1,0 +1,528 @@
+{
+  "id": "m05",
+  "title": "JavaScript Browser dan TypeScript",
+  "subtitle": "DOM, asynchronous, JSON, testing, dan type safety",
+  "weeks": [
+    18,
+    21
+  ],
+  "accent": "#f97316",
+  "goal": "Membuat aplikasi web interaktif dengan state dan komunikasi API yang aman.",
+  "lessons": [
+    {
+      "id": "m05-l01",
+      "title": "DOM dan event listener",
+      "minutes": 45,
+      "level": "Dasar",
+      "intro": "DOM merupakan representasi HTML sebagai object. JavaScript dapat mencari elemen, mengubah teks, membuat node, dan merespons event.",
+      "explanation": "Gunakan textContent untuk teks pengguna; hindari memasukkan string tidak tepercaya lewat innerHTML yang membuka risiko XSS. Tambahkan listener pada elemen yang relevan.",
+      "code": "const tombol = document.querySelector(\"#tombol\");\ntombol?.addEventListener(\"click\", () => {\n  document.querySelector(\"#hasil\").textContent = \"Diklik\";\n});",
+      "codeLanguage": "javascript",
+      "practice": [
+        "Buat tombol penghitung klik dengan addEventListener.",
+        "Ubah satu input atau asumsi pada contoh, catat hasil dan jelaskan alasannya."
+      ],
+      "bestPractice": "Gunakan textContent untuk teks dinamis yang tidak memerlukan HTML.",
+      "commonMistake": "Memasukkan input pengguna langsung ke innerHTML.",
+      "quiz": {
+        "question": "Apa prinsip yang paling tepat untuk topik “DOM dan event listener”?",
+        "options": [
+          "Gunakan textContent untuk teks dinamis yang tidak memerlukan HTML.",
+          "Gunakan solusi paling rumit sejak awal, meski kebutuhan belum jelas.",
+          "Lewati pengujian karena contoh kecil pasti benar."
+        ],
+        "answer": 0,
+        "explanation": "Gunakan textContent untuk teks dinamis yang tidak memerlukan HTML."
+      }
+    },
+    {
+      "id": "m05-l02",
+      "title": "State dan localStorage: menyimpan daftar tugas",
+      "minutes": 120,
+      "level": "Dasar",
+      "depth": "integrasi",
+      "codeLanguage": "javascript",
+      "outcome": "Setelah pelajaran ini, Anda dapat memodelkan state aplikasi catatan tugas, menyimpannya ke localStorage sebagai JSON, dan memulihkannya dengan aman ketika data kosong, rusak, atau berasal dari versi lama.",
+      "objectives": [
+        "Membedakan state sementara di memori dan state persisten di localStorage.",
+        "Menyimpan object atau array dengan JSON.stringify dan membacanya kembali dengan JSON.parse.",
+        "Menangani data kosong, data korup, dan perubahan versi tanpa membuat aplikasi berhenti.",
+        "Menentukan data yang boleh dan tidak boleh disimpan di localStorage."
+      ],
+      "prerequisites": [
+        {
+          "label": "Object, array, dan destructuring",
+          "lessonId": "m03-l07"
+        },
+        {
+          "label": "DOM dan event listener",
+          "lessonId": "m05-l01"
+        }
+      ],
+      "terms": [
+        {
+          "term": "State",
+          "definition": "Data yang menentukan tampilan dan perilaku aplikasi pada satu waktu, misalnya daftar tugas dan filter aktif."
+        },
+        {
+          "term": "localStorage",
+          "definition": "Penyimpanan teks kecil per origin dan per browser yang bertahan setelah halaman ditutup, tetapi tidak otomatis tersinkron antarperangkat."
+        },
+        {
+          "term": "Serialisasi",
+          "definition": "Proses mengubah nilai JavaScript menjadi teks yang dapat disimpan atau dikirim, misalnya dengan JSON.stringify."
+        },
+        {
+          "term": "Deserialisasi",
+          "definition": "Proses mengubah teks kembali menjadi nilai JavaScript, misalnya dengan JSON.parse."
+        },
+        {
+          "term": "Schema version",
+          "definition": "Penanda versi bentuk data agar aplikasi dapat mengenali dan memigrasikan data lama."
+        }
+      ],
+      "syntax": [
+        {
+          "token": "localStorage.setItem(kunci, nilai)",
+          "meaning": "Menyimpan nilai teks dengan nama kunci tertentu. Nilai harus berupa string; object harus diubah lebih dahulu.",
+          "example": "localStorage.setItem(\"demo\", \"halo\");",
+          "output": "Method mengembalikan undefined, tetapi pasangan kunci dan nilai tersimpan di browser.",
+          "pitfall": "Menyimpan object langsung akan menghasilkan teks [object Object], bukan data yang bisa dibaca kembali."
+        },
+        {
+          "token": "localStorage.getItem(kunci)",
+          "meaning": "Membaca nilai teks berdasarkan kunci. Jika kunci belum ada, hasilnya null.",
+          "example": "const nilai = localStorage.getItem(\"demo\");\nconsole.log(nilai);",
+          "output": "halo",
+          "pitfall": "Jangan langsung memanggil JSON.parse pada null; periksa nilai kosong terlebih dahulu."
+        },
+        {
+          "token": "JSON.stringify(nilai)",
+          "meaning": "Mengubah object, array, string, number, atau boolean menjadi teks JSON.",
+          "example": "console.log(JSON.stringify({ id: 1, done: false }));",
+          "output": "{\"id\":1,\"done\":false}",
+          "pitfall": "Function dan undefined tidak disimpan sebagai nilai JSON; struktur melingkar akan melempar error."
+        },
+        {
+          "token": "JSON.parse(teks)",
+          "meaning": "Mengubah teks JSON kembali menjadi nilai JavaScript.",
+          "example": "const data = JSON.parse('{\"id\":1}');\nconsole.log(data.id);",
+          "output": "1",
+          "pitfall": "Teks yang tidak valid akan melempar SyntaxError. Lindungi dengan try/catch."
+        }
+      ],
+      "sections": [
+        {
+          "id": "state-sumber-kebenaran",
+          "title": "State adalah satu sumber kebenaran",
+          "body": [
+            "Pada aplikasi catatan tugas, state adalah data yang menjelaskan apa yang sedang terjadi: daftar tugas, filter yang dipilih, dan tugas yang sedang diedit. Tampilan hanyalah hasil dari state tersebut. Jika state berubah, tampilan harus diperbarui. Jika tampilan berubah tanpa mengubah state, aplikasi akan cepat menjadi tidak konsisten.",
+            "Mulailah dengan satu object state yang jelas. Jangan menyimpan potongan data yang sama di banyak variabel global. Satu sumber kebenaran membuat proses simpan, muat, dan debugging lebih mudah."
+          ],
+          "code": {
+            "language": "javascript",
+            "lab": false,
+            "code": "const state = {\n  tasks: [\n    { id: 1, title: \"Belajar DOM\", done: false },\n    { id: 2, title: \"Latihan localStorage\", done: true },\n  ],\n  filter: \"semua\",\n};\n\nconsole.log(state.tasks.length);\nconsole.log(state.tasks[0].title);\nconsole.log(state.filter);",
+            "output": "2\nBelajar DOM\nsemua",
+            "explain": "state.tasks adalah array. state.tasks[0] mengambil object pertama, lalu .title membaca propertinya. state.filter menyimpan pilihan filter saat ini."
+          },
+          "callouts": [
+            {
+              "tone": "good",
+              "title": "Aturan praktis",
+              "body": "Sebelum menulis DOM, tuliskan bentuk state yang akan dipakai. Jika bentuk state berantakan, kode tampilan juga akan berantakan."
+            }
+          ],
+          "checkpoint": {
+            "prompt": "Prediksi output dari console.log(state.tasks[1].done) dan jelaskan mengapa nilainya bukan string.",
+            "success": "Anda menjawab true karena properti done disimpan sebagai boolean, bukan teks."
+          }
+        },
+        {
+          "id": "string-bukan-object",
+          "title": "localStorage hanya menyimpan string",
+          "body": [
+            "localStorage tidak menyimpan object JavaScript secara langsung. Ia menyimpan pasangan kunci dan nilai berupa string. Jika Anda memberikan object, browser akan mengubahnya menjadi teks biasa, sering kali menjadi [object Object], sehingga informasi aslinya hilang.",
+            "Karena itu, object atau array harus diserialisasi dengan JSON.stringify sebelum disimpan. Saat dibaca, teks tersebut dikembalikan menjadi nilai JavaScript dengan JSON.parse. Proses ini terlihat sederhana, tetapi justru di sinilah banyak bug pemula muncul: lupa parse, salah bentuk data, atau memanggil parse pada nilai null."
+          ],
+          "code": {
+            "language": "javascript",
+            "lab": false,
+            "code": "const tasks = [{ id: 1, title: \"Belajar DOM\", done: false }];\nconst teks = JSON.stringify(tasks);\n\nconsole.log(typeof teks);\nconsole.log(teks);\n\nconst salinan = JSON.parse(teks);\nconsole.log(salinan[0].title);",
+            "output": "string\n[{\"id\":1,\"title\":\"Belajar DOM\",\"done\":false}]\nBelajar DOM",
+            "explain": "JSON.stringify mengubah array menjadi string JSON. JSON.parse mengubah string itu kembali menjadi array baru, sehingga salinan[0].title dapat dibaca."
+          },
+          "callouts": [
+            {
+              "tone": "bad",
+              "title": "Kesalahan umum",
+              "body": "Menulis localStorage.setItem(\"tasks\", tasks) lalu bingung mengapa hasilnya bukan array. Simpan JSON.stringify(tasks), bukan object mentah."
+            }
+          ],
+          "checkpoint": {
+            "prompt": "Mengapa typeof localStorage.getItem(\"demo\") selalu string ketika nilainya ada?",
+            "success": "Anda menjelaskan bahwa localStorage menyimpan teks, bukan tipe JavaScript asli."
+          }
+        },
+        {
+          "id": "simpan-dan-baca",
+          "title": "Menyimpan dan membaca dengan fungsi kecil",
+          "body": [
+            "Jangan menebar panggilan localStorage di seluruh event handler. Bungkus proses simpan dan baca dalam fungsi kecil. Dengan begitu, perubahan format data hanya dilakukan di satu tempat, dan Anda dapat menambahkan penanganan error tanpa mengubah banyak kode.",
+            "Fungsi baca harus siap menghadapi tiga kondisi: kunci belum ada, teks tidak valid, dan bentuk data tidak sesuai harapan. Nilai null dari getItem bukan error, tetapi tetap harus ditangani. Jika JSON.parse gagal, kembalikan daftar kosong agar aplikasi tetap bisa dibuka."
+          ],
+          "code": {
+            "language": "javascript",
+            "lab": false,
+            "code": "const KUNCI = \"bk.tasks.v1\";\n\nfunction simpan(tasks) {\n  localStorage.setItem(KUNCI, JSON.stringify({ versi: 1, tasks }));\n}\n\nfunction baca() {\n  const teks = localStorage.getItem(KUNCI);\n  if (!teks) return [];\n\n  try {\n    const data = JSON.parse(teks);\n    return Array.isArray(data.tasks) ? data.tasks : [];\n  } catch (error) {\n    console.warn(\"Data rusak, mulai dari daftar kosong.\", error);\n    return [];\n  }\n}\n\nsimpan([{ id: 1, title: \"Belajar DOM\", done: false }]);\nconsole.log(baca());",
+            "output": "Array satu object tugas dengan id 1, title Belajar DOM, dan done false.",
+            "explain": "simpan membungkus tasks dalam object berversi. baca memeriksa null, mem-parse JSON, lalu memastikan data.tasks benar-benar array sebelum dikembalikan."
+          },
+          "callouts": [
+            {
+              "tone": "good",
+              "title": "Kebiasaan yang membantu",
+              "body": "Beri nama kunci yang jelas dan berversi, misalnya bk.tasks.v1. Jangan memakai kunci generik seperti data."
+            }
+          ],
+          "checkpoint": {
+            "prompt": "Apa yang terjadi jika kunci bk.tasks.v1 belum ada saat baca dipanggil?",
+            "success": "Anda menjawab bahwa getItem mengembalikan null dan fungsi mengembalikan array kosong."
+          }
+        },
+        {
+          "id": "data-rusak-dan-versi",
+          "title": "Data rusak, data lama, dan migrasi",
+          "body": [
+            "Data di localStorage dapat berubah karena versi aplikasi lama, bug, atau pengguna yang mengedit DevTools. Aplikasi yang baik tidak menganggap data selalu sempurna. Ia memeriksa bentuk data, memberi nilai cadangan, dan bila perlu menjalankan migrasi dari versi lama ke versi baru.",
+            "Cara paling sederhana adalah menyimpan versi bersama data. Saat membaca, periksa versi tersebut. Jika versinya lebih lama, ubah bentuknya ke bentuk terbaru. Jika bentuknya tidak dikenali, jangan menebak; tampilkan pemberitahuan dan tawarkan reset atau impor cadangan."
+          ],
+          "code": {
+            "language": "javascript",
+            "lab": false,
+            "code": "const KUNCI = \"bk.tasks.v2\";\n\nfunction bacaAman() {\n  const teks = localStorage.getItem(KUNCI);\n  if (!teks) return { versi: 2, tasks: [] };\n\n  try {\n    const data = JSON.parse(teks);\n    if (!Array.isArray(data.tasks)) {\n      return { versi: 2, tasks: [] };\n    }\n    return { versi: Number(data.versi) || 2, tasks: data.tasks };\n  } catch {\n    return { versi: 2, tasks: [] };\n  }\n}\n\nconsole.log(bacaAman());",
+            "output": "Object dengan versi 2 dan array tasks; jika data tidak valid, hasilnya object kosong yang aman.",
+            "explain": "Fungsi ini memeriksa null, mem-parse dengan try/catch, memvalidasi array, lalu memakai versi 2 sebagai cadangan bila versi tidak terbaca."
+          },
+          "callouts": [
+            {
+              "tone": "warn",
+              "title": "Jangan hapus data tanpa izin",
+              "body": "Jika data tidak terbaca, tawarkan ekspor teks mentah atau konfirmasi reset. Menghapus otomatis dapat menghilangkan catatan pengguna."
+            }
+          ],
+          "checkpoint": {
+            "prompt": "Mengapa memeriksa Array.isArray(data.tasks) lebih aman daripada langsung memakai data.tasks.map?",
+            "success": "Anda menjelaskan bahwa data.tasks bisa saja bukan array sehingga .map akan melempar TypeError."
+          }
+        },
+        {
+          "id": "batas-keamanan",
+          "title": "Batas dan keamanan localStorage",
+          "body": [
+            "localStorage terikat pada origin, yaitu kombinasi protokol, host, dan port. Data dari satu situs tidak terlihat oleh situs lain. Namun data ini dapat dibaca oleh JavaScript yang berjalan di origin yang sama. Artinya, jika terjadi XSS, penyerang dapat membaca isi localStorage.",
+            "Jangan menyimpan password, token sesi yang sangat sensitif, atau data pribadi yang tidak perlu. localStorage juga tidak terenkripsi dan tidak menggantikan database server. Untuk aplikasi catatan tugas, simpan data yang memang boleh dilihat pengguna di perangkat itu, dan beri opsi ekspor atau hapus.",
+            "Kuota localStorage biasanya sekitar 5 MB dan berbeda antar-browser. Jika penuh, setItem melempar QuotaExceededError. Tangani dengan memberi tahu pengguna, menawarkan pembersihan data lama, atau memindahkan data besar ke tempat lain."
+          ],
+          "code": {
+            "language": "javascript",
+            "lab": false,
+            "code": "try {\n  localStorage.setItem(\"demo\", \"x\".repeat(6 * 1024 * 1024));\n} catch (error) {\n  console.warn(\"Penyimpanan penuh atau diblokir:\", error.name);\n}",
+            "output": "Penyimpanan penuh atau diblokir: QuotaExceededError",
+            "explain": "String enam megabita biasanya melebihi kuota. try/catch mencegah halaman berhenti dan memberi kesempatan menampilkan pesan yang dapat dipahami pengguna."
+          },
+          "callouts": [
+            {
+              "tone": "bad",
+              "title": "Jangan simpan rahasia",
+              "body": "localStorage bukan brankas. Simpan data non-rahasia, dan jangan pernah menganggap data dari localStorage sebagai data yang tepercaya tanpa validasi."
+            }
+          ],
+          "checkpoint": {
+            "prompt": "Mengapa data dari localStorage harus divalidasi lagi sebelum dipakai?",
+            "success": "Anda menyebut data dapat diedit pengguna, rusak, atau berasal dari versi aplikasi lama."
+          }
+        }
+      ],
+      "practice": [
+        {
+          "id": "latihan-1",
+          "level": "guided",
+          "title": "Simpan satu tugas",
+          "task": "Buat fungsi simpanSatu yang menyimpan satu object tugas ke localStorage dengan kunci bk.latihan.v1, lalu baca kembali dan tampilkan title-nya.",
+          "steps": [
+            "Buat object tugas dengan id, title, dan done.",
+            "Ubah object menjadi JSON sebelum disimpan.",
+            "Baca kembali, parse, lalu tampilkan title."
+          ],
+          "starterCode": "const tugas = { id: 1, title: \"Belajar localStorage\", done: false };\n\n// simpan tugas, lalu baca kembali\n",
+          "expected": "Console menampilkan Belajar localStorage dan DevTools Application menampilkan kunci bk.latihan.v1.",
+          "hints": [
+            "Gunakan JSON.stringify(tugas) saat menyimpan.",
+            "Periksa nilai null sebelum memanggil JSON.parse."
+          ],
+          "verification": {
+            "mode": "browser",
+            "expected": "Kunci bk.latihan.v1 muncul di Application > Local Storage dan title tampil di console."
+          }
+        },
+        {
+          "id": "latihan-2",
+          "level": "independent",
+          "title": "Daftar tugas yang tahan data rusak",
+          "task": "Buat fungsi bacaTugas yang mengembalikan array kosong jika kunci belum ada, JSON tidak valid, atau data.tasks bukan array. Uji ketiga kondisi tersebut.",
+          "steps": [
+            "Tulis fungsi bacaTugas dengan try/catch.",
+            "Uji saat kunci belum ada.",
+            "Uji setelah mengisi localStorage dengan teks bukan JSON.",
+            "Uji setelah mengisi JSON dengan tasks berupa string."
+          ],
+          "starterCode": "function bacaTugas() {\n  // kembalikan array tugas yang valid atau []\n}\n",
+          "expected": "Ketiga kondisi menghasilkan array kosong tanpa error yang menghentikan halaman.",
+          "hints": [
+            "JSON.parse pada teks acak melempar SyntaxError.",
+            "Gunakan Array.isArray(data.tasks) untuk memeriksa bentuk data."
+          ],
+          "verification": {
+            "mode": "browser",
+            "expected": "Tidak ada error merah yang tidak tertangani; console menampilkan hasil array kosong."
+          }
+        },
+        {
+          "id": "latihan-3",
+          "level": "transfer",
+          "title": "Versi data dan reset yang aman",
+          "task": "Kembangkan penyimpanan daftar tugas dengan versi 2 dan tombol reset. Reset hanya boleh menghapus kunci aplikasi setelah konfirmasi, bukan seluruh localStorage.",
+          "steps": [
+            "Simpan data sebagai { versi: 2, tasks }.",
+            "Saat membaca, validasi versi dan bentuk tasks.",
+            "Buat fungsi reset yang memakai removeItem pada kunci aplikasi.",
+            "Tambahkan konfirmasi sebelum reset di kode UI."
+          ],
+          "starterCode": "const KUNCI = \"bk.tasks.v2\";\n\nfunction reset() {\n  // hapus hanya kunci aplikasi\n}\n",
+          "expected": "Data v1 yang tidak kompatibel tidak membuat aplikasi crash, dan reset hanya menghapus bk.tasks.v2.",
+          "hints": [
+            "Jangan memakai localStorage.clear() karena menghapus data lain di origin yang sama.",
+            "Konfirmasi dapat memakai window.confirm saat latihan, lalu ganti dengan dialog yang lebih baik di aplikasi nyata."
+          ],
+          "verification": {
+            "mode": "browser",
+            "expected": "Kunci aplikasi hilang setelah reset, tetapi kunci lain di origin yang sama tetap ada."
+          }
+        }
+      ],
+      "verification": {
+        "mode": "browser",
+        "command": "JSON.parse(localStorage.getItem(\"bk.tasks.v1\"))",
+        "expected": "Console menampilkan object dengan versi dan tasks, dan data tetap ada setelah halaman dimuat ulang.",
+        "evidence": "Simpan output console dan satu tangkapan layar panel Application > Local Storage. Jangan memakai data pribadi untuk latihan."
+      },
+      "troubleshooting": [
+        {
+          "symptom": "Muncul error Unexpected token atau is not valid JSON.",
+          "cause": "Teks di localStorage bukan JSON yang valid, misalnya karena diedit manual atau ditulis tanpa JSON.stringify.",
+          "fix": "Bungkus JSON.parse dengan try/catch, tampilkan data cadangan, dan tawarkan reset atau impor cadangan."
+        },
+        {
+          "symptom": "Muncul QuotaExceededError saat menyimpan.",
+          "cause": "Data melebihi kuota localStorage atau penyimpanan diblokir oleh pengaturan browser.",
+          "fix": "Kurangi data, hapus entri lama setelah konfirmasi, dan pindahkan data besar ke IndexedDB atau server."
+        },
+        {
+          "symptom": "Data tidak muncul setelah membuka file atau alamat lain.",
+          "cause": "localStorage terikat pada origin; file lokal dan alamat pengembangan dapat memiliki origin berbeda.",
+          "fix": "Gunakan alamat yang sama, jalankan proyek lewat server lokal, dan sediakan ekspor/impor JSON untuk memindahkan data."
+        }
+      ],
+      "quiz": {
+        "questions": [
+          {
+            "id": "q1",
+            "type": "recall",
+            "question": "Apa fungsi JSON.stringify dalam penyimpanan localStorage?",
+            "options": [
+              "Mengubah teks JSON menjadi object JavaScript",
+              "Mengubah nilai JavaScript menjadi teks JSON",
+              "Menghapus semua data localStorage"
+            ],
+            "answer": 1,
+            "explanation": "JSON.stringify menyerialisasi nilai JavaScript menjadi teks JSON yang dapat disimpan."
+          },
+          {
+            "id": "q2",
+            "type": "scenario",
+            "question": "Aplikasi menampilkan error saat membaca data lama yang bentuknya berubah. Perbaikan pertama yang paling tepat adalah apa?",
+            "options": [
+              "Membungkus JSON.parse dengan try/catch dan memberi nilai cadangan",
+              "Menghapus seluruh localStorage tanpa memberi tahu pengguna",
+              "Mengganti localStorage dengan cookie untuk semua data"
+            ],
+            "answer": 0,
+            "explanation": "Validasi dan fallback mencegah aplikasi berhenti, sekaligus memberi ruang untuk migrasi data."
+          },
+          {
+            "id": "q3",
+            "type": "code-reading",
+            "question": "Setelah localStorage.setItem(\"x\", JSON.stringify({ a: 1 })), apa tipe hasil localStorage.getItem(\"x\")?",
+            "options": [
+              "object",
+              "number",
+              "string"
+            ],
+            "answer": 2,
+            "explanation": "localStorage selalu menyimpan dan mengembalikan string; object harus di-parse kembali."
+          }
+        ]
+      },
+      "resources": [
+        {
+          "sourceId": "mdn-localstorage",
+          "note": "Referensi API localStorage, termasuk batas dan perilaku penyimpanan."
+        },
+        {
+          "sourceId": "mdn-json",
+          "note": "Referensi JSON.stringify dan JSON.parse."
+        },
+        {
+          "sourceId": "mdn-try-catch",
+          "note": "Cara menangani error parsing dan kegagalan penyimpanan."
+        }
+      ],
+      "summary": [
+        "State adalah sumber kebenaran aplikasi; localStorage hanya menyimpan representasi teksnya.",
+        "Gunakan JSON.stringify saat menyimpan dan JSON.parse di dalam try/catch saat membaca.",
+        "Validasi bentuk data, simpan versi, dan jangan pernah menyimpan rahasia di localStorage."
+      ]
+    },
+    {
+      "id": "m05-l03",
+      "title": "JSON dan HTTP Fetch",
+      "minutes": 45,
+      "level": "Dasar",
+      "intro": "JSON adalah format pertukaran data, bukan database transaksional. fetch mengirim request HTTP dan menerima Response; response.ok dan status perlu diperiksa.",
+      "explanation": "Pemanggilan fetch menghasilkan Promise. Gagal jaringan, timeout, respons bukan JSON, dan status 4xx/5xx perlu ditangani. Buka file HTML langsung dapat membatasi fetch file JSON; local server lebih konsisten.",
+      "code": "async function ambilData(url) {\n  const response = await fetch(url);\n  if (!response.ok) throw new Error(`HTTP ${response.status}`);\n  return response.json();\n}\nconsole.log(\"Fungsi fetch siap\");",
+      "codeLanguage": "javascript",
+      "practice": [
+        "Dengan server lokal, ambil data/data.json dan tampilkan jumlah item ke halaman.",
+        "Ubah satu input atau asumsi pada contoh, catat hasil dan jelaskan alasannya."
+      ],
+      "bestPractice": "Periksa status HTTP dan berikan UI untuk loading/error/kosong.",
+      "commonMistake": "Menganggap fetch resolve berarti permintaan pasti sukses.",
+      "quiz": {
+        "question": "Apa prinsip yang paling tepat untuk topik “JSON dan HTTP Fetch”?",
+        "options": [
+          "Periksa status HTTP dan berikan UI untuk loading/error/kosong.",
+          "Gunakan solusi paling rumit sejak awal, meski kebutuhan belum jelas.",
+          "Lewati pengujian karena contoh kecil pasti benar."
+        ],
+        "answer": 0,
+        "explanation": "Periksa status HTTP dan berikan UI untuk loading/error/kosong."
+      }
+    },
+    {
+      "id": "m05-l04",
+      "title": "Promise dan async/await",
+      "minutes": 45,
+      "level": "Dasar",
+      "intro": "Promise merepresentasikan operasi yang selesai di masa depan. async/await membuat penanganan asinkron lebih mudah dibaca; try/catch untuk error.",
+      "explanation": "Jangan memblokir UI menunggu operasi jaringan. Untuk beberapa permintaan independen, Promise.all dapat menjalankan paralel tetapi gagal bila salah satu gagal.",
+      "code": "async function contoh() {\n  try {\n    const hasil = await Promise.resolve(42);\n    console.log(hasil);\n  } catch (err) {\n    console.error(err);\n  }\n}\ncontoh();",
+      "codeLanguage": "javascript",
+      "practice": [
+        "Tulis fungsi async yang mengembalikan data dan memiliki cabang ketika gagal.",
+        "Ubah satu input atau asumsi pada contoh, catat hasil dan jelaskan alasannya."
+      ],
+      "bestPractice": "Tangani kegagalan asinkron secara eksplisit.",
+      "commonMistake": "Lupa await sehingga yang tampil adalah Promise, bukan data.",
+      "quiz": {
+        "question": "Apa prinsip yang paling tepat untuk topik “Promise dan async/await”?",
+        "options": [
+          "Tangani kegagalan asinkron secara eksplisit.",
+          "Gunakan solusi paling rumit sejak awal, meski kebutuhan belum jelas.",
+          "Lewati pengujian karena contoh kecil pasti benar."
+        ],
+        "answer": 0,
+        "explanation": "Tangani kegagalan asinkron secara eksplisit."
+      }
+    },
+    {
+      "id": "m05-l05",
+      "title": "ES Modules, NPM dan tooling",
+      "minutes": 45,
+      "level": "Dasar",
+      "intro": "Modul ES menggunakan import/export. NPM mengelola paket JavaScript dan script proyek; package-lock membantu instalasi yang dapat direproduksi.",
+      "explanation": "Pada proyek kecil jangan bergantung ke banyak paket. Evaluasi reputasi, lisensi, pembaruan, dan risiko supply chain. Pakai format/lint untuk konsistensi, bukan karena tren.",
+      "code": "// util.js\nexport const tambah = (a, b) => a + b;\n// app.js\n// import { tambah } from \"./util.js\";",
+      "codeLanguage": "javascript",
+      "practice": [
+        "Buat dua file JS: satu export fungsi, satu import lalu panggil (via local server).",
+        "Ubah satu input atau asumsi pada contoh, catat hasil dan jelaskan alasannya."
+      ],
+      "bestPractice": "Batasi dependensi, pin versi sesuai kebutuhan, dan commit lockfile.",
+      "commonMistake": "Menambahkan library untuk fungsi yang bisa ditulis dengan 3 baris.",
+      "quiz": {
+        "question": "Apa prinsip yang paling tepat untuk topik “ES Modules, NPM dan tooling”?",
+        "options": [
+          "Batasi dependensi, pin versi sesuai kebutuhan, dan commit lockfile.",
+          "Gunakan solusi paling rumit sejak awal, meski kebutuhan belum jelas.",
+          "Lewati pengujian karena contoh kecil pasti benar."
+        ],
+        "answer": 0,
+        "explanation": "Batasi dependensi, pin versi sesuai kebutuhan, dan commit lockfile."
+      }
+    },
+    {
+      "id": "m05-l06",
+      "title": "TypeScript: tipe dan interface",
+      "minutes": 45,
+      "level": "Dasar",
+      "intro": "TypeScript menambahkan pengecekan tipe saat development dan dikompilasi menjadi JavaScript. Tipe tidak otomatis memvalidasi data JSON saat runtime.",
+      "explanation": "Gunakan strict mode, interface/type, union, dan narrowing. Hindari any sebagai jalan pintas. JS sudah harus dikuasai sebelum menambah TS.",
+      "code": "type Status = \"pending\" | \"done\";\ninterface Task { id: number; judul: string; status: Status }\nfunction selesai(tugas: Task): boolean {\n  return tugas.status === \"done\";\n}",
+      "codeLanguage": "typescript",
+      "practice": [
+        "Buat interface Product dengan id, name, price, stock lalu contoh objek valid.",
+        "Ubah satu input atau asumsi pada contoh, catat hasil dan jelaskan alasannya."
+      ],
+      "bestPractice": "Gunakan strict mode dan validasi data eksternal saat runtime.",
+      "commonMistake": "Mengira TypeScript mencegah data tak valid yang dikirim API.",
+      "quiz": {
+        "question": "Apa prinsip yang paling tepat untuk topik “TypeScript: tipe dan interface”?",
+        "options": [
+          "Gunakan strict mode dan validasi data eksternal saat runtime.",
+          "Gunakan solusi paling rumit sejak awal, meski kebutuhan belum jelas.",
+          "Lewati pengujian karena contoh kecil pasti benar."
+        ],
+        "answer": 0,
+        "explanation": "Gunakan strict mode dan validasi data eksternal saat runtime."
+      }
+    },
+    {
+      "id": "m05-l07",
+      "title": "Unit test dan debugging frontend",
+      "minutes": 45,
+      "level": "Dasar",
+      "intro": "Unit test memastikan fungsi kecil menghasilkan output sesuai masukan. Test sebaiknya mencakup normal, batas, salah input, dan regresi bug.",
+      "explanation": "Pisahkan logika dari DOM agar dapat diuji tanpa browser. Gunakan assert bawaan atau Vitest ketika toolchain sudah siap. Nama test menyatakan perilaku.",
+      "code": "function diskon(harga, persen) {\n  return harga * (1 - persen / 100);\n}\nconsole.assert(diskon(100000, 10) === 90000);",
+      "codeLanguage": "javascript",
+      "practice": [
+        "Tulis tiga assert untuk perhitungan harga: normal, 0, dan diskon 100%.",
+        "Ubah satu input atau asumsi pada contoh, catat hasil dan jelaskan alasannya."
+      ],
+      "bestPractice": "Tulis tes perilaku yang penting, bukan hanya tes bahwa fungsi dipanggil.",
+      "commonMistake": "Menjalankan contoh satu kali dan menyebutnya telah dites.",
+      "quiz": {
+        "question": "Apa prinsip yang paling tepat untuk topik “Unit test dan debugging frontend”?",
+        "options": [
+          "Tulis tes perilaku yang penting, bukan hanya tes bahwa fungsi dipanggil.",
+          "Gunakan solusi paling rumit sejak awal, meski kebutuhan belum jelas.",
+          "Lewati pengujian karena contoh kecil pasti benar."
+        ],
+        "answer": 0,
+        "explanation": "Tulis tes perilaku yang penting, bukan hanya tes bahwa fungsi dipanggil."
+      }
+    }
+  ]
+}

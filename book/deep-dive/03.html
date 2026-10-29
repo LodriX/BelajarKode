@@ -1,0 +1,114 @@
+<div id="pendalaman-3"><div class="panel"><b>PENDALAMAN 3</b> · 03 frontend</div><h1>Bagian II — Web Fundamental: HTML, CSS, JavaScript, TypeScript</h1>
+<h2>10. HTML: struktur, semantik, form, aksesibilitas</h2>
+<p>HTML adalah struktur dokumen, bukan bahasa pemrograman. Mulai dengan <code>&lt;!doctype html&gt;</code>, <code>html lang=&quot;id&quot;</code>, <code>meta charset</code>, <code>meta viewport</code>, judul halaman bermakna, satu <code>h1</code> yang menjelaskan konteks, serta heading berjenjang. Gunakan <code>header</code>, <code>nav</code>, <code>main</code>, <code>section</code>, <code>article</code>, <code>footer</code> sesuai makna; jangan menggunakan <code>div</code> untuk semua hal. <code>button</code> untuk aksi, <code>a</code> untuk navigasi, <code>label</code> terkait <code>input</code>, <code>alt</code> gambar deskriptif bila informatif. Navigasi dengan keyboard dan pembaca layar merupakan kebutuhan dasar, bukan fitur tambahan.</p>
+<pre><code class="language-html">&lt;!doctype html&gt;
+&lt;html lang=&quot;id&quot;&gt;
+&lt;head&gt;
+  &lt;meta charset=&quot;utf-8&quot;&gt;
+  &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot;&gt;
+  &lt;title&gt;Daftar Kebutuhan&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;main&gt;
+    &lt;h1&gt;Daftar Kebutuhan&lt;/h1&gt;
+    &lt;form id=&quot;formItem&quot;&gt;
+      &lt;label for=&quot;nama&quot;&gt;Nama item&lt;/label&gt;
+      &lt;input id=&quot;nama&quot; name=&quot;nama&quot; required maxlength=&quot;80&quot;&gt;
+      &lt;button type=&quot;submit&quot;&gt;Tambahkan&lt;/button&gt;
+    &lt;/form&gt;
+    &lt;ul id=&quot;daftar&quot; aria-live=&quot;polite&quot;&gt;&lt;/ul&gt;
+  &lt;/main&gt;
+  &lt;script src=&quot;app.js&quot; defer&gt;&lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+<p>Validasi HTML (<code>required</code>, <code>min</code>, <code>max</code>) membantu pengalaman pengguna tetapi <strong>tidak menggantikan validasi server</strong>. Gunakan pesan error yang jelas dekat input, jangan mengandalkan warna merah saja, pastikan fokus keyboard terlihat.</p>
+<p><strong>Praktik:</strong> buat halaman profil, halaman daftar item, dan formulir tambah item. Matikan CSS lalu periksa apakah konten masih terstruktur. Navigasikan dengan tombol Tab. <strong>Tes keluar:</strong> semua input memiliki label dan tombol bisa diaktifkan dengan keyboard.</p>
+<h2>11. CSS: box model, layout responsif, desain sistem</h2>
+<p>Box model terdiri dari content, padding, border, margin. Gunakan <code>box-sizing: border-box</code> agar ukuran mudah diprediksi. Flexbox cocok untuk alur satu dimensi, Grid untuk layout dua dimensi. Gunakan ukuran relatif (<code>rem</code>, <code>%</code>, <code>minmax</code>, <code>clamp</code>) dan <em>mobile-first</em>: mulai tampilan layar kecil kemudian tambah media query pada kebutuhan desain, bukan berdasarkan merek ponsel.</p>
+<pre><code class="language-css">*, *::before, *::after { box-sizing: border-box; }
+:root {
+  --brand: #155e75;
+  --text: #15232a;
+  --gap: 1rem;
+}
+body { margin: 0; font: 1rem/1.6 system-ui, sans-serif; color: var(--text); }
+main { width: min(100% - 2rem, 70rem); margin-inline: auto; }
+.grid { display: grid; grid-template-columns: 1fr; gap: var(--gap); }
+button:focus-visible, input:focus-visible { outline: 3px solid #0c7c95; outline-offset: 2px; }
+@media (min-width: 48rem) {
+  .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+</code></pre>
+<p><strong>Prinsip visual:</strong> konsistensi jarak, hierarki tipografi, kontras teks, area sentuh cukup besar, dan tidak mengandalkan hover untuk tugas penting. Hindari fixed height untuk konten teks yang dapat memanjang. Uji pada lebar 320, 375, 768, dan 1280 CSS px serta zoom 200%.</p>
+<p><strong>Praktik:</strong> desain 3 komponen: <code>card</code>, <code>form-field</code>, <code>status-badge</code> dengan CSS variables. Gunakan <code>grid</code> untuk kartu dan <code>flex</code> untuk tombol. <strong>Tes keluar:</strong> tidak ada horizontal scrolling tak diinginkan di layar 320px.</p>
+<h2>12. DOM dan event: membuat aplikasi interaktif</h2>
+<p>DOM adalah representasi elemen HTML sebagai object yang bisa diakses JS. Event <code>click</code>, <code>submit</code>, <code>input</code> adalah sinyal interaksi. Hindari menyisipkan data pengguna melalui <code>innerHTML</code> karena berisiko XSS; gunakan <code>textContent</code> atau buat node dan lampirkan secara eksplisit. <strong>State</strong> adalah sumber kebenaran data; tampilan hanya representasi dari state tersebut.</p>
+<pre><code class="language-javascript">const form = document.querySelector('#formItem');
+const daftar = document.querySelector('#daftar');
+const items = [];
+
+function render() {
+  daftar.replaceChildren();
+  for (const item of items) {
+    const li = document.createElement('li');
+    li.textContent = item.nama;
+    daftar.append(li);
+  }
+}
+form.addEventListener('submit', event =&gt; {
+  event.preventDefault();
+  const nama = form.elements.nama.value.trim();
+  if (nama.length &lt; 2) return;
+  items.push({ id: crypto.randomUUID(), nama });
+  form.reset();
+  render();
+});
+</code></pre>
+<p>Data dalam contoh hanya hidup selama halaman aktif. Untuk offline sederhana gunakan <code>localStorage</code> untuk data nonrahasia kecil; pahami ia sinkron, memiliki batas kapasitas, dan bukan penyimpanan tepercaya untuk token atau data sensitif. Untuk offline dengan query dan skala lebih besar, pelajari IndexedDB.</p>
+<p><strong>Praktik:</strong> tambah hapus, checkbox, filter belum selesai dan progress bar; simpan <code>items</code> sebagai JSON di localStorage; buat fungsi pemulihan yang menangani JSON rusak. <strong>Tes keluar:</strong> karakter <code>&lt;script&gt;</code> sebagai nama item harus terlihat sebagai teks, bukan dieksekusi.</p>
+<h2>13. HTTP, REST, JSON, dan asinkron</h2>
+<p>Browser mengirim <em>request</em> dengan method, URL, headers, dan body; server memberi status, headers, dan response. <code>GET</code> untuk membaca, <code>POST</code> membuat/aksi, <code>PUT</code> mengganti representasi, <code>PATCH</code> mengubah sebagian, <code>DELETE</code> menghapus. <code>GET</code> seharusnya aman dan tidak mengubah data. Status penting: 200 OK, 201 created, 204 no content, 400 bad request, 401 unauthenticated, 403 forbidden, 404 not found, 409 conflict, 422 validation, 429 rate limit, 500 kesalahan server.</p>
+<p>JSON mendukung object, array, string, number, boolean, null; bukan <code>undefined</code>, komentar, atau tanggal sebagai tipe khusus. Field tanggal biasanya string ISO 8601 dan harus disepakati timezone-nya. <em>Asinkron</em> berarti program dapat melanjutkan pekerjaan sambil menunggu operasi seperti jaringan; Promise merepresentasikan hasil yang mungkin datang kemudian.</p>
+<pre><code class="language-javascript">async function ambilItem() {
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() =&gt; controller.abort(), 10000);
+  try {
+    const response = await fetch('/api/v1/items', {
+      headers: { Accept: 'application/json' },
+      signal: controller.signal,
+    });
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    return await response.json();
+  } finally {
+    clearTimeout(timeoutId);
+  }
+}
+</code></pre>
+<p><strong>Penting:</strong> kode di atas membutuhkan server yang menyediakan <code>/api/v1/items</code>; belum dapat langsung dijalankan dalam <code>file://</code>. API publik bisa memiliki CORS, limit dan bentuk respons berbeda. Di UI selalu tampilkan state loading, empty, success, error, dan retry. Jangan membuat retry tanpa batas untuk request yang mengubah data karena berisiko duplikasi.</p>
+<p><strong>Praktik:</strong> buka DevTools Network dan analisis metode, status, header, durasi, request/response. Buat diagram apa yang terjadi jika server merespons 401 dan 500. <strong>Tes keluar:</strong> Anda bisa menjelaskan mengapa <code>fetch</code> tidak otomatis melempar exception hanya karena HTTP 404.</p>
+<h2>14. JavaScript modern, modules, dan TypeScript</h2>
+<p>Gunakan modul ES (<code>export</code>/<code>import</code>) agar fungsi terpisah dan dependensi eksplisit. <code>npm</code> mengelola paket dan lockfile (<code>package-lock.json</code>); gunakan LTS dan cek versi. Jangan menambahkan library untuk fungsi kecil yang bisa dibuat dengan API standar. TypeScript memperluas JavaScript dengan pemeriksaan tipe saat development; hasil akhirnya tetap JavaScript yang berjalan di browser. <strong>TypeScript bukan pengganti validasi input runtime</strong> karena JSON API dapat berisi data yang melanggar type yang Anda deklarasikan.</p>
+<pre><code class="language-typescript">type Item = {
+  id: string;
+  nama: string;
+  jumlah: number;
+  checked: boolean;
+};
+function progres(items: Item[]): number {
+  if (items.length === 0) return 0;
+  const selesai = items.filter(item =&gt; item.checked).length;
+  return Math.round((selesai / items.length) * 100);
+}
+</code></pre>
+<p><strong>Prinsip TS:</strong> aktifkan <code>strict</code>, berikan tipe pada kontrak publik, manfaatkan inferensi lokal, hindari <code>any</code>, gunakan <code>unknown</code> untuk data yang belum tervalidasi, cek <code>null</code> secara eksplisit, pisahkan API DTO dan domain model bila perlu. TS sesuai untuk frontend kompleks; proyek kecil Laravel Blade tidak wajib menambahkan TypeScript hanya demi tren.</p>
+<p><strong>Praktik:</strong> pindahkan fungsi progress dan item ke TypeScript; buat data sengaja salah (<code>jumlah: '3'</code>) untuk melihat error kompilasi. Tambahkan pemeriksaan runtime ketika membaca localStorage. <strong>Tes keluar:</strong> pahami beda error kompilasi, error runtime, dan validasi di server.</p>
+<h2>15. UX, aksesibilitas, PWA, dan pemilihan frontend</h2>
+<p>Tampilan bukan hanya warna: pengguna membutuhkan status jelas, navigasi dapat diprediksi, pesan gagal yang bisa dipulihkan, konfirmasi untuk operasi destruktif, dan kontrol yang berfungsi pada ponsel. Gunakan <strong>WCAG 2.2 AA</strong> sebagai target aksesibilitas web: keyboard, teks alternatif, kontras, nama kontrol, target sentuh yang layak, serta status dinamis yang dibacakan dengan benar. Uji manual dengan keyboard dan pembaca layar; skor alat otomatis tidak menjamin aksesibilitas penuh.</p>
+<p><strong>PWA</strong> dapat menambahkan installability dan caching melalui web app manifest + service worker. Ia bukan sinonim aplikasi mobile native; kemampuan perangkat, penyimpanan, dan push notification bergantung platform. Untuk proyek offline-first, desain penyimpanan lokal, sinkronisasi, konflik, dan penghapusan data sejak awal. Cache asset tidak otomatis berarti data aman tersinkronisasi.</p>
+<p><strong>Kapan memilih:</strong> Blade/Livewire untuk dashboard form dan CRUD dominan di Laravel; Inertia + React/Vue saat pengalaman interaktif lebih kompleks; SPA terpisah saat frontend dan API memiliki siklus deployment independen; Flutter untuk aplikasi mobile lintas platform dengan pengalaman antarmuka mobile. <strong>Tidak perlu memaksakan microservices dan SPA untuk CRUD sederhana.</strong></p>
+<h2>Proyek 1 — Web checklist offline</h2>
+<p><strong>Spesifikasi:</strong> pengguna menambah/mengubah/menghapus item, memberi kategori, menentukan jumlah, menandai selesai, memfilter kategori, melihat persentase, dan mengekspor JSON. Responsif, tanpa login, penyimpanan lokal. <strong>Arsitektur awal:</strong> <code>index.html</code>, <code>styles.css</code>, <code>app.js</code>, <code>core.js</code>, <code>README.md</code>. <code>core.js</code> berisi fungsi data tanpa DOM; <code>app.js</code> menangani event/render.</p>
+<p><strong>Kriteria penerimaan:</strong> 1) tambah item valid, 2) item kosong/negatif ditolak, 3) edit berhasil, 4) hapus meminta konfirmasi, 5) persentase benar termasuk daftar kosong, 6) reload mempertahankan data, 7) JSON rusak ditangani, 8) keyboard berfungsi, 9) input HTML berbahaya aman, 10) semua perhitungan memiliki setidaknya 8 uji.</p>
+<p><strong>Refleksi wajib:</strong> jelaskan mengapa localStorage tidak cocok untuk login token, mengapa <code>innerHTML</code> tidak dipakai untuk data pengguna, dan bagaimana aplikasi berubah bila data harus digunakan bersama oleh 2 perangkat.</p>
+</div>

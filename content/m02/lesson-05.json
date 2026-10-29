@@ -1,0 +1,256 @@
+{
+  "id": "m02-l05",
+  "title": "Perulangan dan iterasi",
+  "minutes": 90,
+  "level": "Dasar",
+  "depth": "fondasi",
+  "codeLanguage": "text",
+  "outcome": "Setelah pelajaran ini, Anda dapat memilih perulangan yang tepat untuk daftar tugas dan memastikan setiap perulangan pasti berhenti.",
+  "objectives": [
+    "Membedakan kapan memakai FOR dan kapan memakai WHILE.",
+    "Menentukan kondisi berhenti sebelum menulis perulangan.",
+    "Menelusuri perulangan dengan tabel nilai variabel per putaran."
+  ],
+  "prerequisites": [
+    {
+      "lessonId": "m02-l04",
+      "label": "Percabangan dan boolean"
+    }
+  ],
+  "terms": [
+    {
+      "term": "Iterasi",
+      "definition": "Satu putaran penuh dalam perulangan; perulangan menjalankan iterasi berkali-kali."
+    },
+    {
+      "term": "Counter",
+      "definition": "Variabel yang menghitung sudah berapa kali perulangan berjalan."
+    },
+    {
+      "term": "Kondisi berhenti",
+      "definition": "Syarat yang harus menjadi salah agar perulangan berhenti; tanpa ini program berjalan selamanya."
+    },
+    {
+      "term": "Infinite loop",
+      "definition": "Perulangan yang tidak pernah berhenti karena kondisinya selalu benar atau counter tidak pernah berubah."
+    }
+  ],
+  "syntax": [
+    {
+      "token": "FOR i FROM 1 TO n DO ... END FOR",
+      "meaning": "Menjalankan blok untuk setiap nilai i dari 1 sampai n.",
+      "example": "FOR i FROM 1 TO 3 DO\n  OUTPUT i\nEND FOR",
+      "output": "1\n2\n3",
+      "pitfall": "Jika n bernilai 0, blok tidak dijalankan sama sekali; jangan menganggap minimal satu putaran selalu terjadi."
+    },
+    {
+      "token": "WHILE kondisi DO ... END WHILE",
+      "meaning": "Menjalankan blok selama kondisi masih benar.",
+      "example": "i <- 1\nWHILE i <= 3 DO\n  OUTPUT i\n  i <- i + 1\nEND WHILE",
+      "output": "1\n2\n3",
+      "pitfall": "Lupa i <- i + 1 membuat kondisi selalu benar dan program tidak pernah berhenti."
+    }
+  ],
+  "sections": [
+    {
+      "id": "for-untuk-daftar",
+      "title": "FOR saat jumlah putaran sudah diketahui",
+      "body": [
+        "Gunakan FOR ketika Anda tahu berapa banyak data yang akan diproses, misalnya daftar berisi tujuh tugas. Perulangan FOR mengurus counter secara otomatis sehingga risiko lupa menambah counter hilang.",
+        "Di dalam perulangan, kerjakan satu tugas per putaran: hitung, periksa, atau tampilkan. Jangan mencampur beberapa tujuan dalam satu perulangan jika hasilnya bisa dihitung terpisah."
+      ],
+      "code": {
+        "language": "text",
+        "lab": false,
+        "code": "daftar <- [Belajar, Olahraga, Membaca]\njumlahSelesai <- 0\nFOR i FROM 1 TO panjang(daftar) DO\n  IF daftar[i].selesai = benar THEN\n    jumlahSelesai <- jumlahSelesai + 1\n  END IF\nEND FOR\nOUTPUT jumlahSelesai",
+        "output": "2 (jika dua dari tiga tugas selesai)",
+        "explain": "FOR berjalan tiga kali. Setiap putaran memeriksa satu tugas; jika selesai, counter bertambah satu. Counter harus dimulai dari 0 sebelum perulangan."
+      },
+      "callouts": [
+        {
+          "tone": "warn",
+          "title": "Perhatikan indeks",
+          "body": "Jika daftar dimulai dari indeks 0, perulangan FROM 0 TO panjang(daftar) - 1. Salah indeks adalah penyebab error \u201cdata tidak ditemukan\u201d yang paling umum."
+        }
+      ]
+    },
+    {
+      "id": "while-kondisi",
+      "title": "WHILE saat berhenti bergantung pada kondisi",
+      "body": [
+        "Gunakan WHILE ketika jumlah putaran tidak diketahui di awal, misalnya mencari tugas pertama yang cocok atau meminta ulang input sampai valid. Yang penting bukan jumlah putaran, tetapi kapan kondisi berhenti terpenuhi.",
+        "Tulis kondisi berhenti dan perubahan yang membuatnya tercapai sebelum menulis blok. Pola aman: satu baris kondisi, satu blok kerja, satu baris perubahan. Jika perubahan tidak ada, perulangan tidak akan berhenti."
+      ],
+      "code": {
+        "language": "text",
+        "lab": false,
+        "code": "INPUT judul\njudulValid <- salah\nWHILE judulValid = salah DO\n  judul <- pangkas(judul)\n  IF judul tidak kosong THEN\n    judulValid <- benar\n  ELSE\n    OUTPUT \"Judul wajib diisi\"\n    INPUT judul\n  END IF\nEND WHILE",
+        "output": "Pengguna diminta mengulang sampai mengisi judul yang tidak kosong.",
+        "explain": "Kondisi berhenti adalah judulValid = benar. Baris INPUT judul di dalam ELSE memungkinkan pengguna memperbaiki input; tanpa itu, kondisi tidak pernah berubah."
+      },
+      "checkpoint": {
+        "prompt": "Tulis perulangan WHILE yang menjumlahkan nilai dari 1 sampai 5 dan berhenti tepat setelah angka 5.",
+        "success": "Counter dimulai dari 1, ditambah setiap putaran, dan kondisi i <= 5 membuat perulangan berhenti setelah putaran kelima."
+      }
+    },
+    {
+      "id": "trace-loop",
+      "title": "Menelusuri perulangan",
+      "body": [
+        "Perulangan sulit diperiksa hanya dengan membaca. Buat tabel berisi kolom putaran, nilai counter, nilai variabel, dan hasil sementara, lalu isi baris demi baris sampai perulangan berhenti.",
+        "Tabel penelusuran juga membantu menemukan kesalahan batas: apakah putaran terakhir memproses data terakhir atau justru melewatinya. Kesalahan satu langkah seperti ini tidak terlihat dari kode, tetapi terlihat jelas di tabel."
+      ],
+      "code": {
+        "language": "text",
+        "lab": false,
+        "code": "i <- 1\njumlah <- 0\nWHILE i <= 3 DO\n  jumlah <- jumlah + i\n  i <- i + 1\nEND WHILE\nOUTPUT jumlah",
+        "output": "6",
+        "explain": "Putaran 1: jumlah 1, i 2. Putaran 2: jumlah 3, i 3. Putaran 3: jumlah 6, i 4. Kondisi 4 <= 3 salah, perulangan berhenti, output 6."
+      }
+    }
+  ],
+  "practice": [
+    {
+      "id": "latihan-1",
+      "level": "guided",
+      "title": "Telusuri perulangan",
+      "task": "Buat tabel penelusuran untuk perulangan yang menampilkan hanya tugas selesai dari daftar tiga tugas.",
+      "steps": [
+        "Tulis kolom: putaran, tugas, selesai, output.",
+        "Isi tiga baris sesuai data.",
+        "Tandai putaran yang menghasilkan output."
+      ],
+      "starterCode": "daftar = [A(salah), B(benar), C(benar)]\nFOR i FROM 1 TO 3 DO\n  IF daftar[i].selesai THEN OUTPUT daftar[i].judul",
+      "expected": "Baris B dan C bertanda output; baris A tidak menghasilkan output.",
+      "hints": [
+        "Satu tugas diperiksa per baris.",
+        "Output hanya muncul saat kondisi selesai bernilai benar."
+      ],
+      "verification": {
+        "mode": "manual",
+        "expected": "Tabel berisi tiga baris dan dua output yang sesuai."
+      }
+    },
+    {
+      "id": "latihan-2",
+      "level": "variasi",
+      "title": "Ubah WHILE menjadi FOR",
+      "task": "Ubah perulangan WHILE yang menjumlahkan 1 sampai 5 menjadi FOR tanpa mengubah hasil.",
+      "steps": [
+        "Tentukan nilai awal dan akhir.",
+        "Ganti baris counter manual dengan FOR.",
+        "Pastikan jumlah akhir tetap 15."
+      ],
+      "starterCode": "i <- 1\njumlah <- 0\nWHILE i <= 5 DO\n  jumlah <- jumlah + i\n  i <- i + 1\nEND WHILE",
+      "expected": "FOR i FROM 1 TO 5 dengan jumlah akhir 15.",
+      "hints": [
+        "FOR menangani kenaikan counter secara otomatis.",
+        "Jangan menambah i lagi di dalam FOR."
+      ],
+      "verification": {
+        "mode": "manual",
+        "expected": "Hasil penelusuran FOR tetap 15 dan tidak ada counter ganda."
+      }
+    },
+    {
+      "id": "latihan-3",
+      "level": "transfer",
+      "title": "Cari tugas pertama yang cocok",
+      "task": "Tulis pseudocode yang mencari tugas pertama berprioritas tinggi dan berhenti mencari setelah ditemukan.",
+      "steps": [
+        "Gunakan WHILE dengan indeks dan variabel ditemukan.",
+        "Periksa satu tugas per putaran.",
+        "Hentikan perulangan segera setelah ditemukan.",
+        "Tampilkan hasil atau pesan tidak ditemukan."
+      ],
+      "starterCode": "i <- 1\nditemukan <- salah\nWHILE i <= panjang(daftar) DAN BUKAN ditemukan DO\n  ...",
+      "expected": "Perulangan berhenti sebelum memeriksa seluruh daftar jika tugas ditemukan di awal.",
+      "hints": [
+        "Kondisi BUKAN ditemukan mencegah pemeriksaan yang tidak perlu.",
+        "Setelah perulangan, periksa variabel ditemukan untuk menentukan pesan."
+      ],
+      "verification": {
+        "mode": "manual",
+        "expected": "Penelusuran menunjukkan perulangan berhenti lebih awal saat tugas pertama cocok."
+      }
+    }
+  ],
+  "verification": {
+    "mode": "manual",
+    "command": "Telusuri perulangan dengan tabel",
+    "expected": "Setiap perulangan punya kondisi berhenti yang jelas dan tabel penelusuran berakhir pada nilai yang diharapkan.",
+    "evidence": "Simpan tabel penelusuran di dokumen spesifikasi logika."
+  },
+  "troubleshooting": [
+    {
+      "symptom": "Program tidak pernah selesai saat dijalankan.",
+      "cause": "Kondisi WHILE selalu benar karena counter atau variabel penentu tidak pernah berubah.",
+      "fix": "Tambahkan perubahan nilai di dalam blok dan pastikan perubahan itu membuat kondisi akhirnya salah."
+    },
+    {
+      "symptom": "Data terakhir tidak ikut diproses.",
+      "cause": "Batas perulangan memakai < bukan <=, atau indeks berhenti satu langkah terlalu awal.",
+      "fix": "Tulis rentang secara eksplisit dan uji dengan daftar satu item."
+    },
+    {
+      "symptom": "Hasil penjumlahan selalu nol.",
+      "cause": "Counter diinisialisasi di dalam perulangan sehingga ter-reset setiap putaran.",
+      "fix": "Pindahkan inisialisasi counter ke luar perulangan."
+    }
+  ],
+  "quiz": {
+    "questions": [
+      {
+        "id": "q1",
+        "type": "recall",
+        "question": "Kapan perulangan FOR lebih tepat daripada WHILE?",
+        "options": [
+          "Saat jumlah putaran sudah diketahui",
+          "Saat kondisi berhenti tidak jelas",
+          "Saat program harus berjalan selamanya"
+        ],
+        "answer": 0,
+        "explanation": "FOR dipakai ketika jumlah data atau putaran diketahui, misalnya panjang daftar."
+      },
+      {
+        "id": "q2",
+        "type": "code-reading",
+        "question": "Berapa output akhir dari perulangan WHILE yang menjumlahkan i = 1 sampai 3?",
+        "options": [
+          "3",
+          "6",
+          "10"
+        ],
+        "answer": 1,
+        "explanation": "1 + 2 + 3 = 6; perulangan berhenti saat i menjadi 4."
+      },
+      {
+        "id": "q3",
+        "type": "scenario",
+        "question": "Perulangan pencarian tetap berjalan setelah tugas ditemukan. Perbaikan yang tepat adalah...",
+        "options": [
+          "Menghapus kondisi berhenti",
+          "Menambahkan syarat BUKAN ditemukan pada kondisi perulangan atau menghentikan loop saat ditemukan",
+          "Mengubah FOR menjadi WHILE tanpa mengubah isi"
+        ],
+        "answer": 1,
+        "explanation": "Perulangan harus berhenti segera setelah tujuan tercapai agar tidak memeriksa data yang tidak perlu."
+      }
+    ]
+  },
+  "resources": [
+    {
+      "sourceId": "mdn-loops",
+      "note": "Rujukan resmi jenis perulangan, kondisi berhenti, dan contoh penelusuran."
+    },
+    {
+      "sourceId": "mdn-control-flow",
+      "note": "Dasar alur eksekusi yang menjelaskan hubungan percabangan dan perulangan."
+    }
+  ],
+  "summary": [
+    "FOR dipakai saat jumlah putaran diketahui; WHILE dipakai saat berhenti bergantung pada kondisi.",
+    "Setiap perulangan wajib punya kondisi berhenti dan perubahan nilai yang membuat kondisi itu tercapai.",
+    "Tabel penelusuran memperlihatkan nilai variabel per putaran dan menemukan kesalahan batas."
+  ]
+}

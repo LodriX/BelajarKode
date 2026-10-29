@@ -1,0 +1,416 @@
+{
+  "id": "m00-l02",
+  "title": "Berkas, folder, jalur, dan terminal dasar",
+  "minutes": 90,
+  "level": "Dasar",
+  "depth": "fondasi",
+  "schema": 3.1,
+  "codeLanguage": "bash",
+  "outcome": "Setelah pelajaran ini, Anda dapat membedakan berkas, folder, jalur absolut, dan jalur relatif, memakai terminal untuk melihat dan berpindah folder, serta menyusun struktur proyek yang aman dari kehilangan data.",
+  "objectives": [
+    "Membedakan file, folder, path absolut, dan path relatif.",
+    "Menggunakan terminal untuk melihat dan berpindah folder tanpa mengandalkan klik.",
+    "Membuat struktur folder proyek yang konsisten.",
+    "Menghindari kehilangan data saat memindahkan atau menghapus file."
+  ],
+  "prerequisites": [
+    {
+      "label": "Cara kerja komputer: perangkat, sistem operasi, dan aplikasi",
+      "lessonId": "m00-l01"
+    }
+  ],
+  "terms": [
+    {
+      "term": "File",
+      "definition": "Kumpulan data yang disimpan dengan nama dan biasanya memiliki ekstensi."
+    },
+    {
+      "term": "Folder",
+      "definition": "Wadah yang mengelompokkan file dan folder lain."
+    },
+    {
+      "term": "Path",
+      "definition": "Alamat lengkap atau relatif yang menunjukkan lokasi file atau folder."
+    },
+    {
+      "term": "Working directory",
+      "definition": "Folder tempat terminal saat ini menjalankan perintah."
+    }
+  ],
+  "syntax": [
+    {
+      "token": "pwd",
+      "readAs": "Tampilkan jalur folder tempat terminal berada saat ini.",
+      "meaning": "pwd adalah singkatan dari print working directory. Perintah ini tidak mengubah apa pun; ia hanya memberi tahu posisi Anda.",
+      "example": "pwd",
+      "output": "/home/rani/proyek-latihan",
+      "pitfall": "Di PowerShell, perintah yang setara adalah Get-Location. Pastikan Anda tahu shell yang sedang dipakai."
+    },
+    {
+      "token": "cd nama-folder",
+      "readAs": "Pindah ke folder bernama nama-folder di dalam folder saat ini.",
+      "meaning": "cd mengubah working directory. Gunakan cd .. untuk naik satu tingkat dan cd / untuk menuju akar sistem.",
+      "example": "cd proyek-latihan",
+      "output": "Prompt terminal menunjukkan folder proyek-latihan.",
+      "pitfall": "Nama folder yang memuat spasi harus diapit tanda kutip, misalnya cd \"proyek baru\"."
+    },
+    {
+      "token": "mkdir catatan",
+      "readAs": "Buat folder baru bernama catatan di folder saat ini.",
+      "meaning": "mkdir membuat satu folder. Jika folder induk belum ada, beberapa shell memerlukan opsi tambahan seperti -p.",
+      "example": "mkdir catatan",
+      "output": "Folder catatan muncul di dalam folder kerja.",
+      "pitfall": "Membuat folder di lokasi yang salah karena tidak memeriksa pwd lebih dulu. Selalu pastikan posisi sebelum membuat atau menghapus."
+    }
+  ],
+  "conventions": [
+    "Gunakan jalur relatif di dalam proyek agar perintah tetap bekerja ketika folder dipindahkan.",
+    "Akhiri nama folder proyek dengan garis miring saat menyalin jalur untuk memperjelas bahwa itu folder.",
+    "Apit nama yang memuat spasi dengan tanda kutip agar shell membacanya sebagai satu argumen.",
+    "Jalankan pwd atau Get-Location sebelum perintah yang mengubah atau menghapus banyak berkas.",
+    "Bedakan pemisah jalur Windows (backslash) dari macOS dan Linux (garis miring). Dokumentasi sering memakai gaya Unix.",
+    "Simpan perintah yang sering dipakai di catatan proyek, bukan di riwayat terminal yang mudah hilang."
+  ],
+  "sections": [
+    {
+      "id": "cara-membaca",
+      "title": "Cara membaca jalur dan posisi terminal",
+      "body": [
+        "Terminal selalu berada di sebuah folder. Prompt biasanya menampilkan nama folder itu, tetapi tampilannya berbeda di setiap shell. Sebelum menjalankan perintah yang mengubah berkas, pastikan posisi Anda dengan pwd. Kesalahan paling umum bukan salah perintah, melainkan menjalankan perintah yang benar di folder yang salah.",
+        "Jalur absolut dimulai dari akar sistem, misalnya C:\\Users\\rani\\proyek di Windows atau /home/rani/proyek di Linux. Jalur relatif dimulai dari folder saat ini, misalnya catatan.md atau ../aset/logo.png. Titik tunggal berarti folder saat ini, dua titik berarti folder induk. Memahami dua titik membantu Anda keluar dari folder tanpa menyalin jalur panjang.",
+        "Saat membaca jalur, baca dari kiri ke kanan sebagai rangkaian folder. Setiap pemisah membuka satu tingkat. Nama terakhir adalah berkas atau folder tujuan. Jika jalur terlihat panjang, pecah menjadi beberapa bagian dan periksa satu per satu, terutama ketika muncul pesan bahwa berkas tidak ditemukan."
+      ],
+      "callouts": [
+        {
+          "tone": "warn",
+          "title": "Periksa sebelum menghapus",
+          "body": "Jalankan pwd dan tampilkan isi folder sebelum perintah hapus. Satu salah ketik pada jalur dapat menghapus berkas di folder yang salah."
+        }
+      ],
+      "checkpoint": {
+        "prompt": "Jelaskan perbedaan C:\\Users\\rani\\proyek\\catatan.md dan ./catatan.md. Dalam kondisi apa Anda memilih jalur relatif?",
+        "success": "Anda menjelaskan bahwa jalur pertama absolut dan jalur kedua relatif terhadap folder saat ini, serta memilih jalur relatif agar proyek mudah dipindahkan."
+      }
+    },
+    {
+      "id": "file-folder",
+      "title": "File, folder, dan ekstensi",
+      "body": [
+        "File adalah unit data yang disimpan oleh sistem operasi. Nama file biasanya terdiri dari nama utama dan ekstensi, misalnya catatan.txt. Ekstensi membantu sistem dan aplikasi menebak jenis data, tetapi ekstensi bukan jaminan isi file. File bernama gambar.png bisa saja berisi teks jika seseorang mengganti namanya.",
+        "Folder mengelompokkan file. Folder dapat berisi folder lain sehingga terbentuk hierarki. Hierarki ini memungkinkan Anda memisahkan proyek, dokumentasi, gambar, dan arsip. Tanpa struktur, folder Unduhan akan cepat berisi ratusan file dengan nama yang mirip dan sulit ditemukan kembali.",
+        "Nama file yang baik menjelaskan isi dan konteks. Gunakan huruf kecil, pisahkan kata dengan tanda hubung, dan hindari spasi serta karakter khusus untuk file proyek. Contoh yang baik adalah catatan-rapat-2026-10-28.md. Nama ini mudah dibaca, mudah diurutkan, dan aman dipakai di terminal.",
+        "Ekstensi umum yang akan Anda temui: .html untuk halaman web, .css untuk gaya, .js untuk JavaScript, .json untuk data terstruktur, .php untuk PHP, .sql untuk query, dan .md untuk dokumentasi Markdown. Mengenali ekstensi membantu Anda memilih aplikasi dan membaca error."
+      ],
+      "callouts": [
+        {
+          "tone": "bad",
+          "title": "Kesalahan umum",
+          "body": "Mengganti ekstensi untuk mengubah format file. Mengganti nama .txt menjadi .pdf tidak mengubah isi file dan sering membuat file tidak bisa dibuka."
+        }
+      ],
+      "checkpoint": {
+        "prompt": "Sebutkan nama file proyek yang baik dan jelaskan mengapa nama itu lebih aman daripada nama dengan spasi.",
+        "success": "Anda menyebut huruf kecil, tanda hubung, tanggal, atau konteks isi."
+      }
+    },
+    {
+      "id": "path",
+      "title": "Path absolut dan relatif",
+      "body": [
+        "Path adalah alamat lokasi. Path absolut dimulai dari akar sistem, misalnya C:\\proyek\\latihan atau /home/nama/proyek. Path relatif dihitung dari working directory, misalnya latihan atau ../gambar. Path relatif lebih pendek, tetapi bergantung pada posisi terminal saat ini.",
+        "Tanda titik mewakili folder saat ini. Dua titik mewakili folder induk. Jadi ./catatan.txt berarti file catatan di folder saat ini, sedangkan ../catatan.txt berarti file di folder satu tingkat di atas. Memahami dua simbol ini mencegah banyak error file tidak ditemukan.",
+        "Saat menulis path, perhatikan pemisah folder. Windows secara historis memakai backslash, sedangkan macOS dan Linux memakai slash. Banyak alat modern menerima slash di semua sistem. Untuk dokumentasi proyek, gunakan slash agar contoh mudah dibaca dan lebih portabel.",
+        "Jika path mengandung spasi, terminal dapat menganggapnya sebagai dua argumen. Bungkus path dengan tanda kutip, misalnya \"folder proyek\". Namun untuk proyek pemrograman, lebih baik hindari spasi sejak awal agar perintah tidak perlu kutip dan alat lain tidak bingung."
+      ],
+      "callouts": [
+        {
+          "tone": "good",
+          "title": "Aturan praktis",
+          "body": "Gunakan path relatif di dalam proyek dan path absolut hanya saat merujuk alat atau lokasi di luar proyek."
+        }
+      ],
+      "checkpoint": {
+        "prompt": "Apa perbedaan ./data dan ../data?",
+        "success": "Anda menjelaskan bahwa ./data ada di folder saat ini, sedangkan ../data ada di folder induk."
+      }
+    },
+    {
+      "id": "terminal",
+      "title": "Terminal dan perintah dasar",
+      "body": [
+        "Terminal adalah antarmuka teks untuk menjalankan perintah. Anda mengetik perintah, menekan Enter, lalu membaca output. Terminal terasa menakutkan karena tidak ada tombol, tetapi justru lebih presisi dan mudah dicatat. Perintah yang sama dapat diulang dan dipakai di dokumentasi.",
+        "Perintah dasar yang perlu Anda kuasai adalah pwd untuk melihat posisi, ls untuk melihat isi folder, cd untuk berpindah, mkdir untuk membuat folder, dan touch untuk membuat file kosong. Untuk menyalin, memindahkan, dan menghapus, gunakan cp, mv, dan rm. Nama perintah bisa sedikit berbeda di Windows PowerShell, tetapi konsepnya sama.",
+        "Sebelum menghapus, biasakan melihat daftar file dan memastikan posisi Anda. Perintah rm tidak memindahkan file ke Recycle Bin pada banyak sistem. Setelah file dihapus dari terminal, pemulihan bisa sulit atau tidak mungkin. Karena itu, periksa path dua kali dan hindari wildcard yang terlalu luas.",
+        "Gunakan tab completion untuk melengkapi nama file dan mengurangi salah ketik. Gunakan panah atas untuk mengulang perintah sebelumnya. Gunakan Ctrl+C untuk menghentikan perintah yang berjalan terlalu lama. Kebiasaan kecil ini membuat terminal terasa jauh lebih aman."
+      ],
+      "code": {
+        "language": "bash",
+        "code": "pwd\nls\nmkdir proyek-latihan\ncd proyek-latihan\nmkdir catatan aset\nls -la",
+        "output": "Daftar file dan folder pada folder proyek-latihan.",
+        "explain": "Jalankan satu perintah pada satu waktu, lalu baca output sebelum melanjutkan.",
+        "lab": false,
+        "annotations": [
+          {
+            "line": 1,
+            "code": "pwd",
+            "note": "Menampilkan folder tempat terminal berada sebelum ada perubahan."
+          },
+          {
+            "line": 2,
+            "code": "ls",
+            "note": "Menampilkan isi folder saat ini. Di Windows PowerShell, perintah setara adalah dir."
+          },
+          {
+            "line": 3,
+            "code": "mkdir proyek-latihan",
+            "note": "Membuat folder baru di lokasi saat ini."
+          },
+          {
+            "line": 4,
+            "code": "cd proyek-latihan",
+            "note": "Masuk ke folder yang baru dibuat. Prompt biasanya ikut berubah."
+          },
+          {
+            "line": 5,
+            "code": "mkdir catatan aset",
+            "note": "Membuat dua folder sekaligus: catatan dan aset."
+          },
+          {
+            "line": 6,
+            "code": "ls -la",
+            "note": "Menampilkan isi folder secara rinci, termasuk berkas tersembunyi."
+          }
+        ]
+      },
+      "callouts": [
+        {
+          "tone": "bad",
+          "title": "Jangan lakukan ini",
+          "body": "Menjalankan perintah hapus dengan wildcard di folder yang salah. Pastikan posisi dan daftar file sebelum menghapus."
+        }
+      ],
+      "checkpoint": {
+        "prompt": "Tuliskan urutan perintah untuk membuat folder proyek, masuk ke folder itu, lalu membuat dua subfolder.",
+        "success": "Urutan Anda menggunakan mkdir, cd, dan mkdir lagi dengan nama yang jelas."
+      }
+    },
+    {
+      "id": "struktur-proyek",
+      "title": "Struktur folder proyek",
+      "body": [
+        "Struktur folder yang konsisten mengurangi kebingungan. Untuk proyek kecil, Anda bisa memakai folder src untuk kode, docs untuk catatan, dan assets untuk gambar. Untuk proyek web, folder public dapat menyimpan file yang diakses browser, sedangkan folder tests menyimpan pengujian.",
+        "Jangan membuat struktur terlalu dalam sebelum ada kebutuhan. Folder kosong yang tidak dipakai hanya menambah beban mental. Mulai dari struktur sederhana, lalu tambahkan folder ketika jumlah file mulai sulit dikelola. Struktur yang baik mengikuti isi proyek, bukan mode atau tutorial tertentu.",
+        "Simpan proyek di lokasi yang mudah dicadangkan dan tidak otomatis disinkronkan oleh layanan yang tidak Anda pahami. Sinkronisasi otomatis dapat menyebabkan konflik file, terutama jika proyek memakai Git. Jika Anda memakai cloud, pastikan Anda tahu kapan file diunggah dan bagaimana konflik diselesaikan.",
+        "Buat satu folder induk khusus untuk belajar, misalnya proyek. Di dalamnya, buat subfolder per latihan dengan nama yang deskriptif. Kebiasaan ini membuat Anda mudah kembali ke latihan lama dan membandingkan perkembangan."
+      ],
+      "callouts": [
+        {
+          "tone": "good",
+          "title": "Struktur awal",
+          "body": "proyek/latihan-html-dasar/ berisi index.html, styles.css, dan catatan.md. Tambahkan folder hanya saat file bertambah."
+        }
+      ],
+      "checkpoint": {
+        "prompt": "Mengapa struktur folder sebaiknya dibuat sederhana terlebih dahulu?",
+        "success": "Anda menyebut pengurangan beban mental dan penambahan folder berdasarkan kebutuhan."
+      }
+    },
+    {
+      "id": "aman",
+      "title": "Bekerja dengan aman",
+      "body": [
+        "Sebelum memindahkan atau menghapus banyak file, buat salinan. Untuk proyek kode, Git adalah alat utama untuk menyimpan riwayat, tetapi Git belum Anda pelajari di modul ini. Untuk sementara, salin folder proyek ke lokasi backup dengan nama yang menyertakan tanggal.",
+        "Hindari menjalankan perintah yang Anda tidak pahami hanya karena ditemukan di internet. Perintah seperti rm -rf dapat menghapus folder beserta isinya tanpa konfirmasi. Baca dokumentasi, pahami argumennya, dan uji pada folder latihan sebelum memakai data penting.",
+        "Jika terminal menampilkan permission denied, jangan langsung menambahkan sudo atau menjalankan sebagai administrator. Periksa pemilik file, izin, dan lokasi. Menggunakan akses berlebih dapat memperburuk masalah dan menciptakan risiko keamanan.",
+        "Biasakan menutup terminal yang tidak dipakai dan memeriksa working directory sebelum menjalankan perintah yang mengubah file. Kebiasaan ini terlihat sepele, tetapi mencegah banyak kecelakaan yang tidak bisa dibatalkan.",
+        "Jika Anda ragu, berhenti dan buat salinan. Rasa ragu adalah sinyal yang sehat, bukan tanda kelemahan. Waktu yang dipakai untuk memeriksa path dan membuat backup jauh lebih kecil daripada waktu yang dibutuhkan untuk memulihkan proyek yang salah hapus. Kebiasaan ini akan terus berguna ketika proyek Anda semakin besar."
+      ],
+      "checkpoint": {
+        "prompt": "Sebutkan dua pemeriksaan sebelum menjalankan perintah yang menghapus file.",
+        "success": "Anda menyebut memeriksa working directory dan daftar file yang akan terkena perintah."
+      }
+    },
+    {
+      "id": "kebiasaan-terminal",
+      "title": "Mencatat dan mengulang perintah",
+      "body": [
+        "Terminal menjadi jauh lebih berguna jika Anda mencatat perintah yang sering dipakai. Buat file catatan berisi perintah untuk membuka folder proyek, menjalankan aplikasi, dan memeriksa isi folder. Jangan menghafal semuanya. Yang penting adalah memahami fungsi dan argumen perintah, lalu menyalin dengan hati-hati.",
+        "Gunakan riwayat perintah untuk mengulang pekerjaan. Di banyak terminal, tombol panah atas menampilkan perintah sebelumnya. Anda juga dapat mencari riwayat dengan Ctrl+R. Sebelum menekan Enter, baca kembali perintah yang muncul. Perintah yang benar kemarin bisa berbahaya hari ini jika working directory sudah berbeda.",
+        "Biasakan menulis perintah dalam beberapa langkah kecil. Daripada menjalankan rantai perintah panjang yang mengubah banyak file, jalankan satu perintah, periksa output, lalu lanjutkan. Jika terjadi kesalahan, Anda tahu langkah mana yang menyebabkan masalah. Langkah kecil juga lebih mudah didokumentasikan dan diulang oleh orang lain.",
+        "Simpan catatan terminal di dalam proyek, misalnya docs/terminal.md. Tuliskan perintah, tujuan, dan contoh output yang diharapkan. Dokumentasi kecil ini akan sangat membantu ketika Anda kembali ke proyek setelah beberapa minggu dan lupa cara menjalankannya.",
+        "Jika Anda bekerja di Windows, pelajari juga PowerShell karena perintah seperti Get-ChildItem dan Set-Location memiliki nama berbeda dari ls dan cd. Jangan panik ketika tutorial memakai perintah yang tidak dikenal. Cari padanannya di dokumentasi resmi, lalu tuliskan perbedaannya di catatan proyek. Konsep working directory, path, dan argumen tetap sama.",
+        "Satu kebiasaan terakhir: tutup terminal dengan sadar. Sebelum menutup, pastikan tidak ada proses penting yang masih berjalan. Jika Anda menjalankan server lokal, hentikan dengan Ctrl+C terlebih dahulu. Menutup jendela secara paksa dapat meninggalkan proses latar belakang yang mengunci port dan membuat perintah berikutnya gagal."
+      ],
+      "callouts": [
+        {
+          "tone": "good",
+          "title": "Kebiasaan aman",
+          "body": "Jalankan satu perintah, baca output, lalu lanjutkan. Jangan menyalin rantai perintah panjang dari internet tanpa memahami setiap bagian."
+        }
+      ],
+      "checkpoint": {
+        "prompt": "Mengapa mencatat perintah lebih berguna daripada hanya menghafal?",
+        "success": "Anda menyebut dokumentasi, pengulangan, dan pengurangan kesalahan."
+      }
+    }
+  ],
+  "practice": [
+    {
+      "id": "latihan-1",
+      "title": "Latihan path",
+      "task": "Dari folder proyek, tuliskan path relatif menuju file docs/catatan.md dan folder induk.",
+      "steps": [
+        "Tentukan working directory.",
+        "Tulis path relatif tanpa melihat jawaban.",
+        "Periksa dengan perintah ls atau cd."
+      ],
+      "expected": "Dua path yang dapat dibuka dari terminal.",
+      "stretch": "Buat file dengan nama mengandung spasi, lalu buka dengan tanda kutip.",
+      "level": "guided",
+      "hints": [
+        "Gunakan pwd untuk melihat posisi awal sebelum berpindah.",
+        "Coba cd .. lalu pwd lagi untuk memahami efeknya.",
+        "Kembali ke folder proyek dengan jalur relatif, bukan jalur absolut."
+      ],
+      "starterCode": "pwd\ncd ..\npwd\ncd proyek-latihan\npwd",
+      "verification": {
+        "command": "Jalankan urutan perintah di terminal.",
+        "expected": "Anda dapat menjelaskan posisi setiap kali pwd dijalankan dan kembali ke folder proyek.",
+        "evidence": "Catat posisi awal, posisi setelah cd .., dan posisi akhir."
+      }
+    },
+    {
+      "id": "latihan-2",
+      "title": "Struktur proyek",
+      "task": "Buat folder proyek/latihan-terminal dengan subfolder src, docs, dan assets.",
+      "steps": [
+        "Buat folder induk proyek.",
+        "Masuk ke folder tersebut.",
+        "Buat tiga subfolder dan tampilkan isinya."
+      ],
+      "expected": "Struktur folder terlihat di output ls.",
+      "stretch": "Tambahkan file README.md dan tuliskan tujuan latihan.",
+      "level": "independent",
+      "hints": [
+        "Buat satu folder proyek dengan subfolder src, catatan, dan aset.",
+        "Gunakan mkdir dari folder proyek, bukan dari folder home.",
+        "Tampilkan struktur folder dengan ls -R atau tree bila tersedia."
+      ],
+      "starterCode": "proyek-belajar/\n  src/\n  catatan/\n  aset/",
+      "verification": {
+        "command": "Buat struktur folder lalu tampilkan isinya.",
+        "expected": "Tiga subfolder berada di dalam proyek-belajar dan tidak ada folder yang salah lokasi.",
+        "evidence": "Simpan tangkapan layar atau salinan output terminal."
+      }
+    },
+    {
+      "id": "latihan-3",
+      "title": "Simulasi pembersihan",
+      "task": "Buat tiga file latihan, lalu tulis rencana menghapus hanya satu file tanpa menyentuh file lain.",
+      "steps": [
+        "Buat file a.txt, b.txt, dan c.txt.",
+        "Tulis perintah yang menyasar hanya b.txt.",
+        "Jelaskan mengapa wildcard tidak dipakai."
+      ],
+      "expected": "Satu perintah hapus yang spesifik dan alasan keamanannya.",
+      "stretch": "Pindahkan file yang tersisa ke folder arsip, bukan menghapusnya.",
+      "level": "transfer",
+      "hints": [
+        "Buat folder latihan berisi beberapa berkas dummy.",
+        "Tentukan berkas yang akan dipindahkan dan tuliskan jalur tujuannya lebih dulu.",
+        "Periksa isi folder sebelum dan sesudah perintah."
+      ],
+      "starterCode": "mkdir latihan-pindah\ncd latihan-pindah\nmkdir arsip\n# Pindahkan satu berkas ke arsip, lalu periksa hasilnya.",
+      "verification": {
+        "command": "Pindahkan satu berkas dan bandingkan isi folder sebelum serta sesudahnya.",
+        "expected": "Berkas berpindah ke folder tujuan dan tidak ada berkas yang hilang.",
+        "evidence": "Catat perintah, jalur sumber, jalur tujuan, dan hasil pemeriksaan."
+      }
+    }
+  ],
+  "verification": {
+    "mode": "terminal",
+    "command": "Jalankan Latihan 3 di terminal, lalu tampilkan struktur folder akhir.",
+    "expected": "Berkas berpindah ke folder yang benar, tidak ada error jalur, dan Anda dapat menjelaskan perbedaan jalur absolut serta relatif.",
+    "evidence": "Simpan perintah, output, dan struktur folder akhir di catatan belajar."
+  },
+  "troubleshooting": [
+    {
+      "symptom": "Muncul pesan command not found atau istilah serupa.",
+      "cause": "Perintah tidak tersedia di shell yang dipakai, atau penulisannya berbeda antar sistem operasi.",
+      "fix": "Periksa shell yang aktif dan gunakan padanan perintahnya. Di PowerShell, ls dan dir sama-sama dikenali, tetapi opsi seperti -la berbeda."
+    },
+    {
+      "symptom": "Folder tidak ditemukan padahal namanya terlihat benar.",
+      "cause": "Anda berada di folder yang salah, atau nama folder memuat spasi tanpa tanda kutip.",
+      "fix": "Jalankan pwd, tampilkan isi folder, lalu apit nama yang memuat spasi dengan tanda kutip."
+    },
+    {
+      "symptom": "Berkas terhapus padahal hanya ingin memindahkannya.",
+      "cause": "Jalur sumber dan tujuan tertukar, atau perintah dijalankan dari folder yang salah.",
+      "fix": "Hentikan pekerjaan, periksa tempat sampah atau cadangan, lalu ulangi dengan menulis jalur sumber dan tujuan secara eksplisit."
+    },
+    {
+      "symptom": "Perintah berhasil di tutorial, tetapi gagal di komputer Anda.",
+      "cause": "Tutorial memakai macOS atau Linux, sedangkan Anda memakai Windows, atau sebaliknya.",
+      "fix": "Cari padanan perintah untuk sistem operasi Anda dan perhatikan perbedaan pemisah jalur serta opsi shell."
+    }
+  ],
+  "quiz": {
+    "questions": [
+      {
+        "id": "q1",
+        "type": "recall",
+        "question": "Perintah untuk melihat working directory saat ini adalah apa?",
+        "options": [
+          "pwd",
+          "ls",
+          "cd"
+        ],
+        "answer": 0,
+        "explanation": "pwd adalah singkatan dari print working directory."
+      },
+      {
+        "id": "q2",
+        "type": "scenario",
+        "question": "Anda berada di folder proyek dan ingin membuka file catatan.md di folder docs. Path relatif yang tepat adalah apa?",
+        "options": [
+          "../docs/catatan.md",
+          "docs/catatan.md",
+          "C:/docs/catatan.md"
+        ],
+        "answer": 1,
+        "explanation": "Dari folder proyek, subfolder docs berada satu tingkat di bawah, sehingga path relatifnya docs/catatan.md."
+      },
+      {
+        "id": "q3",
+        "type": "scenario",
+        "question": "Mengapa perintah hapus dengan wildcard berisiko?",
+        "options": [
+          "Karena wildcard selalu gagal",
+          "Karena wildcard dapat mencocokkan lebih banyak file daripada yang Anda perkirakan",
+          "Karena terminal tidak mendukung wildcard"
+        ],
+        "answer": 1,
+        "explanation": "Wildcard dapat mencocokkan banyak file sekaligus, sehingga kesalahan pola dapat menghapus data yang tidak dimaksudkan."
+      }
+    ]
+  },
+  "resources": [
+    {
+      "sourceId": "mdn-command-line",
+      "note": "Pengantar terminal, path, dan perintah file untuk pemula."
+    },
+    {
+      "sourceId": "ms-windows-commands",
+      "note": "Referensi resmi perintah Windows untuk navigasi dan pengelolaan file."
+    }
+  ],
+  "summary": [
+    "Berkas adalah data, folder adalah wadah, dan jalur menunjukkan lokasi keduanya.",
+    "Jalur absolut dimulai dari akar sistem; jalur relatif dimulai dari folder saat ini.",
+    "Terminal bekerja pada satu folder aktif, sehingga pwd harus diperiksa sebelum perintah yang berisiko.",
+    "Struktur folder proyek yang konsisten membuat perintah, cadangan, dan kolaborasi lebih mudah."
+  ],
+  "next": "Berikutnya: internet, IP, DNS, dan HTTP/HTTPS. Anda akan melacak perjalanan satu permintaan dari browser sampai server."
+}

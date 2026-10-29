@@ -1,0 +1,169 @@
+{
+  "id": "m09",
+  "title": "API dan Arsitektur Aplikasi",
+  "subtitle": "Kontrak antara web, backend, dan Flutter",
+  "weeks": [
+    32,
+    34
+  ],
+  "accent": "#14b8a6",
+  "goal": "Mendefinisikan API yang konsisten dan membangun integrasi yang dapat ditangani saat gagal.",
+  "lessons": [
+    {
+      "id": "m09-l01",
+      "title": "REST resource dan HTTP status",
+      "minutes": 45,
+      "level": "Menengah",
+      "intro": "REST mengorganisasi endpoint berdasarkan resource seperti /api/tasks. Gunakan 200/201 untuk sukses, 400/422 untuk input salah, 401 belum login, 403 tidak berhak, 404 tidak ditemukan, 500 error server.",
+      "explanation": "HTTP status bukan sekadar dekorasi; klien memerlukan status untuk menentukan alur UI. Hindari endpoint yang mengubah data saat GET atau semua error dikembalikan 200.",
+      "code": "GET /api/tasks\nPOST /api/tasks\nGET /api/tasks/123\nPATCH /api/tasks/123\nDELETE /api/tasks/123",
+      "codeLanguage": "http",
+      "practice": [
+        "Rancang daftar endpoint aplikasi catatan lengkap dengan method dan status utamanya.",
+        "Ubah satu input atau asumsi pada contoh, catat hasil dan jelaskan alasannya."
+      ],
+      "bestPractice": "Gunakan status HTTP sesuai makna dan konsisten antar endpoint.",
+      "commonMistake": "Mengembalikan HTTP 200 dengan status error di payload untuk semua masalah.",
+      "quiz": {
+        "question": "Apa prinsip yang paling tepat untuk topik “REST resource dan HTTP status”?",
+        "options": [
+          "Gunakan status HTTP sesuai makna dan konsisten antar endpoint.",
+          "Gunakan solusi paling rumit sejak awal, meski kebutuhan belum jelas.",
+          "Lewati pengujian karena contoh kecil pasti benar."
+        ],
+        "answer": 0,
+        "explanation": "Gunakan status HTTP sesuai makna dan konsisten antar endpoint."
+      }
+    },
+    {
+      "id": "m09-l02",
+      "title": "API contract, versioning, dan dokumentasi",
+      "minutes": 45,
+      "level": "Menengah",
+      "intro": "API contract mendefinisikan field, tipe, validasi, status, dan bentuk error. Dokumentasikan sebagai OpenAPI atau contoh request-response yang jelas.",
+      "explanation": "Bila banyak klien bergantung pada API, pertimbangkan versioning dan perubahan backward-compatible. Pertahankan nama field yang konsisten.",
+      "code": "{\n  \"data\": {\"id\": 42, \"title\": \"Belajar\", \"done\": false},\n  \"meta\": {\"version\": \"v1\"}\n}",
+      "codeLanguage": "json",
+      "practice": [
+        "Tulis spesifikasi request-response lengkap untuk POST /api/tasks.",
+        "Ubah satu input atau asumsi pada contoh, catat hasil dan jelaskan alasannya."
+      ],
+      "bestPractice": "Dokumentasikan kontrak dan hindari breaking change tanpa rencana migrasi.",
+      "commonMistake": "Mengubah nama field API tanpa menyesuaikan mobile yang sudah dirilis.",
+      "quiz": {
+        "question": "Apa prinsip yang paling tepat untuk topik “API contract, versioning, dan dokumentasi”?",
+        "options": [
+          "Dokumentasikan kontrak dan hindari breaking change tanpa rencana migrasi.",
+          "Gunakan solusi paling rumit sejak awal, meski kebutuhan belum jelas.",
+          "Lewati pengujian karena contoh kecil pasti benar."
+        ],
+        "answer": 0,
+        "explanation": "Dokumentasikan kontrak dan hindari breaking change tanpa rencana migrasi."
+      }
+    },
+    {
+      "id": "m09-l03",
+      "title": "Filter, pagination, dan idempotency",
+      "minutes": 45,
+      "level": "Menengah",
+      "intro": "Endpoint daftar memerlukan pagination, sorting, dan filter terkontrol. Idempotency berarti permintaan identik punya dampak sama ketika diulang, penting untuk pembayaran dan request retried.",
+      "explanation": "Jangan memuat jutaan baris sekaligus. Batasi page size. Pakai key idempotency untuk proses create kritis bila risiko retry menggandakan transaksi.",
+      "code": "GET /api/tasks?status=done&page=2&per_page=20\n# Response: data[], links{}, meta{page,total}",
+      "codeLanguage": "http",
+      "practice": [
+        "Tambahkan parameter filter status, search, dan pagination untuk endpoint daftar.",
+        "Ubah satu input atau asumsi pada contoh, catat hasil dan jelaskan alasannya."
+      ],
+      "bestPractice": "Batasi ukuran respons dan pikirkan duplicate request ketika jaringan putus.",
+      "commonMistake": "Membuat transaksi ganda ketika aplikasi mobile mengirim ulang request.",
+      "quiz": {
+        "question": "Apa prinsip yang paling tepat untuk topik “Filter, pagination, dan idempotency”?",
+        "options": [
+          "Batasi ukuran respons dan pikirkan duplicate request ketika jaringan putus.",
+          "Gunakan solusi paling rumit sejak awal, meski kebutuhan belum jelas.",
+          "Lewati pengujian karena contoh kecil pasti benar."
+        ],
+        "answer": 0,
+        "explanation": "Batasi ukuran respons dan pikirkan duplicate request ketika jaringan putus."
+      }
+    },
+    {
+      "id": "m09-l04",
+      "title": "Auth API, token, dan CORS",
+      "minutes": 45,
+      "level": "Menengah",
+      "intro": "Autentikasi API bisa menggunakan cookie session untuk web satu domain atau token akses untuk klien native; pilihan bergantung arsitektur. CORS mengatur akses browser lintas origin, bukan menggantikan autentikasi.",
+      "explanation": "Gunakan HTTPS, token pendek dan rotasi/revokasi yang sesuai. Flutter native tidak tunduk pada CORS browser seperti web. Jangan memasukkan API key rahasia ke paket mobile.",
+      "code": "Authorization: Bearer <access-token>\n# Header contoh, token harus dilindungi.",
+      "codeLanguage": "http",
+      "practice": [
+        "Buat threat model sederhana untuk penyimpanan token pada browser vs perangkat mobile.",
+        "Ubah satu input atau asumsi pada contoh, catat hasil dan jelaskan alasannya."
+      ],
+      "bestPractice": "Pilih skema auth berdasarkan jenis klien; tetap wajib authorize tiap resource.",
+      "commonMistake": "Menganggap CORS melindungi API dari semua klien tak sah.",
+      "quiz": {
+        "question": "Apa prinsip yang paling tepat untuk topik “Auth API, token, dan CORS”?",
+        "options": [
+          "Pilih skema auth berdasarkan jenis klien; tetap wajib authorize tiap resource.",
+          "Gunakan solusi paling rumit sejak awal, meski kebutuhan belum jelas.",
+          "Lewati pengujian karena contoh kecil pasti benar."
+        ],
+        "answer": 0,
+        "explanation": "Pilih skema auth berdasarkan jenis klien; tetap wajib authorize tiap resource."
+      }
+    },
+    {
+      "id": "m09-l05",
+      "title": "Error handling, timeout, dan retry",
+      "minutes": 45,
+      "level": "Menengah",
+      "intro": "Jaringan selalu dapat gagal: timeout, offline, 429, 500, dan koneksi putus. UI memerlukan loading, empty, error, success; retry harus berhati-hati dengan request mutasi.",
+      "explanation": "Gunakan exponential backoff untuk kegagalan sementara dan batas percobaan. Jelaskan kepada pengguna apa yang tersimpan lokal dan apa yang belum tersinkron.",
+      "code": "try {\n  // await api.getTasks();\n  console.log(\"Data siap\");\n} catch (error) {\n  console.error(\"Gagal memuat, coba lagi\", error);\n}",
+      "codeLanguage": "javascript",
+      "practice": [
+        "Rancang alur offline lalu online untuk membuat tugas di Flutter.",
+        "Ubah satu input atau asumsi pada contoh, catat hasil dan jelaskan alasannya."
+      ],
+      "bestPractice": "Beri pesan error jelas dan hindari pengulangan mutasi tanpa idempotency.",
+      "commonMistake": "Retry otomatis POST pembayaran tanpa proteksi duplikasi.",
+      "quiz": {
+        "question": "Apa prinsip yang paling tepat untuk topik “Error handling, timeout, dan retry”?",
+        "options": [
+          "Beri pesan error jelas dan hindari pengulangan mutasi tanpa idempotency.",
+          "Gunakan solusi paling rumit sejak awal, meski kebutuhan belum jelas.",
+          "Lewati pengujian karena contoh kecil pasti benar."
+        ],
+        "answer": 0,
+        "explanation": "Beri pesan error jelas dan hindari pengulangan mutasi tanpa idempotency."
+      }
+    },
+    {
+      "id": "m09-l06",
+      "title": "Arsitektur monolith modular vs microservices",
+      "minutes": 45,
+      "level": "Menengah",
+      "intro": "Monolith modular menyatukan beberapa domain dalam satu aplikasi/deployment dengan batas modul jelas. Microservices memerlukan operasi, observability, dan konsistensi terdistribusi lebih rumit.",
+      "explanation": "Untuk tim kecil dan aplikasi tahap awal, Laravel modular monolith sering lebih sederhana. Terapkan pemisahan tanggung jawab, testing, serta kontrak API sebelum mempertimbangkan distribusi layanan.",
+      "code": "// Lapisan umum:\n// UI -> Controller -> Service -> Repository/ORM -> DB\n// Pisahkan domain: Users, Tasks, Reports.",
+      "codeLanguage": "javascript",
+      "practice": [
+        "Rancang modul untuk aplikasi presensi, inventaris, dan pelaporan; tentukan batas domain.",
+        "Ubah satu input atau asumsi pada contoh, catat hasil dan jelaskan alasannya."
+      ],
+      "bestPractice": "Mulai dengan arsitektur sederhana dan evolusikan berdasarkan kebutuhan terukur.",
+      "commonMistake": "Memakai microservices sebelum memiliki kebutuhan operasional yang jelas.",
+      "quiz": {
+        "question": "Apa prinsip yang paling tepat untuk topik “Arsitektur monolith modular vs microservices”?",
+        "options": [
+          "Mulai dengan arsitektur sederhana dan evolusikan berdasarkan kebutuhan terukur.",
+          "Gunakan solusi paling rumit sejak awal, meski kebutuhan belum jelas.",
+          "Lewati pengujian karena contoh kecil pasti benar."
+        ],
+        "answer": 0,
+        "explanation": "Mulai dengan arsitektur sederhana dan evolusikan berdasarkan kebutuhan terukur."
+      }
+    }
+  ]
+}

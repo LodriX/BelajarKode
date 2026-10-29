@@ -1,0 +1,405 @@
+{
+  "id": "m00-l05",
+  "title": "Akun, kata sandi, pengelola kata sandi, dan verifikasi dua langkah",
+  "minutes": 90,
+  "level": "Dasar",
+  "depth": "fondasi",
+  "schema": 3.1,
+  "codeLanguage": "text",
+  "outcome": "Setelah pelajaran ini, Anda dapat menyusun inventaris akun penting, membedakan kata sandi dengan passphrase, memakai pengelola kata sandi untuk kredensial unik, serta memasang verifikasi dua langkah dan recovery code yang benar-benar dapat dipakai saat darurat.",
+  "objectives": [
+    "Membuat inventaris akun penting dan menentukan akun yang menjadi kunci pemulihan.",
+    "Menjelaskan risiko penggunaan ulang kata sandi serta membedakan kata sandi dengan passphrase.",
+    "Menggunakan password manager untuk membuat, menyimpan, dan mengisi kredensial unik.",
+    "Memasang 2FA yang tahan phishing dan menyiapkan recovery code untuk keadaan darurat."
+  ],
+  "prerequisites": [
+    {
+      "label": "Berkas, folder, jalur, dan terminal dasar",
+      "lessonId": "m00-l02"
+    }
+  ],
+  "terms": [
+    {
+      "term": "Kredensial",
+      "definition": "Kombinasi identitas akun dan bukti rahasia, biasanya alamat email bersama kata sandi."
+    },
+    {
+      "term": "Credential stuffing",
+      "definition": "Serangan yang mencoba pasangan email dan kata sandi bocor ke banyak layanan lain secara otomatis."
+    },
+    {
+      "term": "Passphrase",
+      "definition": "Kata sandi panjang yang terdiri dari beberapa kata acak sehingga mudah diingat tetapi sulit ditebak."
+    },
+    {
+      "term": "Password manager",
+      "definition": "Aplikasi yang menyimpan kredensial dalam brankas terenkripsi dan dapat membuat kata sandi acak."
+    },
+    {
+      "term": "TOTP",
+      "definition": "Kode sekali pakai berbasis waktu yang dihasilkan aplikasi autentikator dari kunci rahasia bersama."
+    },
+    {
+      "term": "Security key",
+      "definition": "Perangkat keras autentikasi yang memverifikasi domain layanan dan sangat tahan terhadap phishing."
+    },
+    {
+      "term": "SIM swap",
+      "definition": "Penyalahgunaan nomor telepon dengan memindahkan SIM korban ke perangkat penyerang untuk mencuri kode SMS."
+    },
+    {
+      "term": "Recovery code",
+      "definition": "Daftar kode sekali pakai untuk masuk kembali ketika perangkat 2FA utama hilang atau rusak."
+    }
+  ],
+  "syntax": [
+    {
+      "token": "kuda-baterai-pensil-hujan",
+      "readAs": "Baca sebagai satu passphrase empat kata yang dipisahkan tanda hubung, bukan sebagai empat kata sandi terpisah.",
+      "meaning": "Passphrase memakai panjang sebagai sumber kekuatan. Empat kata acak menghasilkan ruang tebakan yang jauh lebih besar daripada satu kata pendek dengan simbol pengganti.",
+      "example": "lampu-selimut-garpu-kereta",
+      "output": "Frasa mudah diingat pemiliknya, tetapi sulit ditebak karena tidak mengikuti pola kalimat atau tahun.",
+      "pitfall": "Memakai kutipan lagu, nama keluarga, atau contoh yang sudah tertulis di artikel keamanan. Pola yang populer sudah masuk daftar tebakan penyerang."
+    },
+    {
+      "token": "TOTP: 6 angka / 30 detik",
+      "readAs": "Baca sebagai kode enam angka yang berubah setiap tiga puluh detik berdasarkan jam perangkat dan kunci rahasia.",
+      "meaning": "TOTP tidak memerlukan jaringan saat menghasilkan kode. Karena itu ia lebih tahan gangguan operator daripada SMS, tetapi tetap dapat direlay oleh situs phishing yang meminta kode secara langsung.",
+      "example": "Kode 482 913 berlaku sampai hitungan mundur habis.",
+      "output": "Kode lama ditolak setelah jendela waktu lewat; kode baru muncul otomatis di aplikasi autentikator.",
+      "pitfall": "Jam ponsel yang tidak sinkron membuat kode tampak benar tetapi ditolak server. Aktifkan waktu otomatis."
+    },
+    {
+      "token": "Recovery code: ABC1-DEF2-GHI3",
+      "readAs": "Baca sebagai kode sekali pakai untuk masuk ketika faktor kedua tidak tersedia.",
+      "meaning": "Recovery code menggantikan sementara aplikasi autentikator atau kunci fisik. Setiap kode hanya berlaku sekali, sehingga daftar harus disimpan dan diperbarui.",
+      "example": "ABCD-1234-EFGH-5678",
+      "output": "Satu kode dipakai, ditandai terpakai, dan tidak dapat dipakai lagi untuk percobaan berikutnya.",
+      "pitfall": "Menyimpan recovery code di dalam brankas yang justru memerlukan kode itu untuk dibuka, atau di catatan ponsel yang sama dengan aplikasi autentikator."
+    }
+  ],
+  "conventions": [
+    "Urutkan akun berdasarkan dampak: email utama, perbankan, akun kerja, penyimpanan cloud, lalu akun developer.",
+    "Gunakan satu kata sandi acak yang berbeda untuk setiap layanan; jangan pernah memakai ulang kata sandi email utama.",
+    "Simpan kredensial di pengelola kata sandi, bukan di spreadsheet, dokumen teks, atau buku catatan.",
+    "Aktifkan verifikasi dua langkah pada akun pengelola kata sandi sebelum memindahkan akun lain ke dalamnya.",
+    "Simpan recovery code di media offline yang terpisah dari perangkat utama dan dari brankas yang dilindunginya.",
+    "Tinjau inventaris akun setiap tiga bulan, cabut sesi lama, dan tutup akun yang benar-benar tidak dipakai."
+  ],
+  "sections": [
+    {
+      "id": "cara-membaca",
+      "title": "Cara membaca inventaris akun dan faktor kedua",
+      "body": [
+        "Inventaris akun adalah tabel kerja, bukan dokumen rahasia. Isinya nama layanan, alamat email yang dipakai, jenis faktor kedua, lokasi recovery code, dan tanggal terakhir diperiksa. Jangan menuliskan kata sandi di tabel ini. Tujuannya adalah melihat prioritas dan menemukan akun yang masih bergantung pada satu lapisan saja.",
+        "Saat membaca tabel, mulai dari kolom faktor kedua. Akun tanpa 2FA adalah pekerjaan pertama. Akun dengan SMS berada di prioritas kedua karena nomor telepon dapat dipindahkan melalui SIM swap. Akun dengan TOTP lebih baik, sedangkan security key atau passkey yang terikat domain memberi perlindungan paling kuat terhadap phishing. Barulah setelah itu periksa apakah recovery code benar-benar tersimpan.",
+        "Kolom lokasi recovery code harus menyebut tempat yang konkret, misalnya amplop di laci terkunci atau brankas fisik. Tulisan seperti nanti dicari atau ada di ponsel bukan rencana, melainkan harapan. Jika kode hanya ada di perangkat yang sama dengan aplikasi autentikator, satu perangkat hilang dapat mengunci Anda dari semua akun sekaligus."
+      ],
+      "code": {
+        "language": "text",
+        "lab": false,
+        "code": "Layanan        : Email utama\nAlamat         : rani@contoh.id\nFaktor kedua   : security key + TOTP\nRecovery code  : amplop offline di laci terkunci\nTerakhir dicek : 2026-10-20",
+        "output": "Tabel menunjukkan akun email utama memakai dua faktor kuat dan recovery code tersimpan di luar perangkat.",
+        "explain": "Lima baris ini membentuk satu baris inventaris. Perhatikan bahwa tidak ada kata sandi yang ditulis, dan lokasi recovery code disebut secara konkret.",
+        "annotations": [
+          {
+            "line": 1,
+            "code": "Layanan        : Email utama",
+            "note": "Nama layanan menentukan prioritas; email utama berada di urutan pertama."
+          },
+          {
+            "line": 2,
+            "code": "Alamat         : rani@contoh.id",
+            "note": "Alamat yang dipakai perlu dicatat karena satu orang sering memiliki beberapa email."
+          },
+          {
+            "line": 3,
+            "code": "Faktor kedua   : security key + TOTP",
+            "note": "Faktor kedua yang terikat domain lebih tahan phishing daripada kode SMS."
+          },
+          {
+            "line": 4,
+            "code": "Recovery code  : amplop offline di laci terkunci",
+            "note": "Lokasi harus konkret dan terpisah dari perangkat utama."
+          },
+          {
+            "line": 5,
+            "code": "Terakhir dicek : 2026-10-20",
+            "note": "Tanggal tinjauan membuat tabel tetap mutakhir, bukan catatan sekali pakai."
+          }
+        ]
+      },
+      "callouts": [
+        {
+          "tone": "warn",
+          "title": "Jangan simpan rahasia di tabel",
+          "body": "Inventaris hanya mencatat status dan lokasi. Kata sandi dan recovery code tetap berada di pengelola kata sandi atau media offline yang aman."
+        }
+      ],
+      "checkpoint": {
+        "prompt": "Ambil satu akun penting Anda, lalu tuliskan baris inventarisnya: layanan, alamat, faktor kedua, lokasi recovery code, dan tanggal pemeriksaan.",
+        "success": "Anda menghasilkan satu baris lengkap tanpa menuliskan kata sandi, dengan lokasi recovery code yang benar-benar dapat ditemukan saat darurat."
+      }
+    },
+    {
+      "id": "inventaris-akun",
+      "title": "Mulai dari inventaris akun",
+      "body": [
+        "Keamanan akun tidak dimulai dari kata sandi yang rumit, tetapi dari pengetahuan tentang akun apa saja yang Anda miliki. Sebagian besar orang membuka puluhan layanan selama bertahun-tahun dan lupa bahwa akun lama masih aktif. Akun yang terlupakan tetap menyimpan data pribadi, tetap dapat mengirim email atas nama Anda, dan tetap bisa menjadi jalan masuk bila kata sandinya bocor.",
+        "Email utama adalah kunci induk. Dari email itu seseorang dapat meminta pengaturan ulang kata sandi untuk hampir semua layanan lain. Karena itu, prioritaskan pengamanan email utama, lalu akun perbankan, akun kerja, penyimpanan cloud, dan akun developer. Setelah itu baru media sosial, belanja, dan layanan hiburan. Urutan ini membantu Anda memakai waktu terbatas untuk risiko terbesar.",
+        "Buat tabel sederhana berisi nama layanan, alamat email yang dipakai, status 2FA, lokasi recovery code, dan tanggal terakhir diperiksa. Tinjau tabel setiap tiga bulan. Hapus akun yang benar-benar tidak dipakai melalui pengaturan resmi layanan, bukan dengan berhenti membukanya. Akun yang tidak pernah ditutup tetap ada di basis data dan tetap bisa muncul dalam kebocoran data."
+      ],
+      "callouts": [
+        {
+          "tone": "good",
+          "title": "Prioritas pertama",
+          "body": "Amankan email utama lebih dulu karena hampir semua pemulihan akun lain bergantung pada akses ke kotak masuk tersebut."
+        }
+      ],
+      "checkpoint": {
+        "prompt": "Tuliskan lima akun paling penting bagi Anda dan tandai mana yang dapat dipakai untuk mereset akun lain.",
+        "success": "Anda menempatkan email utama di urutan pertama dan menjelaskan alasannya."
+      }
+    },
+    {
+      "id": "kata-sandi-dan-passphrase",
+      "title": "Kata sandi, passphrase, dan penggunaan ulang",
+      "body": [
+        "Bahaya terbesar kata sandi bukanlah kata sandi yang sederhana, melainkan kata sandi yang dipakai berulang. Ketika satu layanan bocor, penyerang mencoba pasangan email dan kata sandi yang sama ke layanan lain secara otomatis. Teknik ini disebut credential stuffing dan berhasil karena banyak orang memakai satu kata sandi untuk email, media sosial, dan belanja sekaligus.",
+        "Panjang lebih penting daripada kerumitan yang mudah ditebak. Mengganti huruf o dengan angka nol atau menambahkan tanda seru di akhir tidak banyak membantu bila polanya umum. Passphrase yang terdiri dari empat kata acak jauh lebih panjang dan lebih mudah diingat. Contoh ilustrasi seperti kuda-baterai-pensil-hujan hanya menunjukkan bentuknya; jangan memakai contoh yang sudah tertulis di internet.",
+        "Gunakan satu kata sandi utama yang sangat kuat hanya untuk password manager, lalu biarkan aplikasi membuat kata sandi acak yang berbeda untuk setiap layanan. Ganti kata sandi ketika ada bukti kebocoran atau tanda akses mencurigakan, bukan sekadar karena jadwal tertentu. Rotasi rutin tanpa alasan sering menghasilkan variasi yang lemah dan sulit diingat."
+      ],
+      "callouts": [
+        {
+          "tone": "bad",
+          "title": "Kesalahan umum",
+          "body": "Menambahkan angka urut atau tahun lahir ke kata sandi lama. Pola seperti ini sudah ada dalam daftar tebakan penyerang."
+        }
+      ],
+      "checkpoint": {
+        "prompt": "Mengapa kata sandi yang dipakai ulang berbahaya meskipun panjangnya sudah cukup?",
+        "success": "Anda menghubungkan kebocoran satu layanan dengan percobaan otomatis ke layanan lain."
+      }
+    },
+    {
+      "id": "password-manager",
+      "title": "Password manager sebagai brankas",
+      "body": [
+        "Password manager menyimpan kredensial di dalam brankas terenkripsi. Anda hanya perlu mengingat satu kata sandi utama, sedangkan kata sandi lain dibuat acak dan diisi otomatis berdasarkan domain. Karena brankas terenkripsi, isinya tidak langsung terbaca meskipun perangkat atau berkas cadangannya jatuh ke tangan orang lain. Kekuatan perlindungan tetap bergantung pada kata sandi utama dan keamanan perangkat.",
+        "Pilih pengelola yang aktif dipelihara, mendukung ekspor data, dan memiliki audit keamanan publik. Pengelola bawaan browser lebih mudah dipakai, sedangkan aplikasi khusus biasanya lebih lengkap untuk banyak perangkat dan berbagi brankas. Yang penting bukan mereknya, melainkan apakah Anda benar-benar memakainya untuk semua akun penting dan apakah 2FA pada akun pengelola sudah aktif.",
+        "Saat mulai, buat kata sandi utama berupa passphrase yang hanya Anda ketahui, lalu aktifkan 2FA pada akun password manager. Impor kata sandi lama, perbaiki akun paling penting terlebih dahulu, dan hapus catatan kata sandi dari spreadsheet atau buku tulis setelah migrasi selesai. Simpan recovery code brankas di tempat offline yang terpisah dari perangkat utama. Kunci brankas saat tidak dipakai dan jangan mengisi otomatis pada situs yang tidak Anda percayai."
+      ],
+      "callouts": [
+        {
+          "tone": "good",
+          "title": "Kebiasaan aman",
+          "body": "Biarkan pengelola membuat kata sandi minimal 16 karakter, dan gunakan kata sandi utama yang tidak dipakai di layanan mana pun."
+        }
+      ],
+      "checkpoint": {
+        "prompt": "Sebutkan tiga hal yang harus disiapkan sebelum memindahkan semua akun ke password manager.",
+        "success": "Anda menyebut kata sandi utama yang kuat, 2FA pada akun pengelola, dan rencana penyimpanan recovery code."
+      }
+    },
+    {
+      "id": "dua-faktor",
+      "title": "Dua faktor: TOTP, security key, dan SIM",
+      "body": [
+        "Autentikasi dua faktor menambah bukti kedua setelah kata sandi. Bukti itu dapat berupa sesuatu yang Anda miliki, seperti aplikasi autentikator atau kunci fisik, atau sesuatu yang melekat pada Anda. Dengan 2FA, kata sandi yang bocor saja tidak cukup untuk masuk. Namun tidak semua 2FA setara, dan beberapa bentuk justru mudah ditipu bila dipakai sebagai satu-satunya lapisan.",
+        "TOTP menghasilkan kode enam angka yang berubah setiap tiga puluh detik dari kunci rahasia yang disimpan aplikasi. Kode ini lebih aman daripada SMS karena tidak bergantung pada jaringan operator, tetapi tetap dapat direlay oleh situs phishing yang meminta kode secara langsung. Jika aplikasi meminta persetujuan masuk, jangan menekan setuju untuk permintaan yang tidak Anda mulai. Serangan push fatigue mengandalkan kebiasaan menekan tombol tanpa membaca.",
+        "SMS lebih baik daripada tidak ada 2FA, tetapi rentan terhadap SIM swap. Penyerang meyakinkan operator untuk memindahkan nomor Anda ke kartu baru, lalu menerima kode verifikasi. Kurangi ketergantungan pada SMS untuk akun utama, pasang PIN atau pembatasan port-out pada operator, dan jangan jadikan nomor telepon satu-satunya jalur pemulihan. Security key atau passkey yang terikat pada domain layanan memberi perlindungan paling kuat terhadap phishing karena kunci tidak akan bekerja di situs palsu."
+      ],
+      "callouts": [
+        {
+          "tone": "bad",
+          "title": "Jangan lakukan ini",
+          "body": "Menyetujui permintaan masuk yang tidak Anda mulai, atau mengirim kode 2FA kepada seseorang yang mengaku dari tim dukungan."
+        }
+      ],
+      "checkpoint": {
+        "prompt": "Mengapa security key lebih tahan phishing daripada kode TOTP?",
+        "success": "Anda menjelaskan bahwa kunci terikat pada domain dan menolak bekerja pada situs palsu."
+      }
+    },
+    {
+      "id": "kebocoran-dan-pemulihan",
+      "title": "Kebocoran, recovery code, dan respons insiden",
+      "body": [
+        "Kebocoran dapat diketahui dari pemberitahuan layanan, laporan publik, atau tanda masuk yang tidak Anda kenali. Jika akun terdampak, masuk dari perangkat yang bersih, ganti kata sandi dengan yang baru dan unik, lalu akhiri semua sesi aktif. Periksa alamat pemulihan, nomor telepon, aturan penerusan email, aplikasi pihak ketiga, dan kunci API. Penyerang sering meninggalkan jalur masuk cadangan agar tetap bisa kembali.",
+        "Recovery code adalah rencana darurat yang sering dilupakan. Cetak atau simpan kode tersebut di tempat offline yang aman, terpisah dari ponsel dan komputer utama. Jangan menyimpannya di dalam brankas password manager yang sama jika kode itu diperlukan untuk membuka brankas tersebut. Setiap kode hanya dapat dipakai sekali, jadi tandai kode yang sudah terpakai dan buat daftar baru bila jumlahnya menipis.",
+        "Jika Anda terkunci dari akun, gunakan prosedur pemulihan resmi layanan. Waspadai pihak yang menawarkan jasa pemulihan akun melalui pesan langsung karena modus ini sering berujung pada pencurian data atau biaya palsu. Setelah pemulihan selesai, tinjau kembali inventaris akun, pastikan 2FA aktif, dan catat perubahan agar kejadian serupa lebih cepat dikenali."
+      ],
+      "callouts": [
+        {
+          "tone": "good",
+          "title": "Tiga langkah pertama",
+          "body": "Ganti kata sandi, akhiri sesi aktif, lalu periksa aturan penerusan email dan metode pemulihan."
+        }
+      ],
+      "checkpoint": {
+        "prompt": "Sebutkan tiga tindakan segera setelah mengetahui sebuah akun bocor.",
+        "success": "Anda menyebut penggantian kata sandi, pengakhiran sesi, dan pemeriksaan jalur pemulihan."
+      }
+    }
+  ],
+  "practice": [
+    {
+      "id": "latihan-1",
+      "title": "Inventaris lima akun",
+      "task": "Buat tabel lima akun terpenting dengan kolom layanan, email, status 2FA, dan lokasi recovery code.",
+      "steps": [
+        "Daftarkan akun tanpa membuka kata sandinya.",
+        "Tandai akun yang dapat mereset akun lain.",
+        "Tentukan satu akun yang akan diperbaiki minggu ini."
+      ],
+      "expected": "Tabel lima baris dengan status keamanan yang jujur.",
+      "stretch": "Tambahkan tanggal tinjauan berikutnya dan satu kebiasaan yang ingin diubah.",
+      "level": "guided",
+      "hints": [
+        "Mulai dari email utama, lalu perbankan, akun kerja, penyimpanan cloud, dan akun developer.",
+        "Daftarkan akun tanpa membuka atau menyalin kata sandinya.",
+        "Tandai akun yang dapat dipakai untuk mereset akun lain."
+      ],
+      "starterCode": "Layanan | Alamat | Faktor kedua | Recovery code | Terakhir dicek\n--- | --- | --- | --- | ---",
+      "verification": {
+        "command": "Isi tabel inventaris untuk lima akun terpenting Anda.",
+        "expected": "Lima baris terisi jujur, email utama berada di urutan pertama, dan setidaknya satu akun tanpa 2FA ditandai.",
+        "evidence": "Simpan tabel di catatan belajar tanpa menuliskan kata sandi."
+      }
+    },
+    {
+      "id": "latihan-2",
+      "title": "Membuat passphrase",
+      "task": "Buat satu passphrase empat kata untuk password manager dan jelaskan mengapa frasa itu mudah diingat tetapi sulit ditebak.",
+      "steps": [
+        "Pilih empat kata yang tidak berhubungan.",
+        "Gabungkan dengan tanda hubung tanpa menambahkan pola tahun.",
+        "Perkirakan apakah frasa itu akan muncul di daftar kata umum."
+      ],
+      "expected": "Satu passphrase baru dan alasan singkat pemilihannya.",
+      "stretch": "Bandingkan panjangnya dengan kata sandi lama Anda tanpa menuliskan kata sandi lama itu.",
+      "level": "independent",
+      "hints": [
+        "Pilih empat kata yang tidak berhubungan dan tidak berasal dari lagu atau kutipan.",
+        "Gabungkan dengan tanda hubung, lalu uji apakah Anda masih mengingatnya setelah satu jam.",
+        "Jangan menambahkan tahun lahir atau angka berurutan di akhir frasa."
+      ],
+      "starterCode": "Passphrase:\nAlasan mudah diingat:\nAlasan sulit ditebak:\nPerkiraan panjang:",
+      "verification": {
+        "command": "Buat satu passphrase baru untuk pengelola kata sandi dan catat alasannya.",
+        "expected": "Passphrase terdiri dari minimal empat kata acak, tidak memakai pola umum, dan dapat Anda ingat tanpa menuliskannya di tempat terbuka.",
+        "evidence": "Catat hanya alasan pemilihan, bukan frasa lengkap yang dipakai."
+      }
+    },
+    {
+      "id": "latihan-3",
+      "title": "Aktifkan 2FA dan simpan kode",
+      "task": "Aktifkan TOTP pada satu akun penting, lalu simpan recovery code di tempat offline.",
+      "steps": [
+        "Pasang aplikasi autentikator resmi.",
+        "Pindai kode dari halaman pengaturan akun.",
+        "Cetak recovery code dan uji satu kode masuk."
+      ],
+      "expected": "2FA aktif dan recovery code tersimpan di luar perangkat utama.",
+      "stretch": "Catat prosedur yang akan Anda lakukan jika ponsel hilang.",
+      "level": "transfer",
+      "hints": [
+        "Pilih satu akun penting yang belum memakai 2FA.",
+        "Pasang aplikasi autentikator resmi, lalu pindai kode dari halaman pengaturan akun.",
+        "Cetak recovery code dan simpan di tempat offline yang berbeda dari ponsel."
+      ],
+      "starterCode": "Akun:\nJenis 2FA:\nLokasi recovery code:\nUji masuk berhasil: ya/tidak",
+      "verification": {
+        "command": "Aktifkan TOTP pada satu akun, simpan recovery code, lalu uji satu kali masuk.",
+        "expected": "2FA aktif, satu kode berhasil dipakai, dan recovery code berada di luar perangkat utama.",
+        "evidence": "Catat jenis 2FA, lokasi penyimpanan, dan hasil uji masuk."
+      }
+    }
+  ],
+  "verification": {
+    "mode": "catatan",
+    "command": "Kerjakan Latihan 3 pada akun yang paling penting bagi Anda.",
+    "expected": "Anda dapat menunjukkan inventaris akun, menjelaskan pilihan faktor kedua, dan menyebut lokasi recovery code yang dapat dijangkau saat ponsel hilang.",
+    "evidence": "Simpan tabel inventaris, alasan pemilihan passphrase, dan catatan uji masuk di berkas belajar."
+  },
+  "troubleshooting": [
+    {
+      "symptom": "Kode TOTP ditolak padahal angkanya baru muncul.",
+      "cause": "Jam perangkat tidak sinkron atau kode sudah kedaluwarsa saat diketik.",
+      "fix": "Aktifkan waktu otomatis pada ponsel, tunggu kode berikutnya, lalu masukkan dengan cepat. Jika tetap gagal, gunakan recovery code."
+    },
+    {
+      "symptom": "Tidak bisa membuka pengelola kata sandi karena lupa kata sandi utama.",
+      "cause": "Kata sandi utama tidak disimpan di mana pun dan brankas memang dirancang tidak dapat dibuka paksa.",
+      "fix": "Gunakan prosedur pemulihan resmi atau recovery code brankas. Jika tidak ada, pulihkan akun satu per satu melalui layanan masing-masing."
+    },
+    {
+      "symptom": "Ponsel yang berisi aplikasi autentikator hilang.",
+      "cause": "Faktor kedua hanya tersimpan di satu perangkat tanpa cadangan.",
+      "fix": "Gunakan recovery code yang sudah disimpan, masuk dari perangkat lain, lalu daftarkan ulang autentikator. Cabut sesi lama dan periksa aktivitas akun."
+    },
+    {
+      "symptom": "Recovery code habis atau sudah tidak dapat dipakai.",
+      "cause": "Kode dipakai satu kali dan daftar cadangan tidak diperbarui.",
+      "fix": "Masuk dengan faktor kedua yang masih aktif, buat daftar recovery code baru, cetak, lalu simpan di tempat offline."
+    }
+  ],
+  "quiz": {
+    "questions": [
+      {
+        "id": "q1",
+        "type": "scenario",
+        "question": "Sebuah layanan tempat Anda mendaftar mengalami kebocoran data. Mengapa kata sandi akun lain juga berisiko?",
+        "options": [
+          "Karena penyerang mencoba pasangan email dan kata sandi yang sama ke layanan lain",
+          "Karena semua layanan berbagi basis data yang sama",
+          "Karena kebocoran selalu mengubah kata sandi secara otomatis"
+        ],
+        "answer": 0,
+        "explanation": "Credential stuffing memanfaatkan penggunaan ulang kata sandi dengan mencoba kredensial bocor ke banyak layanan."
+      },
+      {
+        "id": "q2",
+        "type": "recall",
+        "question": "Bentuk 2FA yang paling tahan terhadap situs login palsu adalah apa?",
+        "options": [
+          "Kode SMS",
+          "Kode TOTP yang diketik manual",
+          "Security key yang terikat pada domain"
+        ],
+        "answer": 2,
+        "explanation": "Security key memeriksa domain layanan sehingga tidak akan memberikan kredensial kepada situs palsu."
+      },
+      {
+        "id": "q3",
+        "type": "scenario",
+        "question": "Anda mencurigai akun email utama telah diambil alih. Tindakan pertama yang paling tepat adalah apa?",
+        "options": [
+          "Menghapus seluruh isi kotak masuk",
+          "Mengganti kata sandi dari perangkat bersih, mengakhiri sesi, dan memeriksa jalur pemulihan",
+          "Menunggu beberapa hari untuk melihat apakah ada aktivitas lain"
+        ],
+        "answer": 1,
+        "explanation": "Mengganti kata sandi, mengakhiri sesi, dan memeriksa pemulihan menutup akses penyerang serta jalur masuk cadangan."
+      }
+    ]
+  },
+  "resources": [
+    {
+      "sourceId": "cisa-strong-passwords",
+      "note": "Panduan singkat membuat kata sandi panjang dan unik."
+    },
+    {
+      "sourceId": "google-2sv",
+      "note": "Langkah resmi mengaktifkan verifikasi dua langkah dan kode cadangan."
+    }
+  ],
+  "summary": [
+    "Inventaris akun menentukan prioritas; email utama adalah kunci pemulihan yang harus diamankan lebih dulu.",
+    "Gunakan passphrase unik untuk brankas dan kata sandi acak yang berbeda untuk setiap layanan.",
+    "Pilih 2FA yang tahan phishing, dan pahami bahwa SMS lebih rentan daripada TOTP atau security key.",
+    "Simpan recovery code offline, terpisah dari perangkat utama, dan perbarui daftarnya sebelum habis."
+  ],
+  "next": "Berikutnya: phishing, malware, dan rekayasa sosial. Anda akan membedah pesan mencurigakan dan menyusun langkah respons yang tidak panik."
+}

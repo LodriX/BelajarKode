@@ -1,0 +1,450 @@
+{
+  "id": "m01-l04",
+  "title": "Membaca error dan mengatasi bug",
+  "minutes": 90,
+  "level": "Dasar",
+  "depth": "fondasi",
+  "schema": 3.1,
+  "codeLanguage": "javascript",
+  "outcome": "Setelah pelajaran ini, Anda dapat membaca tipe, pesan, dan stack trace sebuah error, membedakan error di Console browser dari error di terminal, mereproduksi bug dengan langkah minimal, menguji hipotesis secara terkendali, dan menyusun minimal reproducible example.",
+  "objectives": [
+    "Membaca tipe, pesan, dan stack trace sebuah error.",
+    "Membedakan error yang muncul di Console browser dan di terminal.",
+    "Mereproduksi bug dengan langkah minimal serta menuliskan hasil yang diharapkan dan sebenarnya.",
+    "Menguji hipotesis debugging dengan perubahan terkendali, logging, dan breakpoint.",
+    "Menyusun minimal reproducible example untuk meminta bantuan secara efektif."
+  ],
+  "prerequisites": [
+    {
+      "label": "Alur kerja pengembang: editor, terminal, browser, dan Git",
+      "lessonId": "m01-l03"
+    },
+    {
+      "label": "Apa itu program, perangkat lunak, dan aplikasi",
+      "lessonId": "m01-l01"
+    }
+  ],
+  "terms": [
+    {
+      "term": "Error",
+      "definition": "Kondisi ketika program tidak dapat melanjutkan operasi karena suatu masalah."
+    },
+    {
+      "term": "Tipe error",
+      "definition": "Kategori error seperti TypeError, ReferenceError, atau SyntaxError yang menunjukkan jenis masalahnya."
+    },
+    {
+      "term": "Stack trace",
+      "definition": "Daftar urutan pemanggilan fungsi yang menunjukkan lokasi terjadinya error dan jalur sampai ke sana."
+    },
+    {
+      "term": "Reproduksi",
+      "definition": "Tindakan menjalankan kembali langkah-langkah tertentu agar bug muncul secara konsisten."
+    },
+    {
+      "term": "Hipotesis",
+      "definition": "Dugaan penyebab yang spesifik dan dapat diuji melalui pengamatan atau percobaan."
+    },
+    {
+      "term": "Logging",
+      "definition": "Pencatatan nilai atau kejadian pada titik tertentu program untuk membantu pemeriksaan."
+    },
+    {
+      "term": "Breakpoint",
+      "definition": "Titik henti yang membuat eksekusi program berhenti agar keadaan variabel dapat diperiksa."
+    }
+  ],
+  "syntax": [
+    {
+      "token": "TypeError: Cannot read properties of null (reading 'nama')",
+      "readAs": "Baca sebagai tipe error TypeError, lalu pesan yang menyatakan bahwa kode mencoba membaca properti nama dari nilai null.",
+      "meaning": "Tipe error memberi kategori masalah, sedangkan pesan menyebut operasi yang gagal. Membaca keduanya mencegah Anda menebak dari gejala tampilan.",
+      "example": "TypeError: Cannot read properties of undefined (reading 'toLowerCase')",
+      "output": "Pesan menunjukkan nilai yang tidak ada dan properti yang dicoba diakses.",
+      "pitfall": "Hanya membaca kalimat terakhir atau judul tab. Tipe dan pesan sering memberi petunjuk yang berbeda."
+    },
+    {
+      "token": "at bacaNama (app.js:2:19)",
+      "readAs": "Baca sebagai frame stack trace: fungsi bacaNama di berkas app.js baris 2 kolom 19.",
+      "meaning": "Stack trace menunjukkan urutan pemanggilan. Frame paling atas adalah tempat error muncul, sedangkan frame di bawahnya menunjukkan pemanggil.",
+      "example": "at hitungTotal (app.js:6:10)",
+      "output": "Anda dapat membuka baris yang tepat, bukan menelusuri seluruh berkas.",
+      "pitfall": "Membaca frame dari pustaka pihak ketiga lebih dulu. Cari frame pertama yang berasal dari kode Anda."
+    },
+    {
+      "token": "console.log(\"nilai:\", nilai)",
+      "readAs": "Cetak label dan nilai variabel ke console pada titik tertentu dalam alur.",
+      "meaning": "Logging membantu memeriksa nilai antara. Label membuat output mudah dibedakan ketika ada banyak baris.",
+      "example": "console.log(\"total sebelum diskon:\", subtotal)",
+      "output": "Console menampilkan label dan nilai saat baris itu dijalankan.",
+      "pitfall": "Mencetak objek besar tanpa label lalu meninggalkan log di kode produksi. Hapus setelah selesai."
+    }
+  ],
+  "conventions": [
+    "Baca error dari tipe, pesan, lalu frame pertama yang berasal dari kode Anda.",
+    "Reproduksi bug dengan langkah paling sedikit sebelum mengubah kode.",
+    "Tulis satu hipotesis pada satu waktu dan tentukan bukti yang akan mendukung atau menolaknya.",
+    "Ubah satu hal per percobaan agar Anda tahu perubahan mana yang berpengaruh.",
+    "Hapus logging sementara setelah bug selesai diperbaiki.",
+    "Saat meminta bantuan, sertakan minimal reproducible example, hasil yang diharapkan, dan hasil sebenarnya."
+  ],
+  "sections": [
+    {
+      "id": "cara-membaca",
+      "title": "Cara membaca stack trace dan menyusun hipotesis",
+      "body": [
+        "Stack trace adalah daftar pemanggilan yang mengarah ke error. Baris pertama biasanya berisi tipe dan pesan. Baris berikutnya diawali at dan menunjukkan fungsi, berkas, baris, serta kolom. Baca dari atas ke bawah sampai Anda menemukan frame yang berasal dari kode Anda sendiri. Frame dari pustaka sering hanya meneruskan masalah.",
+        "Setelah lokasi diketahui, ubah error menjadi pertanyaan yang dapat diuji. Contohnya: apakah nilai pengguna bernilai null saat fungsi dipanggil? Hipotesis itu dapat diuji dengan logging sebelum pemanggilan atau dengan breakpoint. Jika nilainya memang null, Anda sudah menemukan sebab; jika tidak, hipotesis ditolak dan Anda pindah ke dugaan berikutnya.",
+        "Reproduksi yang minimal membuat pengujian cepat. Kurangi input, langkah, dan berkas sampai bug masih muncul. Jika bug hilang saat satu bagian dihapus, bagian itu terkait dengan penyebab. Minimal reproducible example adalah versi terkecil yang masih menunjukkan masalah, bukan seluruh proyek Anda."
+      ],
+      "code": {
+        "language": "text",
+        "lab": false,
+        "code": "ReferenceError: total is not defined\n    at hitungTotal (app.js:6:10)\n    at app.js:12:1",
+        "output": "Error menunjukkan nama yang tidak dikenal, lokasi penggunaannya, dan pemanggil fungsi.",
+        "explain": "Tiga baris ini memuat tipe, pesan, dan dua frame. Frame pertama menunjuk baris yang harus dibaca lebih dulu.",
+        "annotations": [
+          {
+            "line": 1,
+            "code": "ReferenceError: total is not defined",
+            "note": "Tipe ReferenceError berarti nama tidak ditemukan pada scope saat itu."
+          },
+          {
+            "line": 2,
+            "code": "    at hitungTotal (app.js:6:10)",
+            "note": "Frame pertama berasal dari kode Anda: fungsi hitungTotal, baris 6, kolom 10."
+          },
+          {
+            "line": 3,
+            "code": "    at app.js:12:1",
+            "note": "Frame kedua menunjukkan pemanggil di baris 12, membantu melacak alur data."
+          }
+        ]
+      },
+      "callouts": [
+        {
+          "tone": "warn",
+          "title": "Jangan mengubah banyak hal sekaligus",
+          "body": "Jika Anda mengubah tiga baris lalu error hilang, Anda tidak tahu baris mana yang memperbaikinya. Satu perubahan, satu pengujian."
+        }
+      ],
+      "checkpoint": {
+        "prompt": "Ambil satu error nyata, lalu tuliskan tipe, pesan, frame pertama dari kode Anda, dan satu hipotesis yang dapat diuji.",
+        "success": "Anda memisahkan tiga bagian error dan merumuskan hipotesis yang memiliki bukti pendukung atau penolak."
+      }
+    },
+    {
+      "id": "anatomi-error",
+      "title": "Anatomi sebuah error",
+      "body": [
+        "Pesan error adalah laporan. Error umumnya memiliki tipe, pesan, dan stack trace. Tipe menunjukkan kategori masalah, seperti TypeError untuk operasi pada nilai yang tidak sesuai atau ReferenceError untuk nama yang tidak dideklarasikan. Pesan menjelaskan apa yang gagal, sedangkan stack trace menunjukkan lokasi dan fungsi pemanggilnya.",
+        "Baca tipe dan pesan lebih dulu, lalu lihat baris teratas stack trace yang menunjuk ke kode Anda. Baris pertama adalah lokasi error; baris berikutnya adalah pemanggil. Abaikan sementara frame dari library dan fokus pada frame pertama proyek Anda. Periksa nilai yang masuk ke fungsi tersebut.",
+        "Tidak semua masalah berupa error. NaN, undefined, atau angka salah dapat muncul tanpa stack trace karena program tetap berjalan. Error sintaks juga berbeda dari error runtime: sintaks salah dapat mencegah seluruh berkas dijalankan, sedangkan TypeError baru terjadi saat baris tertentu dieksekusi."
+      ],
+      "code": {
+        "language": "javascript",
+        "code": "function bacaNama(pengguna) {\n  return pengguna.nama.toLowerCase();\n}\n\nconsole.log(bacaNama(null));",
+        "output": "TypeError: Cannot read properties of null (reading 'nama')\n    at bacaNama (app.js:2:19)\n    at app.js:5:13",
+        "explain": "Tipe dan pesan menyebut null; stack trace menunjukkan baris 2 dipanggil dari baris 5.",
+        "annotations": [
+          {
+            "line": 1,
+            "code": "function bacaNama(pengguna) {",
+            "note": "Fungsi menerima satu parameter yang diasumsikan berisi objek pengguna."
+          },
+          {
+            "line": 2,
+            "code": "  return pengguna.nama.toLowerCase();",
+            "note": "Baris ini mengakses properti nama lalu memanggil toLowerCase tanpa memeriksa nilainya."
+          },
+          {
+            "line": 3,
+            "code": "}",
+            "note": "Penutup fungsi; error terjadi sebelum baris ini tercapai."
+          },
+          {
+            "line": 5,
+            "code": "console.log(bacaNama(null));",
+            "note": "Pemanggil mengirim null, sehingga akses properti gagal di baris 2."
+          }
+        ]
+      },
+      "callouts": [
+        {
+          "tone": "good",
+          "title": "Urutan membaca",
+          "body": "Baca tipe, pesan, lalu frame pertama yang berasal dari kode Anda. Jangan mulai dari baris paling bawah stack trace."
+        }
+      ],
+      "checkpoint": {
+        "prompt": "Apa informasi yang diberikan oleh baris pertama stack trace?",
+        "success": "Anda menjelaskan bahwa baris pertama menunjukkan lokasi error terjadi, sedangkan baris di bawahnya menunjukkan pemanggil."
+      }
+    },
+    {
+      "id": "console-dan-terminal",
+      "title": "Console browser dan terminal",
+      "body": [
+        "Console browser dan terminal menampilkan sumber berbeda. Console menerima log dan error dari JavaScript yang berjalan di halaman, termasuk saat merender atau menangani event. Terminal menerima output perintah, skrip Node, server pengembangan, pengujian, dan build. Error yang sama dapat muncul di keduanya jika kode dijalankan di kedua lingkungan, tetapi lokasinya tetap berbeda.",
+        "Kode yang memakai DOM, window, atau localStorage membutuhkan browser. Kode yang memakai modul file atau API server membutuhkan Node. Menjalankan kode browser di terminal dapat menghasilkan ReferenceError karena objeknya tidak tersedia. Sebaliknya, error server tidak muncul di Console browser kecuali dikirim sebagai respons; log server harus dibaca di terminal.",
+        "Periksa Console dan Network saat masalah terlihat di halaman; periksa terminal saat perintah, server, atau pengujian gagal. Pastikan filter Console tidak menyembunyikan level tertentu dan preserve log aktif. Salin pesan lengkap, bukan hanya kata terakhirnya."
+      ],
+      "callouts": [
+        {
+          "tone": "bad",
+          "title": "Salah tempat mencari",
+          "body": "Mencari error server di Console browser akan sia-sia jika server menulis log ke terminal. Tentukan lebih dulu di mana kode dijalankan."
+        }
+      ],
+      "checkpoint": {
+        "prompt": "Bagaimana Anda menentukan apakah sebuah error sebaiknya dicari di Console browser atau di terminal?",
+        "success": "Anda melihat lingkungan tempat kode berjalan: halaman memakai Console, sedangkan skrip Node, server, dan pengujian memakai terminal."
+      }
+    },
+    {
+      "id": "reproduksi",
+      "title": "Mereproduksi bug",
+      "body": [
+        "Bug yang dapat direproduksi adalah bug yang dapat dipelajari. Reproduksi berarti Anda dapat memunculkan masalah yang sama dengan langkah jelas. Tuliskan langkah berurutan, data yang dipakai, hasil yang diharapkan, dan hasil sebenarnya. Tanpa catatan ini, Anda mudah mengira bug hilang padahal hanya belum menemukan kondisinya.",
+        "Kurangi langkah sampai tersisa yang benar-benar diperlukan. Uji keadaan awal: muat ulang halaman, gunakan data baru, atau buka jendela privat untuk memisahkan pengaruh cache dan penyimpanan lama. Untuk bug yang kadang muncul, catat frekuensi, waktu, dan kondisi yang berbeda.",
+        "Jika bug tidak dapat direproduksi, kumpulkan bukti sebelum mengubah kode: pesan error, versi browser atau runtime, data masukan, dan waktu kejadian. Reproduksi bukan sekadar mengulang klik; ia adalah eksperimen untuk menemukan variabel yang menentukan munculnya masalah."
+      ],
+      "checkpoint": {
+        "prompt": "Sebutkan empat hal yang harus ada dalam catatan reproduksi bug.",
+        "success": "Anda menyebut langkah, data atau kondisi awal, hasil yang diharapkan, dan hasil yang sebenarnya."
+      }
+    },
+    {
+      "id": "hipotesis",
+      "title": "Hipotesis dan pengujian",
+      "body": [
+        "Debugging yang baik menyerupai pengujian hipotesis. Anda mengamati gejala, menduga penyebab, memprediksi apa yang akan terlihat jika dugaan benar, lalu memeriksa. Setelah itu, terima atau tolak dugaan berdasarkan bukti. Hipotesis spesifik lebih berguna daripada dugaan umum seperti ada yang salah dengan kode.",
+        "Tulis hipotesis dalam satu kalimat, misalnya total salah karena diskon dihitung dua kali. Prediksinya: subtotal benar, tetapi nilai akhir terlalu kecil. Periksa kedua nilai. Jika subtotal sudah salah, hipotesis ditolak; jika subtotal benar dan nilai akhir salah, hipotesis mendapat dukungan.",
+        "Ubah satu hal pada satu waktu. Jika tiga bagian diubah lalu hasilnya membaik, Anda tidak tahu bagian mana yang memperbaikinya. Catat hipotesis yang sudah diuji agar tidak berputar pada dugaan sama. Menolak hipotesis bukan kegagalan; itu informasi yang mempersempit pencarian."
+      ],
+      "callouts": [
+        {
+          "tone": "good",
+          "title": "Tulis sebelum mengubah",
+          "body": "Tuliskan hipotesis dan prediksinya sebelum mengedit kode. Setelah percobaan, catat apakah prediksi itu benar dan apa buktinya."
+        }
+      ],
+      "checkpoint": {
+        "prompt": "Mengapa mengubah beberapa bagian sekaligus membuat debugging lebih sulit?",
+        "success": "Anda menjelaskan bahwa perubahan yang bercampur menghilangkan kemampuan menentukan bagian mana yang menyebabkan atau memperbaiki masalah."
+      }
+    },
+    {
+      "id": "binary-search",
+      "title": "Binary search untuk mempersempit masalah",
+      "body": [
+        "Ketika bug muncul pada banyak data atau baris kode, bagi ruang pencarian menjadi dua. Untuk data, uji separuh data lebih dulu. Jika kesalahan ada di separuh itu, separuh lainnya dapat diabaikan. Ulangi sampai tersisa satu item atau satu kondisi pemicu. Teknik ini jauh lebih cepat daripada memeriksa seratus item satu per satu.",
+        "Untuk kode, nonaktifkan sementara separuh proses atau tambahkan pemeriksaan di titik tengah pipeline. Jika bug masih muncul, penyebabnya di bagian yang tersisa; jika hilang, penyebabnya di bagian yang dinonaktifkan. Hati-hati karena menonaktifkan kode dapat mengubah perilaku lain. Kembalikan bagian yang tidak bersalah sebelum melanjutkan.",
+        "Untuk riwayat perubahan, bandingkan keadaan terakhir yang baik dengan keadaan pertama yang bermasalah, lalu periksa titik tengahnya. Binary search membutuhkan pengujian stabil yang dapat membedakan keadaan baik dan buruk. Jika bug masih flaky, perbaiki reproduksinya agar hasil pembagian tidak menyesatkan."
+      ],
+      "checkpoint": {
+        "prompt": "Mengapa binary search membutuhkan pengujian yang stabil?",
+        "success": "Anda menjelaskan bahwa hasil yang tidak konsisten dapat membuat Anda membuang bagian yang sebenarnya mengandung penyebab."
+      }
+    },
+    {
+      "id": "logging-breakpoint",
+      "title": "Logging dan breakpoint",
+      "body": [
+        "Logging menambahkan catatan pada titik tertentu untuk melihat nilai dan urutan kejadian. Cetak label jelas beserta nilai yang diperiksa, misalnya masukan fungsi dan hasil antara. Untuk daftar atau objek, tampilkan dalam bentuk yang mudah dibaca. Logging berguna untuk alur asynchronous, proses lama, atau situasi ketika program tidak dapat dihentikan.",
+        "Breakpoint menghentikan eksekusi pada baris tertentu di DevTools. Saat berhenti, Anda dapat memeriksa variabel, call stack, dan melanjutkan langkah demi langkah. Step over menjalankan baris tanpa masuk fungsi, step into masuk ke fungsi, dan step out menyelesaikan fungsi. Breakpoint kondisional berguna di dalam perulangan.",
+        "Breakpoint tepat ketika Anda perlu memeriksa keadaan tepat sebelum kesalahan; logging tepat untuk melihat rangkaian kejadian atau proses yang tidak bisa dihentikan. Hapus log sementara dan debugger sebelum menggabungkan perubahan. Logging permanen harus memakai level dan informasi yang tidak membocorkan data sensitif."
+      ],
+      "callouts": [
+        {
+          "tone": "warn",
+          "title": "Jangan tinggalkan debugger",
+          "body": "Pernyataan debugger dan log sementara harus dibersihkan sebelum kode dibagikan. Debugger yang tertinggal dapat menghentikan program pengguna."
+        }
+      ],
+      "checkpoint": {
+        "prompt": "Kapan breakpoint lebih berguna daripada logging?",
+        "success": "Anda menjelaskan bahwa breakpoint tepat untuk memeriksa keadaan variabel dan call stack pada momen tertentu tanpa menambah kode."
+      }
+    },
+    {
+      "id": "minimal-reproducible-example",
+      "title": "Meminta bantuan dengan minimal reproducible example",
+      "body": [
+        "Saat beberapa hipotesis gagal, mintalah bantuan dengan minimal reproducible example. Sertakan kode terkecil yang masih gagal, langkah menjalankannya, hasil yang diharapkan dan sebenarnya, serta pesan error dan stack trace lengkap. Tambahkan versi browser atau runtime, sistem operasi, dan hal yang sudah dicoba. Informasi ini memungkinkan orang lain mereproduksi masalah.",
+        "Buang kode yang tidak berhubungan, tetapi pastikan bug masih muncul. Gunakan data palsu yang aman, bukan data pribadi atau rahasia. Screenshot membantu, tetapi teks error yang dapat disalin lebih berguna. Jangan mengirim seluruh proyek atau hanya menulis error tanpa konteks. Jika memungkinkan, letakkan contoh di playground resmi.",
+        "Ajukan pertanyaan spesifik, misalnya mengapa nilai ini undefined padahal data sudah dimuat. Sebutkan apa yang sudah diperiksa agar bantuan tidak mengulang langkah yang sama. Sering kali menyusun contoh minimal justru memperlihatkan penyebabnya sendiri. Menyusun pertanyaan yang baik adalah bagian dari keterampilan debugging."
+      ],
+      "callouts": [
+        {
+          "tone": "good",
+          "title": "Ukuran contoh",
+          "body": "Minimal bukan berarti kode paling pendek, melainkan kode terkecil yang masih mempertahankan bug dan cukup untuk dijalankan orang lain."
+        }
+      ],
+      "checkpoint": {
+        "prompt": "Sebutkan lima bagian yang perlu ada saat meminta bantuan debugging.",
+        "success": "Anda menyebut contoh kode minimal, langkah reproduksi, hasil yang diharapkan dan sebenarnya, pesan error lengkap, serta lingkungan atau hal yang sudah dicoba."
+      }
+    }
+  ],
+  "practice": [
+    {
+      "id": "latihan-1",
+      "title": "Bedah satu error",
+      "task": "Buat kode yang memanggil fungsi yang tidak ada, jalankan, lalu catat tipe, pesan, dan frame pertama stack trace.",
+      "steps": [
+        "Tulis pemanggilan fungsi yang belum dideklarasikan di dalam berkas JavaScript.",
+        "Jalankan berkas dan salin pesan error lengkapnya.",
+        "Tandai tipe error, pesan, dan lokasi yang berasal dari kode Anda."
+      ],
+      "expected": "Catatan error dengan tiga bagian yang diberi label dan satu dugaan awal.",
+      "stretch": "Perbaiki error tersebut, lalu jelaskan mengapa pesan error berubah atau hilang.",
+      "level": "guided",
+      "hints": [
+        "Panggil fungsi yang tidak pernah dideklarasikan untuk memunculkan ReferenceError.",
+        "Catat tipe, pesan, dan frame pertama secara terpisah.",
+        "Tulis satu dugaan awal sebelum memperbaiki kode."
+      ],
+      "starterCode": "function jalankan() {\n  return fungsiYangTidakAda();\n}\n\njalankan();",
+      "verification": {
+        "command": "Jalankan kode dan catat tiga bagian error.",
+        "expected": "Catatan memuat tipe, pesan, frame pertama, dan satu dugaan awal yang jelas.",
+        "evidence": "Simpan pesan error lengkap dan catatan dugaan."
+      }
+    },
+    {
+      "id": "latihan-2",
+      "title": "Reproduksi dan hipotesis",
+      "task": "Ambil fungsi perhitungan total yang menghasilkan angka salah untuk satu input, lalu tulis reproduksi dan dua hipotesis.",
+      "steps": [
+        "Catat input, hasil yang diharapkan, dan hasil yang sebenarnya.",
+        "Tuliskan dua dugaan penyebab yang berbeda dan prediksi masing-masing.",
+        "Uji satu hipotesis dengan memeriksa nilai antara, lalu catat hasilnya."
+      ],
+      "expected": "Satu catatan reproduksi, dua hipotesis, dan bukti yang mendukung atau menolak salah satunya.",
+      "stretch": "Gunakan pembagian data untuk menemukan input terkecil yang memicu kesalahan.",
+      "level": "independent",
+      "hints": [
+        "Gunakan satu fungsi perhitungan dengan satu input yang menghasilkan angka salah.",
+        "Tulis langkah reproduksi paling sedikit yang masih menunjukkan kesalahan.",
+        "Buat dua hipotesis dan tentukan bukti untuk masing-masing."
+      ],
+      "starterCode": "Langkah reproduksi:\nHasil diharapkan:\nHasil sebenarnya:\nHipotesis 1:\nBukti:\nHipotesis 2:\nBukti:",
+      "verification": {
+        "command": "Reproduksi satu bug perhitungan dan uji dua hipotesis.",
+        "expected": "Satu hipotesis didukung bukti dan satu ditolak, dengan perubahan kode yang terkendali.",
+        "evidence": "Simpan catatan reproduksi dan hasil setiap pengujian."
+      }
+    },
+    {
+      "id": "latihan-3",
+      "title": "Binary search pada data",
+      "task": "Bayangkan daftar berisi 64 transaksi dan satu total kelompok salah. Tentukan urutan pemeriksaan untuk menemukan transaksi penyebabnya.",
+      "steps": [
+        "Bagi data menjadi dua kelompok dan hitung total masing-masing.",
+        "Pilih kelompok yang salah dan bagi lagi menjadi dua.",
+        "Ulangi sampai tersisa satu transaksi, lalu catat jumlah pemeriksaan."
+      ],
+      "expected": "Urutan pembagian yang berakhir pada satu transaksi dan jumlah langkah yang jauh lebih kecil dari 64.",
+      "stretch": "Jelaskan apa yang harus dilakukan jika total kedua kelompok tampak benar.",
+      "level": "transfer",
+      "hints": [
+        "Mulai dari daftar 64 transaksi dan satu total kelompok yang salah.",
+        "Bagi daftar menjadi dua bagian dan periksa total masing-masing.",
+        "Lanjutkan pada bagian yang mengandung selisih sampai satu transaksi tersisa."
+      ],
+      "starterCode": "Langkah 1: bagi 64 menjadi 32 dan 32\nLangkah 2: periksa total setiap bagian\nLangkah 3: pilih bagian yang mengandung selisih\nLangkah 4: ulangi sampai satu transaksi",
+      "verification": {
+        "command": "Tulis urutan pemeriksaan untuk menemukan satu transaksi penyebab.",
+        "expected": "Urutan berakhir pada satu transaksi dengan jumlah langkah jauh lebih kecil dari 64.",
+        "evidence": "Simpan urutan pembagian dan alasan setiap pilihan."
+      }
+    }
+  ],
+  "verification": {
+    "mode": "lab",
+    "command": "Kerjakan Latihan 1 di Lab, lalu salin pesan error lengkap ke catatan.",
+    "expected": "Anda dapat menunjukkan tipe, pesan, frame pertama, dan menjelaskan penyebabnya dengan bahasa sendiri.",
+    "evidence": "Simpan kode, pesan error, dan catatan dugaan sebelum perbaikan."
+  },
+  "troubleshooting": [
+    {
+      "symptom": "Error muncul di terminal, tetapi tidak di browser.",
+      "cause": "Kode dijalankan di runtime berbeda dengan API atau versi yang berbeda.",
+      "fix": "Periksa runtime yang dipakai, versi Node atau browser, dan API yang tidak tersedia di salah satunya."
+    },
+    {
+      "symptom": "Bug hanya muncul di komputer atau akun pengguna lain.",
+      "cause": "Data, pengaturan, versi, atau kondisi jaringan berbeda.",
+      "fix": "Catat lingkungan pengguna, reproduksi dengan data serupa, dan periksa log tanpa meminta data sensitif."
+    },
+    {
+      "symptom": "console.log tidak menampilkan apa pun.",
+      "cause": "Baris tidak tercapai, console yang dibuka berbeda, atau output tertahan.",
+      "fix": "Pastikan baris dieksekusi, buka Console yang benar, dan gunakan breakpoint untuk memeriksa alur."
+    },
+    {
+      "symptom": "Error hilang setelah kode diubah, tetapi muncul lagi nanti.",
+      "cause": "Penyebab belum ditemukan; perubahan hanya menutupi gejala.",
+      "fix": "Tulis akar penyebab, tambahkan kasus uji yang mereproduksi bug, dan pastikan uji itu lulus sebelum menutup masalah."
+    }
+  ],
+  "quiz": {
+    "questions": [
+      {
+        "id": "q1",
+        "type": "recall",
+        "question": "Bagian stack trace yang paling relevan untuk diperiksa pertama kali adalah apa?",
+        "options": [
+          "Baris paling bawah yang berasal dari library",
+          "Seluruh isi berkas konfigurasi",
+          "Baris teratas yang menunjuk ke kode proyek Anda"
+        ],
+        "answer": 2,
+        "explanation": "Frame pertama yang berasal dari kode Anda menunjukkan lokasi kegagalan yang paling dekat dengan perubahan Anda."
+      },
+      {
+        "id": "q2",
+        "type": "scenario",
+        "question": "Sebuah bug hanya muncul pada satu dari 64 data. Pendekatan pertama yang paling efisien adalah apa?",
+        "options": [
+          "Membagi data menjadi dua kelompok dan mempersempit secara berulang",
+          "Menulis ulang seluruh aplikasi dari awal",
+          "Menghapus semua data lalu mencoba lagi"
+        ],
+        "answer": 0,
+        "explanation": "Binary search mempersempit kandidat menjadi separuh pada setiap pemeriksaan sehingga hanya perlu beberapa langkah."
+      },
+      {
+        "id": "q3",
+        "type": "scenario",
+        "question": "Apa isi minimal reproducible example yang paling membantu saat meminta bantuan?",
+        "options": [
+          "Screenshot layar tanpa pesan error",
+          "Kode terkecil, langkah reproduksi, hasil yang diharapkan dan sebenarnya, serta error lengkap",
+          "Seluruh folder proyek tanpa penjelasan"
+        ],
+        "answer": 1,
+        "explanation": "Contoh minimal yang dapat dijalankan beserta konteks dan error lengkap memungkinkan orang lain mereproduksi masalah dengan cepat."
+      }
+    ]
+  },
+  "resources": [
+    {
+      "sourceId": "mdn-debugging-js",
+      "note": "Panduan resmi tentang membaca error, memakai console, dan menelusuri masalah JavaScript."
+    },
+    {
+      "sourceId": "chrome-devtools-js",
+      "note": "Panduan resmi breakpoint, pemeriksaan variabel, dan langkah eksekusi di DevTools."
+    }
+  ],
+  "summary": [
+    "Error memberi tipe, pesan, dan stack trace; fokuskan pemeriksaan pada frame pertama dari kode Anda.",
+    "Reproduksi yang jelas dan hipotesis yang dapat diuji mengubah debugging dari menebak menjadi eksperimen.",
+    "Binary search, logging, dan breakpoint mempersempit penyebab tanpa mengubah banyak hal sekaligus.",
+    "Minimal reproducible example membuat bantuan lebih cepat dan lebih tepat."
+  ],
+  "next": "Berikutnya: belajar aktif. Anda akan mengubah membaca pasif menjadi latihan mengingat, jadwal ulangan, dan proyek kecil."
+}

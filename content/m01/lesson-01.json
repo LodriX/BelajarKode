@@ -1,0 +1,443 @@
+{
+  "id": "m01-l01",
+  "title": "Apa itu program, perangkat lunak, dan aplikasi",
+  "minutes": 90,
+  "level": "Dasar",
+  "depth": "fondasi",
+  "schema": 3.1,
+  "codeLanguage": "javascript",
+  "outcome": "Setelah pelajaran ini, Anda dapat menjelaskan program sebagai urutan instruksi, memetakan sebuah program ke input, proses, dan output, membedakan kode sumber dari kode mesin, serta menentukan bagian aplikasi yang termasuk frontend dan backend.",
+  "objectives": [
+    "Menjelaskan program sebagai kumpulan instruksi yang dijalankan secara berurutan.",
+    "Memetakan sebuah program ke dalam input, proses, dan output.",
+    "Membedakan kode sumber, kode mesin, perangkat lunak, dan aplikasi.",
+    "Menentukan bagian mana dari sebuah aplikasi yang termasuk frontend dan backend."
+  ],
+  "prerequisites": [
+    {
+      "label": "Cara kerja komputer: perangkat, sistem operasi, dan aplikasi",
+      "lessonId": "m00-l01"
+    },
+    {
+      "label": "Berkas, folder, jalur, dan terminal dasar",
+      "lessonId": "m00-l02"
+    }
+  ],
+  "terms": [
+    {
+      "term": "Program",
+      "definition": "Kumpulan instruksi terurut yang membuat komputer melakukan suatu tugas."
+    },
+    {
+      "term": "Kode sumber",
+      "definition": "Teks instruksi yang ditulis manusia dalam bahasa pemrograman dan dapat dibaca serta diubah."
+    },
+    {
+      "term": "Kode mesin",
+      "definition": "Instruksi biner yang dapat dijalankan langsung oleh prosesor."
+    },
+    {
+      "term": "Perangkat lunak",
+      "definition": "Keseluruhan program, data, konfigurasi, dan dokumentasi yang menyusun sebuah sistem komputasi."
+    },
+    {
+      "term": "Aplikasi",
+      "definition": "Perangkat lunak yang dirancang untuk membantu pengguna menyelesaikan tugas tertentu."
+    },
+    {
+      "term": "Frontend",
+      "definition": "Bagian aplikasi yang berjalan di perangkat pengguna dan menangani tampilan serta interaksi."
+    },
+    {
+      "term": "Backend",
+      "definition": "Bagian aplikasi yang berjalan di server dan menangani aturan, data, serta integrasi."
+    }
+  ],
+  "syntax": [
+    {
+      "token": "input → proses → output",
+      "readAs": "Baca sebagai tiga tahap yang selalu muncul: data masuk, diolah dengan aturan tertentu, lalu menghasilkan sesuatu yang dapat diperiksa.",
+      "meaning": "Setiap program dapat dijelaskan dengan tiga tahap ini. Input tidak selalu berasal dari papan ketik; bisa juga dari berkas, jaringan, atau parameter fungsi. Output dapat berupa angka, teks, atau perubahan di layar.",
+      "example": "Harga 25.000, jumlah 3, diskon 10% → hitung subtotal dan diskon → total 67.500",
+      "output": "Angka 67500 keluar sebagai hasil yang dapat dibandingkan dengan perhitungan manual.",
+      "pitfall": "Menyebut antarmuka sebagai output utama. Tampilan hanyalah salah satu bentuk output; nilai yang dikembalikan fungsi juga output."
+    },
+    {
+      "token": "function hitungTotal(harga, jumlah, diskonPersen) { ... }",
+      "readAs": "Baca sebagai fungsi bernama hitungTotal yang menerima tiga parameter dan mengembalikan satu hasil.",
+      "meaning": "Nama fungsi menjelaskan maksud, parameter menjelaskan input, dan return menjelaskan output. Bagian di antara kurung kurawal adalah proses yang menjalankan aturan.",
+      "example": "function hitungTotal(harga, jumlah, diskonPersen) { return harga * jumlah; }",
+      "output": "Pemanggilan hitungTotal(25000, 3, 10) menghasilkan angka yang dapat dipakai lagi.",
+      "pitfall": "Menamai fungsi dengan proses yang terlalu umum seperti prosesData sehingga pembaca tidak tahu input dan output yang diharapkan."
+    },
+    {
+      "token": "kode sumber .js → build → kode mesin",
+      "readAs": "Baca sebagai perjalanan dari teks yang Anda tulis menuju instruksi yang dapat dijalankan komputer.",
+      "meaning": "Kode sumber adalah teks yang dibaca manusia. Kode mesin adalah instruksi yang dipahami prosesor. Beberapa bahasa memakai interpreter, beberapa memakai compiler, dan banyak alur modern memakai keduanya.",
+      "example": "app.js → bundler → app.min.js → browser menjalankan instruksi",
+      "output": "Browser menerima berkas hasil build dan menjalankan perilaku yang sama dengan kode sumber.",
+      "pitfall": "Menganggap kode sumber yang dikirim ke browser sama persis dengan yang Anda tulis. Build dapat menggabungkan, mengecilkan, atau mengubah berkas."
+    }
+  ],
+  "conventions": [
+    "Jelaskan setiap program dengan pola input, proses, dan output sebelum membahas detail sintaks.",
+    "Beri nama fungsi sesuai hasil yang dikembalikan, bukan sesuai cara internalnya bekerja.",
+    "Pisahkan validasi input dari perhitungan agar setiap bagian mudah diuji.",
+    "Bedakan kode sumber yang Anda tulis dari hasil build yang dijalankan browser.",
+    "Sebut frontend untuk bagian yang berjalan di perangkat pengguna dan backend untuk bagian yang berjalan di server."
+  ],
+  "sections": [
+    {
+      "id": "cara-membaca",
+      "title": "Cara membaca satu program lewat input, proses, dan output",
+      "body": [
+        "Program yang tampak rumit biasanya dapat dipecah menjadi beberapa blok input-proses-output. Mulailah dari data yang masuk: apa yang diketik pengguna, berkas apa yang dibaca, atau parameter apa yang diterima fungsi. Setelah itu, tuliskan aturan pengolahan dalam bahasa sehari-hari. Terakhir, tentukan hasil yang dapat diperiksa, baik berupa angka, teks, maupun perubahan tampilan.",
+        "Saat membaca kode, jangan langsung menelusuri setiap baris dari atas ke bawah tanpa tujuan. Cari dulu tanda input, misalnya parameter fungsi atau pemanggilan console.log. Lalu cari return atau perintah yang mengubah tampilan sebagai output. Bagian di antaranya adalah proses.",
+        "Perhitungan manual adalah alat verifikasi termurah. Sebelum menjalankan program, hitung satu kasus sederhana dengan kertas. Setelah program berjalan, bandingkan hasilnya. Jika berbeda, Anda sudah memiliki satu kasus uji yang jelas dan dapat dipakai saat meminta bantuan. Tanpa pembanding manual, angka yang salah mudah terlihat benar."
+      ],
+      "code": {
+        "language": "text",
+        "lab": false,
+        "code": "Input   : harga 25000, jumlah 3, diskon 10\nProses  : subtotal = 25000 * 3 = 75000\nProses  : diskon = 75000 * 10 / 100 = 7500\nOutput  : 75000 - 7500 = 67500",
+        "output": "Total 67500 dapat dibandingkan dengan hasil program dan perhitungan manual.",
+        "explain": "Empat baris ini memisahkan data masuk, dua langkah pengolahan, dan satu hasil akhir yang dapat diperiksa.",
+        "annotations": [
+          {
+            "line": 1,
+            "code": "Input   : harga 25000, jumlah 3, diskon 10",
+            "note": "Input menyebut nilai dan satuannya agar tidak tertukar antara rupiah dan persen."
+          },
+          {
+            "line": 2,
+            "code": "Proses  : subtotal = 25000 * 3 = 75000",
+            "note": "Langkah pertama mengalikan harga dengan jumlah untuk mendapat subtotal."
+          },
+          {
+            "line": 3,
+            "code": "Proses  : diskon = 75000 * 10 / 100 = 7500",
+            "note": "Langkah kedua menghitung nilai diskon dari subtotal, bukan dari harga satuan."
+          },
+          {
+            "line": 4,
+            "code": "Output  : 75000 - 7500 = 67500",
+            "note": "Output adalah hasil akhir yang dapat dibandingkan dengan keluaran program."
+          }
+        ]
+      },
+      "callouts": [
+        {
+          "tone": "good",
+          "title": "Satu kasus manual cukup",
+          "body": "Satu kasus sederhana cukup untuk membuktikan alur dasar sebelum menguji kasus sulit."
+        }
+      ],
+      "checkpoint": {
+        "prompt": "Pilih satu aplikasi yang Anda pakai hari ini, lalu tuliskan satu input, satu proses, dan satu output yang dapat Anda amati.",
+        "success": "Anda menyebut data yang masuk, aturan pengolahnya, dan hasil yang dapat diperiksa."
+      }
+    },
+    {
+      "id": "program-instruksi",
+      "title": "Program adalah instruksi, bukan keajaiban",
+      "body": [
+        "Program adalah kumpulan instruksi yang disusun dalam urutan tertentu agar komputer melakukan sesuatu. Komputer tidak memahami maksud atau konteks seperti manusia; ia menjalankan instruksi yang diberikan secara harfiah. Jika urutan langkah salah, program bisa tetap berjalan tanpa error tetapi menghasilkan perilaku yang tidak diharapkan.",
+        "Analogi resep membantu, tetapi ada batasnya. Koki manusia dapat menebak ketika resep mengatakan secukupnya, sedangkan komputer membutuhkan nilai yang jelas. Instruksi seperti hitung total belanja masih terlalu umum. Anda perlu menentukan item mana yang dijumlahkan, apakah pajak ikut dihitung, dan bagaimana pembulatan dilakukan. Semakin eksplisit instruksi, semakin kecil ruang tafsir yang nantinya menjadi bug.",
+        "Hampir semua program dibangun dari urutan, percabangan, dan pengulangan. Urutan menjalankan langkah dari atas ke bawah. Percabangan memilih langkah berdasarkan kondisi, misalnya apakah password cocok. Pengulangan menjalankan langkah yang sama untuk banyak data, misalnya memeriksa setiap item di keranjang. Pola ini nantinya muncul sebagai statement, if, dan loop. Bedakan juga program dari proses: program adalah instruksi yang tersimpan, sedangkan proses adalah program yang sedang berjalan dengan memori dan status."
+      ],
+      "callouts": [
+        {
+          "tone": "good",
+          "title": "Cara membaca program",
+          "body": "Bacalah program sebagai urutan perintah, lalu tanyakan data apa yang masuk, aturan apa yang diterapkan, dan hasil apa yang keluar."
+        }
+      ],
+      "checkpoint": {
+        "prompt": "Jelaskan dengan bahasa Anda sendiri mengapa komputer tidak dapat mengisi celah instruksi yang tidak lengkap.",
+        "success": "Anda menyebut bahwa komputer mengeksekusi instruksi secara harfiah tanpa memahami maksud penulis."
+      }
+    },
+    {
+      "id": "input-proses-output",
+      "title": "Input, proses, dan output",
+      "body": [
+        "Cara paling berguna untuk membaca program adalah memetakan input, proses, dan output. Input adalah data yang masuk dari keyboard, file, jaringan, atau perangkat lain. Proses adalah perubahan yang dilakukan terhadap data tersebut. Output adalah hasil yang dikembalikan ke layar, file, jaringan, atau perangkat lain. Model ini membantu Anda menemukan bagian mana yang harus diperiksa ketika hasil tidak sesuai.",
+        "Contoh berikut menerima harga, jumlah, dan diskon, lalu mengembalikan total. Perhatikan bahwa input diperiksa sebelum dihitung. Tanpa pemeriksaan, jumlah negatif atau harga kosong dapat menghasilkan angka yang tampak valid tetapi tidak masuk akal. Program yang baik tidak hanya menghitung benar untuk input normal, tetapi juga menolak input tidak valid dengan pesan yang jelas dan dapat ditindaklanjuti.",
+        "Output juga memiliki kontrak. Pemanggil fungsi perlu tahu apakah hasilnya angka, teks, atau objek, serta satuan apa yang dipakai. Apakah total sudah termasuk pajak? Apakah diskon berupa persen atau nominal? Kontrak yang tidak jelas memaksa orang menebak. Di aplikasi nyata, proses sering menyimpan state, yaitu data yang bertahan antarlangkah, seperti keranjang belanja atau status login. Pisahkan perhitungan murni dari perubahan state agar lebih mudah diuji."
+      ],
+      "code": {
+        "language": "javascript",
+        "code": "function hitungTotal(harga, jumlah, diskonPersen) {\n  if (harga < 0 || jumlah < 1) {\n    throw new Error(\"Input tidak valid\");\n  }\n  const subtotal = harga * jumlah;\n  return subtotal - subtotal * (diskonPersen / 100);\n}\n\nconsole.log(hitungTotal(25000, 3, 10));",
+        "output": "67500",
+        "explain": "Fungsi menerima tiga input, memvalidasinya, menghitung subtotal, lalu mengembalikan satu output berupa angka.",
+        "annotations": [
+          {
+            "line": 1,
+            "code": "function hitungTotal(harga, jumlah, diskonPersen) {",
+            "note": "Nama fungsi menyatakan hasil, dan tiga parameter menyatakan input."
+          },
+          {
+            "line": 2,
+            "code": "  if (harga < 0 || jumlah < 1) {",
+            "note": "Validasi memeriksa input sebelum perhitungan dijalankan."
+          },
+          {
+            "line": 3,
+            "code": "    throw new Error(\"Input tidak valid\");",
+            "note": "Input yang tidak masuk akal ditolak dengan pesan yang jelas."
+          },
+          {
+            "line": 5,
+            "code": "  const subtotal = harga * jumlah;",
+            "note": "Langkah proses pertama menyimpan hasil antara dalam variabel."
+          },
+          {
+            "line": 6,
+            "code": "  return subtotal - subtotal * (diskonPersen / 100);",
+            "note": "Return mengembalikan output akhir setelah diskon diterapkan."
+          },
+          {
+            "line": 9,
+            "code": "console.log(hitungTotal(25000, 3, 10));",
+            "note": "Pemanggilan memberi input konkret dan menampilkan output untuk diperiksa."
+          }
+        ]
+      },
+      "checkpoint": {
+        "prompt": "Sebutkan input, proses, dan output dari fungsi hitungTotal.",
+        "success": "Anda menyebut harga, jumlah, dan diskon sebagai input; perhitungan subtotal sebagai proses; total sebagai output."
+      }
+    },
+    {
+      "id": "kode-sumber-kode-mesin",
+      "title": "Kode sumber dan kode mesin",
+      "body": [
+        "Kode sumber adalah teks yang ditulis manusia dalam bahasa pemrograman, misalnya JavaScript, PHP, atau Dart. Kode mesin adalah instruksi biner yang dapat dijalankan langsung oleh prosesor. Manusia menulis kode sumber karena kode mesin sangat sulit dibaca dan diubah. Komputer menjalankan kode mesin karena itulah bentuk yang dikenali perangkat keras.",
+        "Perbedaan compiler dan interpreter sering disederhanakan secara berlebihan. Compiler menerjemahkan seluruh kode sebelum dijalankan, sedangkan interpreter mengeksekusi bertahap. Pada praktiknya batas ini kabur. Mesin JavaScript modern membaca kode sumber, mengompilasi sebagian, lalu mengoptimalkan bagian yang sering dipakai. Yang penting bagi Anda adalah memahami bahwa ada lapisan penerjemahan antara teks yang Anda tulis dan instruksi yang dijalankan.",
+        "JavaScript berjalan di dalam runtime. Di browser, runtime menyediakan mesin JavaScript sekaligus API seperti DOM, fetch, dan localStorage. Di Node.js, runtime menyediakan API file dan jaringan. Bahasa yang sama dapat berperilaku berbeda karena lingkungannya berbeda. Kode sumber juga sering diolah sebelum dikirim ke pengguna melalui minifikasi, transpilasi, atau bundling. Source map menghubungkan kembali kode hasil olahan ke kode asli agar pesan error tetap dapat ditelusuri."
+      ],
+      "callouts": [
+        {
+          "tone": "bad",
+          "title": "Kesalahan umum",
+          "body": "Menganggap JavaScript dan browser adalah hal yang sama. JavaScript adalah bahasa; browser adalah salah satu runtime yang menjalankannya."
+        }
+      ],
+      "checkpoint": {
+        "prompt": "Mengapa kode sumber tidak dikirim langsung sebagai instruksi biner ke prosesor?",
+        "success": "Anda menjelaskan bahwa kode sumber perlu diterjemahkan atau dijalankan oleh runtime menjadi instruksi yang dipahami mesin."
+      }
+    },
+    {
+      "id": "perangkat-lunak-aplikasi",
+      "title": "Perangkat lunak dan aplikasi",
+      "body": [
+        "Perangkat lunak lebih luas daripada satu program. Perangkat lunak mencakup program, data, konfigurasi, dokumentasi, dan kadang layanan pendukung. Sistem operasi, driver, alat pengembangan, dan aplikasi pengguna semuanya adalah perangkat lunak. Ketika orang mengatakan sebuah sistem perangkat lunak, mereka biasanya merujuk pada keseluruhan komponen yang bekerja bersama, bukan hanya satu file kode.",
+        "Aplikasi adalah perangkat lunak yang dirancang untuk membantu pengguna menyelesaikan tugas. Aplikasi web, desktop, dan mobile semuanya termasuk aplikasi. Istilah aplikasi tidak identik dengan mobile. Aplikasi biasanya memiliki antarmuka, data pengguna, izin akses, mekanisme pembaruan, dan dukungan. Sebuah kalkulator sederhana bisa disebut program, sedangkan aplikasi kalkulator mencakup tampilan, riwayat, pengaturan, dan pembaruan.",
+        "Bedakan juga aplikasi dari library dan framework. Library adalah kumpulan fungsi yang dipanggil oleh kode Anda. Framework menyediakan kerangka yang memanggil kode Anda pada titik tertentu. Aplikasi adalah produk akhir yang dijalankan pengguna. Pemahaman ini penting saat membaca dokumentasi, karena ketiganya memiliki cara pakai dan tanggung jawab yang berbeda."
+      ],
+      "callouts": [
+        {
+          "tone": "good",
+          "title": "Istilah yang tepat",
+          "body": "Gunakan program untuk kumpulan instruksi, perangkat lunak untuk keseluruhan sistem, dan aplikasi untuk produk yang dipakai pengguna."
+        }
+      ],
+      "checkpoint": {
+        "prompt": "Apa perbedaan aplikasi dan library?",
+        "success": "Anda menjelaskan bahwa aplikasi dijalankan pengguna, sedangkan library dipanggil oleh kode lain untuk menyediakan fungsi."
+      }
+    },
+    {
+      "id": "frontend-backend",
+      "title": "Frontend dan backend",
+      "body": [
+        "Frontend adalah bagian aplikasi yang berjalan di perangkat pengguna, umumnya di browser atau ponsel. Frontend menangani tampilan, interaksi, aksesibilitas, dan validasi awal. HTML menyusun struktur, CSS mengatur presentasi, dan JavaScript menangani perilaku. Frontend tidak boleh dipercaya sepenuhnya karena kode dan data di perangkat pengguna dapat diperiksa, diubah, atau dilewati.",
+        "Backend berjalan di server. Backend menangani autentikasi, aturan bisnis, penyimpanan data, integrasi dengan layanan lain, dan rahasia seperti kunci API. Frontend meminta sesuatu melalui jaringan, lalu backend memeriksa izin, menjalankan aturan, dan mengembalikan hasil. Validasi di frontend berguna untuk pengalaman pengguna, tetapi validasi di backend adalah sumber kebenaran.",
+        "Batas antara frontend dan backend adalah kontrak, biasanya berupa API. Kontrak ini menentukan alamat, metode, format data, dan kemungkinan error. Frontend dan backend bisa memakai bahasa yang sama, tetapi runtime dan tingkat kepercayaannya berbeda. Full-stack berarti Anda memahami kedua sisi dan dapat merancang kontraknya, bukan berarti Anda harus mengerjakan semuanya sendirian."
+      ],
+      "checkpoint": {
+        "prompt": "Mengapa validasi input harus tetap dilakukan di backend meskipun frontend sudah memeriksanya?",
+        "success": "Anda menyebut bahwa kode frontend dapat dimodifikasi atau dilewati sehingga server tetap harus memverifikasi."
+      }
+    },
+    {
+      "id": "contoh-aplikasi",
+      "title": "Membaca aplikasi nyata",
+      "body": [
+        "Bayangkan aplikasi pemesanan transportasi. Pengguna memasukkan titik jemput dan tujuan di frontend. Frontend mengirim permintaan ke backend, backend mencari pengemudi, menyimpan status pesanan, dan mengirim notifikasi. Basis data menyimpan data pengguna dan perjalanan, sedangkan aplikasi pengemudi adalah client lain yang berkomunikasi dengan backend yang sama. Satu alur pengguna dapat melibatkan beberapa aplikasi dan layanan.",
+        "Aplikasi catatan menunjukkan pola lain. Versi lokal menyimpan data di perangkat dan tetap berfungsi tanpa jaringan. Versi cloud mengirim perubahan ke backend agar dapat diakses dari beberapa perangkat. Konflik dapat muncul ketika dua perangkat mengubah catatan yang sama. Perancang aplikasi harus menentukan mana yang menang, bagaimana perubahan digabung, dan apa yang ditampilkan saat sinkronisasi gagal.",
+        "Saat aplikasi bermasalah, petakan gejalanya ke lapisan yang tepat. Total salah biasanya logika perhitungan; halaman kosong sering masalah render atau JavaScript; spinner tanpa akhir biasanya jaringan atau backend; data lama bisa cache. Kebiasaan ini mencegah Anda mengganti bahasa atau menghapus data secara panik. Tuliskan juga deskripsi aplikasi dalam format pengguna, input, proses, output, data, dan batas frontend-backend. Pola pikir ini akan langsung terpakai pada pelajaran client-server berikutnya."
+      ],
+      "callouts": [
+        {
+          "tone": "good",
+          "title": "Latihan berpikir",
+          "body": "Untuk aplikasi apa pun, tanyakan: siapa penggunanya, data apa yang masuk, aturan apa yang dijalankan, dan di mana data disimpan."
+        }
+      ],
+      "checkpoint": {
+        "prompt": "Pilih satu aplikasi yang Anda pakai hari ini dan tentukan satu tugas frontend serta satu tugas backend-nya.",
+        "success": "Anda memisahkan tanggung jawab tampilan/interaksi dari aturan/data yang berjalan di server."
+      }
+    }
+  ],
+  "practice": [
+    {
+      "id": "latihan-1",
+      "title": "Peta satu program",
+      "task": "Ambil program kalkulator sederhana atau kalkulator belanja, lalu tuliskan input, proses, dan output-nya.",
+      "steps": [
+        "Sebutkan semua data yang harus dimasukkan pengguna.",
+        "Tuliskan aturan perhitungan yang berlaku, termasuk pajak atau diskon.",
+        "Tentukan bentuk output dan satuan yang dipakai."
+      ],
+      "expected": "Tiga baris berisi input, proses, dan output yang saling cocok.",
+      "stretch": "Tambahkan dua input tidak valid dan jelaskan bagaimana program seharusnya menolaknya.",
+      "level": "guided",
+      "hints": [
+        "Pilih program yang Anda kenal, misalnya kalkulator belanja atau pengingat tugas.",
+        "Tuliskan data yang masuk sebelum menyebut proses apa pun.",
+        "Pastikan output dapat diperiksa, bukan hanya terasa benar."
+      ],
+      "starterCode": "Program:\nInput:\nProses:\nOutput:",
+      "verification": {
+        "command": "Tuliskan peta input, proses, dan output untuk satu program.",
+        "expected": "Tiga baris saling cocok dan output dapat dibandingkan dengan hasil nyata.",
+        "evidence": "Simpan peta dan satu contoh perhitungan manual."
+      }
+    },
+    {
+      "id": "latihan-2",
+      "title": "Fungsi total belanja",
+      "task": "Tulis fungsi JavaScript yang menerima harga, jumlah, dan diskon, lalu mengembalikan total setelah validasi.",
+      "steps": [
+        "Tolak harga negatif dan jumlah kurang dari satu.",
+        "Hitung subtotal sebelum diskon.",
+        "Uji dengan input normal, input diskon nol, dan input tidak valid."
+      ],
+      "expected": "Fungsi mengembalikan angka yang benar dan melempar error untuk input tidak valid.",
+      "stretch": "Tambahkan parameter pajak dan pastikan urutan perhitungannya terdokumentasi.",
+      "level": "independent",
+      "hints": [
+        "Mulai dari validasi: harga tidak boleh negatif dan jumlah minimal satu.",
+        "Hitung subtotal lebih dulu, lalu terapkan diskon pada subtotal.",
+        "Uji satu kasus valid dan satu kasus tidak valid."
+      ],
+      "starterCode": "function hitungTotal(harga, jumlah, diskonPersen) {\n  // Tulis validasi dan perhitungan di sini.\n}\n\nconsole.log(hitungTotal(25000, 3, 10));",
+      "verification": {
+        "command": "Jalankan fungsi dengan satu input valid dan satu input tidak valid.",
+        "expected": "Kasus valid menghasilkan angka yang benar, sedangkan kasus tidak valid melempar error yang jelas.",
+        "evidence": "Simpan kode, dua output, dan perhitungan manual pembanding."
+      }
+    },
+    {
+      "id": "latihan-3",
+      "title": "Pisahkan frontend dan backend",
+      "task": "Pilih satu aplikasi favorit, lalu daftar tiga tugas frontend dan tiga tugas backend.",
+      "steps": [
+        "Tandai tugas yang berhubungan dengan tampilan dan input pengguna.",
+        "Tandai tugas yang berhubungan dengan aturan, data, dan rahasia.",
+        "Tentukan satu data yang tidak boleh dipercaya dari client."
+      ],
+      "expected": "Dua daftar tanggung jawab dan satu contoh batas kepercayaan.",
+      "stretch": "Gambarkan alur request dari tombol beli sampai data pesanan tersimpan.",
+      "level": "transfer",
+      "hints": [
+        "Pilih aplikasi yang memakai akun, misalnya aplikasi catatan atau toko daring.",
+        "Bedakan tugas yang berjalan di perangkat Anda dari tugas yang memerlukan server.",
+        "Tandai satu data yang tidak boleh dipercaya sepenuhnya dari browser."
+      ],
+      "starterCode": "Aplikasi:\nFrontend 1:\nFrontend 2:\nFrontend 3:\nBackend 1:\nBackend 2:\nBackend 3:\nBatas kepercayaan:",
+      "verification": {
+        "command": "Buat dua daftar tanggung jawab frontend dan backend untuk satu aplikasi.",
+        "expected": "Daftar menunjukkan pembagian yang masuk akal dan satu contoh data yang harus diverifikasi di server.",
+        "evidence": "Simpan daftar dan alasan pembagiannya."
+      }
+    }
+  ],
+  "verification": {
+    "mode": "lab",
+    "command": "Kerjakan Latihan 2 di Lab, lalu bandingkan output dengan perhitungan manual.",
+    "expected": "Fungsi mengembalikan 67500 untuk input 25000, 3, dan 10, serta menolak input yang tidak valid.",
+    "evidence": "Simpan kode, output, dan perhitungan manual di catatan belajar."
+  },
+  "troubleshooting": [
+    {
+      "symptom": "Program berjalan, tetapi hasilnya tidak sesuai perhitungan manual.",
+      "cause": "Urutan operasi atau sumber nilai berbeda dari yang Anda bayangkan.",
+      "fix": "Cetak nilai antara sebelum dan sesudah setiap langkah, lalu bandingkan dengan perhitungan manual."
+    },
+    {
+      "symptom": "Fungsi mengembalikan undefined.",
+      "cause": "Fungsi menghitung nilai tetapi tidak memakai return.",
+      "fix": "Tambahkan return pada hasil akhir dan pastikan pemanggil menyimpan atau menampilkan nilai itu."
+    },
+    {
+      "symptom": "Halaman menampilkan data yang seharusnya tidak boleh diubah pengguna.",
+      "cause": "Validasi hanya dilakukan di frontend, sehingga permintaan dapat dimanipulasi.",
+      "fix": "Ulangi validasi di backend dan jangan mempercayai data yang datang dari browser."
+    },
+    {
+      "symptom": "Kode berjalan di komputer, tetapi gagal setelah diunggah.",
+      "cause": "Perbedaan versi runtime, variabel lingkungan, atau hasil build.",
+      "fix": "Catat versi runtime di kedua tempat, periksa log build, dan jalankan berkas hasil build secara lokal."
+    }
+  ],
+  "quiz": {
+    "questions": [
+      {
+        "id": "q1",
+        "type": "recall",
+        "question": "Apa yang dimaksud dengan kode sumber?",
+        "options": [
+          "Instruksi biner yang dibaca langsung oleh prosesor",
+          "Teks instruksi yang ditulis manusia dalam bahasa pemrograman",
+          "Data yang dikirim dari server ke browser"
+        ],
+        "answer": 1,
+        "explanation": "Kode sumber adalah teks yang ditulis manusia dan perlu diterjemahkan atau dijalankan oleh runtime."
+      },
+      {
+        "id": "q2",
+        "type": "scenario",
+        "question": "Sebuah fungsi mengembalikan angka negatif padahal harga dan jumlah valid. Bagian mana yang paling perlu diperiksa?",
+        "options": [
+          "Cara browser menggambar halaman",
+          "Kecepatan koneksi jaringan",
+          "Logika perhitungan dan kontrak input"
+        ],
+        "answer": 2,
+        "explanation": "Hasil aritmetika yang salah paling sering berasal dari logika proses atau input yang tidak sesuai kontrak."
+      },
+      {
+        "id": "q3",
+        "type": "scenario",
+        "question": "Mengapa validasi di frontend saja tidak cukup?",
+        "options": [
+          "Karena aturan bisnis dan data tetap harus dilindungi di server",
+          "Karena frontend tidak dapat menampilkan pesan error",
+          "Karena browser tidak menjalankan JavaScript"
+        ],
+        "answer": 0,
+        "explanation": "Kode frontend dapat diubah atau dilewati, sehingga server harus tetap memverifikasi input dan izin."
+      }
+    ]
+  },
+  "resources": [
+    {
+      "sourceId": "mdn-what-is-javascript",
+      "note": "Penjelasan resmi tentang JavaScript, browser, dan runtime."
+    },
+    {
+      "sourceId": "webdev-learn-javascript",
+      "note": "Kursus JavaScript resmi Google untuk memahami dasar bahasa dan eksekusinya."
+    }
+  ],
+  "summary": [
+    "Program adalah urutan instruksi yang menerima input, menjalankan proses, dan menghasilkan output.",
+    "Fungsi yang baik menyatakan input lewat parameter dan output lewat return.",
+    "Kode sumber adalah teks yang dibaca manusia; kode mesin adalah instruksi yang dijalankan komputer.",
+    "Frontend berjalan di perangkat pengguna, backend berjalan di server, dan validasi penting harus dilakukan di keduanya."
+  ],
+  "next": "Berikutnya: klien-server, yaitu bagaimana web bekerja. Anda akan melacak satu permintaan dari browser sampai server dan membaca responsnya."
+}

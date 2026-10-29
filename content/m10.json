@@ -1,0 +1,247 @@
+{
+  "id": "m10",
+  "title": "Dart dan Flutter",
+  "subtitle": "Membuat aplikasi mobile dari backend yang sama",
+  "weeks": [
+    36,
+    39
+  ],
+  "accent": "#0284c7",
+  "goal": "Membangun aplikasi Flutter dengan navigasi, state, formulir, API, dan penyimpanan aman.",
+  "lessons": [
+    {
+      "id": "m10-l01",
+      "title": "Dart dan null safety",
+      "minutes": 45,
+      "level": "Menengah",
+      "intro": "Dart adalah bahasa utama Flutter. Pelajari var/final/const, function, class, Future, async/await, generic, dan null safety.",
+      "explanation": "Null safety membantu membedakan nilai yang bisa kosong (String?) dan yang wajib terisi (String). Gunakan operator ?., ?? secara sadar, jangan pakai ! sembarangan.",
+      "code": "void main() {\n  final nama = \"Dina\";\n  String? kota;\n  print(\"Halo $nama, kota: ${kota ?? \"belum diisi\"}\");\n}",
+      "codeLanguage": "dart",
+      "practice": [
+        "Buat class Produk dengan nama, harga, dan metode hitungTotal(qty).",
+        "Ubah satu input atau asumsi pada contoh, catat hasil dan jelaskan alasannya."
+      ],
+      "bestPractice": "Utamakan final dan manfaatkan null safety; validasi data dari API.",
+      "commonMistake": "Memaksa non-null (!) tanpa memastikan data tersedia.",
+      "quiz": {
+        "question": "Apa prinsip yang paling tepat untuk topik “Dart dan null safety”?",
+        "options": [
+          "Utamakan final dan manfaatkan null safety; validasi data dari API.",
+          "Gunakan solusi paling rumit sejak awal, meski kebutuhan belum jelas.",
+          "Lewati pengujian karena contoh kecil pasti benar."
+        ],
+        "answer": 0,
+        "explanation": "Utamakan final dan manfaatkan null safety; validasi data dari API."
+      }
+    },
+    {
+      "id": "m10-l02",
+      "title": "Flutter widget tree",
+      "minutes": 45,
+      "level": "Menengah",
+      "intro": "Flutter menyusun UI sebagai hierarki widget. StatelessWidget cocok untuk tampilan yang hanya bergantung pada input; StatefulWidget ketika state lokal berubah.",
+      "explanation": "Pahami BuildContext, build(), const widget, dan kapan UI perlu rebuild. Komponen kecil membuat layar mudah diuji dan dipelihara.",
+      "code": "import \"package:flutter/material.dart\";\nvoid main() => runApp(const MaterialApp(\n  home: Scaffold(body: Center(child: Text(\"Halo Flutter\"))),\n));",
+      "codeLanguage": "dart",
+      "practice": [
+        "Buat halaman Halo Dunia dengan judul dan tombol.",
+        "Ubah satu input atau asumsi pada contoh, catat hasil dan jelaskan alasannya."
+      ],
+      "bestPractice": "Pecah widget panjang menjadi komponen dengan tanggung jawab jelas.",
+      "commonMistake": "Satu file widget berisi seluruh aplikasi hingga ribuan baris.",
+      "quiz": {
+        "question": "Apa prinsip yang paling tepat untuk topik “Flutter widget tree”?",
+        "options": [
+          "Pecah widget panjang menjadi komponen dengan tanggung jawab jelas.",
+          "Gunakan solusi paling rumit sejak awal, meski kebutuhan belum jelas.",
+          "Lewati pengujian karena contoh kecil pasti benar."
+        ],
+        "answer": 0,
+        "explanation": "Pecah widget panjang menjadi komponen dengan tanggung jawab jelas."
+      }
+    },
+    {
+      "id": "m10-l03",
+      "title": "Layout dan responsive Flutter",
+      "minutes": 45,
+      "level": "Menengah",
+      "intro": "Row dan Column mengatur sumbu utama, Expanded/Flexible membagi ruang; ListView menangani daftar panjang. MediaQuery/LayoutBuilder berguna untuk responsive.",
+      "explanation": "Pahami constraint layout Flutter dan hindari ukuran tetap yang memicu overflow pada HP kecil, orientasi landscape, maupun font skala besar.",
+      "code": "Column(children: [\n  const Text(\"Tugas Hari Ini\"),\n  Expanded(child: ListView(children: const [\n    ListTile(title: Text(\"Belajar Dart\")),\n  ])),\n]);",
+      "codeLanguage": "dart",
+      "practice": [
+        "Buat daftar kartu yang tidak overflow pada layar kecil.",
+        "Ubah satu input atau asumsi pada contoh, catat hasil dan jelaskan alasannya."
+      ],
+      "bestPractice": "Gunakan widget scroll yang sesuai dan uji text scaling.",
+      "commonMistake": "Menaruh ListView dalam Column tanpa batas tinggi.",
+      "quiz": {
+        "question": "Apa prinsip yang paling tepat untuk topik “Layout dan responsive Flutter”?",
+        "options": [
+          "Gunakan widget scroll yang sesuai dan uji text scaling.",
+          "Gunakan solusi paling rumit sejak awal, meski kebutuhan belum jelas.",
+          "Lewati pengujian karena contoh kecil pasti benar."
+        ],
+        "answer": 0,
+        "explanation": "Gunakan widget scroll yang sesuai dan uji text scaling."
+      }
+    },
+    {
+      "id": "m10-l04",
+      "title": "State management dan separation of concerns",
+      "minutes": 45,
+      "level": "Menengah",
+      "intro": "State sederhana dapat memakai setState; saat data dibagi lintas layar, gunakan pola yang jelas seperti ChangeNotifier atau Riverpod (pilihan lanjutan).",
+      "explanation": "Pisahkan view dari logika pemanggilan API dan state. Jangan memilih paket state management karena popularitas semata; uji kemudahan perawatan oleh tim.",
+      "code": "// Konsep aliran state:\n// Widget -> Controller/ViewModel -> Repository -> API\n// Perubahan state memicu render ulang UI.",
+      "codeLanguage": "dart",
+      "practice": [
+        "Buat state daftar tugas yang bisa ditambah dan dicentang.",
+        "Ubah satu input atau asumsi pada contoh, catat hasil dan jelaskan alasannya."
+      ],
+      "bestPractice": "Mulai sederhana; tambahkan state management ketika kebutuhan membenarkan.",
+      "commonMistake": "Memasukkan request HTTP dan pemrosesan bisnis di method build().",
+      "quiz": {
+        "question": "Apa prinsip yang paling tepat untuk topik “State management dan separation of concerns”?",
+        "options": [
+          "Mulai sederhana; tambahkan state management ketika kebutuhan membenarkan.",
+          "Gunakan solusi paling rumit sejak awal, meski kebutuhan belum jelas.",
+          "Lewati pengujian karena contoh kecil pasti benar."
+        ],
+        "answer": 0,
+        "explanation": "Mulai sederhana; tambahkan state management ketika kebutuhan membenarkan."
+      }
+    },
+    {
+      "id": "m10-l05",
+      "title": "Navigation dan routing",
+      "minutes": 45,
+      "level": "Menengah",
+      "intro": "Navigasi berpindah layar dan dapat membawa parameter seperti ID tugas. Flutter Navigator cukup untuk alur sederhana; go_router cocok untuk routing lebih terstruktur dan deep link.",
+      "explanation": "Jangan mengirim object besar tanpa alasan; saat membuka detail, muat data berdasar ID untuk konsistensi. Tangani halaman tidak ditemukan dan back navigation.",
+      "code": "Navigator.push(context, MaterialPageRoute(\n  builder: (_) => const DetailPage(),\n));\n// DetailPage perlu didefinisikan di proyek lengkap.",
+      "codeLanguage": "dart",
+      "practice": [
+        "Buat alur halaman daftar -> detail -> kembali.",
+        "Ubah satu input atau asumsi pada contoh, catat hasil dan jelaskan alasannya."
+      ],
+      "bestPractice": "Kelola route dan parameter secara eksplisit.",
+      "commonMistake": "Mengandalkan state layar sebelumnya untuk data penting tanpa refresh.",
+      "quiz": {
+        "question": "Apa prinsip yang paling tepat untuk topik “Navigation dan routing”?",
+        "options": [
+          "Kelola route dan parameter secara eksplisit.",
+          "Gunakan solusi paling rumit sejak awal, meski kebutuhan belum jelas.",
+          "Lewati pengujian karena contoh kecil pasti benar."
+        ],
+        "answer": 0,
+        "explanation": "Kelola route dan parameter secara eksplisit."
+      }
+    },
+    {
+      "id": "m10-l06",
+      "title": "Form, validasi, dan UX status",
+      "minutes": 45,
+      "level": "Menengah",
+      "intro": "TextFormField dan Form membantu validasi masukan. Selalu siapkan loading, empty, success, dan error state.",
+      "explanation": "Validasi klien bertujuan membantu pengguna, sedangkan backend tetap otoritatif. Perhatikan keyboard type, fokus, pesan error, dan tombol disabled saat request berjalan.",
+      "code": "final formKey = GlobalKey<FormState>();\n// Form(key: formKey, child: TextFormField(\n// validator: (v) => (v ?? \"\").isEmpty ? \"Wajib diisi\" : null));",
+      "codeLanguage": "dart",
+      "practice": [
+        "Bangun form tugas dengan judul wajib dan tanggal opsional.",
+        "Ubah satu input atau asumsi pada contoh, catat hasil dan jelaskan alasannya."
+      ],
+      "bestPractice": "Berikan umpan balik yang dapat dipahami pada setiap state layar.",
+      "commonMistake": "Tidak menampilkan error jaringan sehingga pengguna mengira data tersimpan.",
+      "quiz": {
+        "question": "Apa prinsip yang paling tepat untuk topik “Form, validasi, dan UX status”?",
+        "options": [
+          "Berikan umpan balik yang dapat dipahami pada setiap state layar.",
+          "Gunakan solusi paling rumit sejak awal, meski kebutuhan belum jelas.",
+          "Lewati pengujian karena contoh kecil pasti benar."
+        ],
+        "answer": 0,
+        "explanation": "Berikan umpan balik yang dapat dipahami pada setiap state layar."
+      }
+    },
+    {
+      "id": "m10-l07",
+      "title": "HTTP API dan JSON serialization",
+      "minutes": 45,
+      "level": "Menengah",
+      "intro": "Flutter mengonsumsi REST API dari Laravel melalui paket http atau Dio. Response JSON dipetakan menjadi model Dart dengan fromJson/toJson; selalu cek status dan bentuk payload.",
+      "explanation": "URL localhost pada emulator bukan selalu server host; sesuaikan environment. Gunakan base URL melalui konfigurasi per environment. Rahasia tidak boleh dibundel di aplikasi.",
+      "code": "// Gambaran sederhana:\n// final res = await http.get(Uri.parse(baseUrl + \"/tasks\"));\n// if (res.statusCode == 200) { ... }",
+      "codeLanguage": "dart",
+      "practice": [
+        "Tulis model Dart Task.fromJson dari {id,title,done}; siapkan kasus field hilang.",
+        "Ubah satu input atau asumsi pada contoh, catat hasil dan jelaskan alasannya."
+      ],
+      "bestPractice": "Pisahkan layer networking, parsing, dan widget.",
+      "commonMistake": "Melakukan JSON parsing langsung di build() tiap kali widget dirender.",
+      "quiz": {
+        "question": "Apa prinsip yang paling tepat untuk topik “HTTP API dan JSON serialization”?",
+        "options": [
+          "Pisahkan layer networking, parsing, dan widget.",
+          "Gunakan solusi paling rumit sejak awal, meski kebutuhan belum jelas.",
+          "Lewati pengujian karena contoh kecil pasti benar."
+        ],
+        "answer": 0,
+        "explanation": "Pisahkan layer networking, parsing, dan widget."
+      }
+    },
+    {
+      "id": "m10-l08",
+      "title": "Offline-first dan secure storage",
+      "minutes": 45,
+      "level": "Menengah",
+      "intro": "Offline-first memungkinkan pengguna membaca/menulis sebagian data tanpa jaringan. Gunakan local database terstruktur (SQLite/Drift) untuk offline kompleks, secure storage untuk token sensitif.",
+      "explanation": "Buat strategi sync eksplisit: antrian perubahan, timestamp/version, konflik, retry, dan status sinkronisasi. localStorage pada web berbeda dari penyimpanan mobile native.",
+      "code": "// Contoh alur:\n// 1 Simpan perubahan lokal + status pending\n// 2 Saat online, kirim ke API\n// 3 Jika sukses, tandai synced\n// 4 Jika konflik, tampilkan pilihan resolusi",
+      "codeLanguage": "dart",
+      "practice": [
+        "Rancang alur ketika dua perangkat mengedit catatan yang sama tanpa jaringan.",
+        "Ubah satu input atau asumsi pada contoh, catat hasil dan jelaskan alasannya."
+      ],
+      "bestPractice": "Definisikan kebijakan konflik sebelum menerapkan sinkronisasi.",
+      "commonMistake": "Menganggap offline sync otomatis tidak akan memiliki konflik.",
+      "quiz": {
+        "question": "Apa prinsip yang paling tepat untuk topik “Offline-first dan secure storage”?",
+        "options": [
+          "Definisikan kebijakan konflik sebelum menerapkan sinkronisasi.",
+          "Gunakan solusi paling rumit sejak awal, meski kebutuhan belum jelas.",
+          "Lewati pengujian karena contoh kecil pasti benar."
+        ],
+        "answer": 0,
+        "explanation": "Definisikan kebijakan konflik sebelum menerapkan sinkronisasi."
+      }
+    },
+    {
+      "id": "m10-l09",
+      "title": "Testing dan rilis Flutter",
+      "minutes": 45,
+      "level": "Menengah",
+      "intro": "Unit test menguji logika, widget test menguji UI, integration test memeriksa alur nyata. Release build memerlukan konfigurasi signing, izin, privasi, serta QA pada perangkat.",
+      "explanation": "Jangan hanya menjalankan emulator. Uji HP fisik, mode offline, rotasi, font scaling, izin, dan pembaruan aplikasi. Pisahkan server staging dari production.",
+      "code": "flutter analyze\nflutter test\nflutter build apk --release\n# signing dan konfigurasi rilis diperlukan",
+      "codeLanguage": "bash",
+      "practice": [
+        "Rancang 5 skenario test penting untuk form login dan daftar tugas.",
+        "Ubah satu input atau asumsi pada contoh, catat hasil dan jelaskan alasannya."
+      ],
+      "bestPractice": "Rilis setelah test, pengukuran crash, dan verifikasi konfigurasi build.",
+      "commonMistake": "Menggunakan endpoint development dan kredensial uji di build produksi.",
+      "quiz": {
+        "question": "Apa prinsip yang paling tepat untuk topik “Testing dan rilis Flutter”?",
+        "options": [
+          "Rilis setelah test, pengukuran crash, dan verifikasi konfigurasi build.",
+          "Gunakan solusi paling rumit sejak awal, meski kebutuhan belum jelas.",
+          "Lewati pengujian karena contoh kecil pasti benar."
+        ],
+        "answer": 0,
+        "explanation": "Rilis setelah test, pengukuran crash, dan verifikasi konfigurasi build."
+      }
+    }
+  ]
+}
