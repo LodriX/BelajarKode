@@ -28117,642 +28117,2358 @@
         {
           "id": "m09-l01",
           "title": "REST resource dan HTTP status",
-          "minutes": 45,
+          "minutes": 120,
           "level": "Menengah",
           "depth": "integrasi",
-          "outcome": "",
+          "outcome": "Setelah pelajaran ini, Anda dapat merancang alamat API yang mewakili sumber daya dan memilih status HTTP yang tepat untuk setiap hasil operasi.",
           "codeLanguage": "http",
-          "objectives": [],
-          "prerequisites": [],
-          "terms": [],
-          "syntax": [],
-          "conventions": [],
-          "next": "",
-          "sections": [
+          "objectives": [
+            "Menjelaskan istilah sumber daya dan bagaimana alamat mewakilinya.",
+            "Memilih method HTTP yang sesuai untuk setiap operasi.",
+            "Memilih status tanggapan yang tepat untuk hasil operasi.",
+            "Membedakan status kesalahan sisi pengirim dan sisi server."
+          ],
+          "prerequisites": [
             {
-              "id": "konsep",
-              "title": "Memahami konsepnya",
-              "body": [
-                "REST mengorganisasi endpoint berdasarkan resource seperti /api/tasks. Gunakan 200/201 untuk sukses, 400/422 untuk input salah, 401 belum login, 403 tidak berhak, 404 tidak ditemukan, 500 error server.",
-                "HTTP status bukan sekadar dekorasi; klien memerlukan status untuk menentukan alur UI. Hindari endpoint yang mengubah data saat GET atau semua error dikembalikan 200."
-              ],
-              "code": null,
-              "callouts": [
-                {
-                  "tone": "good",
-                  "title": "Best practice",
-                  "body": "Gunakan status HTTP sesuai makna dan konsisten antar endpoint."
-                },
-                {
-                  "tone": "bad",
-                  "title": "Kesalahan umum",
-                  "body": "Mengembalikan HTTP 200 dengan status error di payload untuk semua masalah."
-                }
-              ],
-              "checkpoint": null
+              "label": "Testing Laravel dan deployment",
+              "lessonId": "m08-l09"
+            }
+          ],
+          "terms": [
+            {
+              "term": "Sumber daya",
+              "definition": "Sesuatu yang dapat diakses lewat alamat, misalnya daftar tugas atau satu tugas."
             },
             {
-              "id": "contoh",
-              "title": "Contoh kode",
+              "term": "Method HTTP",
+              "definition": "Penanda maksud permintaan, misalnya mengambil, membuat, mengubah, atau menghapus."
+            },
+            {
+              "term": "Status tanggapan",
+              "definition": "Angka pada tanggapan yang menyatakan hasil permintaan."
+            },
+            {
+              "term": "Kelompok status",
+              "definition": "Pengelompokan status berdasarkan angka pertama: berhasil, dialihkan, kesalahan pengirim, kesalahan server."
+            }
+          ],
+          "syntax": [
+            {
+              "token": "GET /tugas HTTP/1.1",
+              "meaning": "Method menyatakan maksud, dan alamat menyatakan sumber daya. Method GET tidak mengubah data.",
+              "readAs": "Baca sebagai permintaan mengambil daftar tugas dari alamat itu.",
+              "example": "GET /tugas HTTP/1.1",
+              "output": "Server mengembalikan representasi sumber daya tersebut.",
+              "pitfall": "Memakai method pengubah untuk operasi yang hanya membaca membuat permintaan tidak aman diulang."
+            },
+            {
+              "token": "HTTP/1.1 200 OK",
+              "meaning": "Baris status menyatakan hasil. Kelompok 200-an berarti permintaan berhasil diproses.",
+              "readAs": "Baca sebagai tanggapan berhasil berisi data yang diminta.",
+              "example": "HTTP/1.1 201 Created",
+              "output": "Klien tahu permintaan berhasil dan dapat membaca isinya.",
+              "pitfall": "Mengembalikan status berhasil untuk kegagalan menyesatkan klien dalam mengambil keputusan."
+            },
+            {
+              "token": "404 Not Found",
+              "meaning": "Status dalam kelompok 400-an menandakan kesalahan dari sisi pengirim, misalnya alamat tidak dikenal atau masukan tidak sah.",
+              "readAs": "Baca sebagai status yang menyatakan sumber daya yang diminta tidak ada.",
+              "example": "404 Not Found",
+              "output": "Klien tahu permintaan tidak dapat dipenuhi dan tahu sebabnya secara umum.",
+              "pitfall": "Memakai status kesalahan server untuk kesalahan pengirim membuat pemantauan gangguan jadi keliru."
+            }
+          ],
+          "conventions": [
+            "Pakai kata benda pada alamat, bukan kata kerja, karena alamat mewakili sumber daya.",
+            "Pilih method sesuai maksud operasi dan pertahankan maknanya.",
+            "Kembalikan status yang menggambarkan hasil sebenarnya.",
+            "Bedakan kesalahan pengirim dan kesalahan server agar pemantauan bermakna.",
+            "Pertahankan pola alamat yang sama untuk sumber daya sejenis."
+          ],
+          "next": "Berikutnya: kontrak API, versioning, dan dokumentasi. Anda akan menetapkan kesepakatan API yang dapat dipakai bersama.",
+          "sections": [
+            {
+              "id": "cara-membaca",
+              "title": "Cara membaca permintaan dan tanggapan",
               "body": [
-                "Perhatikan input, proses, dan output. Ketik ulang, lalu ubah satu nilai."
+                "Pertukaran HTTP dibaca sebagai dua bagian: permintaan dan tanggapan. Permintaan memuat method, alamat, dan header. Tanggapan memuat baris status, header, dan isi.",
+                "Pada contoh, permintaan meminta daftar tugas dan menyatakan bahwa klien mengharapkan JSON. Tanggapan menyatakan berhasil, menyebut jenis isinya, lalu memuat daftar tugas dalam bentuk JSON.",
+                "Perhatikan bahwa alamat memakai kata benda, bukan kata kerja. Alamat menunjuk sumber daya, sedangkan method menyatakan apa yang ingin dilakukan terhadap sumber daya itu."
               ],
               "code": {
                 "language": "http",
-                "code": "GET /api/tasks\nPOST /api/tasks\nGET /api/tasks/123\nPATCH /api/tasks/123\nDELETE /api/tasks/123",
-                "output": "",
-                "explain": ""
+                "code": "GET /tugas HTTP/1.1\nHost: api.contoh.id\nAccept: application/json\n\nHTTP/1.1 200 OK\nContent-Type: application/json\n\n[\n  { \"id\": 1, \"judul\": \"Belajar\", \"selesai\": false }\n]",
+                "output": "Permintaan berhasil dan server mengembalikan daftar berisi satu tugas.",
+                "explain": "Permintaan menyatakan method, alamat, dan jenis isi yang diharapkan. Tanggapan menyatakan hasil berhasil dan memuat daftar tugas dalam bentuk JSON.",
+                "annotations": [
+                  {
+                    "line": 1,
+                    "code": "GET /tugas HTTP/1.1",
+                    "note": "Method dan alamat menyatakan sumber daya yang diminta."
+                  },
+                  {
+                    "line": 5,
+                    "code": "HTTP/1.1 200 OK",
+                    "note": "Baris status menyatakan permintaan berhasil."
+                  },
+                  {
+                    "line": 9,
+                    "code": "{ \"id\": 1, \"judul\": \"Belajar\", \"selesai\": false }",
+                    "note": "Isi tanggapan memuat satu tugas dalam bentuk JSON."
+                  }
+                ],
+                "lab": false
+              },
+              "callouts": [
+                {
+                  "tone": "good",
+                  "title": "Alamat sebagai kata benda",
+                  "body": "Alamat menunjuk sumber daya, bukan tindakan. Maksud tindakan dinyatakan oleh method, sehingga alamat tetap bersih."
+                }
+              ],
+              "checkpoint": {
+                "prompt": "Sebutkan bagian permintaan dan tanggapan yang menyatakan sumber daya serta hasilnya.",
+                "success": "Method dan alamat pada permintaan menyatakan sumber daya; baris status pada tanggapan menyatakan hasilnya."
+              }
+            },
+            {
+              "id": "memilih-status",
+              "title": "Memilih status yang tepat",
+              "body": [
+                "Status dibaca sebagai jawaban singkat atas pertanyaan klien: apakah permintaan berhasil, siapa yang bersalah bila gagal, dan langkah apa yang wajar diambil berikutnya.",
+                "Pembuatan data memakai status dibuat, penghapusan yang tidak menyisakan isi memakai status tanpa isi, dan masukan tidak sah memakai status kesalahan pengirim. Setiap pilihan memengaruhi cara klien menanggapi.",
+                "Bedakan antara belum terautentikasi dan tidak berhak. Yang pertama berarti identitas belum diketahui, sedangkan yang kedua berarti identitas diketahui tetapi tidak berhak. Perbedaan ini penting agar klien tahu harus masuk atau memang tidak diizinkan."
+              ],
+              "code": {
+                "language": "http",
+                "code": "201 Created      data baru berhasil dibuat\n204 No Content   berhasil tanpa isi tanggapan\n400 Bad Request  masukan tidak sah\n401 Unauthorized belum terautentikasi\n403 Forbidden    tidak berhak atas tindakan\n404 Not Found    sumber daya tidak ada\n409 Conflict     bentrok dengan keadaan saat ini",
+                "output": "Setiap status mewakili satu hasil operasi yang berbeda.",
+                "explain": "Status dipilih menurut hasil sebenarnya. Status kesalahan pengirim menandakan masalah pada permintaan, sedangkan status kesalahan server menandakan masalah di sisi layanan.",
+                "annotations": [
+                  {
+                    "line": 1,
+                    "code": "201 Created      data baru berhasil dibuat",
+                    "note": "Pembuatan data baru memakai status dibuat."
+                  },
+                  {
+                    "line": 2,
+                    "code": "204 No Content   berhasil tanpa isi tanggapan",
+                    "note": "Keberhasilan tanpa isi memakai status tanpa isi."
+                  },
+                  {
+                    "line": 3,
+                    "code": "400 Bad Request  masukan tidak sah",
+                    "note": "Masukan tidak sah memakai status kesalahan pengirim."
+                  },
+                  {
+                    "line": 4,
+                    "code": "401 Unauthorized belum terautentikasi",
+                    "note": "Status belum terautentikasi menandakan identitas belum diketahui."
+                  },
+                  {
+                    "line": 6,
+                    "code": "404 Not Found    sumber daya tidak ada",
+                    "note": "Status tidak ditemukan menandakan sumber daya tidak ada."
+                  }
+                ],
+                "lab": false
               },
               "callouts": [],
-              "checkpoint": null
+              "checkpoint": {
+                "prompt": "Sebutkan perbedaan status belum terautentikasi dan tidak berhak.",
+                "success": "Belum terautentikasi berarti identitas belum diketahui; tidak berhak berarti identitas diketahui tetapi tidak diizinkan."
+              }
+            },
+            {
+              "id": "method-dan-makna",
+              "title": "Method dan maknanya",
+              "body": [
+                "Setiap method membawa janji. Mengambil data tidak mengubah apa pun, membuat data menambah sumber daya baru, mengubah data mengganti sebagian nilainya, dan menghapus menghentikannya.",
+                "Janji ini membuat klien dapat mengambil keputusan. Permintaan yang tidak mengubah apa pun dapat dicoba ulang dengan aman, sedangkan permintaan yang menambah data perlu kehati-hatian agar tidak terulang.",
+                "Karena itu, jangan memakai method pengubah untuk operasi baca. Bila klien mencoba ulang permintaan itu, data dapat berubah tanpa disengaja."
+              ],
+              "code": null,
+              "callouts": [],
+              "checkpoint": {
+                "prompt": "Mengapa memakai method pengubah untuk operasi baca berisiko?",
+                "success": "Karena klien yang mencoba ulang permintaan itu dapat mengubah data tanpa disengaja."
+              }
+            },
+            {
+              "id": "alamat-yang-baik",
+              "title": "Alamat yang mudah dipahami",
+              "body": [
+                "Alamat yang baik dapat dibaca seperti kalimat: sumber daya apa, dan bagian mana yang dimaksud. Pola yang konsisten membuat klien dapat menebak alamat sumber daya lain dengan benar.",
+                "Hindari menaruh kata kerja pada alamat bila method sudah menyatakan maksudnya. Alamat yang memuat kata kerja cenderung bertambah dan lama-kelamaan tidak konsisten.",
+                "Untuk sumber daya yang dimiliki sumber daya lain, susun alamat mengikuti kepemilikannya, misalnya daftar tugas di bawah pengguna tertentu. Susunan ini memperjelas hubungan antar data."
+              ],
+              "code": null,
+              "callouts": [],
+              "checkpoint": {
+                "prompt": "Mengapa alamat sebaiknya memakai kata benda alih-alih kata kerja?",
+                "success": "Karena alamat menunjuk sumber daya, sedangkan maksud tindakan sudah dinyatakan oleh method."
+              }
             }
           ],
           "practice": [
             {
               "id": "latihan-1",
-              "title": "Latihan 1",
-              "level": "independent",
-              "task": "Rancang daftar endpoint aplikasi catatan lengkap dengan method dan status utamanya.",
-              "steps": [],
+              "title": "Rancang alamat dan method",
+              "level": "guided",
+              "task": "Tentukan alamat dan method untuk menampilkan daftar tugas, menampilkan satu tugas, menambah, mengubah, dan menghapus.",
+              "steps": [
+                "Tentukan alamat untuk sumber daya daftar tugas.",
+                "Tentukan alamat untuk satu tugas tertentu.",
+                "Pilih method untuk setiap operasi.",
+                "Periksa pola alamat tetap konsisten."
+              ],
               "hint": "",
-              "hints": [],
-              "starterCode": "",
-              "expected": "",
-              "stretch": "",
-              "verification": null
+              "hints": [
+                "Alamat daftar dan satu data dibedakan oleh penanda nilai.",
+                "Method menyatakan maksud, bukan alamat.",
+                "Operasi ubah dan hapus menunjuk data tertentu."
+              ],
+              "starterCode": "Daftar: GET ...\nSatu: GET ...\nTambah: ...\nUbah: ...\nHapus: ...",
+              "expected": "Alamat memakai pola konsisten dan method sesuai maksud setiap operasi.",
+              "stretch": "Tentukan status tanggapan untuk setiap operasi.",
+              "verification": {
+                "mode": "manual",
+                "command": "Periksa setiap operasi memakai alamat dan method yang berbeda sesuai maksudnya.",
+                "expected": "Tidak ada dua operasi yang memakai alamat dan method sama.",
+                "evidence": "Simpan tabel alamat dan method tiap operasi."
+              }
             },
             {
               "id": "latihan-2",
-              "title": "Latihan 2",
+              "title": "Pilih status yang tepat",
               "level": "independent",
-              "task": "Ubah satu input atau asumsi pada contoh, catat hasil dan jelaskan alasannya.",
-              "steps": [],
+              "task": "Tentukan status tanggapan untuk enam skenario: daftar berhasil, data tidak ada, masukan tidak sah, belum masuk, tidak berhak, dan kesalahan server.",
+              "steps": [
+                "Tentukan status untuk setiap skenario.",
+                "Bedakan kesalahan pengirim dan kesalahan server.",
+                "Bedakan belum terautentikasi dan tidak berhak.",
+                "Jelaskan alasan setiap pilihan."
+              ],
               "hint": "",
-              "hints": [],
-              "starterCode": "",
-              "expected": "",
-              "stretch": "",
-              "verification": null
+              "hints": [
+                "Kelompok status ditentukan angka pertamanya.",
+                "Belum masuk dan tidak berhak memakai status berbeda.",
+                "Kesalahan server sebaiknya tidak menyalahkan klien."
+              ],
+              "starterCode": "Daftar berhasil: ...\nData tidak ada: ...\nMasukan tidak sah: ...",
+              "expected": "Setiap skenario memakai status yang sesuai beserta alasan yang jelas.",
+              "stretch": "Tambahkan skenario bentrok keadaan dan tentukan statusnya.",
+              "verification": {
+                "mode": "manual",
+                "command": "Bandingkan pilihan status dengan hasil sebenarnya setiap skenario.",
+                "expected": "Setiap status menggambarkan hasil dan penyebabnya dengan tepat.",
+                "evidence": "Simpan daftar skenario dan status pilihannya beserta alasan."
+              }
+            },
+            {
+              "id": "latihan-3",
+              "title": "Rancang API satu sumber daya lengkap",
+              "level": "transfer",
+              "task": "Rancang seluruh alamat, method, dan status untuk sebuah sumber daya baru, misalnya komentar, lalu jelaskan keputusannya.",
+              "steps": [
+                "Tentukan sumber daya dan hubungannya dengan sumber daya lain.",
+                "Tentukan seluruh alamat beserta methodnya.",
+                "Tentukan status untuk setiap hasil operasi.",
+                "Jelaskan pola yang dipakai agar konsisten dengan sumber daya lain."
+              ],
+              "hint": "",
+              "hints": [
+                "Ikuti pola alamat sumber daya yang sudah ada.",
+                "Setiap operasi punya method dan statusnya sendiri.",
+                "Jaga penamaan tetap konsisten antar sumber daya."
+              ],
+              "starterCode": "Sumber daya: ...\nAlamat dan method: ...\nStatus: ...",
+              "expected": "Rancangan konsisten, mudah dipahami, dan dapat disamakan dengan sumber daya lain.",
+              "stretch": "Terapkan rancangan itu pada kerangka pengendali.",
+              "verification": {
+                "mode": "manual",
+                "command": "Periksa rancangan terhadap sumber daya lain yang sudah ada.",
+                "expected": "Pola alamat dan penamaan seragam dengan sumber daya lain.",
+                "evidence": "Simpan rancangan alamat, method, dan status."
+              }
             }
           ],
-          "verification": null,
-          "troubleshooting": [],
+          "verification": {
+            "mode": "manual",
+            "command": "Panggil setiap operasi dan periksa method, alamat, serta status tanggapannya.",
+            "expected": "Setiap operasi memakai alamat dan method yang sesuai dan mengembalikan status yang menggambarkan hasil sebenarnya.",
+            "evidence": "Simpan tabel operasi dan catatan hasil setiap pemanggilan."
+          },
+          "troubleshooting": [
+            {
+              "symptom": "Klien salah menafsirkan hasil karena selalu menganggap berhasil.",
+              "cause": "Status tanggapan tidak menggambarkan hasil sebenarnya.",
+              "fix": "Kembalikan status yang sesuai untuk setiap hasil, terutama pada kegagalan."
+            },
+            {
+              "symptom": "Data berubah ketika klien mencoba ulang permintaan baca.",
+              "cause": "Operasi baca memakai method pengubah sehingga pengulangan mengubah data.",
+              "fix": "Pakai method yang tidak mengubah data untuk operasi baca."
+            },
+            {
+              "symptom": "Pemantauan gangguan menandai banyak kesalahan pengguna sebagai masalah server.",
+              "cause": "Kesalahan masukan dikembalikan dengan status kesalahan server.",
+              "fix": "Bedakan status kesalahan pengirim dan kesalahan server sesuai penyebabnya."
+            },
+            {
+              "symptom": "Klien bingung antara harus masuk atau memang tidak diizinkan.",
+              "cause": "Status belum terautentikasi dan tidak berhak dipakai tanpa pembedaan.",
+              "fix": "Pakai status belum terautentikasi saat identitas belum diketahui dan status tidak berhak saat identitas diketahui."
+            }
+          ],
           "quiz": {
             "questions": [
               {
                 "id": "q1",
                 "type": "recall",
-                "question": "Apa prinsip yang paling tepat untuk topik “REST resource dan HTTP status”?",
+                "question": "Apa yang dinyatakan method HTTP pada sebuah permintaan?",
                 "options": [
-                  "Gunakan status HTTP sesuai makna dan konsisten antar endpoint.",
-                  "Gunakan solusi paling rumit sejak awal, meski kebutuhan belum jelas.",
-                  "Lewati pengujian karena contoh kecil pasti benar."
+                  "Bentuk data tanggapan",
+                  "Maksud operasi terhadap sumber daya",
+                  "Nama sumber daya"
                 ],
-                "answer": 0,
-                "explanation": "Gunakan status HTTP sesuai makna dan konsisten antar endpoint."
+                "answer": 1,
+                "explanation": "Method menyatakan maksud operasi, sedangkan alamat menyatakan sumber dayanya."
+              },
+              {
+                "id": "q2",
+                "type": "code-reading",
+                "question": "Status apa yang tepat untuk pembuatan data baru yang berhasil?",
+                "options": [
+                  "200 OK",
+                  "201 Created",
+                  "404 Not Found"
+                ],
+                "answer": 1,
+                "explanation": "Pembuatan data baru ditandai dengan status dibuat."
+              },
+              {
+                "id": "q3",
+                "type": "scenario",
+                "question": "Pengguna sudah masuk tetapi tidak berhak mengubah data itu. Status yang tepat...",
+                "options": [
+                  "401 Unauthorized",
+                  "403 Forbidden",
+                  "500 Internal Server Error"
+                ],
+                "answer": 1,
+                "explanation": "Identitas diketahui tetapi tidak berhak ditandai dengan status tidak berhak."
               }
             ]
           },
-          "resources": [],
-          "summary": [],
-          "legacy": true,
-          "code": "GET /api/tasks\nPOST /api/tasks\nGET /api/tasks/123\nPATCH /api/tasks/123\nDELETE /api/tasks/123",
-          "wordCount": 169,
-          "schema": 2
+          "resources": [
+            {
+              "sourceId": "rfc-9110",
+              "title": "RFC 9110: HTTP Semantics",
+              "publisher": "IETF",
+              "url": "https://www.rfc-editor.org/rfc/rfc9110.html",
+              "note": "Standar HTTP tentang method, status, dan semantik permintaan.",
+              "tier": "standard",
+              "version": "9110",
+              "accessedAt": "2026-10-28",
+              "license": "IETF Trust"
+            },
+            {
+              "sourceId": "mdn-http-status",
+              "title": "MDN: HTTP response status codes",
+              "publisher": "Mozilla",
+              "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Status",
+              "note": "Daftar status tanggapan HTTP beserta maknanya.",
+              "tier": "official",
+              "version": "rolling",
+              "accessedAt": "2026-10-29",
+              "license": ""
+            },
+            {
+              "sourceId": "mdn-http-methods",
+              "title": "MDN: HTTP request methods",
+              "publisher": "Mozilla",
+              "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Methods",
+              "note": "Penjelasan method HTTP dan sifatnya yang aman diulang atau tidak.",
+              "tier": "official",
+              "version": "rolling",
+              "accessedAt": "2026-10-29",
+              "license": ""
+            }
+          ],
+          "summary": [
+            "Alamat mewakili sumber daya, dan method menyatakan maksud operasi.",
+            "Status tanggapan menyatakan hasil sebenarnya sehingga klien tahu langkah berikutnya.",
+            "Pembuatan data memakai status dibuat, keberhasilan tanpa isi memakai status tanpa isi.",
+            "Bedakan kesalahan pengirim, kesalahan server, belum terautentikasi, dan tidak berhak."
+          ],
+          "legacy": false,
+          "code": "GET /tugas HTTP/1.1\nHost: api.contoh.id\nAccept: application/json\n\nHTTP/1.1 200 OK\nContent-Type: application/json\n\n[\n  { \"id\": 1, \"judul\": \"Belajar\", \"selesai\": false }\n]",
+          "wordCount": 1464,
+          "schema": 3.1
         },
         {
           "id": "m09-l02",
           "title": "API contract, versioning, dan dokumentasi",
-          "minutes": 45,
+          "minutes": 120,
           "level": "Menengah",
           "depth": "integrasi",
-          "outcome": "",
+          "outcome": "Setelah pelajaran ini, Anda dapat menuliskan kontrak API yang jelas, merencanakan perubahan versi, dan menyediakan dokumentasi yang dapat dipakai tim lain.",
           "codeLanguage": "json",
-          "objectives": [],
-          "prerequisites": [],
-          "terms": [],
-          "syntax": [],
-          "conventions": [],
-          "next": "",
+          "objectives": [
+            "Menjelaskan apa yang termasuk dalam kontrak API.",
+            "Menuliskan kontrak API dalam bentuk yang dapat dibaca mesin.",
+            "Merencanakan perubahan yang tidak merusak klien.",
+            "Menyediakan dokumentasi yang sesuai kenyataan."
+          ],
+          "prerequisites": [
+            {
+              "label": "REST resource dan HTTP status",
+              "lessonId": "m09-l01"
+            }
+          ],
+          "terms": [
+            {
+              "term": "Kontrak API",
+              "definition": "Kesepakatan tentang alamat, bentuk data, dan aturan yang berlaku antara penyedia dan pemakai API."
+            },
+            {
+              "term": "Spesifikasi",
+              "definition": "Dokumen terstruktur yang mendeskripsikan kontrak API dan dapat dibaca mesin."
+            },
+            {
+              "term": "Versioning",
+              "definition": "Cara menandai versi API agar perubahan dapat dilakukan tanpa merusak klien lama."
+            },
+            {
+              "term": "Perubahan yang merusak",
+              "definition": "Perubahan yang membuat klien lama tidak lagi dapat bekerja, misalnya menghapus kolom."
+            }
+          ],
+          "syntax": [
+            {
+              "token": "\"openapi\": \"3.1.0\",",
+              "meaning": "Baris ini memberi tahu alat pembaca format mana yang harus dipakai, sehingga dokumen dapat diolah alat pendukung.",
+              "readAs": "Baca sebagai penanda versi format spesifikasi yang dipakai dokumen itu.",
+              "example": "\"openapi\": \"3.1.0\",",
+              "output": "Dokumen dapat dibaca alat yang mendukung format tersebut.",
+              "pitfall": "Menulis spesifikasi tanpa penanda versi membuat alat pendukung tidak tahu cara membacanya."
+            },
+            {
+              "token": "\"responses\": { \"200\": { \"description\": \"Daftar tugas\" } }",
+              "meaning": "Setiap operasi menyebut tanggapan yang mungkin, sehingga pemakai API tahu bentuk hasil pada setiap keadaan.",
+              "readAs": "Baca sebagai deskripsi tanggapan yang mungkin dikembalikan sebuah operasi.",
+              "example": "\"responses\": { \"200\": { \"description\": \"Daftar tugas\" } }",
+              "output": "Pemakai API tahu bentuk tanggapan pada kasus berhasil.",
+              "pitfall": "Mendeskripsikan hanya kasus berhasil menyembunyikan bentuk tanggapan saat gagal."
+            },
+            {
+              "token": "GET /v1/tugas HTTP/1.1",
+              "meaning": "Versi pada alamat memungkinkan versi lama tetap tersedia sementara klien berpindah ke versi baru.",
+              "readAs": "Baca sebagai alamat yang menyatakan versi API pada bagian awal jalurnya.",
+              "example": "GET /v1/tugas HTTP/1.1",
+              "output": "Klien lama dan baru dapat dilayani bersamaan.",
+              "pitfall": "Mengubah versi tanpa menyediakan masa peralihan memaksa semua klien berpindah sekaligus."
+            }
+          ],
+          "conventions": [
+            "Tuliskan kontrak API sebagai spesifikasi yang dapat dibaca mesin.",
+            "Dokumentasikan tanggapan berhasil dan gagal, bukan hanya berhasil.",
+            "Tandai versi pada alamat dan sediakan masa peralihan saat berubah.",
+            "Hindari perubahan yang merusak; tambahkan lebih dulu, hapus belakangan.",
+            "Jaga dokumentasi tetap sesuai kenyataan setiap kali API berubah."
+          ],
+          "next": "Berikutnya: filter, pagination, dan idempotency. Anda akan menyediakan daftar data yang besar dan operasi yang aman diulang.",
           "sections": [
             {
-              "id": "konsep",
-              "title": "Memahami konsepnya",
+              "id": "cara-membaca",
+              "title": "Cara membaca spesifikasi API",
               "body": [
-                "API contract mendefinisikan field, tipe, validasi, status, dan bentuk error. Dokumentasikan sebagai OpenAPI atau contoh request-response yang jelas.",
-                "Bila banyak klien bergantung pada API, pertimbangkan versioning dan perubahan backward-compatible. Pertahankan nama field yang konsisten."
+                "Spesifikasi dibaca sebagai deskripsi terstruktur. Bagian pembuka menyebut format dan informasi API, lalu bagian jalur mendaftar alamat beserta operasi dan tanggapannya.",
+                "Pada contoh, satu alamat dengan operasi pengambilan dideskripsikan, termasuk satu tanggapan berhasil. Struktur ini membuat alat dapat memeriksa kesesuaian antara dokumentasi dan pelaksanaan.",
+                "Karena spesifikasi dapat dibaca mesin, ia dapat dipakai untuk menghasilkan dokumentasi, membuat klien, dan memeriksa permintaan. Satu sumber kebenaran menggantikan dokumen terpisah yang mudah basi."
+              ],
+              "code": {
+                "language": "json",
+                "code": "{\n  \"openapi\": \"3.1.0\",\n  \"info\": { \"title\": \"API Tugas\", \"version\": \"1.0.0\" },\n  \"paths\": {\n    \"/tugas\": {\n      \"get\": {\n        \"responses\": {\n          \"200\": { \"description\": \"Daftar tugas\" }\n        }\n      }\n    }\n  }\n}",
+                "output": "Dokumen mendeskripsikan satu alamat dengan satu operasi beserta tanggapan berhasilnya.",
+                "explain": "Bagian pembuka menyebut format dan informasi API, sedangkan bagian jalur mendaftar alamat, operasi, dan tanggapan yang mungkin.",
+                "annotations": [
+                  {
+                    "line": 2,
+                    "code": "\"openapi\": \"3.1.0\",",
+                    "note": "Penanda format memberi tahu alat cara membaca dokumen."
+                  },
+                  {
+                    "line": 3,
+                    "code": "\"info\": { \"title\": \"API Tugas\", \"version\": \"1.0.0\" },",
+                    "note": "Informasi mencakup judul dan versi API."
+                  },
+                  {
+                    "line": 5,
+                    "code": "\"/tugas\": {",
+                    "note": "Alamat yang dideskripsikan didaftarkan pada bagian jalur."
+                  },
+                  {
+                    "line": 8,
+                    "code": "\"200\": { \"description\": \"Daftar tugas\" }",
+                    "note": "Tanggapan berhasil dideskripsikan beserta maknanya."
+                  }
+                ],
+                "lab": false
+              },
+              "callouts": [
+                {
+                  "tone": "good",
+                  "title": "Satu sumber kebenaran",
+                  "body": "Spesifikasi yang dapat dibaca mesin menjadi sumber kebenaran. Dokumentasi dan pemeriksaan memakai dokumen yang sama."
+                }
+              ],
+              "checkpoint": {
+                "prompt": "Apa keuntungan spesifikasi API yang dapat dibaca mesin dibanding dokumen biasa?",
+                "success": "Alat dapat menggunakannya untuk dokumentasi, pembuatan klien, dan pemeriksaan sehingga tidak mudah basi."
+              }
+            },
+            {
+              "id": "isi-kontrak",
+              "title": "Apa yang termasuk kontrak API",
+              "body": [
+                "Kontrak mencakup lebih dari daftar alamat. Ia juga memuat bentuk data, aturan validasi, status yang mungkin, dan arti setiap kolom.",
+                "Kontrak juga menyebut hal yang tidak boleh berubah tanpa peringatan: nama kolom, tipe nilai, dan arti status. Perubahan pada hal-hal itu berpotensi merusak klien.",
+                "Tuliskan kontrak sebelum pelaksanaan untuk sumber daya yang penting. Kesepakatan lebih awal menghindari perbedaan tafsir antara tim yang menyediakan dan yang memakai API."
+              ],
+              "code": null,
+              "callouts": [],
+              "checkpoint": {
+                "prompt": "Sebutkan tiga hal yang termasuk dalam kontrak API selain daftar alamat.",
+                "success": "Bentuk data, aturan validasi, dan status tanggapan beserta artinya."
+              }
+            },
+            {
+              "id": "versioning",
+              "title": "Menandai versi API",
+              "body": [
+                "Versi menandai kumpulan kontrak pada satu waktu. Dengan menandainya, perubahan yang merusak dapat dirilis sebagai versi baru sementara versi lama tetap melayani klien yang belum berpindah.",
+                "Tempat penandaan versi yang umum adalah bagian awal alamat. Cara ini mudah terlihat dan mudah dibaca oleh manusia maupun alat.",
+                "Sediakan masa peralihan ketika naik versi. Beri tahu pemakai API, pertahankan versi lama selama jangka waktu yang wajar, baru hentikan setelah semua berpindah."
+              ],
+              "code": {
+                "language": "http",
+                "code": "GET /v1/tugas HTTP/1.1\nHost: api.contoh.id\nAccept: application/json",
+                "output": "Klien dapat memilih versi API lewat penanda pada alamat.",
+                "explain": "Versi ditulis pada bagian awal jalur sehingga permintaan yang berbeda versi dapat dilayani berdampingan.",
+                "annotations": [
+                  {
+                    "line": 1,
+                    "code": "GET /v1/tugas HTTP/1.1",
+                    "note": "Penanda versi berada pada awal jalur alamat."
+                  }
+                ],
+                "lab": false
+              },
+              "callouts": [],
+              "checkpoint": null
+            },
+            {
+              "id": "perubahan-aman",
+              "title": "Perubahan yang aman dan yang merusak",
+              "body": [
+                "Menambah kolom baru umumnya aman karena klien dapat mengabaikannya. Menambah alamat baru juga aman karena tidak mengubah perilaku yang sudah ada.",
+                "Menghapus kolom, mengganti namanya, atau mengubah tipe nilainya termasuk perubahan yang merusak. Klien yang mengandalkan kolom itu akan berhenti bekerja.",
+                "Bila perubahan merusak memang diperlukan, lakukan bertahap: sediakan bentuk baru berdampingan, pindahkan pemakaian, baru hentikan bentuk lama setelah tidak ada yang memakainya."
               ],
               "code": null,
               "callouts": [
                 {
-                  "tone": "good",
-                  "title": "Best practice",
-                  "body": "Dokumentasikan kontrak dan hindari breaking change tanpa rencana migrasi."
-                },
-                {
-                  "tone": "bad",
-                  "title": "Kesalahan umum",
-                  "body": "Mengubah nama field API tanpa menyesuaikan mobile yang sudah dirilis."
+                  "tone": "warn",
+                  "title": "Pikirkan pemakai API",
+                  "body": "Perubahan yang tampak kecil bagi penyedia dapat merusak banyak pemakai. Nilai dampaknya terhadap klien sebelum merilis."
                 }
               ],
-              "checkpoint": null
-            },
-            {
-              "id": "contoh",
-              "title": "Contoh kode",
-              "body": [
-                "Perhatikan input, proses, dan output. Ketik ulang, lalu ubah satu nilai."
-              ],
-              "code": {
-                "language": "json",
-                "code": "{\n  \"data\": {\"id\": 42, \"title\": \"Belajar\", \"done\": false},\n  \"meta\": {\"version\": \"v1\"}\n}",
-                "output": "",
-                "explain": ""
-              },
-              "callouts": [],
-              "checkpoint": null
+              "checkpoint": {
+                "prompt": "Sebutkan dua jenis perubahan yang merusak klien.",
+                "success": "Menghapus kolom dan mengganti nama atau tipe nilai kolom yang sudah dipakai klien."
+              }
             }
           ],
           "practice": [
             {
               "id": "latihan-1",
-              "title": "Latihan 1",
-              "level": "independent",
-              "task": "Tulis spesifikasi request-response lengkap untuk POST /api/tasks.",
-              "steps": [],
+              "title": "Tulis spesifikasi satu alamat",
+              "level": "guided",
+              "task": "Tulis spesifikasi untuk alamat daftar tugas beserta operasi pengambilan dan tanggapan berhasilnya.",
+              "steps": [
+                "Tulis bagian pembuka dengan format dan informasi API.",
+                "Daftarkan alamat dan operasinya.",
+                "Deskripsikan tanggapan berhasil.",
+                "Periksa dokumen dapat dibaca alat pendukung."
+              ],
               "hint": "",
-              "hints": [],
-              "starterCode": "",
-              "expected": "",
-              "stretch": "",
-              "verification": null
+              "hints": [
+                "Bagian pembuka menyebut format dan informasi API.",
+                "Setiap alamat didaftarkan pada bagian jalur.",
+                "Setiap operasi menyebut tanggapan yang mungkin."
+              ],
+              "starterCode": "{\n  \"openapi\": \"3.1.0\",\n  \"paths\": { ... }\n}",
+              "expected": "Dokumen valid dan mendeskripsikan operasi beserta tanggapannya.",
+              "stretch": "Tambahkan deskripsi tanggapan ketika data tidak ditemukan.",
+              "verification": {
+                "mode": "manual",
+                "command": "Buka dokumen dengan alat pembaca spesifikasi dan periksa tidak ada kesalahan.",
+                "expected": "Dokumen terbaca tanpa kesalahan dan menampilkan operasi yang dideskripsikan.",
+                "evidence": "Simpan berkas spesifikasi dan catatan hasil pemeriksaan."
+              }
             },
             {
               "id": "latihan-2",
-              "title": "Latihan 2",
+              "title": "Rencanakan perubahan yang tidak merusak",
               "level": "independent",
-              "task": "Ubah satu input atau asumsi pada contoh, catat hasil dan jelaskan alasannya.",
-              "steps": [],
+              "task": "Diberikan rencana penambahan kolom baru pada tanggapan, jelaskan mengapa perubahan itu aman dan bagaimana menyesuaikan dokumentasinya.",
+              "steps": [
+                "Tentukan kolom yang akan ditambahkan.",
+                "Jelaskan mengapa penambahan itu tidak merusak klien lama.",
+                "Perbarui spesifikasi dengan kolom baru.",
+                "Tentukan cara memberitahu pemakai API."
+              ],
               "hint": "",
-              "hints": [],
-              "starterCode": "",
-              "expected": "",
-              "stretch": "",
-              "verification": null
+              "hints": [
+                "Klien dapat mengabaikan kolom yang tidak dikenal.",
+                "Dokumentasi diperbarui bersamaan dengan pelaksanaan.",
+                "Perubahan yang merusak memerlukan masa peralihan."
+              ],
+              "starterCode": "Kolom baru: ...\nDampak pada klien lama: ...",
+              "expected": "Penambahan kolom dilakukan tanpa mengubah perilaku klien lama dan dokumentasi ikut diperbarui.",
+              "stretch": "Rancang perubahan penggantian nama kolom beserta masa peralihannya.",
+              "verification": {
+                "mode": "manual",
+                "command": "Periksa klien lama tetap bekerja setelah kolom baru ditambahkan.",
+                "expected": "Klien lama tidak terpengaruh dan dokumentasi memuat kolom baru.",
+                "evidence": "Simpan rencana perubahan, berkas spesifikasi, dan catatan hasil pengujian."
+              }
+            },
+            {
+              "id": "latihan-3",
+              "title": "Kontrak untuk sumber daya baru",
+              "level": "transfer",
+              "task": "Tulis kontrak lengkap untuk sebuah sumber daya baru: alamat, method, bentuk data, status, dan aturan validasi.",
+              "steps": [
+                "Tentukan sumber daya beserta hubungannya.",
+                "Tentukan alamat dan method setiap operasi.",
+                "Tentukan bentuk data dan aturan validasinya.",
+                "Tentukan status setiap hasil operasi."
+              ],
+              "hint": "",
+              "hints": [
+                "Ikuti pola sumber daya lain agar konsisten.",
+                "Sebutkan bentuk data untuk setiap tanggapan.",
+                "Sertakan aturan validasi sejak awal."
+              ],
+              "starterCode": "Sumber daya: ...\nAlamat: ...\nBentuk data: ...\nStatus: ...",
+              "expected": "Kontrak lengkap dan dapat dijadikan rujukan bersama tim.",
+              "stretch": "Terapkan kontrak itu pada kerangka pengendali dan periksa kesesuaiannya.",
+              "verification": {
+                "mode": "manual",
+                "command": "Bandingkan pelaksanaan dengan kontrak setelah kerangka dibuat.",
+                "expected": "Pelaksanaan sesuai kontrak pada alamat, data, dan status.",
+                "evidence": "Simpan kontrak dan catatan hasil pemeriksaan kesesuaian."
+              }
             }
           ],
-          "verification": null,
-          "troubleshooting": [],
+          "verification": {
+            "mode": "manual",
+            "command": "Periksa spesifikasi dengan alat pembaca, lalu bandingkan tanggapan nyata dengan kontrak.",
+            "expected": "Spesifikasi terbaca tanpa kesalahan dan tanggapan nyata sesuai kontrak pada semua operasi yang diuji.",
+            "evidence": "Simpan berkas spesifikasi dan catatan perbandingan tanggapan."
+          },
+          "troubleshooting": [
+            {
+              "symptom": "Klien lama berhenti bekerja setelah API diperbarui.",
+              "cause": "Ada perubahan yang merusak seperti menghapus atau mengganti nama kolom.",
+              "fix": "Kembalikan bentuk lama, sediakan bentuk baru berdampingan, dan pindahkan pemakaian bertahap."
+            },
+            {
+              "symptom": "Dokumentasi berbeda dengan perilaku API.",
+              "cause": "Dokumentasi diperbarui terpisah dari pelaksanaan.",
+              "fix": "Jadikan spesifikasi sebagai sumber kebenaran dan perbarui bersamaan dengan pelaksanaan."
+            },
+            {
+              "symptom": "Pemakai API menebak bentuk tanggapan ketika terjadi kesalahan.",
+              "cause": "Spesifikasi hanya mendeskripsikan kasus berhasil.",
+              "fix": "Deskripsikan juga tanggapan gagal pada spesifikasi."
+            },
+            {
+              "symptom": "Penghentian versi lama mengejutkan pemakai API.",
+              "cause": "Tidak ada pemberitahuan dan masa peralihan sebelum versi lama dihentikan.",
+              "fix": "Beri tahu lebih awal, pertahankan versi lama selama masa peralihan, lalu hentikan setelah semua berpindah."
+            }
+          ],
           "quiz": {
             "questions": [
               {
                 "id": "q1",
                 "type": "recall",
-                "question": "Apa prinsip yang paling tepat untuk topik “API contract, versioning, dan dokumentasi”?",
+                "question": "Apa keuntungan kontrak API ditulis sebagai spesifikasi yang dapat dibaca mesin?",
                 "options": [
-                  "Dokumentasikan kontrak dan hindari breaking change tanpa rencana migrasi.",
-                  "Gunakan solusi paling rumit sejak awal, meski kebutuhan belum jelas.",
-                  "Lewati pengujian karena contoh kecil pasti benar."
+                  "API menjadi lebih cepat",
+                  "Alat dapat memakainya untuk dokumentasi, pembuatan klien, dan pemeriksaan",
+                  "Data tersimpan otomatis"
+                ],
+                "answer": 1,
+                "explanation": "Spesifikasi yang dapat dibaca mesin menjadi sumber kebenaran yang dipakai alat pendukung."
+              },
+              {
+                "id": "q2",
+                "type": "code-reading",
+                "question": "Apa arti penanda /v1 pada alamat API?",
+                "options": [
+                  "Menandai versi kontrak API yang dipakai",
+                  "Menandai jumlah data",
+                  "Menandai jenis data"
                 ],
                 "answer": 0,
-                "explanation": "Dokumentasikan kontrak dan hindari breaking change tanpa rencana migrasi."
+                "explanation": "Penanda pada awal jalur menyatakan versi API sehingga versi berbeda dapat dilayani bersamaan."
+              },
+              {
+                "id": "q3",
+                "type": "scenario",
+                "question": "Menghapus sebuah kolom dari tanggapan API. Tindakan yang tepat...",
+                "options": [
+                  "Menghapusnya langsung karena penyedia tidak memakainya",
+                  "Merencanakannya sebagai perubahan yang merusak dengan masa peralihan",
+                  "Menggantinya diam-diam"
+                ],
+                "answer": 1,
+                "explanation": "Menghapus kolom dapat merusak klien, sehingga perlu direncanakan dengan masa peralihan."
               }
             ]
           },
-          "resources": [],
-          "summary": [],
-          "legacy": true,
-          "code": "{\n  \"data\": {\"id\": 42, \"title\": \"Belajar\", \"done\": false},\n  \"meta\": {\"version\": \"v1\"}\n}",
-          "wordCount": 147,
-          "schema": 2
+          "resources": [
+            {
+              "sourceId": "openapi-spec",
+              "title": "OpenAPI Specification",
+              "publisher": "OpenAPI Initiative",
+              "url": "https://spec.openapis.org/oas/latest.html",
+              "note": "Spesifikasi resmi format kontrak API yang dapat dibaca mesin.",
+              "tier": "standard",
+              "version": "latest",
+              "accessedAt": "2026-10-29",
+              "license": ""
+            },
+            {
+              "sourceId": "rfc-9110",
+              "title": "RFC 9110: HTTP Semantics",
+              "publisher": "IETF",
+              "url": "https://www.rfc-editor.org/rfc/rfc9110.html",
+              "note": "Standar HTTP yang menjadi dasar semantik alamat dan method.",
+              "tier": "standard",
+              "version": "9110",
+              "accessedAt": "2026-10-28",
+              "license": "IETF Trust"
+            },
+            {
+              "sourceId": "mdn-http-status",
+              "title": "MDN: HTTP response status codes",
+              "publisher": "Mozilla",
+              "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Status",
+              "note": "Daftar status tanggapan untuk mendeskripsikan tanggapan API.",
+              "tier": "official",
+              "version": "rolling",
+              "accessedAt": "2026-10-29",
+              "license": ""
+            }
+          ],
+          "summary": [
+            "Kontrak API mencakup alamat, bentuk data, aturan validasi, dan status tanggapan.",
+            "Spesifikasi yang dapat dibaca mesin menjadi sumber kebenaran yang dipakai alat pendukung.",
+            "Versi ditandai pada alamat agar perubahan besar dapat dirilis tanpa merusak klien lama.",
+            "Penambahan umumnya aman; penghapusan dan penggantian nama perlu direncanakan dengan masa peralihan."
+          ],
+          "legacy": false,
+          "code": "{\n  \"openapi\": \"3.1.0\",\n  \"info\": { \"title\": \"API Tugas\", \"version\": \"1.0.0\" },\n  \"paths\": {\n    \"/tugas\": {\n      \"get\": {\n        \"responses\": {\n          \"200\": { \"description\": \"Daftar tugas\" }\n        }\n      }\n    }\n  }\n}",
+          "wordCount": 1407,
+          "schema": 3.1
         },
         {
           "id": "m09-l03",
           "title": "Filter, pagination, dan idempotency",
-          "minutes": 45,
+          "minutes": 120,
           "level": "Menengah",
           "depth": "integrasi",
-          "outcome": "",
+          "outcome": "Setelah pelajaran ini, Anda dapat menyaring dan membagi hasil API, serta merancang operasi yang aman diulang tanpa menimbulkan data ganda.",
           "codeLanguage": "http",
-          "objectives": [],
-          "prerequisites": [],
-          "terms": [],
-          "syntax": [],
-          "conventions": [],
-          "next": "",
+          "objectives": [
+            "Menyaring data lewat parameter alamat.",
+            "Membagi hasil besar memakai penomoran halaman.",
+            "Menjelaskan mengapa operasi tertentu perlu dapat diulang dengan aman.",
+            "Memakai kunci unik permintaan untuk mencegah data ganda."
+          ],
+          "prerequisites": [
+            {
+              "label": "API contract, versioning, dan dokumentasi",
+              "lessonId": "m09-l02"
+            }
+          ],
+          "terms": [
+            {
+              "term": "Filter",
+              "definition": "Penyaringan hasil berdasarkan nilai yang diberikan lewat parameter alamat."
+            },
+            {
+              "term": "Pagination",
+              "definition": "Pembagian hasil besar menjadi beberapa bagian agar tidak dikirim sekaligus."
+            },
+            {
+              "term": "Idempotency",
+              "definition": "Sifat operasi yang hasilnya tetap sama meski dijalankan lebih dari sekali."
+            },
+            {
+              "term": "Kunci permintaan",
+              "definition": "Nilai unik yang dikirim klien untuk menandai satu percobaan operasi agar pengulangannya tidak menghasilkan data ganda."
+            }
+          ],
+          "syntax": [
+            {
+              "token": "GET /v1/tugas?selesai=false&urut=judul HTTP/1.1",
+              "meaning": "Parameter setelah tanda tanya menyaring dan mengatur hasil. Setiap parameter menyatakan satu pilihan penyaringan atau pengurutan.",
+              "readAs": "Baca sebagai permintaan daftar yang disaring hanya tugas belum selesai dan diurutkan menurut judul.",
+              "example": "GET /v1/tugas?selesai=false HTTP/1.1",
+              "output": "Hasil hanya memuat baris yang cocok dan tersusun sesuai urutan yang diminta.",
+              "pitfall": "Menerima nama parameter bebas tanpa batasan menyulitkan penjagaan dan membuat perilaku tidak pasti."
+            },
+            {
+              "token": "GET /v1/tugas?halaman=2&per_halaman=20 HTTP/1.1",
+              "meaning": "Penomoran halaman membatasi jumlah data yang dikirim sehingga tanggapan tetap ringkas dan cepat.",
+              "readAs": "Baca sebagai permintaan bagian kedua dari daftar, dua puluh baris setiap bagiannya.",
+              "example": "GET /v1/tugas?halaman=2&per_halaman=20 HTTP/1.1",
+              "output": "Klien menerima satu bagian hasil beserta keterangan jumlah totalnya.",
+              "pitfall": "Menerima ukuran halaman tanpa batas atas memungkinkan klien meminta data dalam jumlah besar sekaligus."
+            },
+            {
+              "token": "Idempotency-Key: 8f14e45f-ea0d-4c2b-9f1e-2c3d4e5f6a7b",
+              "meaning": "Server menyimpan kunci itu beserta hasilnya, sehingga permintaan berikutnya dengan kunci sama mengembalikan hasil yang sama tanpa membuat data baru.",
+              "readAs": "Baca sebagai penanda unik yang membuat pengulangan permintaan yang sama tidak menghasilkan data ganda.",
+              "example": "Idempotency-Key: 8f14e45f-ea0d-4c2b-9f1e-2c3d4e5f6a7b",
+              "output": "Meski permintaan dikirim dua kali, hanya satu data yang dibuat.",
+              "pitfall": "Membuat kunci baru pada setiap percobaan ulang menghilangkan manfaatnya."
+            }
+          ],
+          "conventions": [
+            "Batasi nama parameter yang diterima dan dokumentasikan maknanya.",
+            "Terapkan batas atas pada ukuran halaman.",
+            "Kembalikan keterangan jumlah total agar klien dapat menghitung halaman.",
+            "Sediakan kunci permintaan pada operasi pembuatan yang berisiko terulang.",
+            "Pastikan operasi yang sama dapat dijalankan ulang dengan hasil stabil."
+          ],
+          "next": "Berikutnya: autentikasi API, token, dan CORS. Anda akan mengamankan API untuk pemakaian lintas aplikasi.",
           "sections": [
             {
-              "id": "konsep",
-              "title": "Memahami konsepnya",
+              "id": "cara-membaca",
+              "title": "Cara membaca penyaringan dan penomoran halaman",
               "body": [
-                "Endpoint daftar memerlukan pagination, sorting, dan filter terkontrol. Idempotency berarti permintaan identik punya dampak sama ketika diulang, penting untuk pembayaran dan request retried.",
-                "Jangan memuat jutaan baris sekaligus. Batasi page size. Pakai key idempotency untuk proses create kritis bila risiko retry menggandakan transaksi."
+                "Permintaan berparameter dibaca dari kiri ke kanan. Alamat menunjuk sumber daya, lalu parameter setelah tanda tanya menyaring dan mengatur hasil. Setiap parameter berdiri sendiri dan dapat digabungkan.",
+                "Pada contoh, hasil disaring hanya tugas belum selesai, diurutkan menurut judul, dan diambil bagian keduanya sebanyak dua puluh baris. Tanggapan menyertakan jumlah total dan tautan ke bagian berikutnya.",
+                "Keterangan jumlah total penting karena klien perlu tahu berapa banyak data secara keseluruhan. Tanpa itu, klien tidak dapat menampilkan jumlah halaman atau memutuskan kapan berhenti meminta."
+              ],
+              "code": {
+                "language": "http",
+                "code": "GET /v1/tugas?selesai=false&urut=judul&halaman=2&per_halaman=20 HTTP/1.1\nHost: api.contoh.id\nAccept: application/json\n\nHTTP/1.1 200 OK\nContent-Type: application/json\nX-Total-Count: 42\nLink: </v1/tugas?halaman=3>; rel=\"next\"",
+                "output": "Klien menerima bagian kedua dari daftar berisi dua puluh baris beserta jumlah total dan tautan ke bagian berikutnya.",
+                "explain": "Parameter menyaring, mengurutkan, dan membagi hasil. Tanggapan menyertakan jumlah total dan tautan ke bagian berikutnya agar klien dapat melanjutkan.",
+                "annotations": [
+                  {
+                    "line": 1,
+                    "code": "GET /v1/tugas?selesai=false&urut=judul&halaman=2&per_halaman=20 HTTP/1.1",
+                    "note": "Parameter menyaring menurut status dan mengatur urutan serta halaman."
+                  },
+                  {
+                    "line": 5,
+                    "code": "HTTP/1.1 200 OK",
+                    "note": "Tanggapan menyatakan permintaan berhasil."
+                  },
+                  {
+                    "line": 7,
+                    "code": "X-Total-Count: 42",
+                    "note": "Jumlah total disertakan agar klien dapat menghitung halaman."
+                  },
+                  {
+                    "line": 8,
+                    "code": "Link: </v1/tugas?halaman=3>; rel=\"next\"",
+                    "note": "Tautan ke bagian berikutnya memudahkan penelusuran."
+                  }
+                ],
+                "lab": false
+              },
+              "callouts": [
+                {
+                  "tone": "good",
+                  "title": "Selalu sertakan jumlah total",
+                  "body": "Tanpa jumlah total, klien tidak tahu berapa banyak data secara keseluruhan dan sulit menampilkan penomoran halaman."
+                }
+              ],
+              "checkpoint": {
+                "prompt": "Mengapa tanggapan perlu menyertakan jumlah total data?",
+                "success": "Agar klien tahu banyaknya data keseluruhan dan dapat menghitung atau menampilkan jumlah halaman."
+              }
+            },
+            {
+              "id": "menyaring-dan-mengurutkan",
+              "title": "Menyaring dan mengurutkan dengan aman",
+              "body": [
+                "Sebaiknya hanya sebagian nama parameter yang diterima, bukan nama bebas. Daftar parameter yang tetap membuat perilaku API dapat diprediksi dan dokumentasinya jelas.",
+                "Untuk pengurutan, batasi kolom yang boleh dipakai. Menerima sembarang nama kolom membuka risiko nilai yang tidak diharapkan masuk ke query.",
+                "Terapkan juga saringan wajib, misalnya hanya data milik pengguna yang sedang mengakses. Saringan wajib tidak boleh dapat dihilangkan oleh klien."
               ],
               "code": null,
               "callouts": [
                 {
-                  "tone": "good",
-                  "title": "Best practice",
-                  "body": "Batasi ukuran respons dan pikirkan duplicate request ketika jaringan putus."
-                },
+                  "tone": "warn",
+                  "title": "Batasi kolom pengurutan",
+                  "body": "Menerima sembarang nama kolom untuk pengurutan membuka celah. Batasi pada daftar kolom yang memang boleh diurutkan."
+                }
+              ],
+              "checkpoint": {
+                "prompt": "Mengapa kolom pengurutan sebaiknya dibatasi pada daftar tertentu?",
+                "success": "Agar nilai yang tidak sah tidak masuk ke query dan perilaku API tetap dapat diprediksi."
+              }
+            },
+            {
+              "id": "idempotency",
+              "title": "Operasi yang aman diulang",
+              "body": [
+                "Operasi pembuatan tidak otomatis aman diulang. Bila klien mengirim ulang karena jaringan bermasalah, tanpa penjagaan akan tercipta dua data yang sama.",
+                "Kunci permintaan menyelesaikan masalah ini. Klien membuat satu nilai unik per percobaan operasi. Bila permintaan yang sama dikirim ulang, server mengenali kuncinya dan mengembalikan hasil yang sama tanpa membuat data baru.",
+                "Kunci harus tetap sama untuk percobaan ulang dari operasi yang sama, dan baru dibuat untuk operasi yang benar-benar baru. Membuat kunci baru setiap kali mencoba menghilangkan manfaatnya sepenuhnya."
+              ],
+              "code": {
+                "language": "http",
+                "code": "POST /v1/tugas HTTP/1.1\nHost: api.contoh.id\nIdempotency-Key: 8f14e45f-ea0d-4c2b-9f1e-2c3d4e5f6a7b\nContent-Type: application/json\n\n{ \"judul\": \"Belajar\" }",
+                "output": "Permintaan dengan kunci yang sama hanya menghasilkan satu data meski dikirim berulang.",
+                "explain": "Kunci unik menandai satu percobaan operasi. Server menyimpan hasilnya sehingga pengulangan mengembalikan hasil yang sama.",
+                "annotations": [
+                  {
+                    "line": 1,
+                    "code": "POST /v1/tugas HTTP/1.1",
+                    "note": "Method pembuatan menyatakan maksud menambah data."
+                  },
+                  {
+                    "line": 3,
+                    "code": "Idempotency-Key: 8f14e45f-ea0d-4c2b-9f1e-2c3d4e5f6a7b",
+                    "note": "Kunci unik menandai satu percobaan operasi."
+                  },
+                  {
+                    "line": 6,
+                    "code": "{ \"judul\": \"Belajar\" }",
+                    "note": "Isi permintaan memuat data yang akan dibuat."
+                  }
+                ],
+                "lab": false
+              },
+              "callouts": [
                 {
-                  "tone": "bad",
-                  "title": "Kesalahan umum",
-                  "body": "Membuat transaksi ganda ketika aplikasi mobile mengirim ulang request."
+                  "tone": "good",
+                  "title": "Aman karena desain",
+                  "body": "Operasi yang aman diulang memudahkan klien. Klien dapat mencoba ulang tanpa takut menimbulkan data ganda."
                 }
               ],
               "checkpoint": null
             },
             {
-              "id": "contoh",
-              "title": "Contoh kode",
+              "id": "jebakan",
+              "title": "Jebakan pada daftar besar dan pengulangan",
               "body": [
-                "Perhatikan input, proses, dan output. Ketik ulang, lalu ubah satu nilai."
+                "Menomori halaman dengan menghitung mundur jumlah data rentan berubah bila ada data baru masuk di antara permintaan. Akibatnya, sebagian data bisa terlewat atau muncul dua kali.",
+                "Untuk data yang sering berubah, penomoran berdasarkan penanda terakhir yang sudah dikirim lebih stabil. Klien meminta data setelah penanda itu, sehingga data baru tidak menggeser bagian yang belum dibaca.",
+                "Untuk pengulangan, pastikan penyimpanan kunci permintaan memiliki masa berlaku. Kunci yang disimpan selamanya akan menumpuk, sedangkan kunci yang terlalu cepat kedaluwarsa membuat pengulangan pada jeda panjang menciptakan data ganda."
               ],
-              "code": {
-                "language": "http",
-                "code": "GET /api/tasks?status=done&page=2&per_page=20\n# Response: data[], links{}, meta{page,total}",
-                "output": "",
-                "explain": ""
-              },
+              "code": null,
               "callouts": [],
-              "checkpoint": null
+              "checkpoint": {
+                "prompt": "Mengapa penomoran halaman biasa bisa membuat data terlewat saat data sering berubah?",
+                "success": "Karena data baru yang masuk di antara permintaan menggeser bagian halaman sehingga sebagian data terlewat atau muncul ganda."
+              }
             }
           ],
           "practice": [
             {
               "id": "latihan-1",
-              "title": "Latihan 1",
-              "level": "independent",
-              "task": "Tambahkan parameter filter status, search, dan pagination untuk endpoint daftar.",
-              "steps": [],
+              "title": "Saringan dan penomoran halaman",
+              "level": "guided",
+              "task": "Tulis permintaan daftar yang menyaring tugas belum selesai, mengurutkan menurut judul, dan mengambil halaman kedua sebanyak sepuluh baris.",
+              "steps": [
+                "Tentukan parameter penyaringan.",
+                "Tambahkan parameter pengurutan.",
+                "Tambahkan parameter halaman dan ukuran halaman.",
+                "Sertakan keterangan jumlah total pada tanggapan."
+              ],
               "hint": "",
-              "hints": [],
-              "starterCode": "",
-              "expected": "",
-              "stretch": "",
-              "verification": null
+              "hints": [
+                "Setiap parameter menyatakan satu pilihan.",
+                "Urutan parameter tidak mengubah hasil.",
+                "Jumlah total diperlukan untuk penomoran."
+              ],
+              "starterCode": "GET /v1/tugas?... HTTP/1.1",
+              "expected": "Hasil tersaring, terurut, dan terbagi sesuai permintaan dengan jumlah total tersedia.",
+              "stretch": "Tambahkan tautan ke halaman berikutnya pada tanggapan.",
+              "verification": {
+                "mode": "manual",
+                "command": "Kirim permintaan dan periksa jumlah serta urutan barisnya.",
+                "expected": "Hasil sesuai saringan, urutan, dan batas halaman yang diminta.",
+                "evidence": "Simpan permintaan dan tanggapan yang diterima."
+              }
             },
             {
               "id": "latihan-2",
-              "title": "Latihan 2",
+              "title": "Cegah data ganda",
               "level": "independent",
-              "task": "Ubah satu input atau asumsi pada contoh, catat hasil dan jelaskan alasannya.",
-              "steps": [],
+              "task": "Rancang penanganan kunci permintaan pada operasi pembuatan sehingga permintaan yang dikirim dua kali hanya menghasilkan satu data.",
+              "steps": [
+                "Tentukan cara klien membuat kunci unik.",
+                "Simpan kunci beserta hasilnya di sisi server.",
+                "Kembalikan hasil tersimpan bila kunci sama datang lagi.",
+                "Tetapkan masa berlaku penyimpanan kunci."
+              ],
               "hint": "",
-              "hints": [],
-              "starterCode": "",
-              "expected": "",
-              "stretch": "",
-              "verification": null
+              "hints": [
+                "Kunci dibuat sekali per operasi.",
+                "Hasil disimpan bersama kuncinya.",
+                "Masa berlaku menyeimbangkan penumpukan dan keamanan."
+              ],
+              "starterCode": "POST /v1/tugas\nIdempotency-Key: ...",
+              "expected": "Permintaan yang sama dikirim dua kali hanya menghasilkan satu data.",
+              "stretch": "Uji dengan jeda waktu lebih panjang dari masa berlaku kunci.",
+              "verification": {
+                "mode": "manual",
+                "command": "Kirim permintaan yang sama dua kali dan periksa jumlah data.",
+                "expected": "Hanya satu data tercipta meski permintaan dikirim dua kali.",
+                "evidence": "Simpan perintah uji dan hasil pemeriksaan jumlah data."
+              }
+            },
+            {
+              "id": "latihan-3",
+              "title": "Rancang penelusuran data besar",
+              "level": "transfer",
+              "task": "Rancang cara klien menelusuri seluruh data tugas yang cukup banyak dan sering berubah, lalu jelaskan pilihan yang dipakai.",
+              "steps": [
+                "Tentukan cara meminta bagian berikutnya.",
+                "Pilih antara penomoran halaman atau penanda terakhir.",
+                "Tentukan keterangan yang perlu disertakan pada tanggapan.",
+                "Jelaskan alasan pilihanmu untuk data yang sering berubah."
+              ],
+              "hint": "",
+              "hints": [
+                "Data yang sering berubah lebih cocok memakai penanda terakhir.",
+                "Keterangan tanggapan membantu klien melanjutkan.",
+                "Uji perilakunya saat data berubah di tengah penelusuran."
+              ],
+              "starterCode": "Cara meminta berikutnya: ...\nKeterangan tanggapan: ...",
+              "expected": "Rancangan stabil meski data bertambah di antara permintaan dan alasan pilihannya jelas.",
+              "stretch": "Uji dengan menambahkan data di antara dua permintaan.",
+              "verification": {
+                "mode": "manual",
+                "command": "Telusuri seluruh data sambil menambahkan data baru di tengahnya.",
+                "expected": "Tidak ada data yang terlewat atau muncul ganda selama penelusuran.",
+                "evidence": "Simpan rancangan dan catatan hasil pengujian penelusuran."
+              }
             }
           ],
-          "verification": null,
-          "troubleshooting": [],
+          "verification": {
+            "mode": "manual",
+            "command": "Uji penyaringan, penomoran halaman, dan pengiriman ulang permintaan pembuatan dengan kunci sama.",
+            "expected": "Hasil tersaring dan terbagi dengan benar, serta permintaan pembuatan yang diulang tidak menghasilkan data ganda.",
+            "evidence": "Simpan permintaan dan catatan hasil setiap pengujian."
+          },
+          "troubleshooting": [
+            {
+              "symptom": "Data terlewat atau muncul dua kali saat menelusuri halaman.",
+              "cause": "Penomoran halaman biasa dipakai pada data yang berubah di antara permintaan.",
+              "fix": "Pakai penanda terakhir sebagai dasar permintaan bagian berikutnya."
+            },
+            {
+              "symptom": "Jaringan bermasalah membuat data tercatat dua kali.",
+              "cause": "Klien mencoba ulang permintaan pembuatan tanpa kunci permintaan.",
+              "fix": "Sediakan dan terapkan kunci permintaan pada operasi pembuatan."
+            },
+            {
+              "symptom": "Klien dapat meminta data dalam jumlah sangat besar sekaligus.",
+              "cause": "Ukuran halaman tidak dibatasi atas.",
+              "fix": "Terapkan batas atas ukuran halaman dan dokumentasikan."
+            },
+            {
+              "symptom": "Nilai pengurutan yang tidak diharapkan masuk ke query.",
+              "cause": "Kolom pengurutan diterima bebas tanpa daftar yang diizinkan.",
+              "fix": "Batasi kolom pengurutan pada daftar tertentu dan tolak yang lain."
+            }
+          ],
           "quiz": {
             "questions": [
               {
                 "id": "q1",
                 "type": "recall",
-                "question": "Apa prinsip yang paling tepat untuk topik “Filter, pagination, dan idempotency”?",
+                "question": "Mengapa operasi pembuatan perlu penjagaan terhadap pengulangan?",
                 "options": [
-                  "Batasi ukuran respons dan pikirkan duplicate request ketika jaringan putus.",
-                  "Gunakan solusi paling rumit sejak awal, meski kebutuhan belum jelas.",
-                  "Lewati pengujian karena contoh kecil pasti benar."
+                  "Agar lebih cepat",
+                  "Karena pengiriman ulang akibat gangguan dapat menciptakan data ganda",
+                  "Agar data terhapus otomatis"
+                ],
+                "answer": 1,
+                "explanation": "Tanpa penjagaan, percobaan ulang dapat membuat data yang sama tercatat lebih dari sekali."
+              },
+              {
+                "id": "q2",
+                "type": "code-reading",
+                "question": "Apa fungsi kunci permintaan pada operasi pembuatan?",
+                "options": [
+                  "Menandai satu percobaan operasi agar pengulangannya tidak membuat data baru",
+                  "Mengurutkan hasil",
+                  "Menyaring data"
                 ],
                 "answer": 0,
-                "explanation": "Batasi ukuran respons dan pikirkan duplicate request ketika jaringan putus."
+                "explanation": "Kunci permintaan membuat pengulangan mengembalikan hasil yang sama tanpa data ganda."
+              },
+              {
+                "id": "q3",
+                "type": "scenario",
+                "question": "Data sering berubah saat klien menelusuri daftar. Cara yang lebih stabil...",
+                "options": [
+                  "Penomoran halaman biasa",
+                  "Penanda terakhir dari data yang sudah dikirim",
+                  "Meminta seluruh data sekaligus"
+                ],
+                "answer": 1,
+                "explanation": "Penanda terakhir tidak terpengaruh data baru yang masuk di antara permintaan."
               }
             ]
           },
-          "resources": [],
-          "summary": [],
-          "legacy": true,
-          "code": "GET /api/tasks?status=done&page=2&per_page=20\n# Response: data[], links{}, meta{page,total}",
-          "wordCount": 159,
-          "schema": 2
+          "resources": [
+            {
+              "sourceId": "rfc-9110",
+              "title": "RFC 9110: HTTP Semantics",
+              "publisher": "IETF",
+              "url": "https://www.rfc-editor.org/rfc/rfc9110.html",
+              "note": "Standar HTTP tentang sifat method yang aman diulang.",
+              "tier": "standard",
+              "version": "9110",
+              "accessedAt": "2026-10-28",
+              "license": "IETF Trust"
+            },
+            {
+              "sourceId": "mdn-http-methods",
+              "title": "MDN: HTTP request methods",
+              "publisher": "Mozilla",
+              "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Methods",
+              "note": "Penjelasan sifat method HTTP terkait pengulangan permintaan.",
+              "tier": "official",
+              "version": "rolling",
+              "accessedAt": "2026-10-29",
+              "license": ""
+            },
+            {
+              "sourceId": "openapi-spec",
+              "title": "OpenAPI Specification",
+              "publisher": "OpenAPI Initiative",
+              "url": "https://spec.openapis.org/oas/latest.html",
+              "note": "Cara mendeskripsikan parameter penyaringan dan penomoran halaman pada kontrak.",
+              "tier": "standard",
+              "version": "latest",
+              "accessedAt": "2026-10-29",
+              "license": ""
+            }
+          ],
+          "summary": [
+            "Parameter alamat menyaring dan mengatur hasil daftar.",
+            "Penomoran halaman membatasi jumlah data yang dikirim dan menyertakan jumlah total.",
+            "Operasi pembuatan tidak otomatis aman diulang; kunci permintaan mencegah data ganda.",
+            "Untuk data yang sering berubah, penelusuran memakai penanda terakhir lebih stabil."
+          ],
+          "legacy": false,
+          "code": "GET /v1/tugas?selesai=false&urut=judul&halaman=2&per_halaman=20 HTTP/1.1\nHost: api.contoh.id\nAccept: application/json\n\nHTTP/1.1 200 OK\nContent-Type: application/json\nX-Total-Count: 42\nLink: </v1/tugas?halaman=3>; rel=\"next\"",
+          "wordCount": 1500,
+          "schema": 3.1
         },
         {
           "id": "m09-l04",
           "title": "Auth API, token, dan CORS",
-          "minutes": 45,
+          "minutes": 120,
           "level": "Menengah",
           "depth": "integrasi",
-          "outcome": "",
+          "outcome": "Setelah pelajaran ini, Anda dapat mengamankan API memakai token, membedakan jenis token beserta kapan dipakai, serta mengatur akses lintas asal dengan benar.",
           "codeLanguage": "http",
-          "objectives": [],
-          "prerequisites": [],
-          "terms": [],
-          "syntax": [],
-          "conventions": [],
-          "next": "",
+          "objectives": [
+            "Menjelaskan cara kerja autentikasi berbasis token pada API.",
+            "Membedakan token akses dan token penyegar beserta perannya.",
+            "Mengirim token pada permintaan dan memeriksa penolakannya.",
+            "Mengatur akses lintas asal tanpa membuka celah berlebihan."
+          ],
+          "prerequisites": [
+            {
+              "label": "Filter, pagination, dan idempotency",
+              "lessonId": "m09-l03"
+            }
+          ],
+          "terms": [
+            {
+              "term": "Token akses",
+              "definition": "Nilai yang dikirim bersama permintaan untuk membuktikan bahwa pemanggil berhak mengakses API."
+            },
+            {
+              "term": "Token penyegar",
+              "definition": "Nilai berumur panjang untuk memperoleh token akses baru setelah token akses kedaluwarsa."
+            },
+            {
+              "term": "Masa berlaku",
+              "definition": "Jangka waktu sebuah token masih diterima sebelum harus diperbarui."
+            },
+            {
+              "term": "Asal",
+              "definition": "Gabungan skema, nama host, dan port yang menjadi identitas sumber permintaan dari peramban."
+            },
+            {
+              "term": "Akses lintas asal",
+              "definition": "Aturan yang menentukan apakah peramban boleh memakai tanggapan dari asal yang berbeda dengan halaman asalnya."
+            }
+          ],
+          "syntax": [
+            {
+              "token": "Authorization: Bearer <token>",
+              "meaning": "Server memeriksa token itu dan menentukan pengguna sekaligus haknya sebelum permintaan dilanjutkan.",
+              "readAs": "Baca sebagai pengiriman token akses pada header permintaan untuk membuktikan hak pemanggil.",
+              "example": "Authorization: Bearer eyJhbGciOi...",
+              "output": "Permintaan tanpa token yang sah ditolak sebelum mencapai logika aplikasi.",
+              "pitfall": "Menyimpan token di tempat yang mudah dibaca skrip pihak lain membuka risiko pencurian sesi."
+            },
+            {
+              "token": "POST /oauth/token grant_type=refresh_token",
+              "meaning": "Token penyegar dipakai hanya untuk meminta token akses baru. Dengan begitu, token berumur pendek tetap dapat diperbarui tanpa meminta pengguna masuk lagi.",
+              "readAs": "Baca sebagai permintaan menukar token penyegar dengan token akses yang baru.",
+              "example": "POST /oauth/token grant_type=refresh_token",
+              "output": "Klien memperoleh token akses baru tanpa meminta kata sandi kembali.",
+              "pitfall": "Menyimpan token penyegar tanpa penjagaan membuat penyerang dapat terus memperoleh akses baru."
+            },
+            {
+              "token": "Access-Control-Allow-Origin: https://app.contoh.id",
+              "meaning": "Peramban memakai header ini untuk menentukan apakah halaman dari asal tertentu boleh membaca tanggapan tersebut.",
+              "readAs": "Baca sebagai tanggapan yang menyatakan asal mana yang boleh membaca hasilnya.",
+              "example": "Access-Control-Allow-Origin: https://app.contoh.id",
+              "output": "Hanya halaman dari asal itu yang dapat membaca tanggapan lintas asal.",
+              "pitfall": "Membiarkan asal apa pun pada alamat yang memakai kredensial membuka data pengguna ke situs lain."
+            }
+          ],
+          "conventions": [
+            "Pakai token akses berumur pendek dan token penyegar untuk memperbaruinya.",
+            "Kirim token pada header Authorization, bukan pada parameter alamat.",
+            "Jangan menaruh token pada alamat karena alamat mudah tercatat di riwayat.",
+            "Batasi asal yang diizinkan, jangan membiarkan semuanya pada alamat berkredensial.",
+            "Uji permintaan tanpa token, token kedaluwarsa, dan token tidak berhak."
+          ],
+          "next": "Berikutnya: penanganan kesalahan, tenggat waktu, dan percobaan ulang. Anda akan merancang integrasi yang tetap dapat ditangani saat gagal.",
           "sections": [
             {
-              "id": "konsep",
-              "title": "Memahami konsepnya",
+              "id": "cara-membaca",
+              "title": "Cara membaca proses masuk API",
               "body": [
-                "Autentikasi API bisa menggunakan cookie session untuk web satu domain atau token akses untuk klien native; pilihan bergantung arsitektur. CORS mengatur akses browser lintas origin, bukan menggantikan autentikasi.",
-                "Gunakan HTTPS, token pendek dan rotasi/revokasi yang sesuai. Flutter native tidak tunduk pada CORS browser seperti web. Jangan memasukkan API key rahasia ke paket mobile."
+                "Proses masuk dibaca sebagai pertukaran: klien mengirim bukti identitas, dan server mengembalikan bukti untuk pemakaian berikutnya. Bukti berikutnya berupa token, bukan kata sandi, sehingga kata sandi tidak perlu dikirim berulang.",
+                "Pada contoh, klien mengirim surel dan sandi, lalu server mengembalikan dua nilai: token akses berumur pendek dan token penyegar berumur panjang. Token akses dipakai pada permintaan berikutnya, sedangkan token penyegar disimpan untuk memperbarui.",
+                "Pemisahan dua token itu penting. Bila token akses bocor, masa berlaku pendek membatasi kerugiannya. Token penyegar yang berumur panjang dijaga lebih ketat dan hanya dipakai untuk memperbarui."
               ],
-              "code": null,
+              "code": {
+                "language": "http",
+                "code": "POST /v1/masuk HTTP/1.1\nHost: api.contoh.id\nContent-Type: application/json\n\n{ \"surel\": \"budi@contoh.id\", \"sandi\": \"rahasia\" }\n\nHTTP/1.1 200 OK\nContent-Type: application/json\n\n{ \"akses\": \"eyJhbGciOi...\", \"segarkan\": \"8f14e45...\" }",
+                "output": "Server mengembalikan token akses berumur pendek dan token penyegar untuk memperbaruinya.",
+                "explain": "Klien mengirim identitas, dan server membalas dengan dua token. Token akses dipakai pada permintaan berikutnya, sedangkan token penyegar dipakai untuk memperbarui.",
+                "annotations": [
+                  {
+                    "line": 1,
+                    "code": "POST /v1/masuk HTTP/1.1",
+                    "note": "Alamat masuk memakai method pengiriman data."
+                  },
+                  {
+                    "line": 5,
+                    "code": "{ \"surel\": \"budi@contoh.id\", \"sandi\": \"rahasia\" }",
+                    "note": "Bukti identitas dikirim sekali pada proses masuk."
+                  },
+                  {
+                    "line": 8,
+                    "code": "Content-Type: application/json",
+                    "note": "Server membalas dengan jenis isi JSON."
+                  },
+                  {
+                    "line": 10,
+                    "code": "{ \"akses\": \"eyJhbGciOi...\", \"segarkan\": \"8f14e45...\" }",
+                    "note": "Token akses dan token penyegar dikembalikan bersamaan."
+                  }
+                ],
+                "lab": false
+              },
               "callouts": [
                 {
                   "tone": "good",
-                  "title": "Best practice",
-                  "body": "Pilih skema auth berdasarkan jenis klien; tetap wajib authorize tiap resource."
-                },
+                  "title": "Kata sandi hanya sekali",
+                  "body": "Setelah masuk, klien memakai token, bukan kata sandi. Kata sandi tidak berulang kali melintas di jaringan."
+                }
+              ],
+              "checkpoint": {
+                "prompt": "Mengapa proses masuk mengembalikan dua token, bukan satu?",
+                "success": "Token akses berumur pendek membatasi kerugian bila bocor, sedangkan token penyegar yang berumur panjang dipakai memperbaruinya."
+              }
+            },
+            {
+              "id": "memakai-token",
+              "title": "Mengirim token dan menangani penolakan",
+              "body": [
+                "Permintaan dengan token dibaca seperti permintaan biasa, dengan tambahan header yang membawa bukti. Server memeriksa header itu lebih dulu sebelum menyentuh logika aplikasi.",
+                "Pada contoh, permintaan membawa token yang sudah tidak sah, sehingga server menolak dan menyertakan header yang menyatakan skema autentikasi yang dipakai. Klien memakai keterangan itu untuk memutuskan memperbarui token.",
+                "Tanggapan penolakan sebaiknya tidak membocorkan mengapa token ditolak secara rinci. Cukup nyatakan bahwa autentikasi diperlukan, tanpa menyebut apakah token kedaluwarsa atau tidak dikenal."
+              ],
+              "code": {
+                "language": "http",
+                "code": "GET /v1/tugas HTTP/1.1\nHost: api.contoh.id\nAuthorization: Bearer eyJhbGciOi...\nAccept: application/json\n\nHTTP/1.1 401 Unauthorized\nWWW-Authenticate: Bearer",
+                "output": "Permintaan dengan token tidak sah ditolak sebelum logika aplikasi dijalankan.",
+                "explain": "Token dikirim pada header Authorization. Server memeriksanya lebih dulu dan menolak permintaan bila token tidak sah.",
+                "annotations": [
+                  {
+                    "line": 3,
+                    "code": "Authorization: Bearer eyJhbGciOi...",
+                    "note": "Token dikirim pada header, bukan pada alamat."
+                  },
+                  {
+                    "line": 6,
+                    "code": "HTTP/1.1 401 Unauthorized",
+                    "note": "Status menyatakan autentikasi diperlukan."
+                  },
+                  {
+                    "line": 7,
+                    "code": "WWW-Authenticate: Bearer",
+                    "note": "Header menyebut skema autentikasi yang dipakai."
+                  }
+                ],
+                "lab": false
+              },
+              "callouts": [
                 {
-                  "tone": "bad",
-                  "title": "Kesalahan umum",
-                  "body": "Menganggap CORS melindungi API dari semua klien tak sah."
+                  "tone": "warn",
+                  "title": "Jangan bocorkan sebabnya",
+                  "body": "Menyebut secara rinci alasan token ditolak dapat membantu penyerang menebak. Cukup nyatakan bahwa autentikasi diperlukan."
                 }
               ],
               "checkpoint": null
             },
             {
-              "id": "contoh",
-              "title": "Contoh kode",
+              "id": "cors",
+              "title": "Mengatur akses lintas asal",
               "body": [
-                "Perhatikan input, proses, dan output. Ketik ulang, lalu ubah satu nilai."
+                "Akses lintas asal adalah aturan peramban, bukan pengganti autentikasi. Ia menentukan halaman dari asal mana yang boleh membaca tanggapan API, tetapi tidak menentukan siapa yang berhak memakai API.",
+                "Izinkan hanya asal yang memang memakai API Anda. Membiarkan semua asal pada alamat yang memakai kredensial membuat situs lain dapat memakai sesi pengguna yang sedang aktif.",
+                "Untuk permintaan yang tidak sederhana, peramban mengirim permintaan pendahuluan lebih dulu. Server harus menjawabnya dengan menyebut method dan header yang diizinkan agar permintaan sebenarnya dapat dilanjutkan."
               ],
-              "code": {
-                "language": "http",
-                "code": "Authorization: Bearer <access-token>\n# Header contoh, token harus dilindungi.",
-                "output": "",
-                "explain": ""
-              },
+              "code": null,
+              "callouts": [
+                {
+                  "tone": "warn",
+                  "title": "CORS bukan pengaman",
+                  "body": "CORS hanya mengatur peramban. Ia tidak melindungi API dari pemanggil di luar peramban, sehingga autentikasi tetap wajib."
+                }
+              ],
+              "checkpoint": {
+                "prompt": "Mengapa membiarkan semua asal pada alamat yang memakai kredensial berbahaya?",
+                "success": "Karena situs lain dapat memakai sesi pengguna yang sedang aktif untuk membaca atau mengubah data."
+              }
+            },
+            {
+              "id": "jebakan-token",
+              "title": "Jebakan pada pengelolaan token",
+              "body": [
+                "Menyimpan token akses pada tempat yang dapat dibaca skrip pihak lain membuka risiko pencurian. Perhatikan tempat penyimpanan token, terutama pada aplikasi yang menampilkan konten dari luar.",
+                "Token akses yang berumur terlalu panjang memperbesar kerugian bila bocor. Sebaiknya token akses berumur pendek dan pembaruan dilakukan lewat token penyegar yang dijaga lebih ketat.",
+                "Mengirim token pada alamat membuatnya tercatat di riwayat dan berkas catatan. Selalu kirim token pada header, bukan pada parameter alamat."
+              ],
+              "code": null,
               "callouts": [],
-              "checkpoint": null
+              "checkpoint": {
+                "prompt": "Mengapa token sebaiknya tidak dikirim pada parameter alamat?",
+                "success": "Karena alamat mudah tercatat pada riwayat dan berkas catatan sehingga token berisiko terbaca pihak lain."
+              }
             }
           ],
           "practice": [
             {
               "id": "latihan-1",
-              "title": "Latihan 1",
-              "level": "independent",
-              "task": "Buat threat model sederhana untuk penyimpanan token pada browser vs perangkat mobile.",
-              "steps": [],
+              "title": "Kirim token pada permintaan",
+              "level": "guided",
+              "task": "Tulis permintaan yang mengambil daftar tugas dengan menyertakan token pada header, lalu periksa tanggapannya ketika token tidak sah.",
+              "steps": [
+                "Tentukan alamat dan method permintaan.",
+                "Sertakan token pada header Authorization.",
+                "Kirim permintaan dengan token sah.",
+                "Kirim ulang dengan token yang tidak sah dan periksa tanggapannya."
+              ],
               "hint": "",
-              "hints": [],
-              "starterCode": "",
-              "expected": "",
-              "stretch": "",
-              "verification": null
+              "hints": [
+                "Token dikirim pada header, bukan pada alamat.",
+                "Permintaan tanpa token sah ditolak sebelum logika aplikasi.",
+                "Tanggapan penolakan tidak perlu merinci sebabnya."
+              ],
+              "starterCode": "GET /v1/tugas HTTP/1.1\nAuthorization: Bearer ...",
+              "expected": "Permintaan dengan token sah berhasil, tanpa token sah ditolak dengan status autentikasi.",
+              "stretch": "Tambahkan pemeriksaan bahwa penyebab penolakan tidak dirinci berlebihan.",
+              "verification": {
+                "mode": "manual",
+                "command": "Kirim permintaan dengan token sah dan dengan token tidak sah.",
+                "expected": "Token sah berhasil; token tidak sah ditolak dengan status autentikasi.",
+                "evidence": "Simpan kedua permintaan dan tanggapannya."
+              }
             },
             {
               "id": "latihan-2",
-              "title": "Latihan 2",
+              "title": "Perbarui token akses",
               "level": "independent",
-              "task": "Ubah satu input atau asumsi pada contoh, catat hasil dan jelaskan alasannya.",
-              "steps": [],
+              "task": "Rancang alur pembaruan token: klien memakai token penyegar untuk memperoleh token akses baru tanpa meminta pengguna masuk lagi.",
+              "steps": [
+                "Tentukan alamat dan isi permintaan pembaruan.",
+                "Kirim token penyegar pada permintaan itu.",
+                "Simpan token akses baru yang diterima.",
+                "Uji ketika token penyegar sudah kedaluwarsa."
+              ],
               "hint": "",
-              "hints": [],
-              "starterCode": "",
-              "expected": "",
-              "stretch": "",
-              "verification": null
+              "hints": [
+                "Token penyegar hanya untuk memperbarui.",
+                "Token akses baru dikembalikan pada tanggapan.",
+                "Token penyegar kedaluwarsa memerlukan masuk ulang."
+              ],
+              "starterCode": "POST /oauth/token\ngrant_type=refresh_token&refresh_token=...",
+              "expected": "Token akses diperbarui tanpa meminta kata sandi; token penyegar kedaluwarsa ditolak.",
+              "stretch": "Putar token penyegar setiap kali diperbarui.",
+              "verification": {
+                "mode": "manual",
+                "command": "Perbarui token lalu kirim permintaan dengan token akses baru.",
+                "expected": "Permintaan dengan token baru berhasil tanpa masuk ulang.",
+                "evidence": "Simpan permintaan pembaruan dan tanggapan pemakaiannya."
+              }
+            },
+            {
+              "id": "latihan-3",
+              "title": "Atur akses lintas asal",
+              "level": "transfer",
+              "task": "Rancang aturan akses lintas asal untuk API yang dipakai dua aplikasi resmi, lalu jelaskan mengapa asal lain ditolak.",
+              "steps": [
+                "Sebutkan asal aplikasi yang memang memakai API.",
+                "Tentukan asal yang diizinkan pada pengaturan.",
+                "Tentukan cara menangani permintaan pendahuluan.",
+                "Jelaskan mengapa asal lain ditolak."
+              ],
+              "hint": "",
+              "hints": [
+                "Batasi asal pada daftar yang jelas.",
+                "Permintaan pendahuluan perlu dijawab server.",
+                "Kredensial memerlukan kehati-hatian tambahan."
+              ],
+              "starterCode": "Asal diizinkan: ...\nPermintaan pendahuluan: ...",
+              "expected": "Hanya asal resmi yang diizinkan dan permintaan pendahuluan dijawab dengan benar.",
+              "stretch": "Uji pemanggilan dari asal yang tidak diizinkan.",
+              "verification": {
+                "mode": "manual",
+                "command": "Panggil API dari asal yang diizinkan dan dari asal lain.",
+                "expected": "Hanya asal yang diizinkan dapat membaca tanggapan dari peramban.",
+                "evidence": "Simpan pengaturan asal dan catatan hasil pengujian dari kedua asal."
+              }
             }
           ],
-          "verification": null,
-          "troubleshooting": [],
+          "verification": {
+            "mode": "manual",
+            "command": "Uji proses masuk, pemakaian token, pembaruan token, serta pemanggilan lintas asal dari asal yang diizinkan dan tidak.",
+            "expected": "Masuk mengembalikan token, permintaan tanpa token sah ditolak, token dapat diperbarui, dan hanya asal yang diizinkan dapat membaca tanggapan.",
+            "evidence": "Simpan permintaan dan catatan hasil setiap pengujian."
+          },
+          "troubleshooting": [
+            {
+              "symptom": "Permintaan selalu ditolak meski klien merasa sudah masuk.",
+              "cause": "Token tidak disertakan atau disertakan pada tempat yang salah.",
+              "fix": "Kirim token pada header Authorization, bukan pada parameter alamat."
+            },
+            {
+              "symptom": "Pengguna dipaksa masuk ulang terlalu sering.",
+              "cause": "Token akses berumur sangat pendek dan pembaruan tidak dijalankan.",
+              "fix": "Terapkan pembaruan memakai token penyegar sebelum token akses kedaluwarsa."
+            },
+            {
+              "symptom": "Situs lain dapat membaca data API dari peramban pengguna.",
+              "cause": "Akses lintas asal dibiarkan terbuka untuk semua asal pada alamat yang memakai kredensial.",
+              "fix": "Batasi asal pada daftar resmi dan tangani permintaan pendahuluan dengan benar."
+            },
+            {
+              "symptom": "Token terbaca pihak lain dari catatan sistem.",
+              "cause": "Token dikirim pada parameter alamat sehingga tercatat di riwayat dan berkas catatan.",
+              "fix": "Pindahkan token ke header Authorization dan hindari mencatat nilai header itu."
+            }
+          ],
           "quiz": {
             "questions": [
               {
                 "id": "q1",
                 "type": "recall",
-                "question": "Apa prinsip yang paling tepat untuk topik “Auth API, token, dan CORS”?",
+                "question": "Apa peran token penyegar pada autentikasi API?",
                 "options": [
-                  "Pilih skema auth berdasarkan jenis klien; tetap wajib authorize tiap resource.",
-                  "Gunakan solusi paling rumit sejak awal, meski kebutuhan belum jelas.",
-                  "Lewati pengujian karena contoh kecil pasti benar."
+                  "Memberi akses penuh selamanya",
+                  "Memperoleh token akses baru tanpa meminta pengguna masuk lagi",
+                  "Menggantikan kata sandi saat proses masuk"
+                ],
+                "answer": 1,
+                "explanation": "Token penyegar berumur panjang dipakai untuk memperbarui token akses berumur pendek."
+              },
+              {
+                "id": "q2",
+                "type": "code-reading",
+                "question": "Apa yang ditandai status autentikasi diperlukan pada tanggapan API?",
+                "options": [
+                  "Permintaan tidak memiliki token yang sah",
+                  "Alamat tidak ditemukan",
+                  "Server sedang bermasalah"
                 ],
                 "answer": 0,
-                "explanation": "Pilih skema auth berdasarkan jenis klien; tetap wajib authorize tiap resource."
+                "explanation": "Status itu menyatakan autentikasi diperlukan, yaitu token tidak ada atau tidak sah."
+              },
+              {
+                "id": "q3",
+                "type": "scenario",
+                "question": "API dipakai aplikasi resmi dari satu asal saja. Pengaturan lintas asal yang tepat...",
+                "options": [
+                  "Mengizinkan semua asal",
+                  "Mengizinkan hanya asal aplikasi resmi itu",
+                  "Mematikan pemeriksaan lintas asal"
+                ],
+                "answer": 1,
+                "explanation": "Batasi asal pada daftar resmi, terutama pada alamat yang memakai kredensial."
               }
             ]
           },
-          "resources": [],
-          "summary": [],
-          "legacy": true,
-          "code": "Authorization: Bearer <access-token>\n# Header contoh, token harus dilindungi.",
-          "wordCount": 176,
-          "schema": 2
+          "resources": [
+            {
+              "sourceId": "rfc-6749",
+              "title": "RFC 6749: The OAuth 2.0 Authorization Framework",
+              "publisher": "IETF",
+              "url": "https://www.rfc-editor.org/rfc/rfc6749.html",
+              "note": "Standar OAuth 2.0 tentang token akses dan token penyegar.",
+              "tier": "standard",
+              "version": "6749",
+              "accessedAt": "2026-10-29",
+              "license": ""
+            },
+            {
+              "sourceId": "mdn-cors",
+              "title": "MDN: Cross-Origin Resource Sharing (CORS)",
+              "publisher": "Mozilla",
+              "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/CORS",
+              "note": "Penjelasan akses lintas asal dan cara peramban memeriksanya.",
+              "tier": "official",
+              "version": "rolling",
+              "accessedAt": "2026-10-29",
+              "license": ""
+            },
+            {
+              "sourceId": "rfc-9110",
+              "title": "RFC 9110: HTTP Semantics",
+              "publisher": "IETF",
+              "url": "https://www.rfc-editor.org/rfc/rfc9110.html",
+              "note": "Standar HTTP tentang header kesalian dan status autentikasi.",
+              "tier": "standard",
+              "version": "9110",
+              "accessedAt": "2026-10-28",
+              "license": "IETF Trust"
+            }
+          ],
+          "summary": [
+            "Autentikasi API memakai token, bukan kata sandi berulang, pada setiap permintaan.",
+            "Token akses berumur pendek, dan token penyegar dipakai untuk memperbaruinya.",
+            "Token dikirim pada header Authorization, dan penolakan menyatakan autentikasi diperlukan.",
+            "Akses lintas asal membatasi asal yang boleh membaca tanggapan peramban, tetapi bukan pengganti autentikasi."
+          ],
+          "legacy": false,
+          "code": "POST /v1/masuk HTTP/1.1\nHost: api.contoh.id\nContent-Type: application/json\n\n{ \"surel\": \"budi@contoh.id\", \"sandi\": \"rahasia\" }\n\nHTTP/1.1 200 OK\nContent-Type: application/json\n\n{ \"akses\": \"eyJhbGciOi...\", \"segarkan\": \"8f14e45...\" }",
+          "wordCount": 1583,
+          "schema": 3.1
         },
         {
           "id": "m09-l05",
           "title": "Error handling, timeout, dan retry",
-          "minutes": 45,
+          "minutes": 120,
           "level": "Menengah",
           "depth": "integrasi",
-          "outcome": "",
+          "outcome": "Setelah pelajaran ini, Anda dapat merancang penanganan kesalahan yang jelas, menetapkan tenggat waktu, dan memilih percobaan ulang yang aman pada integrasi jaringan.",
           "codeLanguage": "javascript",
-          "objectives": [],
-          "prerequisites": [],
-          "terms": [],
-          "syntax": [],
-          "conventions": [],
-          "next": "",
+          "objectives": [
+            "Membedakan kesalahan yang dapat dicoba ulang dan yang tidak.",
+            "Menetapkan tenggat waktu pada permintaan jaringan.",
+            "Menerapkan percobaan ulang dengan jeda yang bertambah.",
+            "Menyampaikan kesalahan kepada pengguna dengan pesan yang berguna."
+          ],
+          "prerequisites": [
+            {
+              "label": "Auth API, token, dan CORS",
+              "lessonId": "m09-l04"
+            }
+          ],
+          "terms": [
+            {
+              "term": "Tenggat waktu",
+              "definition": "Batas waktu tunggu sebuah permintaan sebelum dianggap gagal agar tidak menggantung."
+            },
+            {
+              "term": "Percobaan ulang",
+              "definition": "Pengiriman ulang permintaan yang gagal dengan harapan berhasil pada percobaan berikutnya."
+            },
+            {
+              "term": "Jeda bertambah",
+              "definition": "Jeda yang makin panjang antar percobaan ulang agar layanan tujuan tidak makin terbebani."
+            },
+            {
+              "term": "Kesalahan sementara",
+              "definition": "Kegagalan yang mungkin hilang bila dicoba lagi, misalnya gangguan jaringan atau layanan yang sedang sibuk."
+            }
+          ],
+          "syntax": [
+            {
+              "token": "fetch(url, { signal: AbortSignal.timeout(5000) })",
+              "meaning": "Bila layanan tujuan tidak menjawab dalam batas itu, permintaan dibatalkan agar aplikasi tidak menunggu tanpa batas.",
+              "readAs": "Baca sebagai permintaan jaringan dengan batas waktu lima ribu milidetik.",
+              "example": "fetch(url, { signal: AbortSignal.timeout(5000) })",
+              "output": "Permintaan yang menggantung dibatalkan dan dilaporkan sebagai kegagalan.",
+              "pitfall": "Membiarkan permintaan tanpa batas waktu membuat aplikasi menggantung ketika jaringan bermasalah."
+            },
+            {
+              "token": "if (!res.ok) throw new Error(`HTTP ${res.status}`);",
+              "meaning": "Permintaan jaringan tidak otomatis gagal pada status kesalahan, sehingga pemeriksaan ini wajib dilakukan.",
+              "readAs": "Baca sebagai pemeriksaan status tanggapan lalu pelaporan kesalahan bila tidak berhasil.",
+              "example": "if (!res.ok) throw new Error(`HTTP ${res.status}`);",
+              "output": "Kesalahan sisi layanan dilaporkan sebagai kegagalan yang dapat ditangani.",
+              "pitfall": "Menganggap permintaan berhasil tanpa memeriksa status membuat data kesalahan ikut diproses."
+            },
+            {
+              "token": "await new Promise((r) => setTimeout(r, 200 * 2 ** coba));",
+              "meaning": "Jeda bertambah memberi layanan tujuan waktu untuk pulih dan mencegah percobaan ulang yang menyerbu bersamaan.",
+              "readAs": "Baca sebagai penantian yang makin panjang pada setiap percobaan ulang.",
+              "example": "await new Promise((r) => setTimeout(r, 200 * 2 ** coba));",
+              "output": "Percobaan berikutnya dijalankan setelah jeda yang sesuai jumlah percobaan.",
+              "pitfall": "Mencoba ulang tanpa jeda memperparah kondisi layanan yang sedang sibuk."
+            }
+          ],
+          "conventions": [
+            "Tetapkan tenggat waktu pada setiap permintaan jaringan.",
+            "Periksa status tanggapan sebelum memakai isinya.",
+            "Coba ulang hanya kesalahan sementara, bukan kesalahan masukan.",
+            "Pakai jeda bertambah dan batasi jumlah percobaan ulang.",
+            "Sampaikan kesalahan kepada pengguna dengan pesan yang dapat ditindaklanjuti."
+          ],
+          "next": "Berikutnya: arsitektur monolith modular dan microservices. Anda akan memilih batas sistem yang sesuai kebutuhan dan tim.",
           "sections": [
             {
-              "id": "konsep",
-              "title": "Memahami konsepnya",
+              "id": "cara-membaca",
+              "title": "Cara membaca fungsi permintaan jaringan",
               "body": [
-                "Jaringan selalu dapat gagal: timeout, offline, 429, 500, dan koneksi putus. UI memerlukan loading, empty, error, success; retry harus berhati-hati dengan request mutasi.",
-                "Gunakan exponential backoff untuk kegagalan sementara dan batas percobaan. Jelaskan kepada pengguna apa yang tersimpan lokal dan apa yang belum tersinkron."
+                "Fungsi permintaan jaringan dibaca dalam tiga langkah: mengirim permintaan dengan batas waktu, memeriksa status tanggapan, lalu memakai isinya. Ketiga langkah itu menjawab tiga hal yang bisa gagal.",
+                "Pada contoh, permintaan dikirim dengan batas waktu lima detik. Bila melewati batas itu, permintaan dibatalkan. Setelah tanggapan diterima, statusnya diperiksa; status yang menandakan kesalahan dilaporkan sebagai kegagalan.",
+                "Langkah pemeriksaan status penting karena permintaan jaringan tidak otomatis dianggap gagal hanya karena statusnya menandakan kesalahan. Tanpa pemeriksaan itu, isi kesalahan dapat ikut diproses seolah-olah data biasa."
+              ],
+              "code": {
+                "language": "javascript",
+                "code": "async function ambilTugas() {\n  const res = await fetch(\"/v1/tugas\", {\n    signal: AbortSignal.timeout(5000),\n  });\n  if (!res.ok) throw new Error(`HTTP ${res.status}`);\n  return res.json();\n}",
+                "output": "Permintaan dibatalkan bila melewati lima detik, dan status kesalahan dilaporkan sebagai kegagalan.",
+                "explain": "Permintaan dikirim dengan batas waktu. Status tanggapan diperiksa sebelum isinya dipakai, sehingga kesalahan tidak lolos sebagai data biasa.",
+                "annotations": [
+                  {
+                    "line": 2,
+                    "code": "const res = await fetch(\"/v1/tugas\", {",
+                    "note": "Permintaan dikirim dengan pengaturan batas waktu."
+                  },
+                  {
+                    "line": 3,
+                    "code": "signal: AbortSignal.timeout(5000),",
+                    "note": "Batas waktu mencegah permintaan menggantung."
+                  },
+                  {
+                    "line": 5,
+                    "code": "if (!res.ok) throw new Error(`HTTP ${res.status}`);",
+                    "note": "Status tanggapan diperiksa sebelum isinya dipakai."
+                  },
+                  {
+                    "line": 6,
+                    "code": "return res.json();",
+                    "note": "Isi tanggapan diubah menjadi data saat permintaan berhasil."
+                  }
+                ],
+                "lab": false
+              },
+              "callouts": [
+                {
+                  "tone": "good",
+                  "title": "Selalu beri batas waktu",
+                  "body": "Permintaan tanpa batas waktu dapat menggantung lama. Batas waktu membuat kegagalan terdeteksi lebih cepat."
+                }
+              ],
+              "checkpoint": {
+                "prompt": "Mengapa status tanggapan perlu diperiksa meski permintaan berhasil dikirim?",
+                "success": "Karena permintaan jaringan tidak otomatis gagal pada status kesalahan, sehingga isi kesalahan bisa ikut diproses sebagai data."
+              }
+            },
+            {
+              "id": "coba-ulang",
+              "title": "Percobaan ulang yang aman",
+              "body": [
+                "Percobaan ulang dibaca sebagai perulangan dengan syarat berhenti. Setiap kali gagal, program memutuskan apakah kegagalan itu layak dicoba lagi dan berapa lama menunggu.",
+                "Pada contoh, hanya kesalahan sisi layanan yang dicoba ulang. Kesalahan sisi pengirim langsung dilempar karena mengulanginya tidak akan mengubah hasil; masukan yang salah tetap salah.",
+                "Jeda antar percobaan bertambah pada setiap percobaan. Cara ini memberi layanan tujuan waktu untuk pulih dan mencegah percobaan ulang yang datang bersamaan membebani layanan yang sedang sibuk."
+              ],
+              "code": {
+                "language": "javascript",
+                "code": "async function ambilDenganCobaUlang(url, maks = 3) {\n  for (let coba = 0; coba < maks; coba += 1) {\n    const res = await fetch(url, { signal: AbortSignal.timeout(5000) });\n    if (res.ok) return res.json();\n    if (res.status < 500) throw new Error(`HTTP ${res.status}`);\n    await new Promise((r) => setTimeout(r, 200 * 2 ** coba));\n  }\n  throw new Error(\"Gagal setelah beberapa percobaan\");\n}",
+                "output": "Kesalahan sisi layanan dicoba ulang dengan jeda bertambah; kesalahan masukan langsung dilaporkan.",
+                "explain": "Perulangan membatasi jumlah percobaan. Hanya kesalahan sisi layanan yang dicoba ulang, dengan jeda yang makin panjang, sedangkan kesalahan masukan langsung dilaporkan.",
+                "annotations": [
+                  {
+                    "line": 2,
+                    "code": "for (let coba = 0; coba < maks; coba += 1) {",
+                    "note": "Jumlah percobaan dibatasi."
+                  },
+                  {
+                    "line": 4,
+                    "code": "if (res.ok) return res.json();",
+                    "note": "Hasil berhasil langsung dikembalikan."
+                  },
+                  {
+                    "line": 5,
+                    "code": "if (res.status < 500) throw new Error(`HTTP ${res.status}`);",
+                    "note": "Kesalahan masukan tidak dicoba ulang."
+                  },
+                  {
+                    "line": 6,
+                    "code": "await new Promise((r) => setTimeout(r, 200 * 2 ** coba));",
+                    "note": "Jeda bertambah pada setiap percobaan ulang."
+                  }
+                ],
+                "lab": false
+              },
+              "callouts": [
+                {
+                  "tone": "warn",
+                  "title": "Jangan ulang kesalahan masukan",
+                  "body": "Mengulang permintaan yang masukan atau izinnya salah tidak akan berhasil. Cukup ulangi kegagalan yang bersifat sementara."
+                }
+              ],
+              "checkpoint": {
+                "prompt": "Mengapa kesalahan masukan sebaiknya tidak dicoba ulang?",
+                "success": "Karena mengulanginya tidak mengubah hasil; masukan yang salah tetap salah sehingga hanya membuang waktu."
+              }
+            },
+            {
+              "id": "memilih-kesalahan",
+              "title": "Memilih kesalahan yang layak dicoba ulang",
+              "body": [
+                "Kesalahan sementara cocok dicoba ulang: gangguan jaringan, layanan yang sementara tidak tersedia, atau batas permintaan yang terlampaui. Kegagalan semacam itu sering hilang bila dicoba lagi setelah jeda.",
+                "Kesalahan tetap tidak cocok dicoba ulang: masukan yang salah, izin yang tidak memadai, atau alamat yang tidak ada. Mengulanginya hanya membuang waktu dan menambah beban.",
+                "Selalu batasi jumlah percobaan dan tetapkan jeda. Percobaan ulang tanpa batas pada layanan yang bermasalah dapat memperburuk keadaannya."
+              ],
+              "code": null,
+              "callouts": [],
+              "checkpoint": {
+                "prompt": "Sebutkan satu kesalahan yang layak dicoba ulang dan satu yang tidak.",
+                "success": "Gangguan jaringan sementara layak dicoba ulang; masukan atau izin yang salah tidak layak dicoba ulang."
+              }
+            },
+            {
+              "id": "pesan-kesalahan",
+              "title": "Menyampaikan kesalahan dengan berguna",
+              "body": [
+                "Pesan kesalahan sebaiknya menyebut apa yang gagal dan langkah apa yang dapat diambil. Pesan seperti permintaan gagal kurang berguna dibandingkan pesan yang menyebut bahwa layanan sedang sibuk dan menyarankan mencoba lagi.",
+                "Bedakan kesalahan yang dapat diperbaiki pengguna dari yang tidak. Bila masukan perlu diperbaiki, arahkan pengguna ke bagian yang salah. Bila layanan yang bermasalah, nyatakan bahwa masalahnya sementara.",
+                "Catat kesalahan beserta keterangan yang cukup untuk penelusuran, tetapi jangan tampilkan rincian teknis kepada pengguna. Rincian teknis membingungkan dan dapat membocorkan hal yang tidak perlu."
               ],
               "code": null,
               "callouts": [
                 {
-                  "tone": "good",
-                  "title": "Best practice",
-                  "body": "Beri pesan error jelas dan hindari pengulangan mutasi tanpa idempotency."
-                },
-                {
-                  "tone": "bad",
-                  "title": "Kesalahan umum",
-                  "body": "Retry otomatis POST pembayaran tanpa proteksi duplikasi."
+                  "tone": "warn",
+                  "title": "Jangan tampilkan rincian teknis",
+                  "body": "Rincian teknis pada pesan pengguna membingungkan dan dapat membocorkan hal yang tidak perlu. Simpan rincian itu pada catatan."
                 }
               ],
-              "checkpoint": null
-            },
-            {
-              "id": "contoh",
-              "title": "Contoh kode",
-              "body": [
-                "Perhatikan input, proses, dan output. Ketik ulang, lalu ubah satu nilai."
-              ],
-              "code": {
-                "language": "javascript",
-                "code": "try {\n  // await api.getTasks();\n  console.log(\"Data siap\");\n} catch (error) {\n  console.error(\"Gagal memuat, coba lagi\", error);\n}",
-                "output": "",
-                "explain": ""
-              },
-              "callouts": [],
-              "checkpoint": null
+              "checkpoint": {
+                "prompt": "Sebutkan dua hal yang membuat pesan kesalahan berguna bagi pengguna.",
+                "success": "Menyebut apa yang gagal dan langkah apa yang dapat diambil berikutnya."
+              }
             }
           ],
           "practice": [
             {
               "id": "latihan-1",
-              "title": "Latihan 1",
-              "level": "independent",
-              "task": "Rancang alur offline lalu online untuk membuat tugas di Flutter.",
-              "steps": [],
+              "title": "Permintaan dengan batas waktu",
+              "level": "guided",
+              "task": "Tulis fungsi yang mengambil data dengan batas waktu dan memeriksa status tanggapan sebelum memakai isinya.",
+              "steps": [
+                "Kirim permintaan dengan batas waktu.",
+                "Periksa status tanggapan.",
+                "Laporkan kegagalan bila status menandakan kesalahan.",
+                "Kembalikan isi tanggapan saat berhasil."
+              ],
               "hint": "",
-              "hints": [],
-              "starterCode": "",
-              "expected": "",
-              "stretch": "",
-              "verification": null
+              "hints": [
+                "Batas waktu mencegah permintaan menggantung.",
+                "Status tanggapan selalu diperiksa.",
+                "Isi tanggapan hanya dipakai saat berhasil."
+              ],
+              "starterCode": "async function ambil(url) {\n  // kirim, periksa, kembalikan\n}",
+              "expected": "Permintaan dibatalkan bila melewati batas, dan status kesalahan dilaporkan sebagai kegagalan.",
+              "stretch": "Tambahkan pesan kesalahan berbeda untuk kegagalan jaringan dan status kesalahan.",
+              "verification": {
+                "mode": "manual",
+                "command": "Uji dengan alamat yang lambat dan alamat yang mengembalikan status kesalahan.",
+                "expected": "Kedua kasus dilaporkan sebagai kegagalan yang dapat ditangani.",
+                "evidence": "Simpan fungsi dan catatan hasil kedua pengujian."
+              }
             },
             {
               "id": "latihan-2",
-              "title": "Latihan 2",
+              "title": "Percobaan ulang dengan jeda",
               "level": "independent",
-              "task": "Ubah satu input atau asumsi pada contoh, catat hasil dan jelaskan alasannya.",
-              "steps": [],
+              "task": "Tambahkan percobaan ulang pada fungsi sebelumnya: hanya kesalahan sementara yang diulang, dengan jeda bertambah dan jumlah percobaan terbatas.",
+              "steps": [
+                "Tentukan kesalahan yang layak dicoba ulang.",
+                "Batasi jumlah percobaan.",
+                "Tambahkan jeda yang bertambah tiap percobaan.",
+                "Laporkan kegagalan setelah semua percobaan habis."
+              ],
               "hint": "",
-              "hints": [],
-              "starterCode": "",
-              "expected": "",
-              "stretch": "",
-              "verification": null
+              "hints": [
+                "Kesalahan masukan tidak diulang.",
+                "Jumlah percobaan dibatasi.",
+                "Jeda bertambah tiap percobaan."
+              ],
+              "starterCode": "for (let coba = 0; coba < 3; coba += 1) {\n  // coba, periksa, tunggu\n}",
+              "expected": "Kesalahan sementara dicoba ulang dengan jeda bertambah, kesalahan tetap langsung dilaporkan.",
+              "stretch": "Tambahkan keacakan kecil pada jeda agar percobaan tidak bersamaan.",
+              "verification": {
+                "mode": "manual",
+                "command": "Uji dengan layanan yang gagal sementara dan dengan masukan yang salah.",
+                "expected": "Kegagalan sementara berhasil setelah beberapa percobaan; masukan salah langsung dilaporkan.",
+                "evidence": "Simpan fungsi dan catatan hasil kedua pengujian."
+              }
+            },
+            {
+              "id": "latihan-3",
+              "title": "Rancang penanganan kesalahan aplikasi",
+              "level": "transfer",
+              "task": "Rancang penanganan kesalahan untuk aplikasi yang memakai beberapa layanan: bedakan jenis kesalahan, tentukan percobaan ulang, dan susun pesan bagi pengguna.",
+              "steps": [
+                "Daftar layanan yang dipakai beserta jenis kegagalannya.",
+                "Tentukan mana yang layak dicoba ulang.",
+                "Tentukan pesan pengguna untuk setiap jenis kesalahan.",
+                "Tentukan cara mencatat kesalahan untuk penelusuran."
+              ],
+              "hint": "",
+              "hints": [
+                "Bedakan kesalahan sementara dan tetap.",
+                "Pesan pengguna berbeda dari catatan teknis.",
+                "Batasi jumlah percobaan ulang."
+              ],
+              "starterCode": "Jenis kesalahan: ...\nPercobaan ulang: ...\nPesan pengguna: ...",
+              "expected": "Setiap jenis kesalahan punya penanganan, percobaan ulang, dan pesan yang sesuai.",
+              "stretch": "Terapkan rancangan itu pada satu alur lengkap.",
+              "verification": {
+                "mode": "manual",
+                "command": "Uji setiap jenis kesalahan dan periksa penanganan serta pesannya.",
+                "expected": "Setiap jenis kesalahan ditangani sesuai rancangan dengan pesan yang berguna.",
+                "evidence": "Simpan rancangan dan catatan hasil pengujian tiap jenis kesalahan."
+              }
             }
           ],
-          "verification": null,
-          "troubleshooting": [],
+          "verification": {
+            "mode": "manual",
+            "command": "Uji permintaan dengan batas waktu, percobaan ulang, dan penyampaian pesan kesalahan pada beberapa jenis kegagalan.",
+            "expected": "Kegagalan sementara dipulihkan lewat percobaan ulang, kegagalan tetap dilaporkan langsung, dan pengguna menerima pesan yang berguna.",
+            "evidence": "Simpan fungsi dan catatan hasil setiap pengujian."
+          },
+          "troubleshooting": [
+            {
+              "symptom": "Aplikasi menggantung tanpa batas ketika jaringan bermasalah.",
+              "cause": "Permintaan jaringan tidak diberi batas waktu.",
+              "fix": "Tetapkan batas waktu pada setiap permintaan jaringan."
+            },
+            {
+              "symptom": "Isi kesalahan diproses seolah-olah data biasa.",
+              "cause": "Status tanggapan tidak diperiksa sebelum isinya dipakai.",
+              "fix": "Periksa status tanggapan dan laporkan kegagalan bila menandakan kesalahan."
+            },
+            {
+              "symptom": "Layanan tujuan makin terbebani saat bermasalah.",
+              "cause": "Percobaan ulang dilakukan tanpa jeda dan tanpa pembatasan.",
+              "fix": "Batasi jumlah percobaan dan pakai jeda yang bertambah."
+            },
+            {
+              "symptom": "Pengguna melihat rincian teknis yang membingungkan.",
+              "cause": "Pesan kesalahan mentah ditampilkan langsung tanpa disesuaikan.",
+              "fix": "Susun pesan yang menyebut apa yang gagal dan langkah berikutnya, lalu catat rincian teknis secara terpisah."
+            }
+          ],
           "quiz": {
             "questions": [
               {
                 "id": "q1",
                 "type": "recall",
-                "question": "Apa prinsip yang paling tepat untuk topik “Error handling, timeout, dan retry”?",
+                "question": "Apa fungsi batas waktu pada permintaan jaringan?",
                 "options": [
-                  "Beri pesan error jelas dan hindari pengulangan mutasi tanpa idempotency.",
-                  "Gunakan solusi paling rumit sejak awal, meski kebutuhan belum jelas.",
-                  "Lewati pengujian karena contoh kecil pasti benar."
+                  "Membatalkan permintaan yang menggantung agar tidak menunggu tanpa batas",
+                  "Mempercepat jaringan",
+                  "Menambah jumlah percobaan ulang"
                 ],
                 "answer": 0,
-                "explanation": "Beri pesan error jelas dan hindari pengulangan mutasi tanpa idempotency."
+                "explanation": "Batas waktu membatalkan permintaan yang tidak kunjung dijawab sehingga kegagalan terdeteksi."
+              },
+              {
+                "id": "q2",
+                "type": "code-reading",
+                "question": "Mengapa jeda antar percobaan ulang dibuat makin panjang?",
+                "options": [
+                  "Agar kode lebih panjang",
+                  "Agar layanan tujuan punya waktu pulih dan tidak makin terbebani",
+                  "Agar kesalahan hilang sendiri"
+                ],
+                "answer": 1,
+                "explanation": "Jeda bertambah memberi layanan tujuan waktu pulih dan mencegah percobaan ulang yang menyerbu bersamaan."
+              },
+              {
+                "id": "q3",
+                "type": "scenario",
+                "question": "Permintaan gagal karena masukan tidak sah. Tindakan yang tepat...",
+                "options": [
+                  "Mencoba ulang berkali-kali",
+                  "Langsung melaporkan kegagalan tanpa mencoba ulang",
+                  "Mengabaikan kegagalan"
+                ],
+                "answer": 1,
+                "explanation": "Kesalahan masukan tidak akan berubah bila diulang, sehingga langsung dilaporkan."
               }
             ]
           },
-          "resources": [],
-          "summary": [],
-          "legacy": true,
-          "code": "try {\n  // await api.getTasks();\n  console.log(\"Data siap\");\n} catch (error) {\n  console.error(\"Gagal memuat, coba lagi\", error);\n}",
-          "wordCount": 160,
-          "schema": 2
+          "resources": [
+            {
+              "sourceId": "mdn-http-status",
+              "title": "MDN: HTTP response status codes",
+              "publisher": "Mozilla",
+              "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Status",
+              "note": "Daftar status tanggapan untuk memilih kesalahan yang layak dicoba ulang.",
+              "tier": "official",
+              "version": "rolling",
+              "accessedAt": "2026-10-29",
+              "license": ""
+            },
+            {
+              "sourceId": "mdn-fetch",
+              "title": "MDN: Fetch API",
+              "publisher": "Mozilla",
+              "url": "https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API",
+              "note": "Dokumentasi pengambilan data di peramban beserta pembatalannya.",
+              "tier": "official",
+              "version": "rolling",
+              "accessedAt": "2026-10-29",
+              "license": ""
+            },
+            {
+              "sourceId": "mdn-async",
+              "title": "MDN: async function",
+              "publisher": "Mozilla",
+              "url": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/async_function",
+              "note": "Penjelasan fungsi asinkron dan penanganan kesalahannya.",
+              "tier": "official",
+              "version": "rolling",
+              "accessedAt": "2026-10-29",
+              "license": ""
+            }
+          ],
+          "summary": [
+            "Setiap permintaan jaringan diberi batas waktu agar tidak menggantung tanpa batas.",
+            "Status tanggapan diperiksa sebelum isinya dipakai.",
+            "Percobaan ulang hanya untuk kesalahan sementara, dengan jeda bertambah dan jumlah terbatas.",
+            "Pesan kesalahan menyebut apa yang gagal dan langkah berikutnya; rincian teknis disimpan pada catatan."
+          ],
+          "legacy": false,
+          "code": "async function ambilTugas() {\n  const res = await fetch(\"/v1/tugas\", {\n    signal: AbortSignal.timeout(5000),\n  });\n  if (!res.ok) throw new Error(`HTTP ${res.status}`);\n  return res.json();\n}",
+          "wordCount": 1532,
+          "schema": 3.1
         },
         {
           "id": "m09-l06",
           "title": "Arsitektur monolith modular vs microservices",
-          "minutes": 45,
+          "minutes": 120,
           "level": "Menengah",
           "depth": "integrasi",
-          "outcome": "",
+          "outcome": "Setelah pelajaran ini, Anda dapat membandingkan arsitektur monolith modular dan microservices serta memilih batas sistem yang sesuai kebutuhan dan ukuran tim.",
           "codeLanguage": "javascript",
-          "objectives": [],
-          "prerequisites": [],
-          "terms": [],
-          "syntax": [],
-          "conventions": [],
-          "next": "",
+          "objectives": [
+            "Menjelaskan pengertian monolith modular dan microservices.",
+            "Membandingkan keuntungan dan biaya masing-masing pendekatan.",
+            "Menentukan batas modul yang sehat berdasarkan tanggung jawab data.",
+            "Memilih pendekatan sesuai ukuran tim dan kebutuhan."
+          ],
+          "prerequisites": [
+            {
+              "label": "Error handling, timeout, dan retry",
+              "lessonId": "m09-l05"
+            }
+          ],
+          "terms": [
+            {
+              "term": "Monolith",
+              "definition": "Aplikasi yang dijalankan sebagai satu kesatuan meski di dalamnya terbagi menjadi beberapa modul."
+            },
+            {
+              "term": "Modul",
+              "definition": "Bagian aplikasi dengan tanggung jawab dan batas yang jelas terhadap bagian lain."
+            },
+            {
+              "term": "Microservices",
+              "definition": "Beberapa layanan kecil yang dijalankan dan diterbitkan terpisah, saling berkomunikasi lewat jaringan."
+            },
+            {
+              "term": "Batas layanan",
+              "definition": "Garis pemisah yang menentukan data dan tanggung jawab mana yang menjadi milik sebuah layanan."
+            },
+            {
+              "term": "Ketergantungan jaringan",
+              "definition": "Ketergantungan yang muncul ketika bagian sistem memanggil bagian lain lewat jaringan sehingga dapat gagal secara terpisah."
+            }
+          ],
+          "syntax": [
+            {
+              "token": "modul.tugas.daftar({ penggunaId });",
+              "meaning": "Modul memberi kemampuan lewat antarmuka yang jelas. Bagian lain memanggilnya tanpa mengetahui cara kerjanya di dalam.",
+              "readAs": "Baca sebagai pemanggilan modul lain melalui janji antarmukanya, bukan menyentuh data mentahnya.",
+              "example": "modul.tugas.daftar({ penggunaId });",
+              "output": "Bagian lain memakai kemampuan modul tanpa bergantung pada rincian dalamnya.",
+              "pitfall": "Membiarkan modul membaca langsung data modul lain membuat batasnya hilang dan perubahan menyebar."
+            },
+            {
+              "token": "POST http://layanan-tugas/v1/tugas",
+              "meaning": "Pada microservices, komunikasi terjadi lewat jaringan sehingga setiap layanan dapat gagal, lambat, atau tidak tersedia secara terpisah.",
+              "readAs": "Baca sebagai pemanggilan layanan lain lewat jaringan dengan alamat yang tetap.",
+              "example": "POST http://layanan-tugas/v1/tugas",
+              "output": "Layanan pemanggil menerima hasil atau kegagalan dari layanan tujuan.",
+              "pitfall": "Memanggil layanan tanpa penanganan kegagalan membuat satu gangguan menjalar ke seluruh sistem."
+            },
+            {
+              "token": "if (layananSiap()) { ... }",
+              "meaning": "Pada sistem yang terpisah, kesiapan bagian lain tidak selalu ada. Pemeriksaan ini membuat bagian yang bergantung tetap dapat berjalan terbatas ketika bagian lain bermasalah.",
+              "readAs": "Baca sebagai pemeriksaan kesiapan sebelum bergantung pada bagian lain.",
+              "example": "if (layananSiap()) { ... }",
+              "output": "Sistem tetap memberi layanan terbatas meski sebagian bagian lain tidak tersedia.",
+              "pitfall": "Menganggap semua bagian selalu tersedia membuat kegagalan satu bagian menjadi kegagalan seluruh sistem."
+            }
+          ],
+          "conventions": [
+            "Mulai dari satu aplikasi modular, pisahkan hanya bila alasannya jelas.",
+            "Tetapkan batas modul berdasarkan tanggung jawab data, bukan berdasarkan lapisan teknis.",
+            "Sediakan antarmuka antar modul alih-alih membaca data mentah modul lain.",
+            "Untuk layanan terpisah, tangani kegagalan jaringan pada setiap pemanggilan.",
+            "Pilih pendekatan sesuai ukuran tim dan beban operasional yang mampu ditanggung."
+          ],
+          "next": "Materi berikutnya melanjutkan ke pengujian perangkat lunak secara umum. Anda akan menyusun strategi pengujian untuk aplikasi yang lebih besar.",
           "sections": [
             {
-              "id": "konsep",
-              "title": "Memahami konsepnya",
+              "id": "cara-membaca",
+              "title": "Cara membaca batas modul",
               "body": [
-                "Monolith modular menyatukan beberapa domain dalam satu aplikasi/deployment dengan batas modul jelas. Microservices memerlukan operasi, observability, dan konsistensi terdistribusi lebih rumit.",
-                "Untuk tim kecil dan aplikasi tahap awal, Laravel modular monolith sering lebih sederhana. Terapkan pemisahan tanggung jawab, testing, serta kontrak API sebelum mempertimbangkan distribusi layanan."
+                "Modul dibaca dari kemampuannya, bukan dari isinya. Pada contoh, modul tugas menyediakan kemampuan mendaftar tugas, sedangkan modul ringkasan memakai kemampuan itu tanpa tahu bagaimana daftar disusun.",
+                "Perhatikan bahwa modul ringkasan memanggil kemampuan modul tugas, bukan menyentuh basis datanya langsung. Cara ini menjaga batas tetap utuh; perubahan susunan data pada modul tugas tidak memaksa modul ringkasan ikut berubah.",
+                "Inilah inti monolith modular. Semua berjalan dalam satu aplikasi, tetapi batas antar modul dijaga seolah-olah mereka terpisah. Bila suatu saat perlu dipisahkan menjadi layanan, batasnya sudah siap."
+              ],
+              "code": {
+                "language": "javascript",
+                "code": "const modulTugas = {\n  async daftar({ penggunaId }) {\n    const baris = await db.tugas.cari({ penggunaId });\n    return baris.map(keBentukRingkas);\n  },\n};\n\nconst modulRingkasan = {\n  async hitung({ penggunaId }) {\n    const daftar = await modulTugas.daftar({ penggunaId });\n    return daftar.length;\n  },\n};",
+                "output": "Modul ringkasan menghitung banyaknya tugas lewat kemampuan modul tugas tanpa menyentuh datanya.",
+                "explain": "Setiap modul menyediakan kemampuan lewat fungsi. Modul ringkasan memakai kemampuan modul tugas, bukan data mentahnya, sehingga batas tetap jelas.",
+                "annotations": [
+                  {
+                    "line": 2,
+                    "code": "async daftar({ penggunaId }) {",
+                    "note": "Modul tugas menyediakan kemampuan melalui fungsi."
+                  },
+                  {
+                    "line": 3,
+                    "code": "const baris = await db.tugas.cari({ penggunaId });",
+                    "note": "Modul tugas menjadi satu-satunya yang menyentuh datanya."
+                  },
+                  {
+                    "line": 10,
+                    "code": "const daftar = await modulTugas.daftar({ penggunaId });",
+                    "note": "Modul ringkasan memanggil kemampuan modul lain."
+                  },
+                  {
+                    "line": 11,
+                    "code": "return daftar.length;",
+                    "note": "Modul ringkasan tidak mengetahui cara data disusun."
+                  }
+                ],
+                "lab": false
+              },
+              "callouts": [
+                {
+                  "tone": "good",
+                  "title": "Batas dulu, pemisahan kemudian",
+                  "body": "Batas modul yang rapi membuat pemisahan menjadi layanan terpisah hanya perlu menukar pemanggilan fungsi dengan pemanggilan jaringan."
+                }
+              ],
+              "checkpoint": {
+                "prompt": "Mengapa modul ringkasan memanggil kemampuan modul tugas alih-alih membaca datanya langsung?",
+                "success": "Agar batas tetap utuh sehingga perubahan cara penyimpanan pada modul tugas tidak memaksa modul ringkasan berubah."
+              }
+            },
+            {
+              "id": "membandingkan",
+              "title": "Membandingkan dua pendekatan",
+              "body": [
+                "Monolith modular dijalankan sebagai satu kesatuan. Ia sederhana untuk dikembangkan dan dioperasikan, mudah diuji secara menyeluruh, dan tidak memerlukan penanganan kegagalan jaringan antar bagian.",
+                "Microservices menjalankan setiap bagian secara terpisah. Ia memungkinkan tiap bagian diterbitkan sendiri dan diskalakan sendiri, tetapi menambah kerumitan jaringan, pemantauan, dan operasional.",
+                "Biaya microservices sering muncul belakangan: menelusuri satu permintaan yang melintasi beberapa layanan jauh lebih sulit, dan kegagalan satu layanan perlu ditangani di setiap pemanggilnya."
               ],
               "code": null,
               "callouts": [
                 {
-                  "tone": "good",
-                  "title": "Best practice",
-                  "body": "Mulai dengan arsitektur sederhana dan evolusikan berdasarkan kebutuhan terukur."
-                },
-                {
-                  "tone": "bad",
-                  "title": "Kesalahan umum",
-                  "body": "Memakai microservices sebelum memiliki kebutuhan operasional yang jelas."
+                  "tone": "warn",
+                  "title": "Jangan pisahkan terlalu dini",
+                  "body": "Memisahkan layanan menambah kerumitan operasional. Pisahkan hanya bila ada alasan nyata seperti batas tim atau beban yang sangat berbeda."
                 }
               ],
-              "checkpoint": null
+              "checkpoint": {
+                "prompt": "Sebutkan satu keuntungan microservices dan satu biayanya.",
+                "success": "Keuntungannya tiap layanan dapat diterbitkan dan diskalakan sendiri; biayanya kerumitan jaringan dan operasional bertambah."
+              }
             },
             {
-              "id": "contoh",
-              "title": "Contoh kode",
+              "id": "menentukan-batas",
+              "title": "Menentukan batas yang sehat",
               "body": [
-                "Perhatikan input, proses, dan output. Ketik ulang, lalu ubah satu nilai."
+                "Batas yang sehat mengikuti tanggung jawab data. Bagian yang pemilik satu kumpulan data sebaiknya menjadi satu modul, karena perubahan aturannya terpusat di situ.",
+                "Hindari membagi berdasarkan lapisan teknis semata, misalnya satu modul untuk seluruh tampilan dan satu modul untuk seluruh basis data. Cara itu justru menyebarkan satu aturan ke banyak tempat.",
+                "Ukur keberhasilan batas dari kemudahan perubahan. Bila perubahan satu aturan memaksa sentuhan di banyak modul, berarti batasnya belum tepat dan perlu ditinjau ulang."
               ],
-              "code": {
-                "language": "javascript",
-                "code": "// Lapisan umum:\n// UI -> Controller -> Service -> Repository/ORM -> DB\n// Pisahkan domain: Users, Tasks, Reports.",
-                "output": "",
-                "explain": ""
-              },
+              "code": null,
               "callouts": [],
-              "checkpoint": null
+              "checkpoint": {
+                "prompt": "Menurut apa sebaiknya batas modul ditentukan?",
+                "success": "Menurut tanggung jawab data, agar aturan satu kumpulan data terpusat pada satu modul."
+              }
+            },
+            {
+              "id": "memilih",
+              "title": "Memilih sesuai keadaan",
+              "body": [
+                "Untuk tim kecil atau produk yang masih berkembang, satu aplikasi modular biasanya lebih tepat. Ia memberi batas yang rapi tanpa menambah beban operasional memisahkan layanan.",
+                "Microservices lebih masuk akal ketika ada beberapa tim yang perlu menerbitkan bagiannya tanpa saling menunggu, atau ketika sebagian bagian memiliki beban yang sangat berbeda.",
+                "Pilihan bukan sekadar teknis. Ia bergantung pada kemampuan tim memantau, menelusuri, dan mengoperasikan banyak layanan. Bila kemampuan itu belum ada, memisahkan hanya melipatgandakan kesulitan."
+              ],
+              "code": null,
+              "callouts": [],
+              "checkpoint": {
+                "prompt": "Sebutkan dua keadaan yang membuat microservices lebih masuk akal.",
+                "success": "Beberapa tim perlu menerbitkan bagiannya sendiri tanpa saling menunggu, atau sebagian bagian memiliki beban yang sangat berbeda."
+              }
             }
           ],
           "practice": [
             {
               "id": "latihan-1",
-              "title": "Latihan 1",
-              "level": "independent",
-              "task": "Rancang modul untuk aplikasi presensi, inventaris, dan pelaporan; tentukan batas domain.",
-              "steps": [],
+              "title": "Tiga modul aplikasi tugas",
+              "level": "guided",
+              "task": "Bagi aplikasi catatan tugas menjadi tiga modul berdasarkan tanggung jawab data, sertakan kemampuan setiap modul, dan jelaskan alasannya.",
+              "steps": [
+                "Tentukan tanggung jawab data setiap modul.",
+                "Tulis kemampuan yang disediakan tiap modul.",
+                "Tentukan arah pemanggilan antar modul.",
+                "Jelaskan mengapa pembagian itu dipilih."
+              ],
               "hint": "",
-              "hints": [],
-              "starterCode": "",
-              "expected": "",
-              "stretch": "",
-              "verification": null
+              "hints": [
+                "Pembagian mengikuti tanggung jawab data.",
+                "Setiap modul menyediakan kemampuan lewat antarmuka.",
+                "Arah pemanggilan sebaiknya tidak melingkar."
+              ],
+              "starterCode": "Modul 1: ...\nModul 2: ...\nModul 3: ...",
+              "expected": "Setiap modul memiliki tanggung jawab data yang jelas dan batas yang tidak tumpang tindih.",
+              "stretch": "Terapkan rancangan itu pada struktur folder proyek.",
+              "verification": {
+                "mode": "manual",
+                "command": "Periksa setiap kumpulan data dimiliki satu modul saja.",
+                "expected": "Tidak ada data yang dimiliki dua modul dan tidak ada pemanggilan melingkar.",
+                "evidence": "Simpan rancangan modul dan daftar kemampuannya."
+              }
             },
             {
               "id": "latihan-2",
-              "title": "Latihan 2",
+              "title": "Bandingkan pemisahan layanan",
               "level": "independent",
-              "task": "Ubah satu input atau asumsi pada contoh, catat hasil dan jelaskan alasannya.",
-              "steps": [],
+              "task": "Pilih satu modul dari latihan sebelumnya dan uraikan apa yang berubah bila modul itu dipisahkan menjadi layanan terpisah.",
+              "steps": [
+                "Tentukan modul yang dipertimbangkan untuk dipisahkan.",
+                "Uraikan perubahan pada cara pemanggilan.",
+                "Uraikan penanganan kegagalan jaringan yang perlu ditambah.",
+                "Sebutkan keuntungan dan biayanya."
+              ],
               "hint": "",
-              "hints": [],
-              "starterCode": "",
-              "expected": "",
-              "stretch": "",
-              "verification": null
+              "hints": [
+                "Pemanggilan berubah menjadi lewat jaringan.",
+                "Kegagalan perlu ditangani di pemanggil.",
+                "Biaya operasional ikut dihitung."
+              ],
+              "starterCode": "Modul: ...\nPerubahan pemanggilan: ...\nPenanganan kegagalan: ...",
+              "expected": "Uraian memuat perubahan komunikasi, penanganan kegagalan, serta keuntungan dan biayanya.",
+              "stretch": "Sebutkan satu tanda yang menunjukkan pemisahan itu layak dilakukan.",
+              "verification": {
+                "mode": "manual",
+                "command": "Periksa uraian memuat kedua sisi, keuntungan maupun biaya.",
+                "expected": "Uraian seimbang dan menyebut cara menangani kegagalan.",
+                "evidence": "Simpan uraian dan alasan pemilihan."
+              }
+            },
+            {
+              "id": "latihan-3",
+              "title": "Rekomendasi arsitektur",
+              "level": "transfer",
+              "task": "Untuk sebuah produk dengan tiga anggota tim dan rencana tumbuh, susun rekomendasi arsitektur beserta alasan dan rencana peralihannya.",
+              "steps": [
+                "Sebutkan keadaan tim dan produk sebagai dasar.",
+                "Pilih antara monolith modular dan microservices.",
+                "Jelaskan alasan pilihan itu.",
+                "Susun rencana bila kelak perlu memisahkan bagian tertentu."
+              ],
+              "hint": "",
+              "hints": [
+                "Pertimbangkan ukuran tim dan kemampuan operasional.",
+                "Pilihan dapat ditinjau ulang saat keadaan berubah.",
+                "Batas modul yang rapi memudahkan peralihan."
+              ],
+              "starterCode": "Pilihan: ...\nAlasan: ...\nRencana peralihan: ...",
+              "expected": "Rekomendasi beralasan dan memuat rencana yang realistis untuk berkembang.",
+              "stretch": "Sebutkan tanda-tanda yang memicu peninjauan ulang keputusan itu.",
+              "verification": {
+                "mode": "manual",
+                "command": "Periksa rekomendasi terhadap keadaan tim dan biaya operasionalnya.",
+                "expected": "Rekomendasi sesuai keadaan tim dan rencana peralihannya masuk akal.",
+                "evidence": "Simpan rekomendasi, alasan, dan rencana peralihan."
+              }
             }
           ],
-          "verification": null,
-          "troubleshooting": [],
+          "verification": {
+            "mode": "manual",
+            "command": "Tinjau rancangan modul, uraian pemisahan layanan, dan rekomendasi arsitektur terhadap keadaan tim.",
+            "expected": "Batas modul mengikuti tanggung jawab data, uraian memuat biaya pemisahan, dan rekomendasi sesuai keadaan tim.",
+            "evidence": "Simpan seluruh rancangan, uraian, dan rekomendasi."
+          },
+          "troubleshooting": [
+            {
+              "symptom": "Perubahan satu aturan memaksa sentuhan di banyak modul.",
+              "cause": "Batas modul ditentukan berdasarkan lapisan teknis, bukan tanggung jawab data.",
+              "fix": "Kelompokkan ulang modul berdasarkan tanggung jawab data agar aturannya terpusat."
+            },
+            {
+              "symptom": "Satu layanan yang bermasalah menjatuhkan seluruh sistem.",
+              "cause": "Pemanggilan antar layanan tidak menangani kegagalan jaringan.",
+              "fix": "Tangani kegagalan pada setiap pemanggilan dan sediakan perilaku terbatas saat bagian lain tidak tersedia."
+            },
+            {
+              "symptom": "Tim besar saling menunggu untuk menerbitkan perubahan kecil.",
+              "cause": "Seluruh bagian diterbitkan bersama sebagai satu kesatuan.",
+              "fix": "Tentukan batas bagian yang memang perlu diterbitkan sendiri, tetapi hanya bila alasannya nyata."
+            },
+            {
+              "symptom": "Operasional menjadi berat setelah memisahkan layanan.",
+              "cause": "Pemisahan dilakukan sebelum kemampuan pemantauan dan penelusuran siap.",
+              "fix": "Siapkan pemantauan dan cara menelusuri permintaan lintas layanan, atau gabungkan kembali bagian yang belum perlu terpisah."
+            }
+          ],
           "quiz": {
             "questions": [
               {
                 "id": "q1",
                 "type": "recall",
-                "question": "Apa prinsip yang paling tepat untuk topik “Arsitektur monolith modular vs microservices”?",
+                "question": "Apa yang dimaksud monolith modular?",
                 "options": [
-                  "Mulai dengan arsitektur sederhana dan evolusikan berdasarkan kebutuhan terukur.",
-                  "Gunakan solusi paling rumit sejak awal, meski kebutuhan belum jelas.",
-                  "Lewati pengujian karena contoh kecil pasti benar."
+                  "Beberapa layanan yang dijalankan terpisah",
+                  "Aplikasi yang dijalankan sebagai satu kesatuan tetapi terbagi menjadi modul dengan batas jelas",
+                  "Aplikasi tanpa pembagian sama sekali"
                 ],
-                "answer": 0,
-                "explanation": "Mulai dengan arsitektur sederhana dan evolusikan berdasarkan kebutuhan terukur."
+                "answer": 1,
+                "explanation": "Monolith modular berjalan sebagai satu aplikasi, tetapi memiliki batas modul yang jelas."
+              },
+              {
+                "id": "q2",
+                "type": "code-reading",
+                "question": "Mengapa modul sebaiknya berkomunikasi lewat antarmuka, bukan data mentah?",
+                "options": [
+                  "Agar lebih cepat",
+                  "Agar perubahan cara penyimpanan tidak memaksa modul lain ikut berubah",
+                  "Agar data tersimpan otomatis"
+                ],
+                "answer": 1,
+                "explanation": "Antarmuka menjaga batas sehingga rincian di dalam modul dapat berubah tanpa menyebar."
+              },
+              {
+                "id": "q3",
+                "type": "scenario",
+                "question": "Tim kecil dengan produk yang masih berkembang. Pilihan yang biasanya lebih tepat...",
+                "options": [
+                  "Microservices sejak awal",
+                  "Satu aplikasi modular dengan batas yang rapi",
+                  "Beberapa layanan untuk setiap fitur"
+                ],
+                "answer": 1,
+                "explanation": "Monolith modular memberi batas rapi tanpa beban operasional memisahkan layanan terlalu dini."
               }
             ]
           },
-          "resources": [],
-          "summary": [],
-          "legacy": true,
-          "code": "// Lapisan umum:\n// UI -> Controller -> Service -> Repository/ORM -> DB\n// Pisahkan domain: Users, Tasks, Reports.",
-          "wordCount": 161,
-          "schema": 2
+          "resources": [
+            {
+              "sourceId": "openapi-spec",
+              "title": "OpenAPI Specification",
+              "publisher": "OpenAPI Initiative",
+              "url": "https://spec.openapis.org/oas/latest.html",
+              "note": "Cara mendeskripsikan antarmuka antar layanan sebagai kontrak yang jelas.",
+              "tier": "standard",
+              "version": "latest",
+              "accessedAt": "2026-10-29",
+              "license": ""
+            },
+            {
+              "sourceId": "rfc-9110",
+              "title": "RFC 9110: HTTP Semantics",
+              "publisher": "IETF",
+              "url": "https://www.rfc-editor.org/rfc/rfc9110.html",
+              "note": "Dasar komunikasi HTTP yang dipakai pemanggilan antar layanan.",
+              "tier": "standard",
+              "version": "9110",
+              "accessedAt": "2026-10-28",
+              "license": "IETF Trust"
+            },
+            {
+              "sourceId": "mdn-http-status",
+              "title": "MDN: HTTP response status codes",
+              "publisher": "Mozilla",
+              "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Status",
+              "note": "Status tanggapan untuk menangani kegagalan pemanggilan antar layanan.",
+              "tier": "official",
+              "version": "rolling",
+              "accessedAt": "2026-10-29",
+              "license": ""
+            }
+          ],
+          "summary": [
+            "Monolith modular berjalan sebagai satu aplikasi dengan batas modul yang jelas.",
+            "Microservices menjalankan tiap bagian terpisah, menambah keluwesan sekaligus kerumitan operasional.",
+            "Batas modul ditentukan berdasarkan tanggung jawab data, dengan komunikasi lewat antarmuka.",
+            "Pilihan arsitektur bergantung pada ukuran tim, beban yang berbeda, dan kemampuan operasional."
+          ],
+          "legacy": false,
+          "code": "const modulTugas = {\n  async daftar({ penggunaId }) {\n    const baris = await db.tugas.cari({ penggunaId });\n    return baris.map(keBentukRingkas);\n  },\n};\n\nconst modulRingkasan = {\n  async hitung({ penggunaId }) {\n    const daftar = await modulTugas.daftar({ penggunaId });\n    return daftar.length;\n  },\n};",
+          "wordCount": 1523,
+          "schema": 3.1
         }
       ],
       "lessonCount": 6,
-      "wordCount": 972
+      "wordCount": 9009
     },
     {
       "id": "m10",
@@ -33285,6 +35001,56 @@
       "version": "11.5",
       "accessedAt": "2026-10-29",
       "license": ""
+    },
+    {
+      "id": "openapi-spec",
+      "title": "OpenAPI Specification",
+      "publisher": "OpenAPI Initiative",
+      "url": "https://spec.openapis.org/oas/latest.html",
+      "tier": "standard",
+      "version": "latest",
+      "accessedAt": "2026-10-29",
+      "license": ""
+    },
+    {
+      "id": "mdn-cors",
+      "title": "MDN: Cross-Origin Resource Sharing (CORS)",
+      "publisher": "Mozilla",
+      "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/CORS",
+      "tier": "official",
+      "version": "rolling",
+      "accessedAt": "2026-10-29",
+      "license": ""
+    },
+    {
+      "id": "mdn-http-status",
+      "title": "MDN: HTTP response status codes",
+      "publisher": "Mozilla",
+      "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Status",
+      "tier": "official",
+      "version": "rolling",
+      "accessedAt": "2026-10-29",
+      "license": ""
+    },
+    {
+      "id": "mdn-http-methods",
+      "title": "MDN: HTTP request methods",
+      "publisher": "Mozilla",
+      "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Methods",
+      "tier": "official",
+      "version": "rolling",
+      "accessedAt": "2026-10-29",
+      "license": ""
+    },
+    {
+      "id": "rfc-6749",
+      "title": "RFC 6749: The OAuth 2.0 Authorization Framework",
+      "publisher": "IETF",
+      "url": "https://www.rfc-editor.org/rfc/rfc6749.html",
+      "tier": "standard",
+      "version": "6749",
+      "accessedAt": "2026-10-29",
+      "license": ""
     }
   ],
   "contentPolicy": {
@@ -33362,7 +35128,13 @@
       "m08-l06",
       "m08-l07",
       "m08-l08",
-      "m08-l09"
+      "m08-l09",
+      "m09-l01",
+      "m09-l02",
+      "m09-l03",
+      "m09-l04",
+      "m09-l05",
+      "m09-l06"
     ],
     "depthWordBands": {
       "fondasi": [
@@ -33401,7 +35173,7 @@
   "stats": {
     "modules": 14,
     "lessons": 97,
-    "words": 128263,
-    "minutes": 7670
+    "words": 136300,
+    "minutes": 8120
   }
 }

@@ -7386,224 +7386,568 @@ Kembali bila gagal: ...</code></pre><p><em>Hasil: Urutan dapat dijalankan dan me
   <p class="subtitle">Kontrak antara web, backend, dan Flutter</p>
   <div class="panel"><b>Tujuan modul</b><p>Mendefinisikan API yang konsisten dan membangun integrasi yang dapat ditangani saat gagal.</p></div>
   <article class="lesson" id="m09-l01">
-  <div class="lesson-meta">Pelajaran 01 · 45 menit · Menengah · HTTP</div>
+  <div class="lesson-meta">Pelajaran 01 · 120 menit · Menengah · HTTP</div>
   <h3>REST resource dan HTTP status</h3>
-  
-  
-  
-  
-  
-  
+  <div class="panel good"><b>Hasil belajar</b><p>Setelah pelajaran ini, Anda dapat merancang alamat API yang mewakili sumber daya dan memilih status HTTP yang tepat untuk setiap hasil operasi.</p></div>
+  <h4>Tujuan</h4><ul><li>Menjelaskan istilah sumber daya dan bagaimana alamat mewakilinya.</li><li>Memilih method HTTP yang sesuai untuk setiap operasi.</li><li>Memilih status tanggapan yang tepat untuk hasil operasi.</li><li>Membedakan status kesalahan sisi pengirim dan sisi server.</li></ul>
+  <div class="panel"><b>Prasyarat</b><p>Testing Laravel dan deployment</p></div>
+  <h4>Istilah kunci</h4><dl class="glossary"><div><dt>Sumber daya</dt><dd>Sesuatu yang dapat diakses lewat alamat, misalnya daftar tugas atau satu tugas.</dd></div><div><dt>Method HTTP</dt><dd>Penanda maksud permintaan, misalnya mengambil, membuat, mengubah, atau menghapus.</dd></div><div><dt>Status tanggapan</dt><dd>Angka pada tanggapan yang menyatakan hasil permintaan.</dd></div><div><dt>Kelompok status</dt><dd>Pengelompokan status berdasarkan angka pertama: berhasil, dialihkan, kesalahan pengirim, kesalahan server.</dd></div></dl>
+  <h4>Kartu sintaks</h4><div class="panel">
+  <b><code>GET /tugas HTTP/1.1</code></b>
+  <p><em>Dibaca: Baca sebagai permintaan mengambil daftar tugas dari alamat itu.</em></p>
+  <p>Method menyatakan maksud, dan alamat menyatakan sumber daya. Method GET tidak mengubah data.</p>
+  <pre><code>GET /tugas HTTP/1.1</code></pre>
+  <p><em>Output: Server mengembalikan representasi sumber daya tersebut.</em></p>
+  <p><em>Hati-hati: Memakai method pengubah untuk operasi yang hanya membaca membuat permintaan tidak aman diulang.</em></p>
+</div><div class="panel">
+  <b><code>HTTP/1.1 200 OK</code></b>
+  <p><em>Dibaca: Baca sebagai tanggapan berhasil berisi data yang diminta.</em></p>
+  <p>Baris status menyatakan hasil. Kelompok 200-an berarti permintaan berhasil diproses.</p>
+  <pre><code>HTTP/1.1 201 Created</code></pre>
+  <p><em>Output: Klien tahu permintaan berhasil dan dapat membaca isinya.</em></p>
+  <p><em>Hati-hati: Mengembalikan status berhasil untuk kegagalan menyesatkan klien dalam mengambil keputusan.</em></p>
+</div><div class="panel">
+  <b><code>404 Not Found</code></b>
+  <p><em>Dibaca: Baca sebagai status yang menyatakan sumber daya yang diminta tidak ada.</em></p>
+  <p>Status dalam kelompok 400-an menandakan kesalahan dari sisi pengirim, misalnya alamat tidak dikenal atau masukan tidak sah.</p>
+  <pre><code>404 Not Found</code></pre>
+  <p><em>Output: Klien tahu permintaan tidak dapat dipenuhi dan tahu sebabnya secara umum.</em></p>
+  <p><em>Hati-hati: Memakai status kesalahan server untuk kesalahan pengirim membuat pemantauan gangguan jadi keliru.</em></p>
+</div>
+  <h4>Aturan penulisan</h4><ul><li>Pakai kata benda pada alamat, bukan kata kerja, karena alamat mewakili sumber daya.</li><li>Pilih method sesuai maksud operasi dan pertahankan maknanya.</li><li>Kembalikan status yang menggambarkan hasil sebenarnya.</li><li>Bedakan kesalahan pengirim dan kesalahan server agar pemantauan bermakna.</li><li>Pertahankan pola alamat yang sama untuk sumber daya sejenis.</li></ul>
   <section class="lesson-section">
-  <h4>01 · Memahami konsepnya</h4>
-  <p>REST mengorganisasi endpoint berdasarkan resource seperti /api/tasks. Gunakan 200/201 untuk sukses, 400/422 untuk input salah, 401 belum login, 403 tidak berhak, 404 tidak ditemukan, 500 error server.</p><p>HTTP status bukan sekadar dekorasi; klien memerlukan status untuk menentukan alur UI. Hindari endpoint yang mengubah data saat GET atau semua error dikembalikan 200.</p>
-  
-  <div class="panel good"><b>Best practice</b><p>Gunakan status HTTP sesuai makna dan konsisten antar endpoint.</p></div><div class="panel bad"><b>Kesalahan umum</b><p>Mengembalikan HTTP 200 dengan status error di payload untuk semua masalah.</p></div>
-  
+  <h4>01 · Cara membaca permintaan dan tanggapan</h4>
+  <p>Pertukaran HTTP dibaca sebagai dua bagian: permintaan dan tanggapan. Permintaan memuat method, alamat, dan header. Tanggapan memuat baris status, header, dan isi.</p><p>Pada contoh, permintaan meminta daftar tugas dan menyatakan bahwa klien mengharapkan JSON. Tanggapan menyatakan berhasil, menyebut jenis isinya, lalu memuat daftar tugas dalam bentuk JSON.</p><p>Perhatikan bahwa alamat memakai kata benda, bukan kata kerja. Alamat menunjuk sumber daya, sedangkan method menyatakan apa yang ingin dilakukan terhadap sumber daya itu.</p>
+  <pre><code>GET /tugas HTTP/1.1
+Host: api.contoh.id
+Accept: application/json
+
+HTTP/1.1 200 OK
+Content-Type: application/json
+
+[
+  { &quot;id&quot;: 1, &quot;judul&quot;: &quot;Belajar&quot;, &quot;selesai&quot;: false }
+]</code></pre><div class="panel"><b>Output yang diharapkan</b><p>Permintaan berhasil dan server mengembalikan daftar berisi satu tugas.</p></div><p>Permintaan menyatakan method, alamat, dan jenis isi yang diharapkan. Tanggapan menyatakan hasil berhasil dan memuat daftar tugas dalam bentuk JSON.</p><div class="panel"><b>Bedah baris</b><ol><li>Baris 1 · <code>GET /tugas HTTP/1.1</code> — Method dan alamat menyatakan sumber daya yang diminta.</li><li>Baris 5 · <code>HTTP/1.1 200 OK</code> — Baris status menyatakan permintaan berhasil.</li><li>Baris 9 · <code>{ &quot;id&quot;: 1, &quot;judul&quot;: &quot;Belajar&quot;, &quot;selesai&quot;: false }</code> — Isi tanggapan memuat satu tugas dalam bentuk JSON.</li></ol></div>
+  <div class="panel good"><b>Alamat sebagai kata benda</b><p>Alamat menunjuk sumber daya, bukan tindakan. Maksud tindakan dinyatakan oleh method, sehingga alamat tetap bersih.</p></div>
+  <div class="panel warn"><b>Cek pemahaman</b><p>Sebutkan bagian permintaan dan tanggapan yang menyatakan sumber daya serta hasilnya.</p><p>Kriteria berhasil: Method dan alamat pada permintaan menyatakan sumber daya; baris status pada tanggapan menyatakan hasilnya.</p></div>
 </section><section class="lesson-section">
-  <h4>02 · Contoh kode</h4>
-  <p>Perhatikan input, proses, dan output. Ketik ulang, lalu ubah satu nilai.</p>
-  <pre><code>GET /api/tasks
-POST /api/tasks
-GET /api/tasks/123
-PATCH /api/tasks/123
-DELETE /api/tasks/123</code></pre>
+  <h4>02 · Memilih status yang tepat</h4>
+  <p>Status dibaca sebagai jawaban singkat atas pertanyaan klien: apakah permintaan berhasil, siapa yang bersalah bila gagal, dan langkah apa yang wajar diambil berikutnya.</p><p>Pembuatan data memakai status dibuat, penghapusan yang tidak menyisakan isi memakai status tanpa isi, dan masukan tidak sah memakai status kesalahan pengirim. Setiap pilihan memengaruhi cara klien menanggapi.</p><p>Bedakan antara belum terautentikasi dan tidak berhak. Yang pertama berarti identitas belum diketahui, sedangkan yang kedua berarti identitas diketahui tetapi tidak berhak. Perbedaan ini penting agar klien tahu harus masuk atau memang tidak diizinkan.</p>
+  <pre><code>201 Created      data baru berhasil dibuat
+204 No Content   berhasil tanpa isi tanggapan
+400 Bad Request  masukan tidak sah
+401 Unauthorized belum terautentikasi
+403 Forbidden    tidak berhak atas tindakan
+404 Not Found    sumber daya tidak ada
+409 Conflict     bentrok dengan keadaan saat ini</code></pre><div class="panel"><b>Output yang diharapkan</b><p>Setiap status mewakili satu hasil operasi yang berbeda.</p></div><p>Status dipilih menurut hasil sebenarnya. Status kesalahan pengirim menandakan masalah pada permintaan, sedangkan status kesalahan server menandakan masalah di sisi layanan.</p><div class="panel"><b>Bedah baris</b><ol><li>Baris 1 · <code>201 Created      data baru berhasil dibuat</code> — Pembuatan data baru memakai status dibuat.</li><li>Baris 2 · <code>204 No Content   berhasil tanpa isi tanggapan</code> — Keberhasilan tanpa isi memakai status tanpa isi.</li><li>Baris 3 · <code>400 Bad Request  masukan tidak sah</code> — Masukan tidak sah memakai status kesalahan pengirim.</li><li>Baris 4 · <code>401 Unauthorized belum terautentikasi</code> — Status belum terautentikasi menandakan identitas belum diketahui.</li><li>Baris 6 · <code>404 Not Found    sumber daya tidak ada</code> — Status tidak ditemukan menandakan sumber daya tidak ada.</li></ol></div>
+  
+  <div class="panel warn"><b>Cek pemahaman</b><p>Sebutkan perbedaan status belum terautentikasi dan tidak berhak.</p><p>Kriteria berhasil: Belum terautentikasi berarti identitas belum diketahui; tidak berhak berarti identitas diketahui tetapi tidak diizinkan.</p></div>
+</section><section class="lesson-section">
+  <h4>03 · Method dan maknanya</h4>
+  <p>Setiap method membawa janji. Mengambil data tidak mengubah apa pun, membuat data menambah sumber daya baru, mengubah data mengganti sebagian nilainya, dan menghapus menghentikannya.</p><p>Janji ini membuat klien dapat mengambil keputusan. Permintaan yang tidak mengubah apa pun dapat dicoba ulang dengan aman, sedangkan permintaan yang menambah data perlu kehati-hatian agar tidak terulang.</p><p>Karena itu, jangan memakai method pengubah untuk operasi baca. Bila klien mencoba ulang permintaan itu, data dapat berubah tanpa disengaja.</p>
   
   
+  <div class="panel warn"><b>Cek pemahaman</b><p>Mengapa memakai method pengubah untuk operasi baca berisiko?</p><p>Kriteria berhasil: Karena klien yang mencoba ulang permintaan itu dapat mengubah data tanpa disengaja.</p></div>
+</section><section class="lesson-section">
+  <h4>04 · Alamat yang mudah dipahami</h4>
+  <p>Alamat yang baik dapat dibaca seperti kalimat: sumber daya apa, dan bagian mana yang dimaksud. Pola yang konsisten membuat klien dapat menebak alamat sumber daya lain dengan benar.</p><p>Hindari menaruh kata kerja pada alamat bila method sudah menyatakan maksudnya. Alamat yang memuat kata kerja cenderung bertambah dan lama-kelamaan tidak konsisten.</p><p>Untuk sumber daya yang dimiliki sumber daya lain, susun alamat mengikuti kepemilikannya, misalnya daftar tugas di bawah pengguna tertentu. Susunan ini memperjelas hubungan antar data.</p>
+  
+  
+  <div class="panel warn"><b>Cek pemahaman</b><p>Mengapa alamat sebaiknya memakai kata benda alih-alih kata kerja?</p><p>Kriteria berhasil: Karena alamat menunjuk sumber daya, sedangkan maksud tindakan sudah dinyatakan oleh method.</p></div>
 </section>
-  <h4>Latihan bertingkat</h4><ol><li><b>Latihan 1</b> <em>(Mandiri)</em><p>Rancang daftar endpoint aplikasi catatan lengkap dengan method dan status utamanya.</p></li><li><b>Latihan 2</b> <em>(Mandiri)</em><p>Ubah satu input atau asumsi pada contoh, catat hasil dan jelaskan alasannya.</p></li></ol>
-  
-  
+  <h4>Latihan bertingkat</h4><ol><li><b>Rancang alamat dan method</b> <em>(Terbimbing)</em><p>Tentukan alamat dan method untuk menampilkan daftar tugas, menampilkan satu tugas, menambah, mengubah, dan menghapus.</p><ol><li>Tentukan alamat untuk sumber daya daftar tugas.</li><li>Tentukan alamat untuk satu tugas tertentu.</li><li>Pilih method untuk setiap operasi.</li><li>Periksa pola alamat tetap konsisten.</li></ol><pre><code>Daftar: GET ...
+Satu: GET ...
+Tambah: ...
+Ubah: ...
+Hapus: ...</code></pre><p><em>Hasil: Alamat memakai pola konsisten dan method sesuai maksud setiap operasi.</em></p><details><summary>Petunjuk bertahap</summary><ol><li>Alamat daftar dan satu data dibedakan oleh penanda nilai.</li><li>Method menyatakan maksud, bukan alamat.</li><li>Operasi ubah dan hapus menunjuk data tertentu.</li></ol></details><p><em>Tantangan: Tentukan status tanggapan untuk setiap operasi.</em></p></li><li><b>Pilih status yang tepat</b> <em>(Mandiri)</em><p>Tentukan status tanggapan untuk enam skenario: daftar berhasil, data tidak ada, masukan tidak sah, belum masuk, tidak berhak, dan kesalahan server.</p><ol><li>Tentukan status untuk setiap skenario.</li><li>Bedakan kesalahan pengirim dan kesalahan server.</li><li>Bedakan belum terautentikasi dan tidak berhak.</li><li>Jelaskan alasan setiap pilihan.</li></ol><pre><code>Daftar berhasil: ...
+Data tidak ada: ...
+Masukan tidak sah: ...</code></pre><p><em>Hasil: Setiap skenario memakai status yang sesuai beserta alasan yang jelas.</em></p><details><summary>Petunjuk bertahap</summary><ol><li>Kelompok status ditentukan angka pertamanya.</li><li>Belum masuk dan tidak berhak memakai status berbeda.</li><li>Kesalahan server sebaiknya tidak menyalahkan klien.</li></ol></details><p><em>Tantangan: Tambahkan skenario bentrok keadaan dan tentukan statusnya.</em></p></li><li><b>Rancang API satu sumber daya lengkap</b> <em>(Penerapan)</em><p>Rancang seluruh alamat, method, dan status untuk sebuah sumber daya baru, misalnya komentar, lalu jelaskan keputusannya.</p><ol><li>Tentukan sumber daya dan hubungannya dengan sumber daya lain.</li><li>Tentukan seluruh alamat beserta methodnya.</li><li>Tentukan status untuk setiap hasil operasi.</li><li>Jelaskan pola yang dipakai agar konsisten dengan sumber daya lain.</li></ol><pre><code>Sumber daya: ...
+Alamat dan method: ...
+Status: ...</code></pre><p><em>Hasil: Rancangan konsisten, mudah dipahami, dan dapat disamakan dengan sumber daya lain.</em></p><details><summary>Petunjuk bertahap</summary><ol><li>Ikuti pola alamat sumber daya yang sudah ada.</li><li>Setiap operasi punya method dan statusnya sendiri.</li><li>Jaga penamaan tetap konsisten antar sumber daya.</li></ol></details><p><em>Tantangan: Terapkan rancangan itu pada kerangka pengendali.</em></p></li></ol>
+  <h4>Verifikasi</h4><div class="panel"><b>Mode: Manual</b><pre><code>Panggil setiap operasi dan periksa method, alamat, serta status tanggapannya.</code></pre><p><em>Hasil yang diharapkan: Setiap operasi memakai alamat dan method yang sesuai dan mengembalikan status yang menggambarkan hasil sebenarnya.</em></p><p><em>Bukti yang disimpan: Simpan tabel operasi dan catatan hasil setiap pemanggilan.</em></p></div>
+  <h4>Mengatasi masalah</h4><ul><li><b>Klien salah menafsirkan hasil karena selalu menganggap berhasil.</b><br>Penyebab umum: Status tanggapan tidak menggambarkan hasil sebenarnya.<br>Perbaikan: Kembalikan status yang sesuai untuk setiap hasil, terutama pada kegagalan.</li><li><b>Data berubah ketika klien mencoba ulang permintaan baca.</b><br>Penyebab umum: Operasi baca memakai method pengubah sehingga pengulangan mengubah data.<br>Perbaikan: Pakai method yang tidak mengubah data untuk operasi baca.</li><li><b>Pemantauan gangguan menandai banyak kesalahan pengguna sebagai masalah server.</b><br>Penyebab umum: Kesalahan masukan dikembalikan dengan status kesalahan server.<br>Perbaikan: Bedakan status kesalahan pengirim dan kesalahan server sesuai penyebabnya.</li><li><b>Klien bingung antara harus masuk atau memang tidak diizinkan.</b><br>Penyebab umum: Status belum terautentikasi dan tidak berhak dipakai tanpa pembedaan.<br>Perbaikan: Pakai status belum terautentikasi saat identitas belum diketahui dan status tidak berhak saat identitas diketahui.</li></ul>
   <div class="quiz"><strong>Uji pemahaman</strong><div class="quiz-question">
-    <b>1. Apa prinsip yang paling tepat untuk topik “REST resource dan HTTP status”?</b>
-    <ol type="A"><li>Gunakan status HTTP sesuai makna dan konsisten antar endpoint.</li><li>Gunakan solusi paling rumit sejak awal, meski kebutuhan belum jelas.</li><li>Lewati pengujian karena contoh kecil pasti benar.</li></ol>
-    <details><summary>Lihat pembahasan</summary><p class="answer">Jawaban: A. Gunakan status HTTP sesuai makna dan konsisten antar endpoint.</p></details>
+    <b>1. Apa yang dinyatakan method HTTP pada sebuah permintaan?</b>
+    <ol type="A"><li>Bentuk data tanggapan</li><li>Maksud operasi terhadap sumber daya</li><li>Nama sumber daya</li></ol>
+    <details><summary>Lihat pembahasan</summary><p class="answer">Jawaban: B. Method menyatakan maksud operasi, sedangkan alamat menyatakan sumber dayanya.</p></details>
+  </div><div class="quiz-question">
+    <b>2. Status apa yang tepat untuk pembuatan data baru yang berhasil?</b>
+    <ol type="A"><li>200 OK</li><li>201 Created</li><li>404 Not Found</li></ol>
+    <details><summary>Lihat pembahasan</summary><p class="answer">Jawaban: B. Pembuatan data baru ditandai dengan status dibuat.</p></details>
+  </div><div class="quiz-question">
+    <b>3. Pengguna sudah masuk tetapi tidak berhak mengubah data itu. Status yang tepat...</b>
+    <ol type="A"><li>401 Unauthorized</li><li>403 Forbidden</li><li>500 Internal Server Error</li></ol>
+    <details><summary>Lihat pembahasan</summary><p class="answer">Jawaban: B. Identitas diketahui tetapi tidak berhak ditandai dengan status tidak berhak.</p></details>
   </div></div>
-  
-  
-  
+  <h4>Ringkasan</h4><ul><li>Alamat mewakili sumber daya, dan method menyatakan maksud operasi.</li><li>Status tanggapan menyatakan hasil sebenarnya sehingga klien tahu langkah berikutnya.</li><li>Pembuatan data memakai status dibuat, keberhasilan tanpa isi memakai status tanpa isi.</li><li>Bedakan kesalahan pengirim, kesalahan server, belum terautentikasi, dan tidak berhak.</li></ul>
+  <div class="panel"><b>Berikutnya</b><p>Berikutnya: kontrak API, versioning, dan dokumentasi. Anda akan menetapkan kesepakatan API yang dapat dipakai bersama.</p></div>
+  <h4>Sumber</h4><ul><li><a href="https://www.rfc-editor.org/rfc/rfc9110.html" rel="noopener noreferrer">RFC 9110: HTTP Semantics</a> <small>IETF · 9110</small> — Standar HTTP tentang method, status, dan semantik permintaan.</li><li><a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Status" rel="noopener noreferrer">MDN: HTTP response status codes</a> <small>Mozilla · rolling</small> — Daftar status tanggapan HTTP beserta maknanya.</li><li><a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Methods" rel="noopener noreferrer">MDN: HTTP request methods</a> <small>Mozilla · rolling</small> — Penjelasan method HTTP dan sifatnya yang aman diulang atau tidak.</li></ul>
 </article>
 <article class="lesson" id="m09-l02">
-  <div class="lesson-meta">Pelajaran 02 · 45 menit · Menengah · JSON</div>
+  <div class="lesson-meta">Pelajaran 02 · 120 menit · Menengah · JSON</div>
   <h3>API contract, versioning, dan dokumentasi</h3>
-  
-  
-  
-  
-  
-  
+  <div class="panel good"><b>Hasil belajar</b><p>Setelah pelajaran ini, Anda dapat menuliskan kontrak API yang jelas, merencanakan perubahan versi, dan menyediakan dokumentasi yang dapat dipakai tim lain.</p></div>
+  <h4>Tujuan</h4><ul><li>Menjelaskan apa yang termasuk dalam kontrak API.</li><li>Menuliskan kontrak API dalam bentuk yang dapat dibaca mesin.</li><li>Merencanakan perubahan yang tidak merusak klien.</li><li>Menyediakan dokumentasi yang sesuai kenyataan.</li></ul>
+  <div class="panel"><b>Prasyarat</b><p>REST resource dan HTTP status</p></div>
+  <h4>Istilah kunci</h4><dl class="glossary"><div><dt>Kontrak API</dt><dd>Kesepakatan tentang alamat, bentuk data, dan aturan yang berlaku antara penyedia dan pemakai API.</dd></div><div><dt>Spesifikasi</dt><dd>Dokumen terstruktur yang mendeskripsikan kontrak API dan dapat dibaca mesin.</dd></div><div><dt>Versioning</dt><dd>Cara menandai versi API agar perubahan dapat dilakukan tanpa merusak klien lama.</dd></div><div><dt>Perubahan yang merusak</dt><dd>Perubahan yang membuat klien lama tidak lagi dapat bekerja, misalnya menghapus kolom.</dd></div></dl>
+  <h4>Kartu sintaks</h4><div class="panel">
+  <b><code>&quot;openapi&quot;: &quot;3.1.0&quot;,</code></b>
+  <p><em>Dibaca: Baca sebagai penanda versi format spesifikasi yang dipakai dokumen itu.</em></p>
+  <p>Baris ini memberi tahu alat pembaca format mana yang harus dipakai, sehingga dokumen dapat diolah alat pendukung.</p>
+  <pre><code>&quot;openapi&quot;: &quot;3.1.0&quot;,</code></pre>
+  <p><em>Output: Dokumen dapat dibaca alat yang mendukung format tersebut.</em></p>
+  <p><em>Hati-hati: Menulis spesifikasi tanpa penanda versi membuat alat pendukung tidak tahu cara membacanya.</em></p>
+</div><div class="panel">
+  <b><code>&quot;responses&quot;: { &quot;200&quot;: { &quot;description&quot;: &quot;Daftar tugas&quot; } }</code></b>
+  <p><em>Dibaca: Baca sebagai deskripsi tanggapan yang mungkin dikembalikan sebuah operasi.</em></p>
+  <p>Setiap operasi menyebut tanggapan yang mungkin, sehingga pemakai API tahu bentuk hasil pada setiap keadaan.</p>
+  <pre><code>&quot;responses&quot;: { &quot;200&quot;: { &quot;description&quot;: &quot;Daftar tugas&quot; } }</code></pre>
+  <p><em>Output: Pemakai API tahu bentuk tanggapan pada kasus berhasil.</em></p>
+  <p><em>Hati-hati: Mendeskripsikan hanya kasus berhasil menyembunyikan bentuk tanggapan saat gagal.</em></p>
+</div><div class="panel">
+  <b><code>GET /v1/tugas HTTP/1.1</code></b>
+  <p><em>Dibaca: Baca sebagai alamat yang menyatakan versi API pada bagian awal jalurnya.</em></p>
+  <p>Versi pada alamat memungkinkan versi lama tetap tersedia sementara klien berpindah ke versi baru.</p>
+  <pre><code>GET /v1/tugas HTTP/1.1</code></pre>
+  <p><em>Output: Klien lama dan baru dapat dilayani bersamaan.</em></p>
+  <p><em>Hati-hati: Mengubah versi tanpa menyediakan masa peralihan memaksa semua klien berpindah sekaligus.</em></p>
+</div>
+  <h4>Aturan penulisan</h4><ul><li>Tuliskan kontrak API sebagai spesifikasi yang dapat dibaca mesin.</li><li>Dokumentasikan tanggapan berhasil dan gagal, bukan hanya berhasil.</li><li>Tandai versi pada alamat dan sediakan masa peralihan saat berubah.</li><li>Hindari perubahan yang merusak; tambahkan lebih dulu, hapus belakangan.</li><li>Jaga dokumentasi tetap sesuai kenyataan setiap kali API berubah.</li></ul>
   <section class="lesson-section">
-  <h4>01 · Memahami konsepnya</h4>
-  <p>API contract mendefinisikan field, tipe, validasi, status, dan bentuk error. Dokumentasikan sebagai OpenAPI atau contoh request-response yang jelas.</p><p>Bila banyak klien bergantung pada API, pertimbangkan versioning dan perubahan backward-compatible. Pertahankan nama field yang konsisten.</p>
+  <h4>01 · Cara membaca spesifikasi API</h4>
+  <p>Spesifikasi dibaca sebagai deskripsi terstruktur. Bagian pembuka menyebut format dan informasi API, lalu bagian jalur mendaftar alamat beserta operasi dan tanggapannya.</p><p>Pada contoh, satu alamat dengan operasi pengambilan dideskripsikan, termasuk satu tanggapan berhasil. Struktur ini membuat alat dapat memeriksa kesesuaian antara dokumentasi dan pelaksanaan.</p><p>Karena spesifikasi dapat dibaca mesin, ia dapat dipakai untuk menghasilkan dokumentasi, membuat klien, dan memeriksa permintaan. Satu sumber kebenaran menggantikan dokumen terpisah yang mudah basi.</p>
+  <pre><code>{
+  &quot;openapi&quot;: &quot;3.1.0&quot;,
+  &quot;info&quot;: { &quot;title&quot;: &quot;API Tugas&quot;, &quot;version&quot;: &quot;1.0.0&quot; },
+  &quot;paths&quot;: {
+    &quot;/tugas&quot;: {
+      &quot;get&quot;: {
+        &quot;responses&quot;: {
+          &quot;200&quot;: { &quot;description&quot;: &quot;Daftar tugas&quot; }
+        }
+      }
+    }
+  }
+}</code></pre><div class="panel"><b>Output yang diharapkan</b><p>Dokumen mendeskripsikan satu alamat dengan satu operasi beserta tanggapan berhasilnya.</p></div><p>Bagian pembuka menyebut format dan informasi API, sedangkan bagian jalur mendaftar alamat, operasi, dan tanggapan yang mungkin.</p><div class="panel"><b>Bedah baris</b><ol><li>Baris 2 · <code>&quot;openapi&quot;: &quot;3.1.0&quot;,</code> — Penanda format memberi tahu alat cara membaca dokumen.</li><li>Baris 3 · <code>&quot;info&quot;: { &quot;title&quot;: &quot;API Tugas&quot;, &quot;version&quot;: &quot;1.0.0&quot; },</code> — Informasi mencakup judul dan versi API.</li><li>Baris 5 · <code>&quot;/tugas&quot;: {</code> — Alamat yang dideskripsikan didaftarkan pada bagian jalur.</li><li>Baris 8 · <code>&quot;200&quot;: { &quot;description&quot;: &quot;Daftar tugas&quot; }</code> — Tanggapan berhasil dideskripsikan beserta maknanya.</li></ol></div>
+  <div class="panel good"><b>Satu sumber kebenaran</b><p>Spesifikasi yang dapat dibaca mesin menjadi sumber kebenaran. Dokumentasi dan pemeriksaan memakai dokumen yang sama.</p></div>
+  <div class="panel warn"><b>Cek pemahaman</b><p>Apa keuntungan spesifikasi API yang dapat dibaca mesin dibanding dokumen biasa?</p><p>Kriteria berhasil: Alat dapat menggunakannya untuk dokumentasi, pembuatan klien, dan pemeriksaan sehingga tidak mudah basi.</p></div>
+</section><section class="lesson-section">
+  <h4>02 · Apa yang termasuk kontrak API</h4>
+  <p>Kontrak mencakup lebih dari daftar alamat. Ia juga memuat bentuk data, aturan validasi, status yang mungkin, dan arti setiap kolom.</p><p>Kontrak juga menyebut hal yang tidak boleh berubah tanpa peringatan: nama kolom, tipe nilai, dan arti status. Perubahan pada hal-hal itu berpotensi merusak klien.</p><p>Tuliskan kontrak sebelum pelaksanaan untuk sumber daya yang penting. Kesepakatan lebih awal menghindari perbedaan tafsir antara tim yang menyediakan dan yang memakai API.</p>
   
-  <div class="panel good"><b>Best practice</b><p>Dokumentasikan kontrak dan hindari breaking change tanpa rencana migrasi.</p></div><div class="panel bad"><b>Kesalahan umum</b><p>Mengubah nama field API tanpa menyesuaikan mobile yang sudah dirilis.</p></div>
+  
+  <div class="panel warn"><b>Cek pemahaman</b><p>Sebutkan tiga hal yang termasuk dalam kontrak API selain daftar alamat.</p><p>Kriteria berhasil: Bentuk data, aturan validasi, dan status tanggapan beserta artinya.</p></div>
+</section><section class="lesson-section">
+  <h4>03 · Menandai versi API</h4>
+  <p>Versi menandai kumpulan kontrak pada satu waktu. Dengan menandainya, perubahan yang merusak dapat dirilis sebagai versi baru sementara versi lama tetap melayani klien yang belum berpindah.</p><p>Tempat penandaan versi yang umum adalah bagian awal alamat. Cara ini mudah terlihat dan mudah dibaca oleh manusia maupun alat.</p><p>Sediakan masa peralihan ketika naik versi. Beri tahu pemakai API, pertahankan versi lama selama jangka waktu yang wajar, baru hentikan setelah semua berpindah.</p>
+  <pre><code>GET /v1/tugas HTTP/1.1
+Host: api.contoh.id
+Accept: application/json</code></pre><div class="panel"><b>Output yang diharapkan</b><p>Klien dapat memilih versi API lewat penanda pada alamat.</p></div><p>Versi ditulis pada bagian awal jalur sehingga permintaan yang berbeda versi dapat dilayani berdampingan.</p><div class="panel"><b>Bedah baris</b><ol><li>Baris 1 · <code>GET /v1/tugas HTTP/1.1</code> — Penanda versi berada pada awal jalur alamat.</li></ol></div>
+  
   
 </section><section class="lesson-section">
-  <h4>02 · Contoh kode</h4>
-  <p>Perhatikan input, proses, dan output. Ketik ulang, lalu ubah satu nilai.</p>
-  <pre><code>{
-  &quot;data&quot;: {&quot;id&quot;: 42, &quot;title&quot;: &quot;Belajar&quot;, &quot;done&quot;: false},
-  &quot;meta&quot;: {&quot;version&quot;: &quot;v1&quot;}
-}</code></pre>
+  <h4>04 · Perubahan yang aman dan yang merusak</h4>
+  <p>Menambah kolom baru umumnya aman karena klien dapat mengabaikannya. Menambah alamat baru juga aman karena tidak mengubah perilaku yang sudah ada.</p><p>Menghapus kolom, mengganti namanya, atau mengubah tipe nilainya termasuk perubahan yang merusak. Klien yang mengandalkan kolom itu akan berhenti bekerja.</p><p>Bila perubahan merusak memang diperlukan, lakukan bertahap: sediakan bentuk baru berdampingan, pindahkan pemakaian, baru hentikan bentuk lama setelah tidak ada yang memakainya.</p>
   
-  
+  <div class="panel warn"><b>Pikirkan pemakai API</b><p>Perubahan yang tampak kecil bagi penyedia dapat merusak banyak pemakai. Nilai dampaknya terhadap klien sebelum merilis.</p></div>
+  <div class="panel warn"><b>Cek pemahaman</b><p>Sebutkan dua jenis perubahan yang merusak klien.</p><p>Kriteria berhasil: Menghapus kolom dan mengganti nama atau tipe nilai kolom yang sudah dipakai klien.</p></div>
 </section>
-  <h4>Latihan bertingkat</h4><ol><li><b>Latihan 1</b> <em>(Mandiri)</em><p>Tulis spesifikasi request-response lengkap untuk POST /api/tasks.</p></li><li><b>Latihan 2</b> <em>(Mandiri)</em><p>Ubah satu input atau asumsi pada contoh, catat hasil dan jelaskan alasannya.</p></li></ol>
-  
-  
+  <h4>Latihan bertingkat</h4><ol><li><b>Tulis spesifikasi satu alamat</b> <em>(Terbimbing)</em><p>Tulis spesifikasi untuk alamat daftar tugas beserta operasi pengambilan dan tanggapan berhasilnya.</p><ol><li>Tulis bagian pembuka dengan format dan informasi API.</li><li>Daftarkan alamat dan operasinya.</li><li>Deskripsikan tanggapan berhasil.</li><li>Periksa dokumen dapat dibaca alat pendukung.</li></ol><pre><code>{
+  &quot;openapi&quot;: &quot;3.1.0&quot;,
+  &quot;paths&quot;: { ... }
+}</code></pre><p><em>Hasil: Dokumen valid dan mendeskripsikan operasi beserta tanggapannya.</em></p><details><summary>Petunjuk bertahap</summary><ol><li>Bagian pembuka menyebut format dan informasi API.</li><li>Setiap alamat didaftarkan pada bagian jalur.</li><li>Setiap operasi menyebut tanggapan yang mungkin.</li></ol></details><p><em>Tantangan: Tambahkan deskripsi tanggapan ketika data tidak ditemukan.</em></p></li><li><b>Rencanakan perubahan yang tidak merusak</b> <em>(Mandiri)</em><p>Diberikan rencana penambahan kolom baru pada tanggapan, jelaskan mengapa perubahan itu aman dan bagaimana menyesuaikan dokumentasinya.</p><ol><li>Tentukan kolom yang akan ditambahkan.</li><li>Jelaskan mengapa penambahan itu tidak merusak klien lama.</li><li>Perbarui spesifikasi dengan kolom baru.</li><li>Tentukan cara memberitahu pemakai API.</li></ol><pre><code>Kolom baru: ...
+Dampak pada klien lama: ...</code></pre><p><em>Hasil: Penambahan kolom dilakukan tanpa mengubah perilaku klien lama dan dokumentasi ikut diperbarui.</em></p><details><summary>Petunjuk bertahap</summary><ol><li>Klien dapat mengabaikan kolom yang tidak dikenal.</li><li>Dokumentasi diperbarui bersamaan dengan pelaksanaan.</li><li>Perubahan yang merusak memerlukan masa peralihan.</li></ol></details><p><em>Tantangan: Rancang perubahan penggantian nama kolom beserta masa peralihannya.</em></p></li><li><b>Kontrak untuk sumber daya baru</b> <em>(Penerapan)</em><p>Tulis kontrak lengkap untuk sebuah sumber daya baru: alamat, method, bentuk data, status, dan aturan validasi.</p><ol><li>Tentukan sumber daya beserta hubungannya.</li><li>Tentukan alamat dan method setiap operasi.</li><li>Tentukan bentuk data dan aturan validasinya.</li><li>Tentukan status setiap hasil operasi.</li></ol><pre><code>Sumber daya: ...
+Alamat: ...
+Bentuk data: ...
+Status: ...</code></pre><p><em>Hasil: Kontrak lengkap dan dapat dijadikan rujukan bersama tim.</em></p><details><summary>Petunjuk bertahap</summary><ol><li>Ikuti pola sumber daya lain agar konsisten.</li><li>Sebutkan bentuk data untuk setiap tanggapan.</li><li>Sertakan aturan validasi sejak awal.</li></ol></details><p><em>Tantangan: Terapkan kontrak itu pada kerangka pengendali dan periksa kesesuaiannya.</em></p></li></ol>
+  <h4>Verifikasi</h4><div class="panel"><b>Mode: Manual</b><pre><code>Periksa spesifikasi dengan alat pembaca, lalu bandingkan tanggapan nyata dengan kontrak.</code></pre><p><em>Hasil yang diharapkan: Spesifikasi terbaca tanpa kesalahan dan tanggapan nyata sesuai kontrak pada semua operasi yang diuji.</em></p><p><em>Bukti yang disimpan: Simpan berkas spesifikasi dan catatan perbandingan tanggapan.</em></p></div>
+  <h4>Mengatasi masalah</h4><ul><li><b>Klien lama berhenti bekerja setelah API diperbarui.</b><br>Penyebab umum: Ada perubahan yang merusak seperti menghapus atau mengganti nama kolom.<br>Perbaikan: Kembalikan bentuk lama, sediakan bentuk baru berdampingan, dan pindahkan pemakaian bertahap.</li><li><b>Dokumentasi berbeda dengan perilaku API.</b><br>Penyebab umum: Dokumentasi diperbarui terpisah dari pelaksanaan.<br>Perbaikan: Jadikan spesifikasi sebagai sumber kebenaran dan perbarui bersamaan dengan pelaksanaan.</li><li><b>Pemakai API menebak bentuk tanggapan ketika terjadi kesalahan.</b><br>Penyebab umum: Spesifikasi hanya mendeskripsikan kasus berhasil.<br>Perbaikan: Deskripsikan juga tanggapan gagal pada spesifikasi.</li><li><b>Penghentian versi lama mengejutkan pemakai API.</b><br>Penyebab umum: Tidak ada pemberitahuan dan masa peralihan sebelum versi lama dihentikan.<br>Perbaikan: Beri tahu lebih awal, pertahankan versi lama selama masa peralihan, lalu hentikan setelah semua berpindah.</li></ul>
   <div class="quiz"><strong>Uji pemahaman</strong><div class="quiz-question">
-    <b>1. Apa prinsip yang paling tepat untuk topik “API contract, versioning, dan dokumentasi”?</b>
-    <ol type="A"><li>Dokumentasikan kontrak dan hindari breaking change tanpa rencana migrasi.</li><li>Gunakan solusi paling rumit sejak awal, meski kebutuhan belum jelas.</li><li>Lewati pengujian karena contoh kecil pasti benar.</li></ol>
-    <details><summary>Lihat pembahasan</summary><p class="answer">Jawaban: A. Dokumentasikan kontrak dan hindari breaking change tanpa rencana migrasi.</p></details>
+    <b>1. Apa keuntungan kontrak API ditulis sebagai spesifikasi yang dapat dibaca mesin?</b>
+    <ol type="A"><li>API menjadi lebih cepat</li><li>Alat dapat memakainya untuk dokumentasi, pembuatan klien, dan pemeriksaan</li><li>Data tersimpan otomatis</li></ol>
+    <details><summary>Lihat pembahasan</summary><p class="answer">Jawaban: B. Spesifikasi yang dapat dibaca mesin menjadi sumber kebenaran yang dipakai alat pendukung.</p></details>
+  </div><div class="quiz-question">
+    <b>2. Apa arti penanda /v1 pada alamat API?</b>
+    <ol type="A"><li>Menandai versi kontrak API yang dipakai</li><li>Menandai jumlah data</li><li>Menandai jenis data</li></ol>
+    <details><summary>Lihat pembahasan</summary><p class="answer">Jawaban: A. Penanda pada awal jalur menyatakan versi API sehingga versi berbeda dapat dilayani bersamaan.</p></details>
+  </div><div class="quiz-question">
+    <b>3. Menghapus sebuah kolom dari tanggapan API. Tindakan yang tepat...</b>
+    <ol type="A"><li>Menghapusnya langsung karena penyedia tidak memakainya</li><li>Merencanakannya sebagai perubahan yang merusak dengan masa peralihan</li><li>Menggantinya diam-diam</li></ol>
+    <details><summary>Lihat pembahasan</summary><p class="answer">Jawaban: B. Menghapus kolom dapat merusak klien, sehingga perlu direncanakan dengan masa peralihan.</p></details>
   </div></div>
-  
-  
-  
+  <h4>Ringkasan</h4><ul><li>Kontrak API mencakup alamat, bentuk data, aturan validasi, dan status tanggapan.</li><li>Spesifikasi yang dapat dibaca mesin menjadi sumber kebenaran yang dipakai alat pendukung.</li><li>Versi ditandai pada alamat agar perubahan besar dapat dirilis tanpa merusak klien lama.</li><li>Penambahan umumnya aman; penghapusan dan penggantian nama perlu direncanakan dengan masa peralihan.</li></ul>
+  <div class="panel"><b>Berikutnya</b><p>Berikutnya: filter, pagination, dan idempotency. Anda akan menyediakan daftar data yang besar dan operasi yang aman diulang.</p></div>
+  <h4>Sumber</h4><ul><li><a href="https://spec.openapis.org/oas/latest.html" rel="noopener noreferrer">OpenAPI Specification</a> <small>OpenAPI Initiative · latest</small> — Spesifikasi resmi format kontrak API yang dapat dibaca mesin.</li><li><a href="https://www.rfc-editor.org/rfc/rfc9110.html" rel="noopener noreferrer">RFC 9110: HTTP Semantics</a> <small>IETF · 9110</small> — Standar HTTP yang menjadi dasar semantik alamat dan method.</li><li><a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Status" rel="noopener noreferrer">MDN: HTTP response status codes</a> <small>Mozilla · rolling</small> — Daftar status tanggapan untuk mendeskripsikan tanggapan API.</li></ul>
 </article>
 <article class="lesson" id="m09-l03">
-  <div class="lesson-meta">Pelajaran 03 · 45 menit · Menengah · HTTP</div>
+  <div class="lesson-meta">Pelajaran 03 · 120 menit · Menengah · HTTP</div>
   <h3>Filter, pagination, dan idempotency</h3>
-  
-  
-  
-  
-  
-  
+  <div class="panel good"><b>Hasil belajar</b><p>Setelah pelajaran ini, Anda dapat menyaring dan membagi hasil API, serta merancang operasi yang aman diulang tanpa menimbulkan data ganda.</p></div>
+  <h4>Tujuan</h4><ul><li>Menyaring data lewat parameter alamat.</li><li>Membagi hasil besar memakai penomoran halaman.</li><li>Menjelaskan mengapa operasi tertentu perlu dapat diulang dengan aman.</li><li>Memakai kunci unik permintaan untuk mencegah data ganda.</li></ul>
+  <div class="panel"><b>Prasyarat</b><p>API contract, versioning, dan dokumentasi</p></div>
+  <h4>Istilah kunci</h4><dl class="glossary"><div><dt>Filter</dt><dd>Penyaringan hasil berdasarkan nilai yang diberikan lewat parameter alamat.</dd></div><div><dt>Pagination</dt><dd>Pembagian hasil besar menjadi beberapa bagian agar tidak dikirim sekaligus.</dd></div><div><dt>Idempotency</dt><dd>Sifat operasi yang hasilnya tetap sama meski dijalankan lebih dari sekali.</dd></div><div><dt>Kunci permintaan</dt><dd>Nilai unik yang dikirim klien untuk menandai satu percobaan operasi agar pengulangannya tidak menghasilkan data ganda.</dd></div></dl>
+  <h4>Kartu sintaks</h4><div class="panel">
+  <b><code>GET /v1/tugas?selesai=false&amp;urut=judul HTTP/1.1</code></b>
+  <p><em>Dibaca: Baca sebagai permintaan daftar yang disaring hanya tugas belum selesai dan diurutkan menurut judul.</em></p>
+  <p>Parameter setelah tanda tanya menyaring dan mengatur hasil. Setiap parameter menyatakan satu pilihan penyaringan atau pengurutan.</p>
+  <pre><code>GET /v1/tugas?selesai=false HTTP/1.1</code></pre>
+  <p><em>Output: Hasil hanya memuat baris yang cocok dan tersusun sesuai urutan yang diminta.</em></p>
+  <p><em>Hati-hati: Menerima nama parameter bebas tanpa batasan menyulitkan penjagaan dan membuat perilaku tidak pasti.</em></p>
+</div><div class="panel">
+  <b><code>GET /v1/tugas?halaman=2&amp;per_halaman=20 HTTP/1.1</code></b>
+  <p><em>Dibaca: Baca sebagai permintaan bagian kedua dari daftar, dua puluh baris setiap bagiannya.</em></p>
+  <p>Penomoran halaman membatasi jumlah data yang dikirim sehingga tanggapan tetap ringkas dan cepat.</p>
+  <pre><code>GET /v1/tugas?halaman=2&amp;per_halaman=20 HTTP/1.1</code></pre>
+  <p><em>Output: Klien menerima satu bagian hasil beserta keterangan jumlah totalnya.</em></p>
+  <p><em>Hati-hati: Menerima ukuran halaman tanpa batas atas memungkinkan klien meminta data dalam jumlah besar sekaligus.</em></p>
+</div><div class="panel">
+  <b><code>Idempotency-Key: 8f14e45f-ea0d-4c2b-9f1e-2c3d4e5f6a7b</code></b>
+  <p><em>Dibaca: Baca sebagai penanda unik yang membuat pengulangan permintaan yang sama tidak menghasilkan data ganda.</em></p>
+  <p>Server menyimpan kunci itu beserta hasilnya, sehingga permintaan berikutnya dengan kunci sama mengembalikan hasil yang sama tanpa membuat data baru.</p>
+  <pre><code>Idempotency-Key: 8f14e45f-ea0d-4c2b-9f1e-2c3d4e5f6a7b</code></pre>
+  <p><em>Output: Meski permintaan dikirim dua kali, hanya satu data yang dibuat.</em></p>
+  <p><em>Hati-hati: Membuat kunci baru pada setiap percobaan ulang menghilangkan manfaatnya.</em></p>
+</div>
+  <h4>Aturan penulisan</h4><ul><li>Batasi nama parameter yang diterima dan dokumentasikan maknanya.</li><li>Terapkan batas atas pada ukuran halaman.</li><li>Kembalikan keterangan jumlah total agar klien dapat menghitung halaman.</li><li>Sediakan kunci permintaan pada operasi pembuatan yang berisiko terulang.</li><li>Pastikan operasi yang sama dapat dijalankan ulang dengan hasil stabil.</li></ul>
   <section class="lesson-section">
-  <h4>01 · Memahami konsepnya</h4>
-  <p>Endpoint daftar memerlukan pagination, sorting, dan filter terkontrol. Idempotency berarti permintaan identik punya dampak sama ketika diulang, penting untuk pembayaran dan request retried.</p><p>Jangan memuat jutaan baris sekaligus. Batasi page size. Pakai key idempotency untuk proses create kritis bila risiko retry menggandakan transaksi.</p>
+  <h4>01 · Cara membaca penyaringan dan penomoran halaman</h4>
+  <p>Permintaan berparameter dibaca dari kiri ke kanan. Alamat menunjuk sumber daya, lalu parameter setelah tanda tanya menyaring dan mengatur hasil. Setiap parameter berdiri sendiri dan dapat digabungkan.</p><p>Pada contoh, hasil disaring hanya tugas belum selesai, diurutkan menurut judul, dan diambil bagian keduanya sebanyak dua puluh baris. Tanggapan menyertakan jumlah total dan tautan ke bagian berikutnya.</p><p>Keterangan jumlah total penting karena klien perlu tahu berapa banyak data secara keseluruhan. Tanpa itu, klien tidak dapat menampilkan jumlah halaman atau memutuskan kapan berhenti meminta.</p>
+  <pre><code>GET /v1/tugas?selesai=false&amp;urut=judul&amp;halaman=2&amp;per_halaman=20 HTTP/1.1
+Host: api.contoh.id
+Accept: application/json
+
+HTTP/1.1 200 OK
+Content-Type: application/json
+X-Total-Count: 42
+Link: &lt;/v1/tugas?halaman=3&gt;; rel=&quot;next&quot;</code></pre><div class="panel"><b>Output yang diharapkan</b><p>Klien menerima bagian kedua dari daftar berisi dua puluh baris beserta jumlah total dan tautan ke bagian berikutnya.</p></div><p>Parameter menyaring, mengurutkan, dan membagi hasil. Tanggapan menyertakan jumlah total dan tautan ke bagian berikutnya agar klien dapat melanjutkan.</p><div class="panel"><b>Bedah baris</b><ol><li>Baris 1 · <code>GET /v1/tugas?selesai=false&amp;urut=judul&amp;halaman=2&amp;per_halaman=20 HTTP/1.1</code> — Parameter menyaring menurut status dan mengatur urutan serta halaman.</li><li>Baris 5 · <code>HTTP/1.1 200 OK</code> — Tanggapan menyatakan permintaan berhasil.</li><li>Baris 7 · <code>X-Total-Count: 42</code> — Jumlah total disertakan agar klien dapat menghitung halaman.</li><li>Baris 8 · <code>Link: &lt;/v1/tugas?halaman=3&gt;; rel=&quot;next&quot;</code> — Tautan ke bagian berikutnya memudahkan penelusuran.</li></ol></div>
+  <div class="panel good"><b>Selalu sertakan jumlah total</b><p>Tanpa jumlah total, klien tidak tahu berapa banyak data secara keseluruhan dan sulit menampilkan penomoran halaman.</p></div>
+  <div class="panel warn"><b>Cek pemahaman</b><p>Mengapa tanggapan perlu menyertakan jumlah total data?</p><p>Kriteria berhasil: Agar klien tahu banyaknya data keseluruhan dan dapat menghitung atau menampilkan jumlah halaman.</p></div>
+</section><section class="lesson-section">
+  <h4>02 · Menyaring dan mengurutkan dengan aman</h4>
+  <p>Sebaiknya hanya sebagian nama parameter yang diterima, bukan nama bebas. Daftar parameter yang tetap membuat perilaku API dapat diprediksi dan dokumentasinya jelas.</p><p>Untuk pengurutan, batasi kolom yang boleh dipakai. Menerima sembarang nama kolom membuka risiko nilai yang tidak diharapkan masuk ke query.</p><p>Terapkan juga saringan wajib, misalnya hanya data milik pengguna yang sedang mengakses. Saringan wajib tidak boleh dapat dihilangkan oleh klien.</p>
   
-  <div class="panel good"><b>Best practice</b><p>Batasi ukuran respons dan pikirkan duplicate request ketika jaringan putus.</p></div><div class="panel bad"><b>Kesalahan umum</b><p>Membuat transaksi ganda ketika aplikasi mobile mengirim ulang request.</p></div>
+  <div class="panel warn"><b>Batasi kolom pengurutan</b><p>Menerima sembarang nama kolom untuk pengurutan membuka celah. Batasi pada daftar kolom yang memang boleh diurutkan.</p></div>
+  <div class="panel warn"><b>Cek pemahaman</b><p>Mengapa kolom pengurutan sebaiknya dibatasi pada daftar tertentu?</p><p>Kriteria berhasil: Agar nilai yang tidak sah tidak masuk ke query dan perilaku API tetap dapat diprediksi.</p></div>
+</section><section class="lesson-section">
+  <h4>03 · Operasi yang aman diulang</h4>
+  <p>Operasi pembuatan tidak otomatis aman diulang. Bila klien mengirim ulang karena jaringan bermasalah, tanpa penjagaan akan tercipta dua data yang sama.</p><p>Kunci permintaan menyelesaikan masalah ini. Klien membuat satu nilai unik per percobaan operasi. Bila permintaan yang sama dikirim ulang, server mengenali kuncinya dan mengembalikan hasil yang sama tanpa membuat data baru.</p><p>Kunci harus tetap sama untuk percobaan ulang dari operasi yang sama, dan baru dibuat untuk operasi yang benar-benar baru. Membuat kunci baru setiap kali mencoba menghilangkan manfaatnya sepenuhnya.</p>
+  <pre><code>POST /v1/tugas HTTP/1.1
+Host: api.contoh.id
+Idempotency-Key: 8f14e45f-ea0d-4c2b-9f1e-2c3d4e5f6a7b
+Content-Type: application/json
+
+{ &quot;judul&quot;: &quot;Belajar&quot; }</code></pre><div class="panel"><b>Output yang diharapkan</b><p>Permintaan dengan kunci yang sama hanya menghasilkan satu data meski dikirim berulang.</p></div><p>Kunci unik menandai satu percobaan operasi. Server menyimpan hasilnya sehingga pengulangan mengembalikan hasil yang sama.</p><div class="panel"><b>Bedah baris</b><ol><li>Baris 1 · <code>POST /v1/tugas HTTP/1.1</code> — Method pembuatan menyatakan maksud menambah data.</li><li>Baris 3 · <code>Idempotency-Key: 8f14e45f-ea0d-4c2b-9f1e-2c3d4e5f6a7b</code> — Kunci unik menandai satu percobaan operasi.</li><li>Baris 6 · <code>{ &quot;judul&quot;: &quot;Belajar&quot; }</code> — Isi permintaan memuat data yang akan dibuat.</li></ol></div>
+  <div class="panel good"><b>Aman karena desain</b><p>Operasi yang aman diulang memudahkan klien. Klien dapat mencoba ulang tanpa takut menimbulkan data ganda.</p></div>
   
 </section><section class="lesson-section">
-  <h4>02 · Contoh kode</h4>
-  <p>Perhatikan input, proses, dan output. Ketik ulang, lalu ubah satu nilai.</p>
-  <pre><code>GET /api/tasks?status=done&amp;page=2&amp;per_page=20
-# Response: data[], links{}, meta{page,total}</code></pre>
+  <h4>04 · Jebakan pada daftar besar dan pengulangan</h4>
+  <p>Menomori halaman dengan menghitung mundur jumlah data rentan berubah bila ada data baru masuk di antara permintaan. Akibatnya, sebagian data bisa terlewat atau muncul dua kali.</p><p>Untuk data yang sering berubah, penomoran berdasarkan penanda terakhir yang sudah dikirim lebih stabil. Klien meminta data setelah penanda itu, sehingga data baru tidak menggeser bagian yang belum dibaca.</p><p>Untuk pengulangan, pastikan penyimpanan kunci permintaan memiliki masa berlaku. Kunci yang disimpan selamanya akan menumpuk, sedangkan kunci yang terlalu cepat kedaluwarsa membuat pengulangan pada jeda panjang menciptakan data ganda.</p>
   
   
+  <div class="panel warn"><b>Cek pemahaman</b><p>Mengapa penomoran halaman biasa bisa membuat data terlewat saat data sering berubah?</p><p>Kriteria berhasil: Karena data baru yang masuk di antara permintaan menggeser bagian halaman sehingga sebagian data terlewat atau muncul ganda.</p></div>
 </section>
-  <h4>Latihan bertingkat</h4><ol><li><b>Latihan 1</b> <em>(Mandiri)</em><p>Tambahkan parameter filter status, search, dan pagination untuk endpoint daftar.</p></li><li><b>Latihan 2</b> <em>(Mandiri)</em><p>Ubah satu input atau asumsi pada contoh, catat hasil dan jelaskan alasannya.</p></li></ol>
-  
-  
+  <h4>Latihan bertingkat</h4><ol><li><b>Saringan dan penomoran halaman</b> <em>(Terbimbing)</em><p>Tulis permintaan daftar yang menyaring tugas belum selesai, mengurutkan menurut judul, dan mengambil halaman kedua sebanyak sepuluh baris.</p><ol><li>Tentukan parameter penyaringan.</li><li>Tambahkan parameter pengurutan.</li><li>Tambahkan parameter halaman dan ukuran halaman.</li><li>Sertakan keterangan jumlah total pada tanggapan.</li></ol><pre><code>GET /v1/tugas?... HTTP/1.1</code></pre><p><em>Hasil: Hasil tersaring, terurut, dan terbagi sesuai permintaan dengan jumlah total tersedia.</em></p><details><summary>Petunjuk bertahap</summary><ol><li>Setiap parameter menyatakan satu pilihan.</li><li>Urutan parameter tidak mengubah hasil.</li><li>Jumlah total diperlukan untuk penomoran.</li></ol></details><p><em>Tantangan: Tambahkan tautan ke halaman berikutnya pada tanggapan.</em></p></li><li><b>Cegah data ganda</b> <em>(Mandiri)</em><p>Rancang penanganan kunci permintaan pada operasi pembuatan sehingga permintaan yang dikirim dua kali hanya menghasilkan satu data.</p><ol><li>Tentukan cara klien membuat kunci unik.</li><li>Simpan kunci beserta hasilnya di sisi server.</li><li>Kembalikan hasil tersimpan bila kunci sama datang lagi.</li><li>Tetapkan masa berlaku penyimpanan kunci.</li></ol><pre><code>POST /v1/tugas
+Idempotency-Key: ...</code></pre><p><em>Hasil: Permintaan yang sama dikirim dua kali hanya menghasilkan satu data.</em></p><details><summary>Petunjuk bertahap</summary><ol><li>Kunci dibuat sekali per operasi.</li><li>Hasil disimpan bersama kuncinya.</li><li>Masa berlaku menyeimbangkan penumpukan dan keamanan.</li></ol></details><p><em>Tantangan: Uji dengan jeda waktu lebih panjang dari masa berlaku kunci.</em></p></li><li><b>Rancang penelusuran data besar</b> <em>(Penerapan)</em><p>Rancang cara klien menelusuri seluruh data tugas yang cukup banyak dan sering berubah, lalu jelaskan pilihan yang dipakai.</p><ol><li>Tentukan cara meminta bagian berikutnya.</li><li>Pilih antara penomoran halaman atau penanda terakhir.</li><li>Tentukan keterangan yang perlu disertakan pada tanggapan.</li><li>Jelaskan alasan pilihanmu untuk data yang sering berubah.</li></ol><pre><code>Cara meminta berikutnya: ...
+Keterangan tanggapan: ...</code></pre><p><em>Hasil: Rancangan stabil meski data bertambah di antara permintaan dan alasan pilihannya jelas.</em></p><details><summary>Petunjuk bertahap</summary><ol><li>Data yang sering berubah lebih cocok memakai penanda terakhir.</li><li>Keterangan tanggapan membantu klien melanjutkan.</li><li>Uji perilakunya saat data berubah di tengah penelusuran.</li></ol></details><p><em>Tantangan: Uji dengan menambahkan data di antara dua permintaan.</em></p></li></ol>
+  <h4>Verifikasi</h4><div class="panel"><b>Mode: Manual</b><pre><code>Uji penyaringan, penomoran halaman, dan pengiriman ulang permintaan pembuatan dengan kunci sama.</code></pre><p><em>Hasil yang diharapkan: Hasil tersaring dan terbagi dengan benar, serta permintaan pembuatan yang diulang tidak menghasilkan data ganda.</em></p><p><em>Bukti yang disimpan: Simpan permintaan dan catatan hasil setiap pengujian.</em></p></div>
+  <h4>Mengatasi masalah</h4><ul><li><b>Data terlewat atau muncul dua kali saat menelusuri halaman.</b><br>Penyebab umum: Penomoran halaman biasa dipakai pada data yang berubah di antara permintaan.<br>Perbaikan: Pakai penanda terakhir sebagai dasar permintaan bagian berikutnya.</li><li><b>Jaringan bermasalah membuat data tercatat dua kali.</b><br>Penyebab umum: Klien mencoba ulang permintaan pembuatan tanpa kunci permintaan.<br>Perbaikan: Sediakan dan terapkan kunci permintaan pada operasi pembuatan.</li><li><b>Klien dapat meminta data dalam jumlah sangat besar sekaligus.</b><br>Penyebab umum: Ukuran halaman tidak dibatasi atas.<br>Perbaikan: Terapkan batas atas ukuran halaman dan dokumentasikan.</li><li><b>Nilai pengurutan yang tidak diharapkan masuk ke query.</b><br>Penyebab umum: Kolom pengurutan diterima bebas tanpa daftar yang diizinkan.<br>Perbaikan: Batasi kolom pengurutan pada daftar tertentu dan tolak yang lain.</li></ul>
   <div class="quiz"><strong>Uji pemahaman</strong><div class="quiz-question">
-    <b>1. Apa prinsip yang paling tepat untuk topik “Filter, pagination, dan idempotency”?</b>
-    <ol type="A"><li>Batasi ukuran respons dan pikirkan duplicate request ketika jaringan putus.</li><li>Gunakan solusi paling rumit sejak awal, meski kebutuhan belum jelas.</li><li>Lewati pengujian karena contoh kecil pasti benar.</li></ol>
-    <details><summary>Lihat pembahasan</summary><p class="answer">Jawaban: A. Batasi ukuran respons dan pikirkan duplicate request ketika jaringan putus.</p></details>
+    <b>1. Mengapa operasi pembuatan perlu penjagaan terhadap pengulangan?</b>
+    <ol type="A"><li>Agar lebih cepat</li><li>Karena pengiriman ulang akibat gangguan dapat menciptakan data ganda</li><li>Agar data terhapus otomatis</li></ol>
+    <details><summary>Lihat pembahasan</summary><p class="answer">Jawaban: B. Tanpa penjagaan, percobaan ulang dapat membuat data yang sama tercatat lebih dari sekali.</p></details>
+  </div><div class="quiz-question">
+    <b>2. Apa fungsi kunci permintaan pada operasi pembuatan?</b>
+    <ol type="A"><li>Menandai satu percobaan operasi agar pengulangannya tidak membuat data baru</li><li>Mengurutkan hasil</li><li>Menyaring data</li></ol>
+    <details><summary>Lihat pembahasan</summary><p class="answer">Jawaban: A. Kunci permintaan membuat pengulangan mengembalikan hasil yang sama tanpa data ganda.</p></details>
+  </div><div class="quiz-question">
+    <b>3. Data sering berubah saat klien menelusuri daftar. Cara yang lebih stabil...</b>
+    <ol type="A"><li>Penomoran halaman biasa</li><li>Penanda terakhir dari data yang sudah dikirim</li><li>Meminta seluruh data sekaligus</li></ol>
+    <details><summary>Lihat pembahasan</summary><p class="answer">Jawaban: B. Penanda terakhir tidak terpengaruh data baru yang masuk di antara permintaan.</p></details>
   </div></div>
-  
-  
-  
+  <h4>Ringkasan</h4><ul><li>Parameter alamat menyaring dan mengatur hasil daftar.</li><li>Penomoran halaman membatasi jumlah data yang dikirim dan menyertakan jumlah total.</li><li>Operasi pembuatan tidak otomatis aman diulang; kunci permintaan mencegah data ganda.</li><li>Untuk data yang sering berubah, penelusuran memakai penanda terakhir lebih stabil.</li></ul>
+  <div class="panel"><b>Berikutnya</b><p>Berikutnya: autentikasi API, token, dan CORS. Anda akan mengamankan API untuk pemakaian lintas aplikasi.</p></div>
+  <h4>Sumber</h4><ul><li><a href="https://www.rfc-editor.org/rfc/rfc9110.html" rel="noopener noreferrer">RFC 9110: HTTP Semantics</a> <small>IETF · 9110</small> — Standar HTTP tentang sifat method yang aman diulang.</li><li><a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Methods" rel="noopener noreferrer">MDN: HTTP request methods</a> <small>Mozilla · rolling</small> — Penjelasan sifat method HTTP terkait pengulangan permintaan.</li><li><a href="https://spec.openapis.org/oas/latest.html" rel="noopener noreferrer">OpenAPI Specification</a> <small>OpenAPI Initiative · latest</small> — Cara mendeskripsikan parameter penyaringan dan penomoran halaman pada kontrak.</li></ul>
 </article>
 <article class="lesson" id="m09-l04">
-  <div class="lesson-meta">Pelajaran 04 · 45 menit · Menengah · HTTP</div>
+  <div class="lesson-meta">Pelajaran 04 · 120 menit · Menengah · HTTP</div>
   <h3>Auth API, token, dan CORS</h3>
-  
-  
-  
-  
-  
-  
+  <div class="panel good"><b>Hasil belajar</b><p>Setelah pelajaran ini, Anda dapat mengamankan API memakai token, membedakan jenis token beserta kapan dipakai, serta mengatur akses lintas asal dengan benar.</p></div>
+  <h4>Tujuan</h4><ul><li>Menjelaskan cara kerja autentikasi berbasis token pada API.</li><li>Membedakan token akses dan token penyegar beserta perannya.</li><li>Mengirim token pada permintaan dan memeriksa penolakannya.</li><li>Mengatur akses lintas asal tanpa membuka celah berlebihan.</li></ul>
+  <div class="panel"><b>Prasyarat</b><p>Filter, pagination, dan idempotency</p></div>
+  <h4>Istilah kunci</h4><dl class="glossary"><div><dt>Token akses</dt><dd>Nilai yang dikirim bersama permintaan untuk membuktikan bahwa pemanggil berhak mengakses API.</dd></div><div><dt>Token penyegar</dt><dd>Nilai berumur panjang untuk memperoleh token akses baru setelah token akses kedaluwarsa.</dd></div><div><dt>Masa berlaku</dt><dd>Jangka waktu sebuah token masih diterima sebelum harus diperbarui.</dd></div><div><dt>Asal</dt><dd>Gabungan skema, nama host, dan port yang menjadi identitas sumber permintaan dari peramban.</dd></div><div><dt>Akses lintas asal</dt><dd>Aturan yang menentukan apakah peramban boleh memakai tanggapan dari asal yang berbeda dengan halaman asalnya.</dd></div></dl>
+  <h4>Kartu sintaks</h4><div class="panel">
+  <b><code>Authorization: Bearer &lt;token&gt;</code></b>
+  <p><em>Dibaca: Baca sebagai pengiriman token akses pada header permintaan untuk membuktikan hak pemanggil.</em></p>
+  <p>Server memeriksa token itu dan menentukan pengguna sekaligus haknya sebelum permintaan dilanjutkan.</p>
+  <pre><code>Authorization: Bearer eyJhbGciOi...</code></pre>
+  <p><em>Output: Permintaan tanpa token yang sah ditolak sebelum mencapai logika aplikasi.</em></p>
+  <p><em>Hati-hati: Menyimpan token di tempat yang mudah dibaca skrip pihak lain membuka risiko pencurian sesi.</em></p>
+</div><div class="panel">
+  <b><code>POST /oauth/token grant_type=refresh_token</code></b>
+  <p><em>Dibaca: Baca sebagai permintaan menukar token penyegar dengan token akses yang baru.</em></p>
+  <p>Token penyegar dipakai hanya untuk meminta token akses baru. Dengan begitu, token berumur pendek tetap dapat diperbarui tanpa meminta pengguna masuk lagi.</p>
+  <pre><code>POST /oauth/token grant_type=refresh_token</code></pre>
+  <p><em>Output: Klien memperoleh token akses baru tanpa meminta kata sandi kembali.</em></p>
+  <p><em>Hati-hati: Menyimpan token penyegar tanpa penjagaan membuat penyerang dapat terus memperoleh akses baru.</em></p>
+</div><div class="panel">
+  <b><code>Access-Control-Allow-Origin: https://app.contoh.id</code></b>
+  <p><em>Dibaca: Baca sebagai tanggapan yang menyatakan asal mana yang boleh membaca hasilnya.</em></p>
+  <p>Peramban memakai header ini untuk menentukan apakah halaman dari asal tertentu boleh membaca tanggapan tersebut.</p>
+  <pre><code>Access-Control-Allow-Origin: https://app.contoh.id</code></pre>
+  <p><em>Output: Hanya halaman dari asal itu yang dapat membaca tanggapan lintas asal.</em></p>
+  <p><em>Hati-hati: Membiarkan asal apa pun pada alamat yang memakai kredensial membuka data pengguna ke situs lain.</em></p>
+</div>
+  <h4>Aturan penulisan</h4><ul><li>Pakai token akses berumur pendek dan token penyegar untuk memperbaruinya.</li><li>Kirim token pada header Authorization, bukan pada parameter alamat.</li><li>Jangan menaruh token pada alamat karena alamat mudah tercatat di riwayat.</li><li>Batasi asal yang diizinkan, jangan membiarkan semuanya pada alamat berkredensial.</li><li>Uji permintaan tanpa token, token kedaluwarsa, dan token tidak berhak.</li></ul>
   <section class="lesson-section">
-  <h4>01 · Memahami konsepnya</h4>
-  <p>Autentikasi API bisa menggunakan cookie session untuk web satu domain atau token akses untuk klien native; pilihan bergantung arsitektur. CORS mengatur akses browser lintas origin, bukan menggantikan autentikasi.</p><p>Gunakan HTTPS, token pendek dan rotasi/revokasi yang sesuai. Flutter native tidak tunduk pada CORS browser seperti web. Jangan memasukkan API key rahasia ke paket mobile.</p>
-  
-  <div class="panel good"><b>Best practice</b><p>Pilih skema auth berdasarkan jenis klien; tetap wajib authorize tiap resource.</p></div><div class="panel bad"><b>Kesalahan umum</b><p>Menganggap CORS melindungi API dari semua klien tak sah.</p></div>
+  <h4>01 · Cara membaca proses masuk API</h4>
+  <p>Proses masuk dibaca sebagai pertukaran: klien mengirim bukti identitas, dan server mengembalikan bukti untuk pemakaian berikutnya. Bukti berikutnya berupa token, bukan kata sandi, sehingga kata sandi tidak perlu dikirim berulang.</p><p>Pada contoh, klien mengirim surel dan sandi, lalu server mengembalikan dua nilai: token akses berumur pendek dan token penyegar berumur panjang. Token akses dipakai pada permintaan berikutnya, sedangkan token penyegar disimpan untuk memperbarui.</p><p>Pemisahan dua token itu penting. Bila token akses bocor, masa berlaku pendek membatasi kerugiannya. Token penyegar yang berumur panjang dijaga lebih ketat dan hanya dipakai untuk memperbarui.</p>
+  <pre><code>POST /v1/masuk HTTP/1.1
+Host: api.contoh.id
+Content-Type: application/json
+
+{ &quot;surel&quot;: &quot;budi@contoh.id&quot;, &quot;sandi&quot;: &quot;rahasia&quot; }
+
+HTTP/1.1 200 OK
+Content-Type: application/json
+
+{ &quot;akses&quot;: &quot;eyJhbGciOi...&quot;, &quot;segarkan&quot;: &quot;8f14e45...&quot; }</code></pre><div class="panel"><b>Output yang diharapkan</b><p>Server mengembalikan token akses berumur pendek dan token penyegar untuk memperbaruinya.</p></div><p>Klien mengirim identitas, dan server membalas dengan dua token. Token akses dipakai pada permintaan berikutnya, sedangkan token penyegar dipakai untuk memperbarui.</p><div class="panel"><b>Bedah baris</b><ol><li>Baris 1 · <code>POST /v1/masuk HTTP/1.1</code> — Alamat masuk memakai method pengiriman data.</li><li>Baris 5 · <code>{ &quot;surel&quot;: &quot;budi@contoh.id&quot;, &quot;sandi&quot;: &quot;rahasia&quot; }</code> — Bukti identitas dikirim sekali pada proses masuk.</li><li>Baris 8 · <code>Content-Type: application/json</code> — Server membalas dengan jenis isi JSON.</li><li>Baris 10 · <code>{ &quot;akses&quot;: &quot;eyJhbGciOi...&quot;, &quot;segarkan&quot;: &quot;8f14e45...&quot; }</code> — Token akses dan token penyegar dikembalikan bersamaan.</li></ol></div>
+  <div class="panel good"><b>Kata sandi hanya sekali</b><p>Setelah masuk, klien memakai token, bukan kata sandi. Kata sandi tidak berulang kali melintas di jaringan.</p></div>
+  <div class="panel warn"><b>Cek pemahaman</b><p>Mengapa proses masuk mengembalikan dua token, bukan satu?</p><p>Kriteria berhasil: Token akses berumur pendek membatasi kerugian bila bocor, sedangkan token penyegar yang berumur panjang dipakai memperbaruinya.</p></div>
+</section><section class="lesson-section">
+  <h4>02 · Mengirim token dan menangani penolakan</h4>
+  <p>Permintaan dengan token dibaca seperti permintaan biasa, dengan tambahan header yang membawa bukti. Server memeriksa header itu lebih dulu sebelum menyentuh logika aplikasi.</p><p>Pada contoh, permintaan membawa token yang sudah tidak sah, sehingga server menolak dan menyertakan header yang menyatakan skema autentikasi yang dipakai. Klien memakai keterangan itu untuk memutuskan memperbarui token.</p><p>Tanggapan penolakan sebaiknya tidak membocorkan mengapa token ditolak secara rinci. Cukup nyatakan bahwa autentikasi diperlukan, tanpa menyebut apakah token kedaluwarsa atau tidak dikenal.</p>
+  <pre><code>GET /v1/tugas HTTP/1.1
+Host: api.contoh.id
+Authorization: Bearer eyJhbGciOi...
+Accept: application/json
+
+HTTP/1.1 401 Unauthorized
+WWW-Authenticate: Bearer</code></pre><div class="panel"><b>Output yang diharapkan</b><p>Permintaan dengan token tidak sah ditolak sebelum logika aplikasi dijalankan.</p></div><p>Token dikirim pada header Authorization. Server memeriksanya lebih dulu dan menolak permintaan bila token tidak sah.</p><div class="panel"><b>Bedah baris</b><ol><li>Baris 3 · <code>Authorization: Bearer eyJhbGciOi...</code> — Token dikirim pada header, bukan pada alamat.</li><li>Baris 6 · <code>HTTP/1.1 401 Unauthorized</code> — Status menyatakan autentikasi diperlukan.</li><li>Baris 7 · <code>WWW-Authenticate: Bearer</code> — Header menyebut skema autentikasi yang dipakai.</li></ol></div>
+  <div class="panel warn"><b>Jangan bocorkan sebabnya</b><p>Menyebut secara rinci alasan token ditolak dapat membantu penyerang menebak. Cukup nyatakan bahwa autentikasi diperlukan.</p></div>
   
 </section><section class="lesson-section">
-  <h4>02 · Contoh kode</h4>
-  <p>Perhatikan input, proses, dan output. Ketik ulang, lalu ubah satu nilai.</p>
-  <pre><code>Authorization: Bearer &lt;access-token&gt;
-# Header contoh, token harus dilindungi.</code></pre>
+  <h4>03 · Mengatur akses lintas asal</h4>
+  <p>Akses lintas asal adalah aturan peramban, bukan pengganti autentikasi. Ia menentukan halaman dari asal mana yang boleh membaca tanggapan API, tetapi tidak menentukan siapa yang berhak memakai API.</p><p>Izinkan hanya asal yang memang memakai API Anda. Membiarkan semua asal pada alamat yang memakai kredensial membuat situs lain dapat memakai sesi pengguna yang sedang aktif.</p><p>Untuk permintaan yang tidak sederhana, peramban mengirim permintaan pendahuluan lebih dulu. Server harus menjawabnya dengan menyebut method dan header yang diizinkan agar permintaan sebenarnya dapat dilanjutkan.</p>
+  
+  <div class="panel warn"><b>CORS bukan pengaman</b><p>CORS hanya mengatur peramban. Ia tidak melindungi API dari pemanggil di luar peramban, sehingga autentikasi tetap wajib.</p></div>
+  <div class="panel warn"><b>Cek pemahaman</b><p>Mengapa membiarkan semua asal pada alamat yang memakai kredensial berbahaya?</p><p>Kriteria berhasil: Karena situs lain dapat memakai sesi pengguna yang sedang aktif untuk membaca atau mengubah data.</p></div>
+</section><section class="lesson-section">
+  <h4>04 · Jebakan pada pengelolaan token</h4>
+  <p>Menyimpan token akses pada tempat yang dapat dibaca skrip pihak lain membuka risiko pencurian. Perhatikan tempat penyimpanan token, terutama pada aplikasi yang menampilkan konten dari luar.</p><p>Token akses yang berumur terlalu panjang memperbesar kerugian bila bocor. Sebaiknya token akses berumur pendek dan pembaruan dilakukan lewat token penyegar yang dijaga lebih ketat.</p><p>Mengirim token pada alamat membuatnya tercatat di riwayat dan berkas catatan. Selalu kirim token pada header, bukan pada parameter alamat.</p>
   
   
+  <div class="panel warn"><b>Cek pemahaman</b><p>Mengapa token sebaiknya tidak dikirim pada parameter alamat?</p><p>Kriteria berhasil: Karena alamat mudah tercatat pada riwayat dan berkas catatan sehingga token berisiko terbaca pihak lain.</p></div>
 </section>
-  <h4>Latihan bertingkat</h4><ol><li><b>Latihan 1</b> <em>(Mandiri)</em><p>Buat threat model sederhana untuk penyimpanan token pada browser vs perangkat mobile.</p></li><li><b>Latihan 2</b> <em>(Mandiri)</em><p>Ubah satu input atau asumsi pada contoh, catat hasil dan jelaskan alasannya.</p></li></ol>
-  
-  
+  <h4>Latihan bertingkat</h4><ol><li><b>Kirim token pada permintaan</b> <em>(Terbimbing)</em><p>Tulis permintaan yang mengambil daftar tugas dengan menyertakan token pada header, lalu periksa tanggapannya ketika token tidak sah.</p><ol><li>Tentukan alamat dan method permintaan.</li><li>Sertakan token pada header Authorization.</li><li>Kirim permintaan dengan token sah.</li><li>Kirim ulang dengan token yang tidak sah dan periksa tanggapannya.</li></ol><pre><code>GET /v1/tugas HTTP/1.1
+Authorization: Bearer ...</code></pre><p><em>Hasil: Permintaan dengan token sah berhasil, tanpa token sah ditolak dengan status autentikasi.</em></p><details><summary>Petunjuk bertahap</summary><ol><li>Token dikirim pada header, bukan pada alamat.</li><li>Permintaan tanpa token sah ditolak sebelum logika aplikasi.</li><li>Tanggapan penolakan tidak perlu merinci sebabnya.</li></ol></details><p><em>Tantangan: Tambahkan pemeriksaan bahwa penyebab penolakan tidak dirinci berlebihan.</em></p></li><li><b>Perbarui token akses</b> <em>(Mandiri)</em><p>Rancang alur pembaruan token: klien memakai token penyegar untuk memperoleh token akses baru tanpa meminta pengguna masuk lagi.</p><ol><li>Tentukan alamat dan isi permintaan pembaruan.</li><li>Kirim token penyegar pada permintaan itu.</li><li>Simpan token akses baru yang diterima.</li><li>Uji ketika token penyegar sudah kedaluwarsa.</li></ol><pre><code>POST /oauth/token
+grant_type=refresh_token&amp;refresh_token=...</code></pre><p><em>Hasil: Token akses diperbarui tanpa meminta kata sandi; token penyegar kedaluwarsa ditolak.</em></p><details><summary>Petunjuk bertahap</summary><ol><li>Token penyegar hanya untuk memperbarui.</li><li>Token akses baru dikembalikan pada tanggapan.</li><li>Token penyegar kedaluwarsa memerlukan masuk ulang.</li></ol></details><p><em>Tantangan: Putar token penyegar setiap kali diperbarui.</em></p></li><li><b>Atur akses lintas asal</b> <em>(Penerapan)</em><p>Rancang aturan akses lintas asal untuk API yang dipakai dua aplikasi resmi, lalu jelaskan mengapa asal lain ditolak.</p><ol><li>Sebutkan asal aplikasi yang memang memakai API.</li><li>Tentukan asal yang diizinkan pada pengaturan.</li><li>Tentukan cara menangani permintaan pendahuluan.</li><li>Jelaskan mengapa asal lain ditolak.</li></ol><pre><code>Asal diizinkan: ...
+Permintaan pendahuluan: ...</code></pre><p><em>Hasil: Hanya asal resmi yang diizinkan dan permintaan pendahuluan dijawab dengan benar.</em></p><details><summary>Petunjuk bertahap</summary><ol><li>Batasi asal pada daftar yang jelas.</li><li>Permintaan pendahuluan perlu dijawab server.</li><li>Kredensial memerlukan kehati-hatian tambahan.</li></ol></details><p><em>Tantangan: Uji pemanggilan dari asal yang tidak diizinkan.</em></p></li></ol>
+  <h4>Verifikasi</h4><div class="panel"><b>Mode: Manual</b><pre><code>Uji proses masuk, pemakaian token, pembaruan token, serta pemanggilan lintas asal dari asal yang diizinkan dan tidak.</code></pre><p><em>Hasil yang diharapkan: Masuk mengembalikan token, permintaan tanpa token sah ditolak, token dapat diperbarui, dan hanya asal yang diizinkan dapat membaca tanggapan.</em></p><p><em>Bukti yang disimpan: Simpan permintaan dan catatan hasil setiap pengujian.</em></p></div>
+  <h4>Mengatasi masalah</h4><ul><li><b>Permintaan selalu ditolak meski klien merasa sudah masuk.</b><br>Penyebab umum: Token tidak disertakan atau disertakan pada tempat yang salah.<br>Perbaikan: Kirim token pada header Authorization, bukan pada parameter alamat.</li><li><b>Pengguna dipaksa masuk ulang terlalu sering.</b><br>Penyebab umum: Token akses berumur sangat pendek dan pembaruan tidak dijalankan.<br>Perbaikan: Terapkan pembaruan memakai token penyegar sebelum token akses kedaluwarsa.</li><li><b>Situs lain dapat membaca data API dari peramban pengguna.</b><br>Penyebab umum: Akses lintas asal dibiarkan terbuka untuk semua asal pada alamat yang memakai kredensial.<br>Perbaikan: Batasi asal pada daftar resmi dan tangani permintaan pendahuluan dengan benar.</li><li><b>Token terbaca pihak lain dari catatan sistem.</b><br>Penyebab umum: Token dikirim pada parameter alamat sehingga tercatat di riwayat dan berkas catatan.<br>Perbaikan: Pindahkan token ke header Authorization dan hindari mencatat nilai header itu.</li></ul>
   <div class="quiz"><strong>Uji pemahaman</strong><div class="quiz-question">
-    <b>1. Apa prinsip yang paling tepat untuk topik “Auth API, token, dan CORS”?</b>
-    <ol type="A"><li>Pilih skema auth berdasarkan jenis klien; tetap wajib authorize tiap resource.</li><li>Gunakan solusi paling rumit sejak awal, meski kebutuhan belum jelas.</li><li>Lewati pengujian karena contoh kecil pasti benar.</li></ol>
-    <details><summary>Lihat pembahasan</summary><p class="answer">Jawaban: A. Pilih skema auth berdasarkan jenis klien; tetap wajib authorize tiap resource.</p></details>
+    <b>1. Apa peran token penyegar pada autentikasi API?</b>
+    <ol type="A"><li>Memberi akses penuh selamanya</li><li>Memperoleh token akses baru tanpa meminta pengguna masuk lagi</li><li>Menggantikan kata sandi saat proses masuk</li></ol>
+    <details><summary>Lihat pembahasan</summary><p class="answer">Jawaban: B. Token penyegar berumur panjang dipakai untuk memperbarui token akses berumur pendek.</p></details>
+  </div><div class="quiz-question">
+    <b>2. Apa yang ditandai status autentikasi diperlukan pada tanggapan API?</b>
+    <ol type="A"><li>Permintaan tidak memiliki token yang sah</li><li>Alamat tidak ditemukan</li><li>Server sedang bermasalah</li></ol>
+    <details><summary>Lihat pembahasan</summary><p class="answer">Jawaban: A. Status itu menyatakan autentikasi diperlukan, yaitu token tidak ada atau tidak sah.</p></details>
+  </div><div class="quiz-question">
+    <b>3. API dipakai aplikasi resmi dari satu asal saja. Pengaturan lintas asal yang tepat...</b>
+    <ol type="A"><li>Mengizinkan semua asal</li><li>Mengizinkan hanya asal aplikasi resmi itu</li><li>Mematikan pemeriksaan lintas asal</li></ol>
+    <details><summary>Lihat pembahasan</summary><p class="answer">Jawaban: B. Batasi asal pada daftar resmi, terutama pada alamat yang memakai kredensial.</p></details>
   </div></div>
-  
-  
-  
+  <h4>Ringkasan</h4><ul><li>Autentikasi API memakai token, bukan kata sandi berulang, pada setiap permintaan.</li><li>Token akses berumur pendek, dan token penyegar dipakai untuk memperbaruinya.</li><li>Token dikirim pada header Authorization, dan penolakan menyatakan autentikasi diperlukan.</li><li>Akses lintas asal membatasi asal yang boleh membaca tanggapan peramban, tetapi bukan pengganti autentikasi.</li></ul>
+  <div class="panel"><b>Berikutnya</b><p>Berikutnya: penanganan kesalahan, tenggat waktu, dan percobaan ulang. Anda akan merancang integrasi yang tetap dapat ditangani saat gagal.</p></div>
+  <h4>Sumber</h4><ul><li><a href="https://www.rfc-editor.org/rfc/rfc6749.html" rel="noopener noreferrer">RFC 6749: The OAuth 2.0 Authorization Framework</a> <small>IETF · 6749</small> — Standar OAuth 2.0 tentang token akses dan token penyegar.</li><li><a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/CORS" rel="noopener noreferrer">MDN: Cross-Origin Resource Sharing (CORS)</a> <small>Mozilla · rolling</small> — Penjelasan akses lintas asal dan cara peramban memeriksanya.</li><li><a href="https://www.rfc-editor.org/rfc/rfc9110.html" rel="noopener noreferrer">RFC 9110: HTTP Semantics</a> <small>IETF · 9110</small> — Standar HTTP tentang header kesalian dan status autentikasi.</li></ul>
 </article>
 <article class="lesson" id="m09-l05">
-  <div class="lesson-meta">Pelajaran 05 · 45 menit · Menengah · JavaScript</div>
+  <div class="lesson-meta">Pelajaran 05 · 120 menit · Menengah · JavaScript</div>
   <h3>Error handling, timeout, dan retry</h3>
-  
-  
-  
-  
-  
-  
+  <div class="panel good"><b>Hasil belajar</b><p>Setelah pelajaran ini, Anda dapat merancang penanganan kesalahan yang jelas, menetapkan tenggat waktu, dan memilih percobaan ulang yang aman pada integrasi jaringan.</p></div>
+  <h4>Tujuan</h4><ul><li>Membedakan kesalahan yang dapat dicoba ulang dan yang tidak.</li><li>Menetapkan tenggat waktu pada permintaan jaringan.</li><li>Menerapkan percobaan ulang dengan jeda yang bertambah.</li><li>Menyampaikan kesalahan kepada pengguna dengan pesan yang berguna.</li></ul>
+  <div class="panel"><b>Prasyarat</b><p>Auth API, token, dan CORS</p></div>
+  <h4>Istilah kunci</h4><dl class="glossary"><div><dt>Tenggat waktu</dt><dd>Batas waktu tunggu sebuah permintaan sebelum dianggap gagal agar tidak menggantung.</dd></div><div><dt>Percobaan ulang</dt><dd>Pengiriman ulang permintaan yang gagal dengan harapan berhasil pada percobaan berikutnya.</dd></div><div><dt>Jeda bertambah</dt><dd>Jeda yang makin panjang antar percobaan ulang agar layanan tujuan tidak makin terbebani.</dd></div><div><dt>Kesalahan sementara</dt><dd>Kegagalan yang mungkin hilang bila dicoba lagi, misalnya gangguan jaringan atau layanan yang sedang sibuk.</dd></div></dl>
+  <h4>Kartu sintaks</h4><div class="panel">
+  <b><code>fetch(url, { signal: AbortSignal.timeout(5000) })</code></b>
+  <p><em>Dibaca: Baca sebagai permintaan jaringan dengan batas waktu lima ribu milidetik.</em></p>
+  <p>Bila layanan tujuan tidak menjawab dalam batas itu, permintaan dibatalkan agar aplikasi tidak menunggu tanpa batas.</p>
+  <pre><code>fetch(url, { signal: AbortSignal.timeout(5000) })</code></pre>
+  <p><em>Output: Permintaan yang menggantung dibatalkan dan dilaporkan sebagai kegagalan.</em></p>
+  <p><em>Hati-hati: Membiarkan permintaan tanpa batas waktu membuat aplikasi menggantung ketika jaringan bermasalah.</em></p>
+</div><div class="panel">
+  <b><code>if (!res.ok) throw new Error(`HTTP ${res.status}`);</code></b>
+  <p><em>Dibaca: Baca sebagai pemeriksaan status tanggapan lalu pelaporan kesalahan bila tidak berhasil.</em></p>
+  <p>Permintaan jaringan tidak otomatis gagal pada status kesalahan, sehingga pemeriksaan ini wajib dilakukan.</p>
+  <pre><code>if (!res.ok) throw new Error(`HTTP ${res.status}`);</code></pre>
+  <p><em>Output: Kesalahan sisi layanan dilaporkan sebagai kegagalan yang dapat ditangani.</em></p>
+  <p><em>Hati-hati: Menganggap permintaan berhasil tanpa memeriksa status membuat data kesalahan ikut diproses.</em></p>
+</div><div class="panel">
+  <b><code>await new Promise((r) =&gt; setTimeout(r, 200 * 2 ** coba));</code></b>
+  <p><em>Dibaca: Baca sebagai penantian yang makin panjang pada setiap percobaan ulang.</em></p>
+  <p>Jeda bertambah memberi layanan tujuan waktu untuk pulih dan mencegah percobaan ulang yang menyerbu bersamaan.</p>
+  <pre><code>await new Promise((r) =&gt; setTimeout(r, 200 * 2 ** coba));</code></pre>
+  <p><em>Output: Percobaan berikutnya dijalankan setelah jeda yang sesuai jumlah percobaan.</em></p>
+  <p><em>Hati-hati: Mencoba ulang tanpa jeda memperparah kondisi layanan yang sedang sibuk.</em></p>
+</div>
+  <h4>Aturan penulisan</h4><ul><li>Tetapkan tenggat waktu pada setiap permintaan jaringan.</li><li>Periksa status tanggapan sebelum memakai isinya.</li><li>Coba ulang hanya kesalahan sementara, bukan kesalahan masukan.</li><li>Pakai jeda bertambah dan batasi jumlah percobaan ulang.</li><li>Sampaikan kesalahan kepada pengguna dengan pesan yang dapat ditindaklanjuti.</li></ul>
   <section class="lesson-section">
-  <h4>01 · Memahami konsepnya</h4>
-  <p>Jaringan selalu dapat gagal: timeout, offline, 429, 500, dan koneksi putus. UI memerlukan loading, empty, error, success; retry harus berhati-hati dengan request mutasi.</p><p>Gunakan exponential backoff untuk kegagalan sementara dan batas percobaan. Jelaskan kepada pengguna apa yang tersimpan lokal dan apa yang belum tersinkron.</p>
-  
-  <div class="panel good"><b>Best practice</b><p>Beri pesan error jelas dan hindari pengulangan mutasi tanpa idempotency.</p></div><div class="panel bad"><b>Kesalahan umum</b><p>Retry otomatis POST pembayaran tanpa proteksi duplikasi.</p></div>
-  
+  <h4>01 · Cara membaca fungsi permintaan jaringan</h4>
+  <p>Fungsi permintaan jaringan dibaca dalam tiga langkah: mengirim permintaan dengan batas waktu, memeriksa status tanggapan, lalu memakai isinya. Ketiga langkah itu menjawab tiga hal yang bisa gagal.</p><p>Pada contoh, permintaan dikirim dengan batas waktu lima detik. Bila melewati batas itu, permintaan dibatalkan. Setelah tanggapan diterima, statusnya diperiksa; status yang menandakan kesalahan dilaporkan sebagai kegagalan.</p><p>Langkah pemeriksaan status penting karena permintaan jaringan tidak otomatis dianggap gagal hanya karena statusnya menandakan kesalahan. Tanpa pemeriksaan itu, isi kesalahan dapat ikut diproses seolah-olah data biasa.</p>
+  <pre><code>async function ambilTugas() {
+  const res = await fetch(&quot;/v1/tugas&quot;, {
+    signal: AbortSignal.timeout(5000),
+  });
+  if (!res.ok) throw new Error(`HTTP ${res.status}`);
+  return res.json();
+}</code></pre><div class="panel"><b>Output yang diharapkan</b><p>Permintaan dibatalkan bila melewati lima detik, dan status kesalahan dilaporkan sebagai kegagalan.</p></div><p>Permintaan dikirim dengan batas waktu. Status tanggapan diperiksa sebelum isinya dipakai, sehingga kesalahan tidak lolos sebagai data biasa.</p><div class="panel"><b>Bedah baris</b><ol><li>Baris 2 · <code>const res = await fetch(&quot;/v1/tugas&quot;, {</code> — Permintaan dikirim dengan pengaturan batas waktu.</li><li>Baris 3 · <code>signal: AbortSignal.timeout(5000),</code> — Batas waktu mencegah permintaan menggantung.</li><li>Baris 5 · <code>if (!res.ok) throw new Error(`HTTP ${res.status}`);</code> — Status tanggapan diperiksa sebelum isinya dipakai.</li><li>Baris 6 · <code>return res.json();</code> — Isi tanggapan diubah menjadi data saat permintaan berhasil.</li></ol></div>
+  <div class="panel good"><b>Selalu beri batas waktu</b><p>Permintaan tanpa batas waktu dapat menggantung lama. Batas waktu membuat kegagalan terdeteksi lebih cepat.</p></div>
+  <div class="panel warn"><b>Cek pemahaman</b><p>Mengapa status tanggapan perlu diperiksa meski permintaan berhasil dikirim?</p><p>Kriteria berhasil: Karena permintaan jaringan tidak otomatis gagal pada status kesalahan, sehingga isi kesalahan bisa ikut diproses sebagai data.</p></div>
 </section><section class="lesson-section">
-  <h4>02 · Contoh kode</h4>
-  <p>Perhatikan input, proses, dan output. Ketik ulang, lalu ubah satu nilai.</p>
-  <pre><code>try {
-  // await api.getTasks();
-  console.log(&quot;Data siap&quot;);
-} catch (error) {
-  console.error(&quot;Gagal memuat, coba lagi&quot;, error);
-}</code></pre>
+  <h4>02 · Percobaan ulang yang aman</h4>
+  <p>Percobaan ulang dibaca sebagai perulangan dengan syarat berhenti. Setiap kali gagal, program memutuskan apakah kegagalan itu layak dicoba lagi dan berapa lama menunggu.</p><p>Pada contoh, hanya kesalahan sisi layanan yang dicoba ulang. Kesalahan sisi pengirim langsung dilempar karena mengulanginya tidak akan mengubah hasil; masukan yang salah tetap salah.</p><p>Jeda antar percobaan bertambah pada setiap percobaan. Cara ini memberi layanan tujuan waktu untuk pulih dan mencegah percobaan ulang yang datang bersamaan membebani layanan yang sedang sibuk.</p>
+  <pre><code>async function ambilDenganCobaUlang(url, maks = 3) {
+  for (let coba = 0; coba &lt; maks; coba += 1) {
+    const res = await fetch(url, { signal: AbortSignal.timeout(5000) });
+    if (res.ok) return res.json();
+    if (res.status &lt; 500) throw new Error(`HTTP ${res.status}`);
+    await new Promise((r) =&gt; setTimeout(r, 200 * 2 ** coba));
+  }
+  throw new Error(&quot;Gagal setelah beberapa percobaan&quot;);
+}</code></pre><div class="panel"><b>Output yang diharapkan</b><p>Kesalahan sisi layanan dicoba ulang dengan jeda bertambah; kesalahan masukan langsung dilaporkan.</p></div><p>Perulangan membatasi jumlah percobaan. Hanya kesalahan sisi layanan yang dicoba ulang, dengan jeda yang makin panjang, sedangkan kesalahan masukan langsung dilaporkan.</p><div class="panel"><b>Bedah baris</b><ol><li>Baris 2 · <code>for (let coba = 0; coba &lt; maks; coba += 1) {</code> — Jumlah percobaan dibatasi.</li><li>Baris 4 · <code>if (res.ok) return res.json();</code> — Hasil berhasil langsung dikembalikan.</li><li>Baris 5 · <code>if (res.status &lt; 500) throw new Error(`HTTP ${res.status}`);</code> — Kesalahan masukan tidak dicoba ulang.</li><li>Baris 6 · <code>await new Promise((r) =&gt; setTimeout(r, 200 * 2 ** coba));</code> — Jeda bertambah pada setiap percobaan ulang.</li></ol></div>
+  <div class="panel warn"><b>Jangan ulang kesalahan masukan</b><p>Mengulang permintaan yang masukan atau izinnya salah tidak akan berhasil. Cukup ulangi kegagalan yang bersifat sementara.</p></div>
+  <div class="panel warn"><b>Cek pemahaman</b><p>Mengapa kesalahan masukan sebaiknya tidak dicoba ulang?</p><p>Kriteria berhasil: Karena mengulanginya tidak mengubah hasil; masukan yang salah tetap salah sehingga hanya membuang waktu.</p></div>
+</section><section class="lesson-section">
+  <h4>03 · Memilih kesalahan yang layak dicoba ulang</h4>
+  <p>Kesalahan sementara cocok dicoba ulang: gangguan jaringan, layanan yang sementara tidak tersedia, atau batas permintaan yang terlampaui. Kegagalan semacam itu sering hilang bila dicoba lagi setelah jeda.</p><p>Kesalahan tetap tidak cocok dicoba ulang: masukan yang salah, izin yang tidak memadai, atau alamat yang tidak ada. Mengulanginya hanya membuang waktu dan menambah beban.</p><p>Selalu batasi jumlah percobaan dan tetapkan jeda. Percobaan ulang tanpa batas pada layanan yang bermasalah dapat memperburuk keadaannya.</p>
   
   
+  <div class="panel warn"><b>Cek pemahaman</b><p>Sebutkan satu kesalahan yang layak dicoba ulang dan satu yang tidak.</p><p>Kriteria berhasil: Gangguan jaringan sementara layak dicoba ulang; masukan atau izin yang salah tidak layak dicoba ulang.</p></div>
+</section><section class="lesson-section">
+  <h4>04 · Menyampaikan kesalahan dengan berguna</h4>
+  <p>Pesan kesalahan sebaiknya menyebut apa yang gagal dan langkah apa yang dapat diambil. Pesan seperti permintaan gagal kurang berguna dibandingkan pesan yang menyebut bahwa layanan sedang sibuk dan menyarankan mencoba lagi.</p><p>Bedakan kesalahan yang dapat diperbaiki pengguna dari yang tidak. Bila masukan perlu diperbaiki, arahkan pengguna ke bagian yang salah. Bila layanan yang bermasalah, nyatakan bahwa masalahnya sementara.</p><p>Catat kesalahan beserta keterangan yang cukup untuk penelusuran, tetapi jangan tampilkan rincian teknis kepada pengguna. Rincian teknis membingungkan dan dapat membocorkan hal yang tidak perlu.</p>
+  
+  <div class="panel warn"><b>Jangan tampilkan rincian teknis</b><p>Rincian teknis pada pesan pengguna membingungkan dan dapat membocorkan hal yang tidak perlu. Simpan rincian itu pada catatan.</p></div>
+  <div class="panel warn"><b>Cek pemahaman</b><p>Sebutkan dua hal yang membuat pesan kesalahan berguna bagi pengguna.</p><p>Kriteria berhasil: Menyebut apa yang gagal dan langkah apa yang dapat diambil berikutnya.</p></div>
 </section>
-  <h4>Latihan bertingkat</h4><ol><li><b>Latihan 1</b> <em>(Mandiri)</em><p>Rancang alur offline lalu online untuk membuat tugas di Flutter.</p></li><li><b>Latihan 2</b> <em>(Mandiri)</em><p>Ubah satu input atau asumsi pada contoh, catat hasil dan jelaskan alasannya.</p></li></ol>
-  
-  
+  <h4>Latihan bertingkat</h4><ol><li><b>Permintaan dengan batas waktu</b> <em>(Terbimbing)</em><p>Tulis fungsi yang mengambil data dengan batas waktu dan memeriksa status tanggapan sebelum memakai isinya.</p><ol><li>Kirim permintaan dengan batas waktu.</li><li>Periksa status tanggapan.</li><li>Laporkan kegagalan bila status menandakan kesalahan.</li><li>Kembalikan isi tanggapan saat berhasil.</li></ol><pre><code>async function ambil(url) {
+  // kirim, periksa, kembalikan
+}</code></pre><p><em>Hasil: Permintaan dibatalkan bila melewati batas, dan status kesalahan dilaporkan sebagai kegagalan.</em></p><details><summary>Petunjuk bertahap</summary><ol><li>Batas waktu mencegah permintaan menggantung.</li><li>Status tanggapan selalu diperiksa.</li><li>Isi tanggapan hanya dipakai saat berhasil.</li></ol></details><p><em>Tantangan: Tambahkan pesan kesalahan berbeda untuk kegagalan jaringan dan status kesalahan.</em></p></li><li><b>Percobaan ulang dengan jeda</b> <em>(Mandiri)</em><p>Tambahkan percobaan ulang pada fungsi sebelumnya: hanya kesalahan sementara yang diulang, dengan jeda bertambah dan jumlah percobaan terbatas.</p><ol><li>Tentukan kesalahan yang layak dicoba ulang.</li><li>Batasi jumlah percobaan.</li><li>Tambahkan jeda yang bertambah tiap percobaan.</li><li>Laporkan kegagalan setelah semua percobaan habis.</li></ol><pre><code>for (let coba = 0; coba &lt; 3; coba += 1) {
+  // coba, periksa, tunggu
+}</code></pre><p><em>Hasil: Kesalahan sementara dicoba ulang dengan jeda bertambah, kesalahan tetap langsung dilaporkan.</em></p><details><summary>Petunjuk bertahap</summary><ol><li>Kesalahan masukan tidak diulang.</li><li>Jumlah percobaan dibatasi.</li><li>Jeda bertambah tiap percobaan.</li></ol></details><p><em>Tantangan: Tambahkan keacakan kecil pada jeda agar percobaan tidak bersamaan.</em></p></li><li><b>Rancang penanganan kesalahan aplikasi</b> <em>(Penerapan)</em><p>Rancang penanganan kesalahan untuk aplikasi yang memakai beberapa layanan: bedakan jenis kesalahan, tentukan percobaan ulang, dan susun pesan bagi pengguna.</p><ol><li>Daftar layanan yang dipakai beserta jenis kegagalannya.</li><li>Tentukan mana yang layak dicoba ulang.</li><li>Tentukan pesan pengguna untuk setiap jenis kesalahan.</li><li>Tentukan cara mencatat kesalahan untuk penelusuran.</li></ol><pre><code>Jenis kesalahan: ...
+Percobaan ulang: ...
+Pesan pengguna: ...</code></pre><p><em>Hasil: Setiap jenis kesalahan punya penanganan, percobaan ulang, dan pesan yang sesuai.</em></p><details><summary>Petunjuk bertahap</summary><ol><li>Bedakan kesalahan sementara dan tetap.</li><li>Pesan pengguna berbeda dari catatan teknis.</li><li>Batasi jumlah percobaan ulang.</li></ol></details><p><em>Tantangan: Terapkan rancangan itu pada satu alur lengkap.</em></p></li></ol>
+  <h4>Verifikasi</h4><div class="panel"><b>Mode: Manual</b><pre><code>Uji permintaan dengan batas waktu, percobaan ulang, dan penyampaian pesan kesalahan pada beberapa jenis kegagalan.</code></pre><p><em>Hasil yang diharapkan: Kegagalan sementara dipulihkan lewat percobaan ulang, kegagalan tetap dilaporkan langsung, dan pengguna menerima pesan yang berguna.</em></p><p><em>Bukti yang disimpan: Simpan fungsi dan catatan hasil setiap pengujian.</em></p></div>
+  <h4>Mengatasi masalah</h4><ul><li><b>Aplikasi menggantung tanpa batas ketika jaringan bermasalah.</b><br>Penyebab umum: Permintaan jaringan tidak diberi batas waktu.<br>Perbaikan: Tetapkan batas waktu pada setiap permintaan jaringan.</li><li><b>Isi kesalahan diproses seolah-olah data biasa.</b><br>Penyebab umum: Status tanggapan tidak diperiksa sebelum isinya dipakai.<br>Perbaikan: Periksa status tanggapan dan laporkan kegagalan bila menandakan kesalahan.</li><li><b>Layanan tujuan makin terbebani saat bermasalah.</b><br>Penyebab umum: Percobaan ulang dilakukan tanpa jeda dan tanpa pembatasan.<br>Perbaikan: Batasi jumlah percobaan dan pakai jeda yang bertambah.</li><li><b>Pengguna melihat rincian teknis yang membingungkan.</b><br>Penyebab umum: Pesan kesalahan mentah ditampilkan langsung tanpa disesuaikan.<br>Perbaikan: Susun pesan yang menyebut apa yang gagal dan langkah berikutnya, lalu catat rincian teknis secara terpisah.</li></ul>
   <div class="quiz"><strong>Uji pemahaman</strong><div class="quiz-question">
-    <b>1. Apa prinsip yang paling tepat untuk topik “Error handling, timeout, dan retry”?</b>
-    <ol type="A"><li>Beri pesan error jelas dan hindari pengulangan mutasi tanpa idempotency.</li><li>Gunakan solusi paling rumit sejak awal, meski kebutuhan belum jelas.</li><li>Lewati pengujian karena contoh kecil pasti benar.</li></ol>
-    <details><summary>Lihat pembahasan</summary><p class="answer">Jawaban: A. Beri pesan error jelas dan hindari pengulangan mutasi tanpa idempotency.</p></details>
+    <b>1. Apa fungsi batas waktu pada permintaan jaringan?</b>
+    <ol type="A"><li>Membatalkan permintaan yang menggantung agar tidak menunggu tanpa batas</li><li>Mempercepat jaringan</li><li>Menambah jumlah percobaan ulang</li></ol>
+    <details><summary>Lihat pembahasan</summary><p class="answer">Jawaban: A. Batas waktu membatalkan permintaan yang tidak kunjung dijawab sehingga kegagalan terdeteksi.</p></details>
+  </div><div class="quiz-question">
+    <b>2. Mengapa jeda antar percobaan ulang dibuat makin panjang?</b>
+    <ol type="A"><li>Agar kode lebih panjang</li><li>Agar layanan tujuan punya waktu pulih dan tidak makin terbebani</li><li>Agar kesalahan hilang sendiri</li></ol>
+    <details><summary>Lihat pembahasan</summary><p class="answer">Jawaban: B. Jeda bertambah memberi layanan tujuan waktu pulih dan mencegah percobaan ulang yang menyerbu bersamaan.</p></details>
+  </div><div class="quiz-question">
+    <b>3. Permintaan gagal karena masukan tidak sah. Tindakan yang tepat...</b>
+    <ol type="A"><li>Mencoba ulang berkali-kali</li><li>Langsung melaporkan kegagalan tanpa mencoba ulang</li><li>Mengabaikan kegagalan</li></ol>
+    <details><summary>Lihat pembahasan</summary><p class="answer">Jawaban: B. Kesalahan masukan tidak akan berubah bila diulang, sehingga langsung dilaporkan.</p></details>
   </div></div>
-  
-  
-  
+  <h4>Ringkasan</h4><ul><li>Setiap permintaan jaringan diberi batas waktu agar tidak menggantung tanpa batas.</li><li>Status tanggapan diperiksa sebelum isinya dipakai.</li><li>Percobaan ulang hanya untuk kesalahan sementara, dengan jeda bertambah dan jumlah terbatas.</li><li>Pesan kesalahan menyebut apa yang gagal dan langkah berikutnya; rincian teknis disimpan pada catatan.</li></ul>
+  <div class="panel"><b>Berikutnya</b><p>Berikutnya: arsitektur monolith modular dan microservices. Anda akan memilih batas sistem yang sesuai kebutuhan dan tim.</p></div>
+  <h4>Sumber</h4><ul><li><a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Status" rel="noopener noreferrer">MDN: HTTP response status codes</a> <small>Mozilla · rolling</small> — Daftar status tanggapan untuk memilih kesalahan yang layak dicoba ulang.</li><li><a href="https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API" rel="noopener noreferrer">MDN: Fetch API</a> <small>Mozilla · rolling</small> — Dokumentasi pengambilan data di peramban beserta pembatalannya.</li><li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/async_function" rel="noopener noreferrer">MDN: async function</a> <small>Mozilla · rolling</small> — Penjelasan fungsi asinkron dan penanganan kesalahannya.</li></ul>
 </article>
 <article class="lesson" id="m09-l06">
-  <div class="lesson-meta">Pelajaran 06 · 45 menit · Menengah · JavaScript</div>
+  <div class="lesson-meta">Pelajaran 06 · 120 menit · Menengah · JavaScript</div>
   <h3>Arsitektur monolith modular vs microservices</h3>
-  
-  
-  
-  
-  
-  
+  <div class="panel good"><b>Hasil belajar</b><p>Setelah pelajaran ini, Anda dapat membandingkan arsitektur monolith modular dan microservices serta memilih batas sistem yang sesuai kebutuhan dan ukuran tim.</p></div>
+  <h4>Tujuan</h4><ul><li>Menjelaskan pengertian monolith modular dan microservices.</li><li>Membandingkan keuntungan dan biaya masing-masing pendekatan.</li><li>Menentukan batas modul yang sehat berdasarkan tanggung jawab data.</li><li>Memilih pendekatan sesuai ukuran tim dan kebutuhan.</li></ul>
+  <div class="panel"><b>Prasyarat</b><p>Error handling, timeout, dan retry</p></div>
+  <h4>Istilah kunci</h4><dl class="glossary"><div><dt>Monolith</dt><dd>Aplikasi yang dijalankan sebagai satu kesatuan meski di dalamnya terbagi menjadi beberapa modul.</dd></div><div><dt>Modul</dt><dd>Bagian aplikasi dengan tanggung jawab dan batas yang jelas terhadap bagian lain.</dd></div><div><dt>Microservices</dt><dd>Beberapa layanan kecil yang dijalankan dan diterbitkan terpisah, saling berkomunikasi lewat jaringan.</dd></div><div><dt>Batas layanan</dt><dd>Garis pemisah yang menentukan data dan tanggung jawab mana yang menjadi milik sebuah layanan.</dd></div><div><dt>Ketergantungan jaringan</dt><dd>Ketergantungan yang muncul ketika bagian sistem memanggil bagian lain lewat jaringan sehingga dapat gagal secara terpisah.</dd></div></dl>
+  <h4>Kartu sintaks</h4><div class="panel">
+  <b><code>modul.tugas.daftar({ penggunaId });</code></b>
+  <p><em>Dibaca: Baca sebagai pemanggilan modul lain melalui janji antarmukanya, bukan menyentuh data mentahnya.</em></p>
+  <p>Modul memberi kemampuan lewat antarmuka yang jelas. Bagian lain memanggilnya tanpa mengetahui cara kerjanya di dalam.</p>
+  <pre><code>modul.tugas.daftar({ penggunaId });</code></pre>
+  <p><em>Output: Bagian lain memakai kemampuan modul tanpa bergantung pada rincian dalamnya.</em></p>
+  <p><em>Hati-hati: Membiarkan modul membaca langsung data modul lain membuat batasnya hilang dan perubahan menyebar.</em></p>
+</div><div class="panel">
+  <b><code>POST http://layanan-tugas/v1/tugas</code></b>
+  <p><em>Dibaca: Baca sebagai pemanggilan layanan lain lewat jaringan dengan alamat yang tetap.</em></p>
+  <p>Pada microservices, komunikasi terjadi lewat jaringan sehingga setiap layanan dapat gagal, lambat, atau tidak tersedia secara terpisah.</p>
+  <pre><code>POST http://layanan-tugas/v1/tugas</code></pre>
+  <p><em>Output: Layanan pemanggil menerima hasil atau kegagalan dari layanan tujuan.</em></p>
+  <p><em>Hati-hati: Memanggil layanan tanpa penanganan kegagalan membuat satu gangguan menjalar ke seluruh sistem.</em></p>
+</div><div class="panel">
+  <b><code>if (layananSiap()) { ... }</code></b>
+  <p><em>Dibaca: Baca sebagai pemeriksaan kesiapan sebelum bergantung pada bagian lain.</em></p>
+  <p>Pada sistem yang terpisah, kesiapan bagian lain tidak selalu ada. Pemeriksaan ini membuat bagian yang bergantung tetap dapat berjalan terbatas ketika bagian lain bermasalah.</p>
+  <pre><code>if (layananSiap()) { ... }</code></pre>
+  <p><em>Output: Sistem tetap memberi layanan terbatas meski sebagian bagian lain tidak tersedia.</em></p>
+  <p><em>Hati-hati: Menganggap semua bagian selalu tersedia membuat kegagalan satu bagian menjadi kegagalan seluruh sistem.</em></p>
+</div>
+  <h4>Aturan penulisan</h4><ul><li>Mulai dari satu aplikasi modular, pisahkan hanya bila alasannya jelas.</li><li>Tetapkan batas modul berdasarkan tanggung jawab data, bukan berdasarkan lapisan teknis.</li><li>Sediakan antarmuka antar modul alih-alih membaca data mentah modul lain.</li><li>Untuk layanan terpisah, tangani kegagalan jaringan pada setiap pemanggilan.</li><li>Pilih pendekatan sesuai ukuran tim dan beban operasional yang mampu ditanggung.</li></ul>
   <section class="lesson-section">
-  <h4>01 · Memahami konsepnya</h4>
-  <p>Monolith modular menyatukan beberapa domain dalam satu aplikasi/deployment dengan batas modul jelas. Microservices memerlukan operasi, observability, dan konsistensi terdistribusi lebih rumit.</p><p>Untuk tim kecil dan aplikasi tahap awal, Laravel modular monolith sering lebih sederhana. Terapkan pemisahan tanggung jawab, testing, serta kontrak API sebelum mempertimbangkan distribusi layanan.</p>
-  
-  <div class="panel good"><b>Best practice</b><p>Mulai dengan arsitektur sederhana dan evolusikan berdasarkan kebutuhan terukur.</p></div><div class="panel bad"><b>Kesalahan umum</b><p>Memakai microservices sebelum memiliki kebutuhan operasional yang jelas.</p></div>
-  
+  <h4>01 · Cara membaca batas modul</h4>
+  <p>Modul dibaca dari kemampuannya, bukan dari isinya. Pada contoh, modul tugas menyediakan kemampuan mendaftar tugas, sedangkan modul ringkasan memakai kemampuan itu tanpa tahu bagaimana daftar disusun.</p><p>Perhatikan bahwa modul ringkasan memanggil kemampuan modul tugas, bukan menyentuh basis datanya langsung. Cara ini menjaga batas tetap utuh; perubahan susunan data pada modul tugas tidak memaksa modul ringkasan ikut berubah.</p><p>Inilah inti monolith modular. Semua berjalan dalam satu aplikasi, tetapi batas antar modul dijaga seolah-olah mereka terpisah. Bila suatu saat perlu dipisahkan menjadi layanan, batasnya sudah siap.</p>
+  <pre><code>const modulTugas = {
+  async daftar({ penggunaId }) {
+    const baris = await db.tugas.cari({ penggunaId });
+    return baris.map(keBentukRingkas);
+  },
+};
+
+const modulRingkasan = {
+  async hitung({ penggunaId }) {
+    const daftar = await modulTugas.daftar({ penggunaId });
+    return daftar.length;
+  },
+};</code></pre><div class="panel"><b>Output yang diharapkan</b><p>Modul ringkasan menghitung banyaknya tugas lewat kemampuan modul tugas tanpa menyentuh datanya.</p></div><p>Setiap modul menyediakan kemampuan lewat fungsi. Modul ringkasan memakai kemampuan modul tugas, bukan data mentahnya, sehingga batas tetap jelas.</p><div class="panel"><b>Bedah baris</b><ol><li>Baris 2 · <code>async daftar({ penggunaId }) {</code> — Modul tugas menyediakan kemampuan melalui fungsi.</li><li>Baris 3 · <code>const baris = await db.tugas.cari({ penggunaId });</code> — Modul tugas menjadi satu-satunya yang menyentuh datanya.</li><li>Baris 10 · <code>const daftar = await modulTugas.daftar({ penggunaId });</code> — Modul ringkasan memanggil kemampuan modul lain.</li><li>Baris 11 · <code>return daftar.length;</code> — Modul ringkasan tidak mengetahui cara data disusun.</li></ol></div>
+  <div class="panel good"><b>Batas dulu, pemisahan kemudian</b><p>Batas modul yang rapi membuat pemisahan menjadi layanan terpisah hanya perlu menukar pemanggilan fungsi dengan pemanggilan jaringan.</p></div>
+  <div class="panel warn"><b>Cek pemahaman</b><p>Mengapa modul ringkasan memanggil kemampuan modul tugas alih-alih membaca datanya langsung?</p><p>Kriteria berhasil: Agar batas tetap utuh sehingga perubahan cara penyimpanan pada modul tugas tidak memaksa modul ringkasan berubah.</p></div>
 </section><section class="lesson-section">
-  <h4>02 · Contoh kode</h4>
-  <p>Perhatikan input, proses, dan output. Ketik ulang, lalu ubah satu nilai.</p>
-  <pre><code>// Lapisan umum:
-// UI -&gt; Controller -&gt; Service -&gt; Repository/ORM -&gt; DB
-// Pisahkan domain: Users, Tasks, Reports.</code></pre>
+  <h4>02 · Membandingkan dua pendekatan</h4>
+  <p>Monolith modular dijalankan sebagai satu kesatuan. Ia sederhana untuk dikembangkan dan dioperasikan, mudah diuji secara menyeluruh, dan tidak memerlukan penanganan kegagalan jaringan antar bagian.</p><p>Microservices menjalankan setiap bagian secara terpisah. Ia memungkinkan tiap bagian diterbitkan sendiri dan diskalakan sendiri, tetapi menambah kerumitan jaringan, pemantauan, dan operasional.</p><p>Biaya microservices sering muncul belakangan: menelusuri satu permintaan yang melintasi beberapa layanan jauh lebih sulit, dan kegagalan satu layanan perlu ditangani di setiap pemanggilnya.</p>
+  
+  <div class="panel warn"><b>Jangan pisahkan terlalu dini</b><p>Memisahkan layanan menambah kerumitan operasional. Pisahkan hanya bila ada alasan nyata seperti batas tim atau beban yang sangat berbeda.</p></div>
+  <div class="panel warn"><b>Cek pemahaman</b><p>Sebutkan satu keuntungan microservices dan satu biayanya.</p><p>Kriteria berhasil: Keuntungannya tiap layanan dapat diterbitkan dan diskalakan sendiri; biayanya kerumitan jaringan dan operasional bertambah.</p></div>
+</section><section class="lesson-section">
+  <h4>03 · Menentukan batas yang sehat</h4>
+  <p>Batas yang sehat mengikuti tanggung jawab data. Bagian yang pemilik satu kumpulan data sebaiknya menjadi satu modul, karena perubahan aturannya terpusat di situ.</p><p>Hindari membagi berdasarkan lapisan teknis semata, misalnya satu modul untuk seluruh tampilan dan satu modul untuk seluruh basis data. Cara itu justru menyebarkan satu aturan ke banyak tempat.</p><p>Ukur keberhasilan batas dari kemudahan perubahan. Bila perubahan satu aturan memaksa sentuhan di banyak modul, berarti batasnya belum tepat dan perlu ditinjau ulang.</p>
   
   
+  <div class="panel warn"><b>Cek pemahaman</b><p>Menurut apa sebaiknya batas modul ditentukan?</p><p>Kriteria berhasil: Menurut tanggung jawab data, agar aturan satu kumpulan data terpusat pada satu modul.</p></div>
+</section><section class="lesson-section">
+  <h4>04 · Memilih sesuai keadaan</h4>
+  <p>Untuk tim kecil atau produk yang masih berkembang, satu aplikasi modular biasanya lebih tepat. Ia memberi batas yang rapi tanpa menambah beban operasional memisahkan layanan.</p><p>Microservices lebih masuk akal ketika ada beberapa tim yang perlu menerbitkan bagiannya tanpa saling menunggu, atau ketika sebagian bagian memiliki beban yang sangat berbeda.</p><p>Pilihan bukan sekadar teknis. Ia bergantung pada kemampuan tim memantau, menelusuri, dan mengoperasikan banyak layanan. Bila kemampuan itu belum ada, memisahkan hanya melipatgandakan kesulitan.</p>
+  
+  
+  <div class="panel warn"><b>Cek pemahaman</b><p>Sebutkan dua keadaan yang membuat microservices lebih masuk akal.</p><p>Kriteria berhasil: Beberapa tim perlu menerbitkan bagiannya sendiri tanpa saling menunggu, atau sebagian bagian memiliki beban yang sangat berbeda.</p></div>
 </section>
-  <h4>Latihan bertingkat</h4><ol><li><b>Latihan 1</b> <em>(Mandiri)</em><p>Rancang modul untuk aplikasi presensi, inventaris, dan pelaporan; tentukan batas domain.</p></li><li><b>Latihan 2</b> <em>(Mandiri)</em><p>Ubah satu input atau asumsi pada contoh, catat hasil dan jelaskan alasannya.</p></li></ol>
-  
-  
+  <h4>Latihan bertingkat</h4><ol><li><b>Tiga modul aplikasi tugas</b> <em>(Terbimbing)</em><p>Bagi aplikasi catatan tugas menjadi tiga modul berdasarkan tanggung jawab data, sertakan kemampuan setiap modul, dan jelaskan alasannya.</p><ol><li>Tentukan tanggung jawab data setiap modul.</li><li>Tulis kemampuan yang disediakan tiap modul.</li><li>Tentukan arah pemanggilan antar modul.</li><li>Jelaskan mengapa pembagian itu dipilih.</li></ol><pre><code>Modul 1: ...
+Modul 2: ...
+Modul 3: ...</code></pre><p><em>Hasil: Setiap modul memiliki tanggung jawab data yang jelas dan batas yang tidak tumpang tindih.</em></p><details><summary>Petunjuk bertahap</summary><ol><li>Pembagian mengikuti tanggung jawab data.</li><li>Setiap modul menyediakan kemampuan lewat antarmuka.</li><li>Arah pemanggilan sebaiknya tidak melingkar.</li></ol></details><p><em>Tantangan: Terapkan rancangan itu pada struktur folder proyek.</em></p></li><li><b>Bandingkan pemisahan layanan</b> <em>(Mandiri)</em><p>Pilih satu modul dari latihan sebelumnya dan uraikan apa yang berubah bila modul itu dipisahkan menjadi layanan terpisah.</p><ol><li>Tentukan modul yang dipertimbangkan untuk dipisahkan.</li><li>Uraikan perubahan pada cara pemanggilan.</li><li>Uraikan penanganan kegagalan jaringan yang perlu ditambah.</li><li>Sebutkan keuntungan dan biayanya.</li></ol><pre><code>Modul: ...
+Perubahan pemanggilan: ...
+Penanganan kegagalan: ...</code></pre><p><em>Hasil: Uraian memuat perubahan komunikasi, penanganan kegagalan, serta keuntungan dan biayanya.</em></p><details><summary>Petunjuk bertahap</summary><ol><li>Pemanggilan berubah menjadi lewat jaringan.</li><li>Kegagalan perlu ditangani di pemanggil.</li><li>Biaya operasional ikut dihitung.</li></ol></details><p><em>Tantangan: Sebutkan satu tanda yang menunjukkan pemisahan itu layak dilakukan.</em></p></li><li><b>Rekomendasi arsitektur</b> <em>(Penerapan)</em><p>Untuk sebuah produk dengan tiga anggota tim dan rencana tumbuh, susun rekomendasi arsitektur beserta alasan dan rencana peralihannya.</p><ol><li>Sebutkan keadaan tim dan produk sebagai dasar.</li><li>Pilih antara monolith modular dan microservices.</li><li>Jelaskan alasan pilihan itu.</li><li>Susun rencana bila kelak perlu memisahkan bagian tertentu.</li></ol><pre><code>Pilihan: ...
+Alasan: ...
+Rencana peralihan: ...</code></pre><p><em>Hasil: Rekomendasi beralasan dan memuat rencana yang realistis untuk berkembang.</em></p><details><summary>Petunjuk bertahap</summary><ol><li>Pertimbangkan ukuran tim dan kemampuan operasional.</li><li>Pilihan dapat ditinjau ulang saat keadaan berubah.</li><li>Batas modul yang rapi memudahkan peralihan.</li></ol></details><p><em>Tantangan: Sebutkan tanda-tanda yang memicu peninjauan ulang keputusan itu.</em></p></li></ol>
+  <h4>Verifikasi</h4><div class="panel"><b>Mode: Manual</b><pre><code>Tinjau rancangan modul, uraian pemisahan layanan, dan rekomendasi arsitektur terhadap keadaan tim.</code></pre><p><em>Hasil yang diharapkan: Batas modul mengikuti tanggung jawab data, uraian memuat biaya pemisahan, dan rekomendasi sesuai keadaan tim.</em></p><p><em>Bukti yang disimpan: Simpan seluruh rancangan, uraian, dan rekomendasi.</em></p></div>
+  <h4>Mengatasi masalah</h4><ul><li><b>Perubahan satu aturan memaksa sentuhan di banyak modul.</b><br>Penyebab umum: Batas modul ditentukan berdasarkan lapisan teknis, bukan tanggung jawab data.<br>Perbaikan: Kelompokkan ulang modul berdasarkan tanggung jawab data agar aturannya terpusat.</li><li><b>Satu layanan yang bermasalah menjatuhkan seluruh sistem.</b><br>Penyebab umum: Pemanggilan antar layanan tidak menangani kegagalan jaringan.<br>Perbaikan: Tangani kegagalan pada setiap pemanggilan dan sediakan perilaku terbatas saat bagian lain tidak tersedia.</li><li><b>Tim besar saling menunggu untuk menerbitkan perubahan kecil.</b><br>Penyebab umum: Seluruh bagian diterbitkan bersama sebagai satu kesatuan.<br>Perbaikan: Tentukan batas bagian yang memang perlu diterbitkan sendiri, tetapi hanya bila alasannya nyata.</li><li><b>Operasional menjadi berat setelah memisahkan layanan.</b><br>Penyebab umum: Pemisahan dilakukan sebelum kemampuan pemantauan dan penelusuran siap.<br>Perbaikan: Siapkan pemantauan dan cara menelusuri permintaan lintas layanan, atau gabungkan kembali bagian yang belum perlu terpisah.</li></ul>
   <div class="quiz"><strong>Uji pemahaman</strong><div class="quiz-question">
-    <b>1. Apa prinsip yang paling tepat untuk topik “Arsitektur monolith modular vs microservices”?</b>
-    <ol type="A"><li>Mulai dengan arsitektur sederhana dan evolusikan berdasarkan kebutuhan terukur.</li><li>Gunakan solusi paling rumit sejak awal, meski kebutuhan belum jelas.</li><li>Lewati pengujian karena contoh kecil pasti benar.</li></ol>
-    <details><summary>Lihat pembahasan</summary><p class="answer">Jawaban: A. Mulai dengan arsitektur sederhana dan evolusikan berdasarkan kebutuhan terukur.</p></details>
+    <b>1. Apa yang dimaksud monolith modular?</b>
+    <ol type="A"><li>Beberapa layanan yang dijalankan terpisah</li><li>Aplikasi yang dijalankan sebagai satu kesatuan tetapi terbagi menjadi modul dengan batas jelas</li><li>Aplikasi tanpa pembagian sama sekali</li></ol>
+    <details><summary>Lihat pembahasan</summary><p class="answer">Jawaban: B. Monolith modular berjalan sebagai satu aplikasi, tetapi memiliki batas modul yang jelas.</p></details>
+  </div><div class="quiz-question">
+    <b>2. Mengapa modul sebaiknya berkomunikasi lewat antarmuka, bukan data mentah?</b>
+    <ol type="A"><li>Agar lebih cepat</li><li>Agar perubahan cara penyimpanan tidak memaksa modul lain ikut berubah</li><li>Agar data tersimpan otomatis</li></ol>
+    <details><summary>Lihat pembahasan</summary><p class="answer">Jawaban: B. Antarmuka menjaga batas sehingga rincian di dalam modul dapat berubah tanpa menyebar.</p></details>
+  </div><div class="quiz-question">
+    <b>3. Tim kecil dengan produk yang masih berkembang. Pilihan yang biasanya lebih tepat...</b>
+    <ol type="A"><li>Microservices sejak awal</li><li>Satu aplikasi modular dengan batas yang rapi</li><li>Beberapa layanan untuk setiap fitur</li></ol>
+    <details><summary>Lihat pembahasan</summary><p class="answer">Jawaban: B. Monolith modular memberi batas rapi tanpa beban operasional memisahkan layanan terlalu dini.</p></details>
   </div></div>
-  
-  
-  
+  <h4>Ringkasan</h4><ul><li>Monolith modular berjalan sebagai satu aplikasi dengan batas modul yang jelas.</li><li>Microservices menjalankan tiap bagian terpisah, menambah keluwesan sekaligus kerumitan operasional.</li><li>Batas modul ditentukan berdasarkan tanggung jawab data, dengan komunikasi lewat antarmuka.</li><li>Pilihan arsitektur bergantung pada ukuran tim, beban yang berbeda, dan kemampuan operasional.</li></ul>
+  <div class="panel"><b>Berikutnya</b><p>Materi berikutnya melanjutkan ke pengujian perangkat lunak secara umum. Anda akan menyusun strategi pengujian untuk aplikasi yang lebih besar.</p></div>
+  <h4>Sumber</h4><ul><li><a href="https://spec.openapis.org/oas/latest.html" rel="noopener noreferrer">OpenAPI Specification</a> <small>OpenAPI Initiative · latest</small> — Cara mendeskripsikan antarmuka antar layanan sebagai kontrak yang jelas.</li><li><a href="https://www.rfc-editor.org/rfc/rfc9110.html" rel="noopener noreferrer">RFC 9110: HTTP Semantics</a> <small>IETF · 9110</small> — Dasar komunikasi HTTP yang dipakai pemanggilan antar layanan.</li><li><a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Status" rel="noopener noreferrer">MDN: HTTP response status codes</a> <small>Mozilla · rolling</small> — Status tanggapan untuk menangani kegagalan pemanggilan antar layanan.</li></ul>
 </article>
 </section>
 <section class="module" id="m10">
@@ -8721,7 +9065,7 @@ function Counter(){
     <section class="module" id="referensi">
       <div class="module-head"><h2>Sumber resmi</h2></div>
       <p class="subtitle">Versi teknologi berubah; periksa dokumentasi resmi dan tanggal pemeriksaan saat membuat proyek baru.</p>
-      <ul><li><a href="https://developer.mozilla.org/en-US/docs/Learn_web_development" rel="noopener noreferrer">MDN: Learn web development</a> <small>Mozilla · rolling</small></li><li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide" rel="noopener noreferrer">MDN: JavaScript Guide</a> <small>Mozilla · rolling</small></li><li><a href="https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/Scripting/What_is_JavaScript" rel="noopener noreferrer">MDN: What is JavaScript?</a> <small>Mozilla · rolling</small></li><li><a href="https://web.dev/learn/javascript" rel="noopener noreferrer">web.dev: Learn JavaScript</a> <small>Google · rolling</small></li><li><a href="https://www.typescriptlang.org/docs/handbook/" rel="noopener noreferrer">TypeScript Handbook</a> <small>Microsoft · rolling</small></li><li><a href="https://developer.mozilla.org/en-US/docs/Learn_web_development/Getting_started/Environment_setup/Command_line" rel="noopener noreferrer">MDN: Command line crash course</a> <small>Mozilla · rolling</small></li><li><a href="https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/windows-commands" rel="noopener noreferrer">Microsoft Learn: Windows commands</a> <small>Microsoft · Windows 11</small></li><li><a href="https://www.microsoft.com/en-us/windows/windows-11-specifications" rel="noopener noreferrer">Microsoft: Windows 11 specs and system requirements</a> <small>Microsoft · Windows 11</small></li><li><a href="https://learn.microsoft.com/en-us/windows/whats-new/windows-11-requirements" rel="noopener noreferrer">Microsoft Learn: Windows 11 requirements</a> <small>Microsoft · 2026</small></li><li><a href="https://support.microsoft.com/en-us/windows" rel="noopener noreferrer">Microsoft Support: Windows</a> <small>Microsoft · rolling</small></li><li><a href="https://developer.mozilla.org/en-US/docs/Learn_web_development/Getting_started/Web_standards/How_the_web_works" rel="noopener noreferrer">MDN: How the web works</a> <small>Mozilla · rolling</small></li><li><a href="https://developer.mozilla.org/en-US/docs/Learn_web_development/Extensions/Server-side/First_steps/Client-Server_overview" rel="noopener noreferrer">MDN: Client-server overview</a> <small>Mozilla · rolling</small></li><li><a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/Overview" rel="noopener noreferrer">MDN: HTTP overview</a> <small>Mozilla · rolling</small></li><li><a href="https://www.rfc-editor.org/rfc/rfc9110.html" rel="noopener noreferrer">RFC 9110: HTTP Semantics</a> <small>IETF · 9110</small></li><li><a href="https://developer.chrome.com/docs/devtools/" rel="noopener noreferrer">Chrome DevTools: Documentation</a> <small>Google · rolling</small></li><li><a href="https://developer.chrome.com/docs/devtools/javascript/" rel="noopener noreferrer">Chrome DevTools: Debug JavaScript</a> <small>Google · rolling</small></li><li><a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/Caching" rel="noopener noreferrer">MDN: HTTP caching</a> <small>Mozilla · rolling</small></li><li><a href="https://www.cisa.gov/secure-our-world/use-strong-passwords" rel="noopener noreferrer">CISA: Use strong passwords</a> <small>CISA · rolling</small></li><li><a href="https://support.google.com/accounts/answer/185839" rel="noopener noreferrer">Google: Turn on 2-Step Verification</a> <small>Google · rolling</small></li><li><a href="https://www.cisa.gov/secure-our-world/recognize-and-report-phishing" rel="noopener noreferrer">CISA: Recognize and report phishing</a> <small>CISA · rolling</small></li><li><a href="https://support.google.com/mail/answer/8253" rel="noopener noreferrer">Google: Avoid and report phishing emails</a> <small>Google · rolling</small></li><li><a href="https://peraturan.bpk.go.id/Details/229798/uu-no-27-tahun-2022" rel="noopener noreferrer">JDIH BPK: UU No. 27 Tahun 2022 tentang Pelindungan Data Pribadi</a> <small>BPK RI · 2022</small></li><li><a href="https://www.nist.gov/privacy-framework" rel="noopener noreferrer">NIST: Privacy Framework</a> <small>NIST · 1.1 IPD</small></li><li><a href="https://www.cisa.gov/stopransomware" rel="noopener noreferrer">CISA: StopRansomware</a> <small>CISA · rolling</small></li><li><a href="https://git-scm.com/docs" rel="noopener noreferrer">Git: Reference</a> <small>Git · rolling</small></li><li><a href="https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/Scripting/Debugging_JavaScript" rel="noopener noreferrer">MDN: Debugging JavaScript</a> <small>Mozilla · rolling</small></li><li><a href="https://lsc.cornell.edu/how-to-study/studying-for-and-taking-exams/effective-study-strategies/" rel="noopener noreferrer">Cornell Learning Strategies Center: Effective Study Strategies</a> <small>Cornell University · rolling</small></li><li><a href="https://lsc.cornell.edu/how-to-study/studying-for-and-taking-exams/guidelines-for-creating-a-study-schedule/" rel="noopener noreferrer">Cornell Learning Strategies Center: Creating a Study Schedule</a> <small>Cornell University · rolling</small></li><li><a href="https://www.nist.gov/itl/ai-risk-management-framework" rel="noopener noreferrer">NIST: AI Risk Management Framework</a> <small>NIST · 1.0</small></li><li><a href="https://lsc.cornell.edu/find-your-academic-groove/using-gai-for-learning/" rel="noopener noreferrer">Cornell Learning Strategies Center: Using GAI for Learning</a> <small>Cornell University · rolling</small></li><li><a href="https://www.php.net/manual/en/" rel="noopener noreferrer">PHP Manual</a> <small>PHP Group · 8.5</small></li><li><a href="https://laravel.com/docs/13.x" rel="noopener noreferrer">Laravel Documentation</a> <small>Laravel · 13.x</small></li><li><a href="https://www.postgresql.org/docs/18/" rel="noopener noreferrer">PostgreSQL Documentation</a> <small>PostgreSQL Global Development Group · 18.6</small></li><li><a href="https://docs.flutter.dev/" rel="noopener noreferrer">Flutter Documentation</a> <small>Google · stable</small></li><li><a href="https://dart.dev/language" rel="noopener noreferrer">Dart Language Tour</a> <small>Google · stable</small></li><li><a href="https://top10.owasp.org/2025/" rel="noopener noreferrer">OWASP Top 10:2025</a> <small>OWASP · 2025</small></li><li><a href="https://www.w3.org/TR/WCAG22/" rel="noopener noreferrer">WCAG 2.2</a> <small>W3C · 2.2</small></li><li><a href="https://developer.mozilla.org/en-US/docs/Web/API/Window/localStorage" rel="noopener noreferrer">MDN: Window.localStorage</a> <small>Mozilla · rolling</small></li><li><a href="https://developer.mozilla.org/en-US/docs/Web/API/Storage" rel="noopener noreferrer">MDN: Storage</a> <small>Mozilla · rolling</small></li><li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON" rel="noopener noreferrer">MDN: JSON</a> <small>Mozilla · rolling</small></li><li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/try...catch" rel="noopener noreferrer">MDN: try...catch</a> <small>Mozilla · rolling</small></li><li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Control_flow_and_error_handling" rel="noopener noreferrer">MDN: Control flow and error handling</a> <small>Mozilla · rolling</small></li><li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Loops_and_iteration" rel="noopener noreferrer">MDN: Loops and iteration</a> <small>Mozilla · rolling</small></li><li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Indexed_collections" rel="noopener noreferrer">MDN: Indexed collections</a> <small>Mozilla · rolling</small></li><li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Working_with_objects" rel="noopener noreferrer">MDN: Working with objects</a> <small>Mozilla · rolling</small></li><li><a href="https://developer.mozilla.org/en-US/docs/Glossary/Truthy" rel="noopener noreferrer">MDN: Truthy</a> <small>Mozilla · rolling</small></li><li><a href="https://developer.mozilla.org/en-US/docs/Glossary/Algorithm" rel="noopener noreferrer">MDN: Algorithm</a> <small>Mozilla · rolling</small></li><li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/let" rel="noopener noreferrer">MDN: let</a> <small>Mozilla · rolling</small></li><li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/const" rel="noopener noreferrer">MDN: const</a> <small>Mozilla · rolling</small></li><li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Expressions_and_operators" rel="noopener noreferrer">MDN: Expressions and operators</a> <small>Mozilla · rolling</small></li><li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/typeof" rel="noopener noreferrer">MDN: typeof</a> <small>Mozilla · rolling</small></li><li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Functions" rel="noopener noreferrer">MDN: Functions</a> <small>Mozilla · rolling</small></li><li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array" rel="noopener noreferrer">MDN: Array</a> <small>Mozilla · rolling</small></li><li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Closures" rel="noopener noreferrer">MDN: Closures</a> <small>Mozilla · rolling</small></li><li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Modules" rel="noopener noreferrer">MDN: JavaScript modules</a> <small>Mozilla · rolling</small></li><li><a href="https://developer.mozilla.org/en-US/docs/Web/HTML" rel="noopener noreferrer">MDN: HTML elements reference</a> <small>Mozilla · rolling</small></li><li><a href="https://developer.mozilla.org/en-US/docs/Web/CSS" rel="noopener noreferrer">MDN: CSS reference</a> <small>Mozilla · rolling</small></li><li><a href="https://developer.mozilla.org/en-US/docs/Learn_web_development/Extensions/Forms" rel="noopener noreferrer">MDN: Web forms</a> <small>Mozilla · rolling</small></li><li><a href="https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/CSS_layout" rel="noopener noreferrer">MDN: CSS layout</a> <small>Mozilla · rolling</small></li><li><a href="https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/Accessibility" rel="noopener noreferrer">MDN: Accessibility</a> <small>Mozilla · rolling</small></li><li><a href="https://developer.mozilla.org/en-US/docs/Web/API/Document_Object_Model" rel="noopener noreferrer">MDN: Document Object Model (DOM)</a> <small>Mozilla · rolling</small></li><li><a href="https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/Scripting/Events" rel="noopener noreferrer">MDN: Introduction to events</a> <small>Mozilla · rolling</small></li><li><a href="https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API" rel="noopener noreferrer">MDN: Fetch API</a> <small>Mozilla · rolling</small></li><li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise" rel="noopener noreferrer">MDN: Promise</a> <small>Mozilla · rolling</small></li><li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/async_function" rel="noopener noreferrer">MDN: async function</a> <small>Mozilla · rolling</small></li><li><a href="https://docs.npmjs.com/" rel="noopener noreferrer">npm Docs</a> <small>npm, Inc. · rolling</small></li><li><a href="https://vitest.dev/guide/" rel="noopener noreferrer">Vitest: Getting Started</a> <small>Vitest · rolling</small></li><li><a href="https://git-scm.com/book/en/v2" rel="noopener noreferrer">Pro Git (buku resmi Git)</a> <small>Git · 2nd edition</small></li><li><a href="https://docs.github.com/en" rel="noopener noreferrer">GitHub Docs</a> <small>GitHub · rolling</small></li><li><a href="https://docs.github.com/en/pull-requests" rel="noopener noreferrer">GitHub Docs: Pull requests</a> <small>GitHub · rolling</small></li><li><a href="https://docs.github.com/en/get-started/git-basics/ignoring-files" rel="noopener noreferrer">GitHub Docs: Ignoring files</a> <small>GitHub · rolling</small></li><li><a href="https://www.postgresql.org/docs/current/tutorial.html" rel="noopener noreferrer">PostgreSQL Tutorial</a> <small>PostgreSQL Global Development Group · current</small></li><li><a href="https://www.postgresql.org/docs/current/ddl-constraints.html" rel="noopener noreferrer">PostgreSQL: Constraints</a> <small>PostgreSQL Global Development Group · current</small></li><li><a href="https://www.postgresql.org/docs/current/indexes.html" rel="noopener noreferrer">PostgreSQL: Indexes</a> <small>PostgreSQL Global Development Group · current</small></li><li><a href="https://www.postgresql.org/docs/current/tutorial-transactions.html" rel="noopener noreferrer">PostgreSQL: Transactions</a> <small>PostgreSQL Global Development Group · current</small></li><li><a href="https://www.postgresql.org/docs/current/backup.html" rel="noopener noreferrer">PostgreSQL: Backup and Restore</a> <small>PostgreSQL Global Development Group · current</small></li><li><a href="https://cheatsheetseries.owasp.org/cheatsheets/SQL_Injection_Prevention_Cheat_Sheet.html" rel="noopener noreferrer">OWASP: SQL Injection Prevention Cheat Sheet</a> <small>OWASP Foundation · rolling</small></li><li><a href="https://laravel.com/docs/13.x/routing" rel="noopener noreferrer">Laravel Docs: Routing</a> <small>Laravel · 13.x</small></li><li><a href="https://laravel.com/docs/13.x/eloquent" rel="noopener noreferrer">Laravel Docs: Eloquent ORM</a> <small>Laravel · 13.x</small></li><li><a href="https://laravel.com/docs/13.x/validation" rel="noopener noreferrer">Laravel Docs: Validation</a> <small>Laravel · 13.x</small></li><li><a href="https://laravel.com/docs/13.x/authorization" rel="noopener noreferrer">Laravel Docs: Authorization</a> <small>Laravel · 13.x</small></li><li><a href="https://laravel.com/docs/13.x/eloquent-resources" rel="noopener noreferrer">Laravel Docs: Eloquent API Resources</a> <small>Laravel · 13.x</small></li><li><a href="https://laravel.com/docs/13.x/queues" rel="noopener noreferrer">Laravel Docs: Queues</a> <small>Laravel · 13.x</small></li><li><a href="https://www.php.net/manual/en/language.types.declarations.php" rel="noopener noreferrer">PHP Manual: Type Declarations</a> <small>PHP Group · current</small></li><li><a href="https://www.php.net/manual/en/language.oop5.php" rel="noopener noreferrer">PHP Manual: Classes and Objects</a> <small>PHP Group · current</small></li><li><a href="https://www.php-fig.org/psr/psr-12/" rel="noopener noreferrer">PHP-FIG: PSR-12 Extended Coding Style</a> <small>PHP Framework Interop Group · 1.0.0</small></li><li><a href="https://getcomposer.org/doc/" rel="noopener noreferrer">Composer Documentation</a> <small>Composer · current</small></li><li><a href="https://docs.phpunit.de/en/11.5/" rel="noopener noreferrer">PHPUnit Documentation</a> <small>PHPUnit · 11.5</small></li></ul>
+      <ul><li><a href="https://developer.mozilla.org/en-US/docs/Learn_web_development" rel="noopener noreferrer">MDN: Learn web development</a> <small>Mozilla · rolling</small></li><li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide" rel="noopener noreferrer">MDN: JavaScript Guide</a> <small>Mozilla · rolling</small></li><li><a href="https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/Scripting/What_is_JavaScript" rel="noopener noreferrer">MDN: What is JavaScript?</a> <small>Mozilla · rolling</small></li><li><a href="https://web.dev/learn/javascript" rel="noopener noreferrer">web.dev: Learn JavaScript</a> <small>Google · rolling</small></li><li><a href="https://www.typescriptlang.org/docs/handbook/" rel="noopener noreferrer">TypeScript Handbook</a> <small>Microsoft · rolling</small></li><li><a href="https://developer.mozilla.org/en-US/docs/Learn_web_development/Getting_started/Environment_setup/Command_line" rel="noopener noreferrer">MDN: Command line crash course</a> <small>Mozilla · rolling</small></li><li><a href="https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/windows-commands" rel="noopener noreferrer">Microsoft Learn: Windows commands</a> <small>Microsoft · Windows 11</small></li><li><a href="https://www.microsoft.com/en-us/windows/windows-11-specifications" rel="noopener noreferrer">Microsoft: Windows 11 specs and system requirements</a> <small>Microsoft · Windows 11</small></li><li><a href="https://learn.microsoft.com/en-us/windows/whats-new/windows-11-requirements" rel="noopener noreferrer">Microsoft Learn: Windows 11 requirements</a> <small>Microsoft · 2026</small></li><li><a href="https://support.microsoft.com/en-us/windows" rel="noopener noreferrer">Microsoft Support: Windows</a> <small>Microsoft · rolling</small></li><li><a href="https://developer.mozilla.org/en-US/docs/Learn_web_development/Getting_started/Web_standards/How_the_web_works" rel="noopener noreferrer">MDN: How the web works</a> <small>Mozilla · rolling</small></li><li><a href="https://developer.mozilla.org/en-US/docs/Learn_web_development/Extensions/Server-side/First_steps/Client-Server_overview" rel="noopener noreferrer">MDN: Client-server overview</a> <small>Mozilla · rolling</small></li><li><a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/Overview" rel="noopener noreferrer">MDN: HTTP overview</a> <small>Mozilla · rolling</small></li><li><a href="https://www.rfc-editor.org/rfc/rfc9110.html" rel="noopener noreferrer">RFC 9110: HTTP Semantics</a> <small>IETF · 9110</small></li><li><a href="https://developer.chrome.com/docs/devtools/" rel="noopener noreferrer">Chrome DevTools: Documentation</a> <small>Google · rolling</small></li><li><a href="https://developer.chrome.com/docs/devtools/javascript/" rel="noopener noreferrer">Chrome DevTools: Debug JavaScript</a> <small>Google · rolling</small></li><li><a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/Caching" rel="noopener noreferrer">MDN: HTTP caching</a> <small>Mozilla · rolling</small></li><li><a href="https://www.cisa.gov/secure-our-world/use-strong-passwords" rel="noopener noreferrer">CISA: Use strong passwords</a> <small>CISA · rolling</small></li><li><a href="https://support.google.com/accounts/answer/185839" rel="noopener noreferrer">Google: Turn on 2-Step Verification</a> <small>Google · rolling</small></li><li><a href="https://www.cisa.gov/secure-our-world/recognize-and-report-phishing" rel="noopener noreferrer">CISA: Recognize and report phishing</a> <small>CISA · rolling</small></li><li><a href="https://support.google.com/mail/answer/8253" rel="noopener noreferrer">Google: Avoid and report phishing emails</a> <small>Google · rolling</small></li><li><a href="https://peraturan.bpk.go.id/Details/229798/uu-no-27-tahun-2022" rel="noopener noreferrer">JDIH BPK: UU No. 27 Tahun 2022 tentang Pelindungan Data Pribadi</a> <small>BPK RI · 2022</small></li><li><a href="https://www.nist.gov/privacy-framework" rel="noopener noreferrer">NIST: Privacy Framework</a> <small>NIST · 1.1 IPD</small></li><li><a href="https://www.cisa.gov/stopransomware" rel="noopener noreferrer">CISA: StopRansomware</a> <small>CISA · rolling</small></li><li><a href="https://git-scm.com/docs" rel="noopener noreferrer">Git: Reference</a> <small>Git · rolling</small></li><li><a href="https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/Scripting/Debugging_JavaScript" rel="noopener noreferrer">MDN: Debugging JavaScript</a> <small>Mozilla · rolling</small></li><li><a href="https://lsc.cornell.edu/how-to-study/studying-for-and-taking-exams/effective-study-strategies/" rel="noopener noreferrer">Cornell Learning Strategies Center: Effective Study Strategies</a> <small>Cornell University · rolling</small></li><li><a href="https://lsc.cornell.edu/how-to-study/studying-for-and-taking-exams/guidelines-for-creating-a-study-schedule/" rel="noopener noreferrer">Cornell Learning Strategies Center: Creating a Study Schedule</a> <small>Cornell University · rolling</small></li><li><a href="https://www.nist.gov/itl/ai-risk-management-framework" rel="noopener noreferrer">NIST: AI Risk Management Framework</a> <small>NIST · 1.0</small></li><li><a href="https://lsc.cornell.edu/find-your-academic-groove/using-gai-for-learning/" rel="noopener noreferrer">Cornell Learning Strategies Center: Using GAI for Learning</a> <small>Cornell University · rolling</small></li><li><a href="https://www.php.net/manual/en/" rel="noopener noreferrer">PHP Manual</a> <small>PHP Group · 8.5</small></li><li><a href="https://laravel.com/docs/13.x" rel="noopener noreferrer">Laravel Documentation</a> <small>Laravel · 13.x</small></li><li><a href="https://www.postgresql.org/docs/18/" rel="noopener noreferrer">PostgreSQL Documentation</a> <small>PostgreSQL Global Development Group · 18.6</small></li><li><a href="https://docs.flutter.dev/" rel="noopener noreferrer">Flutter Documentation</a> <small>Google · stable</small></li><li><a href="https://dart.dev/language" rel="noopener noreferrer">Dart Language Tour</a> <small>Google · stable</small></li><li><a href="https://top10.owasp.org/2025/" rel="noopener noreferrer">OWASP Top 10:2025</a> <small>OWASP · 2025</small></li><li><a href="https://www.w3.org/TR/WCAG22/" rel="noopener noreferrer">WCAG 2.2</a> <small>W3C · 2.2</small></li><li><a href="https://developer.mozilla.org/en-US/docs/Web/API/Window/localStorage" rel="noopener noreferrer">MDN: Window.localStorage</a> <small>Mozilla · rolling</small></li><li><a href="https://developer.mozilla.org/en-US/docs/Web/API/Storage" rel="noopener noreferrer">MDN: Storage</a> <small>Mozilla · rolling</small></li><li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON" rel="noopener noreferrer">MDN: JSON</a> <small>Mozilla · rolling</small></li><li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/try...catch" rel="noopener noreferrer">MDN: try...catch</a> <small>Mozilla · rolling</small></li><li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Control_flow_and_error_handling" rel="noopener noreferrer">MDN: Control flow and error handling</a> <small>Mozilla · rolling</small></li><li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Loops_and_iteration" rel="noopener noreferrer">MDN: Loops and iteration</a> <small>Mozilla · rolling</small></li><li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Indexed_collections" rel="noopener noreferrer">MDN: Indexed collections</a> <small>Mozilla · rolling</small></li><li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Working_with_objects" rel="noopener noreferrer">MDN: Working with objects</a> <small>Mozilla · rolling</small></li><li><a href="https://developer.mozilla.org/en-US/docs/Glossary/Truthy" rel="noopener noreferrer">MDN: Truthy</a> <small>Mozilla · rolling</small></li><li><a href="https://developer.mozilla.org/en-US/docs/Glossary/Algorithm" rel="noopener noreferrer">MDN: Algorithm</a> <small>Mozilla · rolling</small></li><li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/let" rel="noopener noreferrer">MDN: let</a> <small>Mozilla · rolling</small></li><li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/const" rel="noopener noreferrer">MDN: const</a> <small>Mozilla · rolling</small></li><li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Expressions_and_operators" rel="noopener noreferrer">MDN: Expressions and operators</a> <small>Mozilla · rolling</small></li><li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/typeof" rel="noopener noreferrer">MDN: typeof</a> <small>Mozilla · rolling</small></li><li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Functions" rel="noopener noreferrer">MDN: Functions</a> <small>Mozilla · rolling</small></li><li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array" rel="noopener noreferrer">MDN: Array</a> <small>Mozilla · rolling</small></li><li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Closures" rel="noopener noreferrer">MDN: Closures</a> <small>Mozilla · rolling</small></li><li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Modules" rel="noopener noreferrer">MDN: JavaScript modules</a> <small>Mozilla · rolling</small></li><li><a href="https://developer.mozilla.org/en-US/docs/Web/HTML" rel="noopener noreferrer">MDN: HTML elements reference</a> <small>Mozilla · rolling</small></li><li><a href="https://developer.mozilla.org/en-US/docs/Web/CSS" rel="noopener noreferrer">MDN: CSS reference</a> <small>Mozilla · rolling</small></li><li><a href="https://developer.mozilla.org/en-US/docs/Learn_web_development/Extensions/Forms" rel="noopener noreferrer">MDN: Web forms</a> <small>Mozilla · rolling</small></li><li><a href="https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/CSS_layout" rel="noopener noreferrer">MDN: CSS layout</a> <small>Mozilla · rolling</small></li><li><a href="https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/Accessibility" rel="noopener noreferrer">MDN: Accessibility</a> <small>Mozilla · rolling</small></li><li><a href="https://developer.mozilla.org/en-US/docs/Web/API/Document_Object_Model" rel="noopener noreferrer">MDN: Document Object Model (DOM)</a> <small>Mozilla · rolling</small></li><li><a href="https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/Scripting/Events" rel="noopener noreferrer">MDN: Introduction to events</a> <small>Mozilla · rolling</small></li><li><a href="https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API" rel="noopener noreferrer">MDN: Fetch API</a> <small>Mozilla · rolling</small></li><li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise" rel="noopener noreferrer">MDN: Promise</a> <small>Mozilla · rolling</small></li><li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/async_function" rel="noopener noreferrer">MDN: async function</a> <small>Mozilla · rolling</small></li><li><a href="https://docs.npmjs.com/" rel="noopener noreferrer">npm Docs</a> <small>npm, Inc. · rolling</small></li><li><a href="https://vitest.dev/guide/" rel="noopener noreferrer">Vitest: Getting Started</a> <small>Vitest · rolling</small></li><li><a href="https://git-scm.com/book/en/v2" rel="noopener noreferrer">Pro Git (buku resmi Git)</a> <small>Git · 2nd edition</small></li><li><a href="https://docs.github.com/en" rel="noopener noreferrer">GitHub Docs</a> <small>GitHub · rolling</small></li><li><a href="https://docs.github.com/en/pull-requests" rel="noopener noreferrer">GitHub Docs: Pull requests</a> <small>GitHub · rolling</small></li><li><a href="https://docs.github.com/en/get-started/git-basics/ignoring-files" rel="noopener noreferrer">GitHub Docs: Ignoring files</a> <small>GitHub · rolling</small></li><li><a href="https://www.postgresql.org/docs/current/tutorial.html" rel="noopener noreferrer">PostgreSQL Tutorial</a> <small>PostgreSQL Global Development Group · current</small></li><li><a href="https://www.postgresql.org/docs/current/ddl-constraints.html" rel="noopener noreferrer">PostgreSQL: Constraints</a> <small>PostgreSQL Global Development Group · current</small></li><li><a href="https://www.postgresql.org/docs/current/indexes.html" rel="noopener noreferrer">PostgreSQL: Indexes</a> <small>PostgreSQL Global Development Group · current</small></li><li><a href="https://www.postgresql.org/docs/current/tutorial-transactions.html" rel="noopener noreferrer">PostgreSQL: Transactions</a> <small>PostgreSQL Global Development Group · current</small></li><li><a href="https://www.postgresql.org/docs/current/backup.html" rel="noopener noreferrer">PostgreSQL: Backup and Restore</a> <small>PostgreSQL Global Development Group · current</small></li><li><a href="https://cheatsheetseries.owasp.org/cheatsheets/SQL_Injection_Prevention_Cheat_Sheet.html" rel="noopener noreferrer">OWASP: SQL Injection Prevention Cheat Sheet</a> <small>OWASP Foundation · rolling</small></li><li><a href="https://laravel.com/docs/13.x/routing" rel="noopener noreferrer">Laravel Docs: Routing</a> <small>Laravel · 13.x</small></li><li><a href="https://laravel.com/docs/13.x/eloquent" rel="noopener noreferrer">Laravel Docs: Eloquent ORM</a> <small>Laravel · 13.x</small></li><li><a href="https://laravel.com/docs/13.x/validation" rel="noopener noreferrer">Laravel Docs: Validation</a> <small>Laravel · 13.x</small></li><li><a href="https://laravel.com/docs/13.x/authorization" rel="noopener noreferrer">Laravel Docs: Authorization</a> <small>Laravel · 13.x</small></li><li><a href="https://laravel.com/docs/13.x/eloquent-resources" rel="noopener noreferrer">Laravel Docs: Eloquent API Resources</a> <small>Laravel · 13.x</small></li><li><a href="https://laravel.com/docs/13.x/queues" rel="noopener noreferrer">Laravel Docs: Queues</a> <small>Laravel · 13.x</small></li><li><a href="https://www.php.net/manual/en/language.types.declarations.php" rel="noopener noreferrer">PHP Manual: Type Declarations</a> <small>PHP Group · current</small></li><li><a href="https://www.php.net/manual/en/language.oop5.php" rel="noopener noreferrer">PHP Manual: Classes and Objects</a> <small>PHP Group · current</small></li><li><a href="https://www.php-fig.org/psr/psr-12/" rel="noopener noreferrer">PHP-FIG: PSR-12 Extended Coding Style</a> <small>PHP Framework Interop Group · 1.0.0</small></li><li><a href="https://getcomposer.org/doc/" rel="noopener noreferrer">Composer Documentation</a> <small>Composer · current</small></li><li><a href="https://docs.phpunit.de/en/11.5/" rel="noopener noreferrer">PHPUnit Documentation</a> <small>PHPUnit · 11.5</small></li><li><a href="https://spec.openapis.org/oas/latest.html" rel="noopener noreferrer">OpenAPI Specification</a> <small>OpenAPI Initiative · latest</small></li><li><a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/CORS" rel="noopener noreferrer">MDN: Cross-Origin Resource Sharing (CORS)</a> <small>Mozilla · rolling</small></li><li><a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Status" rel="noopener noreferrer">MDN: HTTP response status codes</a> <small>Mozilla · rolling</small></li><li><a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Methods" rel="noopener noreferrer">MDN: HTTP request methods</a> <small>Mozilla · rolling</small></li><li><a href="https://www.rfc-editor.org/rfc/rfc6749.html" rel="noopener noreferrer">RFC 6749: The OAuth 2.0 Authorization Framework</a> <small>IETF · 6749</small></li></ul>
     </section>
 
     <section class="appendix" id="mendalam">

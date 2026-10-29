@@ -1422,6 +1422,51 @@
       "tier": "official",
       "version": "11.5",
       "accessedAt": "2026-10-29"
+    },
+    {
+      "id": "openapi-spec",
+      "title": "OpenAPI Specification",
+      "publisher": "OpenAPI Initiative",
+      "url": "https://spec.openapis.org/oas/latest.html",
+      "tier": "standard",
+      "version": "latest",
+      "accessedAt": "2026-10-29"
+    },
+    {
+      "id": "mdn-cors",
+      "title": "MDN: Cross-Origin Resource Sharing (CORS)",
+      "publisher": "Mozilla",
+      "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/CORS",
+      "tier": "official",
+      "version": "rolling",
+      "accessedAt": "2026-10-29"
+    },
+    {
+      "id": "mdn-http-status",
+      "title": "MDN: HTTP response status codes",
+      "publisher": "Mozilla",
+      "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Status",
+      "tier": "official",
+      "version": "rolling",
+      "accessedAt": "2026-10-29"
+    },
+    {
+      "id": "mdn-http-methods",
+      "title": "MDN: HTTP request methods",
+      "publisher": "Mozilla",
+      "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Methods",
+      "tier": "official",
+      "version": "rolling",
+      "accessedAt": "2026-10-29"
+    },
+    {
+      "id": "rfc-6749",
+      "title": "RFC 6749: The OAuth 2.0 Authorization Framework",
+      "publisher": "IETF",
+      "url": "https://www.rfc-editor.org/rfc/rfc6749.html",
+      "tier": "standard",
+      "version": "6749",
+      "accessedAt": "2026-10-29"
     }
   ],
   "modules": [
@@ -1557,7 +1602,13 @@
       "m08-l06",
       "m08-l07",
       "m08-l08",
-      "m08-l09"
+      "m08-l09",
+      "m09-l01",
+      "m09-l02",
+      "m09-l03",
+      "m09-l04",
+      "m09-l05",
+      "m09-l06"
     ],
     "depthWordBands": {
       "fondasi": [
