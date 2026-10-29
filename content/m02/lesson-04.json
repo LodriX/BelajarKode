@@ -4,8 +4,9 @@
   "minutes": 90,
   "level": "Dasar",
   "depth": "fondasi",
+  "schema": 3.1,
   "codeLanguage": "text",
-  "outcome": "Setelah pelajaran ini, Anda dapat menerjemahkan aturan \u201cjika\u201d yang rumit menjadi kondisi boolean yang benar dan mudah dibaca.",
+  "outcome": "Setelah pelajaran ini, Anda dapat menerjemahkan aturan “jika” yang rumit menjadi kondisi boolean yang benar dan mudah dibaca.",
   "objectives": [
     "Membaca dan menyusun kondisi dengan operator DAN, ATAU, dan BUKAN.",
     "Membedakan urutan pemeriksaan yang memengaruhi hasil.",
@@ -38,6 +39,7 @@
   "syntax": [
     {
       "token": "kondisi1 DAN kondisi2",
+      "readAs": "Baca sebagai pernyataan gabungan yang benar hanya jika kedua kondisinya benar.",
       "meaning": "Hasilnya benar hanya jika kedua kondisi benar.",
       "example": "IF judul tidak kosong DAN panjang(judul) <= 120 THEN",
       "output": "Benar hanya untuk judul yang diisi dan tidak melebihi 120 karakter.",
@@ -45,6 +47,7 @@
     },
     {
       "token": "kondisi1 ATAU kondisi2",
+      "readAs": "Baca sebagai pernyataan gabungan yang benar jika minimal satu kondisinya benar.",
       "meaning": "Hasilnya benar jika minimal satu kondisi benar.",
       "example": "IF prioritas = \"tinggi\" ATAU tenggat hari ini THEN",
       "output": "Benar untuk tugas prioritas tinggi meskipun tenggatnya bukan hari ini.",
@@ -52,6 +55,7 @@
     },
     {
       "token": "BUKAN kondisi",
+      "readAs": "Baca sebagai pembalik: nilai benar menjadi salah, dan sebaliknya.",
       "meaning": "Membalik nilai kondisi: benar menjadi salah, salah menjadi benar.",
       "example": "IF BUKAN selesai THEN OUTPUT \"Belum selesai\"",
       "output": "Pesan tampil hanya untuk tugas yang belum selesai.",
@@ -60,10 +64,63 @@
   ],
   "sections": [
     {
+      "id": "cara-membaca",
+      "title": "Cara membaca kondisi bertingkat",
+      "body": [
+        "Kondisi bertingkat dibaca dari dalam ke luar. Mulailah dari tanda kurung terdalam, hitung nilainya, lalu naik ke operator berikutnya. Urutan ini sama dengan urutan yang dipakai program, sehingga hasil bacaan Anda harus sama dengan hasil eksekusi.",
+        "Bila aturan terasa rumit, tulis nilainya dalam tabel kebenaran sebelum menulis kode. Tabel memaksa Anda memeriksa setiap kombinasi, termasuk kasus yang jarang, sehingga kesalahan seperti memakai DAN padahal harus ATAU terlihat lebih awal."
+      ],
+      "code": {
+        "language": "text",
+        "lab": false,
+        "code": "tampil <- (prioritas = \"tinggi\" ATAU tenggat hari ini) DAN BUKAN selesai\n\ntabel:\nprioritas | tenggat | selesai | tampil?\ntinggi    | benar   | salah   | benar\nrendah    | salah   | salah   | salah\nrendah    | benar   | benar   | salah",
+        "output": "Hanya kombinasi yang lolos ketiga syarat yang menghasilkan tampil = benar.",
+        "explain": "Tanda kurung mengelompokkan ATAU lebih dulu, lalu digabung dengan DAN dan BUKAN. Baris-baris tabel memperlihatkan bahwa selesai = benar selalu menutup tampilan.",
+        "annotations": [
+          {
+            "line": 1,
+            "code": "tampil <- (prioritas = \"tinggi\" ATAU tenggat hari ini) DAN BUKAN selesai",
+            "note": "Tanda kurung menentukan ATAU dihitung lebih dulu daripada DAN."
+          },
+          {
+            "line": 4,
+            "code": "prioritas | tenggat | selesai | tampil?",
+            "note": "Judul kolom menetapkan peran setiap nilai dalam tabel."
+          },
+          {
+            "line": 5,
+            "code": "tinggi    | benar   | salah   | benar",
+            "note": "Baris ini lolos karena prioritas tinggi dan tugas belum selesai."
+          },
+          {
+            "line": 6,
+            "code": "rendah    | salah   | salah   | salah",
+            "note": "Baris ini gagal karena kedua syarat utama salah."
+          },
+          {
+            "line": 7,
+            "code": "rendah    | benar   | benar   | salah",
+            "note": "Baris ini gagal karena BUKAN selesai bernilai salah."
+          }
+        ]
+      },
+      "callouts": [
+        {
+          "tone": "warn",
+          "title": "Urutan operator",
+          "body": "DAN dan ATAU tidak selalu dibaca dari kiri ke kanan. Bila ragu, tambahkan tanda kurung agar maksud Anda tidak bergantung pada aturan prioritas."
+        }
+      ],
+      "checkpoint": {
+        "prompt": "Tulis ulang aturan “tampil jika belum selesai dan (prioritas tinggi atau tenggat hari ini)” dengan tanda kurung yang jelas.",
+        "success": "Kondisi memakai tanda kurung untuk mengelompokkan ATAU sebelum digabung dengan DAN, serta memakai BUKAN selesai atau pemeriksaan setara."
+      }
+    },
+    {
       "id": "kondisi-boolean",
       "title": "Kondisi boolean dan tabel kebenaran",
       "body": [
-        "Percabangan hanya bekerja dengan satu pertanyaan: benar atau salah. \u201cTugas penting\u201d bukan kondisi yang bisa dievaluasi; \u201cprioritas sama dengan tinggi\u201d baru bisa. Ubah setiap aturan menjadi pertanyaan yang punya jawaban tegas.",
+        "Percabangan hanya bekerja dengan satu pertanyaan: benar atau salah. “Tugas penting” bukan kondisi yang bisa dievaluasi; “prioritas sama dengan tinggi” baru bisa. Ubah setiap aturan menjadi pertanyaan yang punya jawaban tegas.",
         "Saat aturan memakai dua syarat, tulis tabel kebenaran sebelum menulis pseudocode. Tabel ini memperlihatkan semua kombinasi dan mencegah kesalahan yang hanya muncul pada satu kasus, misalnya tugas penting yang tenggatnya kosong."
       ],
       "code": {
@@ -71,7 +128,24 @@
         "lab": false,
         "code": "prioritas tinggi | tenggat hari ini | tampil?\n------------------------------------------------\nbenar            | benar            | benar\nbenar            | salah            | benar\nsalah            | benar            | benar\nsalah            | salah             | salah",
         "output": "Tiga kombinasi pertama tampil; hanya kombinasi terakhir yang tidak tampil.",
-        "explain": "Aturan ATAU bernilai benar jika salah satu kolom bernilai benar. Tabel ini menjadi dasar pseudocode IF prioritas = \"tinggi\" ATAU tenggat hari ini THEN OUTPUT tugas."
+        "explain": "Aturan ATAU bernilai benar jika salah satu kolom bernilai benar. Tabel ini menjadi dasar pseudocode IF prioritas = \"tinggi\" ATAU tenggat hari ini THEN OUTPUT tugas.",
+        "annotations": [
+          {
+            "line": 1,
+            "code": "prioritas tinggi | tenggat hari ini | tampil?",
+            "note": "Header menyebut dua kondisi yang digabung."
+          },
+          {
+            "line": 3,
+            "code": "benar            | benar            | benar",
+            "note": "Tiga kombinasi pertama menghasilkan tampil benar."
+          },
+          {
+            "line": 5,
+            "code": "salah            | benar            | benar",
+            "note": "Satu kombinasi saja yang gagal, tepatnya saat keduanya salah."
+          }
+        ]
       }
     },
     {
@@ -86,10 +160,37 @@
         "lab": false,
         "code": "LANGKAH Tandai Selesai\n  INPUT tugas\n  IF tugas tidak ditemukan THEN\n    OUTPUT \"Tugas tidak ada\"\n    SELESAI\n  END IF\n  IF tugas.selesai = benar THEN\n    OUTPUT \"Tugas sudah selesai\"\n    SELESAI\n  END IF\n  tugas.selesai <- benar\n  OUTPUT \"Tugas ditandai selesai\"",
         "output": "Tandai Selesai(id tidak ada) -> Tugas tidak ada\nTandai Selesai(id selesai)   -> Tugas sudah selesai\nTandai Selesai(id aktif)     -> Tugas ditandai selesai",
-        "explain": "Dua pemeriksaan awal menghentikan proses lebih cepat. Aksi utama hanya ditulis sekali di bagian bawah, sehingga tidak berulang di setiap cabang."
+        "explain": "Dua pemeriksaan awal menghentikan proses lebih cepat. Aksi utama hanya ditulis sekali di bagian bawah, sehingga tidak berulang di setiap cabang.",
+        "annotations": [
+          {
+            "line": 3,
+            "code": "IF tugas tidak ditemukan THEN",
+            "note": "Guard clause pertama memeriksa keberadaan data."
+          },
+          {
+            "line": 4,
+            "code": "OUTPUT \"Tugas tidak ada\"",
+            "note": "Kasus gagal langsung berhenti dengan pesan yang jelas."
+          },
+          {
+            "line": 7,
+            "code": "IF tugas.selesai = benar THEN",
+            "note": "Guard clause kedua mencegah aksi dijalankan dua kali."
+          },
+          {
+            "line": 11,
+            "code": "tugas.selesai <- benar",
+            "note": "Aksi utama hanya ditulis sekali di bagian bawah."
+          },
+          {
+            "line": 12,
+            "code": "OUTPUT \"Tugas ditandai selesai\"",
+            "note": "Konfirmasi ditampilkan setelah aksi berhasil dijalankan."
+          }
+        ]
       },
       "checkpoint": {
-        "prompt": "Tulis ulang aturan \u201ctampilkan tugas jika belum selesai DAN (prioritas tinggi ATAU tenggat hari ini)\u201d sebagai pseudocode dengan tanda kurung yang jelas.",
+        "prompt": "Tulis ulang aturan “tampilkan tugas jika belum selesai DAN (prioritas tinggi ATAU tenggat hari ini)” sebagai pseudocode dengan tanda kurung yang jelas.",
         "success": "Kondisi Anda memakai tanda kurung untuk mengelompokkan ATAU sebelum digabung dengan DAN."
       }
     },
@@ -105,7 +206,29 @@
         "lab": false,
         "code": "FUNGSI Cocok(task, filter)\n  IF filter = \"semua\" THEN RETURN benar\n  IF filter = \"aktif\" THEN RETURN BUKAN task.selesai\n  IF filter = \"selesai\" THEN RETURN task.selesai\n  IF filter = \"penting\" THEN RETURN task.prioritas = \"tinggi\"\n  RETURN salah\nEND FUNGSI",
         "output": "Cocok(tugas aktif, \"aktif\") -> benar\nCocok(tugas selesai, \"aktif\") -> salah\nCocok(tugas aktif, \"penting\") -> salah",
-        "explain": "Setiap filter adalah satu baris yang bisa diuji. Filter yang tidak dikenal mengembalikan salah, bukan menampilkan semua data secara tidak sengaja."
+        "explain": "Setiap filter adalah satu baris yang bisa diuji. Filter yang tidak dikenal mengembalikan salah, bukan menampilkan semua data secara tidak sengaja.",
+        "annotations": [
+          {
+            "line": 2,
+            "code": "IF filter = \"semua\" THEN RETURN benar",
+            "note": "Filter semua mengembalikan benar untuk setiap tugas."
+          },
+          {
+            "line": 3,
+            "code": "IF filter = \"aktif\" THEN RETURN BUKAN task.selesai",
+            "note": "BUKAN membalik status selesai untuk filter aktif."
+          },
+          {
+            "line": 5,
+            "code": "IF filter = \"penting\" THEN RETURN task.prioritas = \"tinggi\"",
+            "note": "Filter penting memeriksa prioritas tinggi."
+          },
+          {
+            "line": 6,
+            "code": "RETURN salah",
+            "note": "Nilai bawaan salah mencegah filter asing menampilkan semua data."
+          }
+        ]
       }
     }
   ],
@@ -124,7 +247,7 @@
       "expected": "Hanya kombinasi tenggat benar dan selesai salah yang menghasilkan tampil benar.",
       "hints": [
         "DAN membutuhkan kedua sisi benar.",
-        "\u201cBelum selesai\u201d berarti nilai selesai adalah salah."
+        "“Belum selesai” berarti nilai selesai adalah salah."
       ],
       "verification": {
         "mode": "manual",
@@ -145,7 +268,7 @@
       "starterCode": "IF prioritas = \"tinggi\" DAN tenggat hari ini THEN\n  TAMPILKAN tugas",
       "expected": "Operator menjadi ATAU; dua kasus pertama tampil, kasus ketiga tidak.",
       "hints": [
-        "Kata \u201catau\u201d pada aturan biasanya diterjemahkan menjadi ATAU, bukan DAN.",
+        "Kata “atau” pada aturan biasanya diterjemahkan menjadi ATAU, bukan DAN.",
         "Uji satu kasus per baris agar kesalahan terlihat."
       ],
       "verification": {
@@ -228,14 +351,14 @@
       {
         "id": "q3",
         "type": "scenario",
-        "question": "Aturan berbunyi \u201ctampilkan tugas yang penting atau jatuh tempo hari ini\u201d. Operator yang tepat adalah...",
+        "question": "Aturan berbunyi “tampilkan tugas yang penting atau jatuh tempo hari ini”. Operator yang tepat adalah...",
         "options": [
           "DAN",
           "BUKAN",
           "ATAU"
         ],
         "answer": 2,
-        "explanation": "Kata \u201catau\u201d berarti salah satu kondisi cukup benar, sehingga operatornya ATAU."
+        "explanation": "Kata “atau” berarti salah satu kondisi cukup benar, sehingga operatornya ATAU."
       }
     ]
   },
@@ -253,5 +376,12 @@
     "Setiap aturan harus diubah menjadi pertanyaan yang bisa dinilai benar atau salah.",
     "DAN membutuhkan dua kondisi benar; ATAU cukup satu; BUKAN membalik nilai.",
     "Guard clause menghentikan proses lebih awal dan menjaga jalur utama tetap rata."
-  ]
+  ],
+  "conventions": [
+    "Ubah setiap aturan menjadi pertanyaan yang hanya punya jawaban benar atau salah.",
+    "Tulis tabel kebenaran sebelum menulis pseudocode saat aturan memakai lebih dari satu syarat.",
+    "Gunakan tanda kurung untuk mengelompokkan ATAU sebelum digabung dengan DAN.",
+    "Periksa kasus gagal lebih dulu dengan guard clause agar jalur utama tetap rata."
+  ],
+  "next": "Berikutnya: perulangan dan iterasi. Anda akan memilih FOR atau WHILE dan memastikan setiap perulangan pasti berhenti."
 }

@@ -1931,32 +1931,42 @@ Status:</code></pre><p><em>Hasil: Tabel kecil berisi klaim, sumber resmi, hasil 
   <h4>Istilah kunci</h4><dl class="glossary"><div><dt>Dekomposisi</dt><dd>Cara memecah satu masalah besar menjadi bagian-bagian kecil yang lebih mudah dikerjakan dan diuji.</dd></div><div><dt>Input</dt><dd>Data yang masuk ke sebuah langkah, misalnya judul tugas yang diketik pengguna.</dd></div><div><dt>Output</dt><dd>Hasil yang keluar dari sebuah langkah, misalnya tugas yang sudah tersimpan atau pesan error.</dd></div><div><dt>Kriteria penerimaan</dt><dd>Pernyataan yang bisa diperiksa untuk menentukan apakah sebuah fitur sudah berjalan benar.</dd></div></dl>
   <h4>Kartu sintaks</h4><div class="panel">
   <b><code>INPUT nama</code></b>
-  
+  <p><em>Dibaca: Baca sebagai perintah membaca satu nilai dari pengguna lalu menyimpannya ke dalam variabel bernama.</em></p>
   <p>Membaca satu nilai dari pengguna dan menyimpannya ke variabel bernama.</p>
   <pre><code>INPUT judul</code></pre>
   <p><em>Output: Variabel judul berisi teks yang diketik pengguna.</em></p>
   <p><em>Hati-hati: Membaca input dua kali akan meminta pengguna mengetik dua kali; baca sekali lalu simpan.</em></p>
 </div><div class="panel">
   <b><code>OUTPUT nilai</code></b>
-  
+  <p><em>Dibaca: Baca sebagai perintah menampilkan satu nilai atau pesan sebagai hasil akhir sebuah langkah.</em></p>
   <p>Menampilkan satu nilai atau pesan sebagai hasil akhir langkah.</p>
   <pre><code>OUTPUT &quot;Tugas disimpan&quot;</code></pre>
   <p><em>Output: Tugas disimpan</em></p>
   <p><em>Hati-hati: Menulis OUTPUT sebelum data divalidasi membuat pengguna menerima pesan sukses untuk data yang salah.</em></p>
 </div>
-  
+  <h4>Aturan penulisan</h4><ul><li>Tulis satu langkah per baris dan beri satu tanggung jawab saja untuk setiap langkah.</li><li>Awali setiap langkah dengan kata kerja yang jelas: INPUT, PERIKSA, SIMPAN, TAMPILKAN.</li><li>Pisahkan jalur sukses dan jalur gagal dengan SELESAI agar proses berhenti pada kegagalan pertama.</li><li>Nyatakan setiap fitur sebagai input, proses, dan output sebelum menulis detail langkahnya.</li></ul>
   <section class="lesson-section">
-  <h4>01 · Mengapa masalah besar harus dipecah</h4>
+  <h4>01 · Cara membaca satu fitur sebagai langkah kecil</h4>
+  <p>Membaca dekomposisi berarti menelusuri satu fitur dari data yang masuk sampai hasil yang keluar. Mulailah dari input: apa yang diketik pengguna atau data apa yang sudah tersedia. Lalu ikuti setiap langkah proses satu per satu, dan berhenti pada output yang dapat diperiksa.</p><p>Untuk setiap baris, tanyakan apakah baris itu melakukan tepat satu pekerjaan. Baris yang memakai kata “dan” untuk dua pekerjaan berbeda menandakan langkah masih perlu dipecah. Kebiasaan ini membuat bug lebih mudah dilacak karena penyebabnya bisa dipersempit ke satu langkah.</p>
+  <pre><code>FITUR Tambah Tugas
+  Input  : judul dari pengguna
+  Proses : periksa judul   -&gt; jalur gagal berhenti
+  Proses : simpan tugas    -&gt; hanya jika judul valid
+  Output : daftar bertambah atau pesan error</code></pre><div class="panel"><b>Output yang diharapkan</b><p>Satu input, dua langkah proses yang terpisah, dan satu output yang dapat diperiksa.</p></div><p>Baris proses dipisah agar pemeriksaan dan penyimpanan bisa diuji sendiri-sendiri. Urutannya jelas: pemeriksaan selalu mendahului penyimpanan.</p><div class="panel"><b>Bedah baris</b><ol><li>Baris 1 · <code>FITUR Tambah Tugas</code> — Judul fitur menyebut satu pekerjaan pengguna yang jelas.</li><li>Baris 2 · <code>Input  : judul dari pengguna</code> — Input mencatat data yang masuk sebelum langkah apa pun dijalankan.</li><li>Baris 3 · <code>Proses : periksa judul   -&gt; jalur gagal berhenti</code> — Langkah pemeriksaan hanya memutuskan valid atau tidak, lalu berhenti bila gagal.</li><li>Baris 4 · <code>Proses : simpan tugas    -&gt; hanya jika judul valid</code> — Langkah penyimpanan hanya menulis data dan bergantung pada hasil pemeriksaan.</li><li>Baris 5 · <code>Output : daftar bertambah atau pesan error</code> — Output menyatakan hasil yang bisa diamati pengguna untuk kedua jalur.</li></ol></div>
+  <div class="panel good"><b>Langkah terkecil yang berguna</b><p>Sebuah langkah cukup kecil jika Anda bisa menyebutkan satu contoh input dan satu hasil yang dapat diperiksa untuk langkah itu saja.</p></div>
+  <div class="panel warn"><b>Cek pemahaman</b><p>Ambil fitur hapus tugas, lalu tuliskan langkah dekomposisinya sebagai input, proses, dan output.</p><p>Kriteria berhasil: Jawaban menyebut id tugas sebagai input, pencarian dan penghapusan sebagai dua langkah proses terpisah, serta daftar terbaru atau pesan gagal sebagai output.</p></div>
+</section><section class="lesson-section">
+  <h4>02 · Mengapa masalah besar harus dipecah</h4>
   <p>Permintaan “buat aplikasi catatan tugas” terdengar sederhana, tetapi di dalamnya ada banyak keputusan: data apa yang disimpan, bagaimana urutan tampil, apa yang terjadi jika judul kosong, dan bagaimana pengguna menghapus tugas. Jika semua keputusan itu dikerjakan sekaligus, Anda akan cepat kehilangan jejak bagian mana yang salah.</p><p>Dekomposisi menjawab masalah itu dengan satu aturan: satu langkah hanya boleh punya satu tanggung jawab yang jelas. Langkah “periksa judul” terpisah dari langkah “simpan tugas”. Ketika nanti muncul bug, Anda tahu harus memeriksa langkah yang mana.</p>
   <pre><code>PROGRAM Catatan Tugas
   INPUT judul
   PERIKSA judul
   SIMPAN tugas
-  TAMPILKAN daftar tugas</code></pre><div class="panel"><b>Output yang diharapkan</b><p>Program berjalan dari atas ke bawah, satu tanggung jawab per baris.</p></div><p>Setiap baris adalah satu langkah yang bisa diuji sendiri. Baris PERIKSA hanya memutuskan valid atau tidak; baris SIMPAN hanya menulis data; baris TAMPILKAN hanya menampilkan.</p>
+  TAMPILKAN daftar tugas</code></pre><div class="panel"><b>Output yang diharapkan</b><p>Program berjalan dari atas ke bawah, satu tanggung jawab per baris.</p></div><p>Setiap baris adalah satu langkah yang bisa diuji sendiri. Baris PERIKSA hanya memutuskan valid atau tidak; baris SIMPAN hanya menulis data; baris TAMPILKAN hanya menampilkan.</p><div class="panel"><b>Bedah baris</b><ol><li>Baris 1 · <code>PROGRAM Catatan Tugas</code> — Nama program menyatakan satu fitur besar yang akan dipecah.</li><li>Baris 2 · <code>INPUT judul</code> — Langkah pertama membaca data dari pengguna.</li><li>Baris 3 · <code>PERIKSA judul</code> — Pemeriksaan dipisah dari penyimpanan agar mudah diuji sendiri.</li><li>Baris 4 · <code>SIMPAN tugas</code> — Penyimpanan hanya menulis data, tanpa memutuskan valid atau tidak.</li><li>Baris 5 · <code>TAMPILKAN daftar tugas</code> — Langkah terakhir menghasilkan output yang dapat diperiksa pengguna.</li></ol></div>
   <div class="panel good"><b>Aturan satu langkah</b><p>Jika satu langkah memakai kata “dan” untuk dua pekerjaan berbeda, pecah lagi. “Periksa dan simpan” adalah dua langkah, bukan satu.</p></div>
   
 </section><section class="lesson-section">
-  <h4>02 · Pola input, proses, output</h4>
+  <h4>03 · Pola input, proses, output</h4>
   <p>Setiap langkah kecil bisa dijelaskan dengan tiga pertanyaan: data apa yang masuk, apa yang dikerjakan, dan hasil apa yang keluar. Untuk fitur tambah tugas, input-nya judul, proses-nya memeriksa aturan lalu menyimpan, dan output-nya tugas baru di daftar atau pesan kesalahan.</p><p>Pola ini memaksa Anda menentukan hasil sebelum menulis kode. Jika output tidak bisa dibayangkan, langkah tersebut masih terlalu kabur untuk dikerjakan.</p>
   <pre><code>LANGKAH Tambah Tugas
   INPUT judul
@@ -1966,11 +1976,11 @@ Status:</code></pre><p><em>Hasil: Tabel kecil berisi klaim, sumber resmi, hasil 
   AKHIR JIKA
   SIMPAN tugas dengan judul
   OUTPUT &quot;Tugas disimpan&quot;</code></pre><div class="panel"><b>Output yang diharapkan</b><p>Tambah Tugas(&quot;Belajar&quot;) -&gt; Tugas disimpan
-Tambah Tugas(&quot;&quot;)        -&gt; Judul wajib diisi</p></div><p>Baris JIKA memisahkan jalur gagal dan jalur sukses. Tanpa pemisahan itu, tugas kosong akan tetap tersimpan dan merusak daftar.</p>
+Tambah Tugas(&quot;&quot;)        -&gt; Judul wajib diisi</p></div><p>Baris JIKA memisahkan jalur gagal dan jalur sukses. Tanpa pemisahan itu, tugas kosong akan tetap tersimpan dan merusak daftar.</p><div class="panel"><b>Bedah baris</b><ol><li>Baris 1 · <code>LANGKAH Tambah Tugas</code> — Nama langkah menyebut satu pekerjaan pengguna.</li><li>Baris 3 · <code>JIKA judul kosong MAKA</code> — Kondisi memisahkan jalur gagal dan jalur sukses.</li><li>Baris 5 · <code>SELESAI</code> — SELESAI menghentikan proses pada kegagalan pertama.</li><li>Baris 7 · <code>SIMPAN tugas dengan judul</code> — Penyimpanan hanya dijalankan setelah validasi lolos.</li><li>Baris 8 · <code>OUTPUT &quot;Tugas disimpan&quot;</code> — Pesan sukses ditampilkan hanya pada jalur yang benar.</li></ol></div>
   
   <div class="panel warn"><b>Cek pemahaman</b><p>Tuliskan input, proses, dan output untuk fitur “hardus tugas” sebelum melihat pelajaran berikutnya.</p><p>Kriteria berhasil: Jawaban Anda menyebut tugas mana yang dihapus sebagai input, pencarian dan penghapusan sebagai proses, serta daftar terbaru atau pesan gagal sebagai output.</p></div>
 </section><section class="lesson-section">
-  <h4>03 · Kriteria penerimaan yang bisa diuji</h4>
+  <h4>04 · Kriteria penerimaan yang bisa diuji</h4>
   <p>Kriteria penerimaan mengubah harapan menjadi pernyataan yang bisa dinilai. “Tampilan harus bagus” tidak bisa diuji. “Judul kosong ditolak dengan pesan Judul wajib diisi” bisa diuji dengan satu percobaan.</p><p>Tulis kriteria dalam bentuk: diberikan kondisi tertentu, ketika pengguna melakukan aksi, maka hasilnya harus tertentu. Pola ini disebut juga given-when-then dan dipakai untuk menyusun test case di modul berikutnya.</p>
   <pre><code>KRITERIA 1
   DIBERIKAN daftar tugas kosong
@@ -1980,7 +1990,7 @@ Tambah Tugas(&quot;&quot;)        -&gt; Judul wajib diisi</p></div><p>Baris JIKA
 KRITERIA 2
   DIBERIKAN judul berisi spasi saja
   KETIKA pengguna menekan Simpan
-  MAKA muncul pesan &quot;Judul wajib diisi&quot; dan daftar tidak berubah</code></pre><div class="panel"><b>Output yang diharapkan</b><p>Dua kriteria yang masing-masing bisa lulus atau gagal tanpa menebak maksud penulis.</p></div><p>Kriteria pertama menguji jalur sukses; kriteria kedua menguji jalur gagal. Keduanya menyebut kondisi awal, aksi, dan hasil yang bisa diamati.</p>
+  MAKA muncul pesan &quot;Judul wajib diisi&quot; dan daftar tidak berubah</code></pre><div class="panel"><b>Output yang diharapkan</b><p>Dua kriteria yang masing-masing bisa lulus atau gagal tanpa menebak maksud penulis.</p></div><p>Kriteria pertama menguji jalur sukses; kriteria kedua menguji jalur gagal. Keduanya menyebut kondisi awal, aksi, dan hasil yang bisa diamati.</p><div class="panel"><b>Bedah baris</b><ol><li>Baris 1 · <code>KRITERIA 1</code> — Setiap kriteria diberi nomor agar bisa dirujuk saat pengujian.</li><li>Baris 2 · <code>DIBERIKAN daftar tugas kosong</code> — DIBERIKAN menyebut kondisi awal yang bisa diperiksa.</li><li>Baris 4 · <code>MAKA daftar berisi satu tugas berjudul Belajar</code> — MAKA menyatakan hasil yang dapat diamati, bukan perasaan pengguna.</li><li>Baris 6 · <code>KRITERIA 2</code> — Kriteria kedua menguji jalur gagal, bukan mengulang jalur sukses.</li><li>Baris 9 · <code>MAKA muncul pesan &quot;Judul wajib diisi&quot; dan daftar tidak berubah</code> — Hasil menggabungkan pesan dan keadaan data setelah aksi.</li></ol></div>
   
   
 </section>
@@ -2008,7 +2018,7 @@ KRITERIA 2
     <details><summary>Lihat pembahasan</summary><p class="answer">Jawaban: B. Fitur edit perlu dispesifikasikan dulu: data apa yang masuk, apa yang diubah, dan hasil apa yang diharapkan.</p></details>
   </div></div>
   <h4>Ringkasan</h4><ul><li>Masalah besar dipecah menjadi langkah kecil dengan satu tanggung jawab per langkah.</li><li>Setiap langkah dijelaskan lewat input, proses, dan output yang konkret.</li><li>Kriteria penerimaan memakai pola diberikan-ketika-maka dan harus bisa lulus atau gagal.</li></ul>
-  
+  <div class="panel"><b>Berikutnya</b><p>Berikutnya: pseudocode dan flowchart. Anda akan menerjemahkan langkah dekomposisi menjadi pseudocode yang konsisten dan diagram alur.</p></div>
   <h4>Sumber</h4><ul><li><a href="https://developer.mozilla.org/en-US/docs/Glossary/Algorithm" rel="noopener noreferrer">MDN: Algorithm</a> <small>Mozilla · rolling</small> — Definisi resmi algoritma sebagai urutan langkah terbatas untuk menyelesaikan masalah.</li><li><a href="https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/Scripting/What_is_JavaScript" rel="noopener noreferrer">MDN: What is JavaScript?</a> <small>Mozilla · rolling</small> — Konteks bagaimana instruksi langkah demi langkah nantinya dijalankan oleh program.</li></ul>
 </article>
 <article class="lesson" id="m02-l02">
@@ -2020,7 +2030,7 @@ KRITERIA 2
   <h4>Istilah kunci</h4><dl class="glossary"><div><dt>Pseudocode</dt><dd>Tulisan langkah program memakai bahasa manusia dan struktur yang mirip kode, tanpa aturan sintaks bahasa pemrograman tertentu.</dd></div><div><dt>Flowchart</dt><dd>Diagram alur yang memakai simbol baku untuk menunjukkan urutan langkah dan percabangan.</dd></div><div><dt>Simbol keputusan</dt><dd>Simbol belah ketupat pada flowchart yang berisi pertanyaan dengan dua jawaban, biasanya Ya dan Tidak.</dd></div><div><dt>Penelusuran (trace)</dt><dd>Menjalankan langkah pseudocode secara manual dengan satu contoh input untuk memeriksa hasilnya.</dd></div></dl>
   <h4>Kartu sintaks</h4><div class="panel">
   <b><code>IF kondisi THEN ... ELSE ... END IF</code></b>
-  
+  <p><em>Dibaca: Baca sebagai perintah: jika kondisi benar kerjakan blok pertama, selain itu kerjakan blok kedua, lalu tutup dengan END IF.</em></p>
   <p>Menjalankan satu blok jika kondisi benar, dan blok lain jika kondisi salah.</p>
   <pre><code>IF judul kosong THEN
   OUTPUT &quot;Judul wajib diisi&quot;
@@ -2031,16 +2041,27 @@ END IF</code></pre>
   <p><em>Hati-hati: Lupa END IF membuat batas cabang tidak jelas dan mudah salah saat diterjemahkan menjadi kode.</em></p>
 </div><div class="panel">
   <b><code>nilai &lt;- ekspresi</code></b>
-  
+  <p><em>Dibaca: Baca sebagai pemberian nilai: hitung ekspresi di kanan, lalu simpan hasilnya ke variabel di kiri panah.</em></p>
   <p>Memberi nilai hasil perhitungan ke sebuah variabel.</p>
   <pre><code>jumlah &lt;- 0
 jumlah &lt;- jumlah + 1</code></pre>
   <p><em>Output: jumlah bernilai 1 setelah baris kedua.</em></p>
   <p><em>Hati-hati: Tanda &lt;- bukan perbandingan; perbandingan ditulis dengan = atau “sama dengan” di kondisi.</em></p>
 </div>
-  
+  <h4>Aturan penulisan</h4><ul><li>Tulis kata kunci dengan huruf besar secara konsisten: INPUT, IF, ELSE, WHILE, OUTPUT.</li><li>Gunakan satu langkah per baris dan indentasi untuk langkah di dalam percabangan atau perulangan.</li><li>Beri nama variabel yang menggambarkan isinya, misalnya judul, daftarTugas, jumlahSelesai.</li><li>Pastikan setiap belah ketupat pada flowchart punya dua panah keluar berlabel Ya dan Tidak.</li></ul>
   <section class="lesson-section">
-  <h4>01 · Empat aturan pseudocode yang konsisten</h4>
+  <h4>01 · Cara membaca pseudocode dan padanannya di flowchart</h4>
+  <p>Membaca pseudocode berarti mengikuti alur dari baris pertama sampai baris yang mengakhiri program. Mulailah dari INPUT untuk mengetahui data yang masuk, lalu telusuri percabangan: setiap IF memilih satu cabang, dan END IF menandai akhir pilihan.</p><p>Padanan di flowchart memakai simbol dengan arti yang sama. Jajar genjang mewakili input atau output, persegi panjang mewakili proses, dan belah ketupat mewakili keputusan. Jika sebuah keputusan hanya punya satu panah keluar, berarti ada jalur yang belum Anda tentukan.</p>
+  <pre><code>INPUT judul
+IF judul kosong THEN
+  OUTPUT &quot;Judul wajib diisi&quot;
+ELSE
+  SIMPAN tugas
+END IF</code></pre><div class="panel"><b>Output yang diharapkan</b><p>Input &quot;&quot; menampilkan pesan; input &quot;Belajar&quot; menyimpan tugas.</p></div><p>Baris IF membaca kondisi judul kosong. Karena hanya satu cabang yang dijalankan, pembaca tahu pesan error dan penyimpanan tidak pernah terjadi bersamaan.</p><div class="panel"><b>Bedah baris</b><ol><li>Baris 1 · <code>INPUT judul</code> — Input adalah jajar genjang pada flowchart.</li><li>Baris 2 · <code>IF judul kosong THEN</code> — IF adalah belah ketupat dengan dua jalur keluar.</li><li>Baris 3 · <code>OUTPUT &quot;Judul wajib diisi&quot;</code> — Cabang THEN adalah output untuk jalur gagal.</li><li>Baris 5 · <code>SIMPAN tugas</code> — Cabang ELSE adalah proses untuk jalur sukses.</li><li>Baris 6 · <code>END IF</code> — END IF menutup pilihan dan menyatukan kembali kedua jalur.</li></ol></div>
+  <div class="panel good"><b>Ikuti alurnya, bukan barisnya</b><p>Bacalah sesuai alur eksekusi, bukan sekadar urutan baris. Percabangan membuat sebagian baris dilewati untuk input tertentu.</p></div>
+  <div class="panel warn"><b>Cek pemahaman</b><p>Terjemahkan pseudocode pada blok kode di atas menjadi urutan panah flowchart.</p><p>Kriteria berhasil: Jawaban menyebut jajar genjang untuk INPUT dan OUTPUT, persegi panjang untuk SIMPAN, serta belah ketupat untuk IF dengan dua jalur berlabel.</p></div>
+</section><section class="lesson-section">
+  <h4>02 · Empat aturan pseudocode yang konsisten</h4>
   <p>Pseudocode tidak punya kompiler, jadi konsistensi harus Anda jaga sendiri. Pakai satu gaya penulisan untuk seluruh proyek: kata kunci huruf besar, satu langkah per baris, dan indentasi untuk menunjukkan langkah yang berada di dalam percabangan atau perulangan.</p><p>Beri nama variabel dengan jelas: judul, daftarTugas, jumlahSelesai. Hindari nama seperti x atau data karena pembaca harus menebak isinya. Tuliskan juga tipe nilai secara singkat di komentar bila perlu, misalnya “judul: teks”.</p>
   <pre><code>-- pseudocode: tambah tugas
 INPUT judul            -- teks
@@ -2050,11 +2071,11 @@ ELSE
   SIMPAN tugas dengan judul
   OUTPUT &quot;Tugas disimpan&quot;
 END IF</code></pre><div class="panel"><b>Output yang diharapkan</b><p>Input &quot;Belajar&quot; -&gt; Tugas disimpan
-Input &quot;&quot;        -&gt; Judul wajib diisi</p></div><p>Kata kunci INPUT, IF, ELSE, dan OUTPUT ditulis konsisten. Indentasi menunjukkan bahwa SIMPAN dan OUTPUT hanya dijalankan pada cabang ELSE.</p>
+Input &quot;&quot;        -&gt; Judul wajib diisi</p></div><p>Kata kunci INPUT, IF, ELSE, dan OUTPUT ditulis konsisten. Indentasi menunjukkan bahwa SIMPAN dan OUTPUT hanya dijalankan pada cabang ELSE.</p><div class="panel"><b>Bedah baris</b><ol><li>Baris 1 · <code>-- pseudocode: tambah tugas</code> — Komentar menandai tujuan blok tanpa mengubah alurnya.</li><li>Baris 2 · <code>INPUT judul            -- teks</code> — Komentar tipe di samping input menjaga tipe nilai tetap jelas.</li><li>Baris 3 · <code>IF judul kosong THEN</code> — Kata kunci huruf besar menandai awal percabangan.</li><li>Baris 6 · <code>SIMPAN tugas dengan judul</code> — Indentasi menunjukkan baris ini hanya dijalankan pada cabang ELSE.</li><li>Baris 8 · <code>END IF</code> — END IF menutup percabangan dan mengembalikan alur utama.</li></ol></div>
   <div class="panel warn"><b>Jangan mencampur bahasa</b><p>Jika kata kunci ditulis dalam bahasa Indonesia, gunakan konsisten. Mencampur INPUT dengan console.log membuat pseudocode berubah menjadi kode setengah jadi.</p></div>
   
 </section><section class="lesson-section">
-  <h4>02 · Membaca dan menggambar flowchart</h4>
+  <h4>03 · Membaca dan menggambar flowchart</h4>
   <p>Flowchart memakai empat simbol inti: oval untuk mulai dan selesai, persegi panjang untuk proses, jajar genjang untuk input atau output, dan belah ketupat untuk keputusan. Panah menghubungkan simbol sesuai urutan.</p><p>Aturan pentingnya: setiap belah ketupat harus punya dua panah keluar yang diberi label Ya dan Tidak. Jika sebuah keputusan hanya punya satu panah keluar, flowchart itu belum lengkap karena jalur lainnya tidak dijelaskan.</p>
   <pre><code>(MULAI)
    |
@@ -2069,18 +2090,18 @@ Input &quot;&quot;        -&gt; Judul wajib diisi</p></div><p>Kata kunci INPUT, 
 [ simpan tugas ]
    |
    v
-( SELESAI )</code></pre><div class="panel"><b>Output yang diharapkan</b><p>Alur bercabang dua: jalur gagal berhenti setelah pesan, jalur sukses menyimpan lalu selesai.</p></div><p>Simbol &lt;&gt; adalah keputusan. Label Ya dan Tidak wajib ada supaya pembaca tahu jalur mana yang diambil untuk setiap kondisi.</p>
+( SELESAI )</code></pre><div class="panel"><b>Output yang diharapkan</b><p>Alur bercabang dua: jalur gagal berhenti setelah pesan, jalur sukses menyimpan lalu selesai.</p></div><p>Simbol &lt;&gt; adalah keputusan. Label Ya dan Tidak wajib ada supaya pembaca tahu jalur mana yang diambil untuk setiap kondisi.</p><div class="panel"><b>Bedah baris</b><ol><li>Baris 1 · <code>(MULAI)</code> — Oval menandai titik mulai program.</li><li>Baris 4 · <code>[ baca judul ]</code> — Persegi panjang adalah proses membaca judul.</li><li>Baris 7 · <code>&lt; judul kosong? &gt; --Ya--&gt; [ tampilkan pesan ] --&gt; (SELESAI)</code> — Belah ketupat adalah keputusan dengan dua panah keluar.</li><li>Baris 9 · <code>Tidak</code> — Label pada panah menyatakan hasil keputusan yang diambil.</li><li>Baris 11 · <code>[ simpan tugas ]</code> — Persegi panjang kedua adalah proses menyimpan tugas.</li><li>Baris 14 · <code>( SELESAI )</code> — Oval terakhir menutup alur pada jalur sukses.</li></ol></div>
   
   <div class="panel warn"><b>Cek pemahaman</b><p>Gambarkan flowchart untuk aturan: tugas hanya disimpan jika judul tidak kosong DAN panjang judul maksimal 120 karakter.</p><p>Kriteria berhasil: Flowchart Anda punya satu belah ketupat gabungan atau dua belah ketupat berurutan, masing-masing dengan jalur Ya dan Tidak yang jelas.</p></div>
 </section><section class="lesson-section">
-  <h4>03 · Menelusuri pseudocode sebelum menulis kode</h4>
+  <h4>04 · Menelusuri pseudocode sebelum menulis kode</h4>
   <p>Penelusuran berarti menjalankan pseudocode dengan contoh nyata. Tulis nilai setiap variabel di kertas, baris demi baris, sampai program selesai. Cara ini menemukan kesalahan logika lebih cepat daripada menebak saat kode sudah jadi.</p><p>Telusuri minimal dua kasus: satu yang seharusnya berhasil dan satu yang seharusnya ditolak. Jika hasilnya berbeda dari harapan, kesalahannya ada di logika, bukan di komputer.</p>
   <pre><code>INPUT judul = &quot;Belajar&quot;
 IF judul kosong THEN        -- salah
   OUTPUT &quot;Judul wajib diisi&quot;
 ELSE
   SIMPAN tugas
-END IF</code></pre><div class="panel"><b>Output yang diharapkan</b><p>Tidak ada output yang salah pada input normal, tetapi input kosong juga akan tersimpan karena kondisi ditulis terbalik.</p></div><p>Penelusuran dengan judul kosong menunjukkan kondisi “judul kosong” bernilai benar, sehingga cabang pesan error dijalankan; namun pada input normal kondisi bernilai salah sehingga SIMPAN berjalan. Kesalahan baru terlihat jika Anda menguji keduanya.</p>
+END IF</code></pre><div class="panel"><b>Output yang diharapkan</b><p>Tidak ada output yang salah pada input normal, tetapi input kosong juga akan tersimpan karena kondisi ditulis terbalik.</p></div><p>Penelusuran dengan judul kosong menunjukkan kondisi “judul kosong” bernilai benar, sehingga cabang pesan error dijalankan; namun pada input normal kondisi bernilai salah sehingga SIMPAN berjalan. Kesalahan baru terlihat jika Anda menguji keduanya.</p><div class="panel"><b>Bedah baris</b><ol><li>Baris 1 · <code>INPUT judul = &quot;Belajar&quot;</code> — Nilai contoh ditulis langsung agar penelusuran bisa dimulai.</li><li>Baris 2 · <code>IF judul kosong THEN        -- salah</code> — Komentar menandai kondisi yang perlu diperiksa dengan teliti.</li><li>Baris 3 · <code>OUTPUT &quot;Judul wajib diisi&quot;</code> — Cabang ini hanya dijalankan bila kondisinya benar.</li><li>Baris 5 · <code>SIMPAN tugas</code> — Penelusuran memeriksa apakah cabang ini benar-benar berjalan.</li><li>Baris 6 · <code>END IF</code> — END IF menutup percabangan setelah kedua cabang ditelusuri.</li></ol></div>
   
   
 </section>
@@ -2112,7 +2133,7 @@ END IF</code></pre><p><em>Hasil: Biasa, Penting, Penting untuk ketiga kasus ters
     <details><summary>Lihat pembahasan</summary><p class="answer">Jawaban: B. Setiap keputusan punya dua kemungkinan hasil; jalur yang hilang berarti ada perilaku yang belum didefinisikan.</p></details>
   </div></div>
   <h4>Ringkasan</h4><ul><li>Pseudocode yang konsisten memakai satu gaya kata kunci, satu langkah per baris, dan nama variabel yang jelas.</li><li>Flowchart memakai simbol MULAI/SELESAI, proses, input/output, dan keputusan dengan dua jalur berlabel.</li><li>Penelusuran dua kasus, sukses dan gagal, menemukan kesalahan logika sebelum kode ditulis.</li></ul>
-  
+  <div class="panel"><b>Berikutnya</b><p>Berikutnya: tipe data, input, dan validasi. Anda akan menentukan tipe setiap field tugas dan menulis aturan validasi yang menolak input tidak masuk akal.</p></div>
   <h4>Sumber</h4><ul><li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Control_flow_and_error_handling" rel="noopener noreferrer">MDN: Control flow and error handling</a> <small>Mozilla · rolling</small> — Penjelasan resmi percabangan dan alur eksekusi yang menjadi dasar struktur IF/ELSE.</li><li><a href="https://developer.mozilla.org/en-US/docs/Glossary/Algorithm" rel="noopener noreferrer">MDN: Algorithm</a> <small>Mozilla · rolling</small> — Definisi algoritma yang menegaskan urutan langkah dan titik berhenti.</li></ul>
 </article>
 <article class="lesson" id="m02-l03">
@@ -2124,41 +2145,58 @@ END IF</code></pre><p><em>Hasil: Biasa, Penting, Penting untuk ketiga kasus ters
   <h4>Istilah kunci</h4><dl class="glossary"><div><dt>Tipe data</dt><dd>Jenis nilai yang disimpan, misalnya teks, angka, boolean, atau tanggal; tipe menentukan operasi apa yang masuk akal.</dd></div><div><dt>String (teks)</dt><dd>Deretan karakter, termasuk huruf, angka yang diketik sebagai teks, spasi, dan tanda baca.</dd></div><div><dt>Boolean</dt><dd>Nilai yang hanya punya dua kemungkinan: benar atau salah.</dd></div><div><dt>Validasi</dt><dd>Pemeriksaan aturan sebelum data dipakai atau disimpan, untuk menolak input yang tidak memenuhi syarat.</dd></div></dl>
   <h4>Kartu sintaks</h4><div class="panel">
   <b><code>TEXT</code></b>
-  
+  <p><em>Dibaca: Baca sebagai penanda tipe: field ini berisi deretan karakter, bukan angka.</em></p>
   <p>Menandai bahwa sebuah field berisi teks.</p>
   <pre><code>judul: TEXT, wajib, 1 sampai 120 karakter</code></pre>
   <p><em>Output: judul = &quot;Belajar&quot; diterima; judul = &quot;&quot; ditolak.</em></p>
   <p><em>Hati-hati: Teks berisi spasi saja tetap dianggap kosong setelah dipangkas; validasi harus memeriksa hasil pangkasan.</em></p>
 </div><div class="panel">
   <b><code>BOOLEAN</code></b>
-  
+  <p><em>Dibaca: Baca sebagai penanda tipe: field ini hanya boleh bernilai benar atau salah.</em></p>
   <p>Menandai field yang hanya berisi benar atau salah.</p>
   <pre><code>selesai: BOOLEAN, bawaan salah</code></pre>
   <p><em>Output: selesai = benar diterima; selesai = &quot;mungkin&quot; ditolak.</em></p>
   <p><em>Hati-hati: Teks &quot;benar&quot; bukan boolean benar; jangan mencampur teks dan boolean.</em></p>
 </div><div class="panel">
   <b><code>IF tidak valid THEN OUTPUT pesan</code></b>
-  
+  <p><em>Dibaca: Baca sebagai penjaga: jika aturan tidak terpenuhi, hentikan proses dan tampilkan alasannya.</em></p>
   <p>Menghentikan proses dan menampilkan alasan penolakan saat aturan validasi gagal.</p>
   <pre><code>IF panjang(judul) &gt; 120 THEN
   OUTPUT &quot;Judul maksimal 120 karakter&quot;</code></pre>
   <p><em>Output: Pesan spesifik muncul tepat di field yang salah.</em></p>
   <p><em>Hati-hati: Satu pesan umum “data tidak valid” memaksa pengguna menebak field mana yang bermasalah.</em></p>
 </div>
-  
+  <h4>Aturan penulisan</h4><ul><li>Tentukan tipe, status wajib, dan nilai bawaan setiap field sebelum menulis validasi.</li><li>Pangkas spasi di awal dan akhir input sebelum memeriksa apakah nilainya kosong.</li><li>Urutkan pemeriksaan dari yang paling murah dan mendasar, lalu berhenti pada kegagalan pertama.</li><li>Tulis pesan error yang menyebut nama field dan batasannya, bukan satu pesan umum.</li></ul>
   <section class="lesson-section">
-  <h4>01 · Model data tugas: tentukan sebelum validasi</h4>
+  <h4>01 · Cara membaca aturan validasi</h4>
+  <p>Aturan validasi dibaca seperti daftar pemeriksaan berurutan. Mulailah dari baris pertama; jika aturan itu gagal, proses berhenti dan sisa baris tidak dijalankan. Karena itu, urutan baris menentukan pesan mana yang lebih dulu muncul.</p><p>Setiap aturan membandingkan satu nilai dengan satu batas. Sebelum memercayai hasilnya, pastikan input sudah dinormalisasi, misalnya spasi dipangkas dan huruf disamakan. Tanpa normalisasi, aturan yang benar bisa menolak input yang sebenarnya sah.</p>
+  <pre><code>INPUT judul, tenggat
+judul &lt;- pangkas(judul)
+IF judul = &quot;&quot; THEN
+  OUTPUT &quot;Judul wajib diisi&quot;
+  SELESAI
+END IF
+IF tenggat diisi DAN tenggat &lt; hari ini THEN
+  OUTPUT &quot;Tenggat tidak boleh sebelum hari ini&quot;
+  SELESAI
+END IF
+OUTPUT &quot;Valid&quot;</code></pre><div class="panel"><b>Output yang diharapkan</b><p>Validasi(&quot;&quot;, kosong) -&gt; Judul wajib diisi
+Validasi(&quot;Belajar&quot;, kosong) -&gt; Valid</p></div><p>Setiap pemeriksaan diakhiri SELESAI agar validasi berhenti pada kegagalan pertama. Aturan judul diperiksa sebelum tenggat karena lebih murah dan lebih mendasar.</p><div class="panel"><b>Bedah baris</b><ol><li>Baris 1 · <code>INPUT judul, tenggat</code> — Input mentah dibaca dulu sebelum aturan apa pun dijalankan.</li><li>Baris 2 · <code>judul &lt;- pangkas(judul)</code> — Normalisasi memangkas spasi agar pemeriksaan kosong akurat.</li><li>Baris 3 · <code>IF judul = &quot;&quot; THEN</code> — Aturan pertama, yang paling mendasar, diperiksa lebih dulu.</li><li>Baris 7 · <code>IF tenggat diisi DAN tenggat &lt; hari ini THEN</code> — Aturan tenggat dijalankan hanya jika judul sudah lolos.</li><li>Baris 11 · <code>OUTPUT &quot;Valid&quot;</code> — Baris ini tercapai hanya jika seluruh aturan terpenuhi.</li></ol></div>
+  <div class="panel warn"><b>Satu pesan per aturan</b><p>Pesan umum seperti “data tidak valid” memaksa pengguna menebak. Sebut field dan batasannya agar pengguna tahu cara memperbaiki.</p></div>
+  <div class="panel warn"><b>Cek pemahaman</b><p>Tulis urutan validasi untuk field tenggat dan prioritas, lalu tentukan pesan error masing-masing.</p><p>Kriteria berhasil: Jawaban memeriksa tenggat sebelum prioritas yang lebih mahal, dan setiap pesan menyebut nama field beserta batasannya.</p></div>
+</section><section class="lesson-section">
+  <h4>02 · Model data tugas: tentukan sebelum validasi</h4>
   <p>Validasi tidak bisa ditulis sebelum Anda tahu field apa saja yang dimiliki sebuah tugas. Untuk Aplikasi Catatan Tugas, model awalnya cukup lima field: id, judul, tenggat, prioritas, dan selesai.</p><p>Setiap field punya tipe, aturan wajib atau opsional, dan nilai bawaan. Menuliskannya di tabel membuat aturan mudah diperiksa dan tidak berubah-ubah saat kode mulai ditulis.</p>
   <pre><code>TUGAS
   id         : TEXT, dibuat otomatis, unik
   judul      : TEXT, wajib, 1-120 karakter setelah dipangkas
   tenggat    : TANGGAL, opsional, tidak boleh sebelum hari ini
   prioritas  : PILIHAN(rendah, sedang, tinggi), bawaan sedang
-  selesai    : BOOLEAN, bawaan salah</code></pre><div class="panel"><b>Output yang diharapkan</b><p>Lima field dengan tipe dan aturan yang bisa diperiksa satu per satu.</p></div><p>id dibuat sistem sehingga tidak divalidasi dari input pengguna. tenggat opsional tetapi tetap punya aturan jika diisi. prioritas dibatasi pada tiga nilai agar tampilan filter tidak menemui nilai tak dikenal.</p>
+  selesai    : BOOLEAN, bawaan salah</code></pre><div class="panel"><b>Output yang diharapkan</b><p>Lima field dengan tipe dan aturan yang bisa diperiksa satu per satu.</p></div><p>id dibuat sistem sehingga tidak divalidasi dari input pengguna. tenggat opsional tetapi tetap punya aturan jika diisi. prioritas dibatasi pada tiga nilai agar tampilan filter tidak menemui nilai tak dikenal.</p><div class="panel"><b>Bedah baris</b><ol><li>Baris 1 · <code>TUGAS</code> — Nama record menyatakan satu jenis data yang dikelola.</li><li>Baris 2 · <code>id         : TEXT, dibuat otomatis, unik</code> — id dibuat sistem sehingga tidak divalidasi dari input pengguna.</li><li>Baris 3 · <code>judul      : TEXT, wajib, 1-120 karakter setelah dipangkas</code> — Judul wajib dengan batas panjang setelah dipangkas.</li><li>Baris 4 · <code>tenggat    : TANGGAL, opsional, tidak boleh sebelum hari ini</code> — Tenggat opsional, tetapi tetap punya aturan bila diisi.</li><li>Baris 5 · <code>prioritas  : PILIHAN(rendah, sedang, tinggi), bawaan sedang</code> — Prioritas dibatasi pada daftar nilai agar filter tidak menemui nilai asing.</li><li>Baris 6 · <code>selesai    : BOOLEAN, bawaan salah</code> — Selesai bertipe boolean dengan nilai bawaan salah.</li></ol></div>
   <div class="panel good"><b>Aturan yang bisa diuji</b><p>Setiap baris model harus bisa dijawab dengan ya atau tidak: apakah judul 121 karakter diterima? Jika jawabannya tidak jelas, aturannya belum spesifik.</p></div>
   
 </section><section class="lesson-section">
-  <h4>02 · Validasi input pengguna</h4>
+  <h4>03 · Validasi input pengguna</h4>
   <p>Input dari pengguna selalu berupa teks mentah, bahkan ketika terlihat seperti angka atau tanggal. Validasi bertugas memeriksa apakah teks itu bisa diterima, lalu mengubahnya ke tipe yang benar sebelum disimpan.</p><p>Urutkan pemeriksaan dari yang paling murah: pangkas spasi, periksa kosong, periksa panjang, baru periksa format tanggal dan pilihan prioritas. Urutan ini mencegah pesan error yang membingungkan, misalnya memberi tahu format tanggal ketika judulnya masih kosong.</p>
   <pre><code>LANGKAH Validasi Tugas
   INPUT judul, tenggat, prioritas
@@ -2180,11 +2218,11 @@ END IF</code></pre><p><em>Hasil: Biasa, Penting, Penting untuk ketiga kasus ters
     SELESAI
   END IF
   OUTPUT &quot;Valid&quot;</code></pre><div class="panel"><b>Output yang diharapkan</b><p>Validasi Tugas(&quot;Belajar&quot;, kosong, &quot;sedang&quot;) -&gt; Valid
-Validasi Tugas(&quot;   &quot;, kosong, &quot;sedang&quot;) -&gt; Judul wajib diisi</p></div><p>Setiap pemeriksaan berhenti pada kegagalan pertama agar pengguna memperbaiki satu hal pada satu waktu. pangkas(judul) menghapus spasi di awal dan akhir sebelum aturan kosong diperiksa.</p>
+Validasi Tugas(&quot;   &quot;, kosong, &quot;sedang&quot;) -&gt; Judul wajib diisi</p></div><p>Setiap pemeriksaan berhenti pada kegagalan pertama agar pengguna memperbaiki satu hal pada satu waktu. pangkas(judul) menghapus spasi di awal dan akhir sebelum aturan kosong diperiksa.</p><div class="panel"><b>Bedah baris</b><ol><li>Baris 3 · <code>judul &lt;- pangkas(judul)</code> — Normalisasi dilakukan sebelum aturan kosong diperiksa.</li><li>Baris 4 · <code>IF judul = &quot;&quot; THEN</code> — Pemeriksaan pertama menangani kasus paling mendasar.</li><li>Baris 8 · <code>IF panjang(judul) &gt; 120 THEN</code> — Panjang diperiksa setelah judul terbukti tidak kosong.</li><li>Baris 12 · <code>IF tenggat diisi DAN tenggat &lt; hari ini THEN</code> — Aturan tenggat hanya berlaku bila tanggal diisi.</li><li>Baris 16 · <code>IF prioritas BUKAN salah satu dari rendah, sedang, tinggi THEN</code> — Aturan prioritas memeriksa keanggotaan daftar nilai yang sah.</li><li>Baris 20 · <code>OUTPUT &quot;Valid&quot;</code> — Output terakhir hanya muncul ketika semua aturan lolos.</li></ol></div>
   
   <div class="panel warn"><b>Cek pemahaman</b><p>Tentukan pesan error untuk tiga kasus: judul kosong, judul 130 karakter, dan prioritas &quot;urgent&quot;.</p><p>Kriteria berhasil: Tiga pesan berbeda yang menyebut field dan batasannya, bukan satu pesan umum.</p></div>
 </section><section class="lesson-section">
-  <h4>03 · Validasi bukan pengganti keputusan desain</h4>
+  <h4>04 · Validasi bukan pengganti keputusan desain</h4>
   <p>Validasi hanya menjaga data agar masuk akal; ia tidak memutuskan fitur. Contohnya, apakah tenggat boleh di masa lalu untuk tugas yang sudah selesai? Itu keputusan desain yang harus ditulis terlebih dahulu, lalu diterjemahkan menjadi aturan validasi.</p><p>Tulis aturan yang tidak jelas sebagai pertanyaan terbuka di dokumen spesifikasi. Lebih baik satu aturan ditunda daripada aturan yang saling bertentangan dan membuat pengguna tidak bisa menyimpan data valid.</p>
   <pre><code>ATURAN TANGGAL
   1. Tugas baru: tenggat tidak boleh sebelum hari ini.
@@ -2192,7 +2230,7 @@ Validasi Tugas(&quot;   &quot;, kosong, &quot;sedang&quot;) -&gt; Judul wajib di
   3. Tenggat kosong: selalu boleh.
 
 PERTANYAAN TERBUKA
-  Apakah tenggat boleh diubah menjadi masa lalu saat mengedit tugas yang belum selesai?</code></pre><div class="panel"><b>Output yang diharapkan</b><p>Tiga aturan tegas dan satu pertanyaan yang harus diputuskan sebelum implementasi.</p></div><p>Aturan dipisahkan berdasarkan konteks pembuatan dan penyelesaian. Pertanyaan terbuka dicatat agar tidak diam-diam diputuskan berbeda oleh dua orang.</p>
+  Apakah tenggat boleh diubah menjadi masa lalu saat mengedit tugas yang belum selesai?</code></pre><div class="panel"><b>Output yang diharapkan</b><p>Tiga aturan tegas dan satu pertanyaan yang harus diputuskan sebelum implementasi.</p></div><p>Aturan dipisahkan berdasarkan konteks pembuatan dan penyelesaian. Pertanyaan terbuka dicatat agar tidak diam-diam diputuskan berbeda oleh dua orang.</p><div class="panel"><b>Bedah baris</b><ol><li>Baris 1 · <code>ATURAN TANGGAL</code> — Judul blok menyatakan aturan yang dibahas.</li><li>Baris 2 · <code>1. Tugas baru: tenggat tidak boleh sebelum hari ini.</code> — Aturan ditulis spesifik agar bisa diuji lulus atau gagal.</li><li>Baris 6 · <code>PERTANYAAN TERBUKA</code> — Pertanyaan terbuka dipisahkan dari aturan yang sudah pasti.</li><li>Baris 7 · <code>Apakah tenggat boleh diubah menjadi masa lalu saat mengedit tugas yang belum selesai?</code> — Pertanyaan dicatat agar tidak diputuskan diam-diam saat implementasi.</li></ol></div>
   
   
 </section>
@@ -2217,7 +2255,7 @@ prioritas &lt;- hurufKecil(pangkas(prioritas))
     <details><summary>Lihat pembahasan</summary><p class="answer">Jawaban: B. Menolak dengan pesan jelas lebih jujur daripada mengubah data tanpa sepengetahuan pengguna.</p></details>
   </div></div>
   <h4>Ringkasan</h4><ul><li>Model data menentukan field, tipe, aturan wajib, dan nilai bawaan sebelum validasi ditulis.</li><li>Urutkan validasi dari pemeriksaan termurah dan paling mendasar, dan berhenti pada kegagalan pertama.</li><li>Setiap pesan error harus menyebut field dan batasannya agar pengguna tahu cara memperbaiki.</li></ul>
-  
+  <div class="panel"><b>Berikutnya</b><p>Berikutnya: percabangan dan boolean. Anda akan menyusun kondisi dari operator DAN, ATAU, dan BUKAN serta memakainya bersama tabel kebenaran.</p></div>
   <h4>Sumber</h4><ul><li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Control_flow_and_error_handling" rel="noopener noreferrer">MDN: Control flow and error handling</a> <small>Mozilla · rolling</small> — Dasar percabangan yang dipakai untuk menulis aturan validasi bertingkat.</li><li><a href="https://developer.mozilla.org/en-US/docs/Glossary/Truthy" rel="noopener noreferrer">MDN: Truthy</a> <small>Mozilla · rolling</small> — Penjelasan nilai benar dan salah, relevan saat memeriksa input kosong di JavaScript nanti.</li></ul>
 </article>
 <article class="lesson" id="m02-l04">
@@ -2229,40 +2267,52 @@ prioritas &lt;- hurufKecil(pangkas(prioritas))
   <h4>Istilah kunci</h4><dl class="glossary"><div><dt>Kondisi</dt><dd>Pernyataan yang bernilai benar atau salah, dipakai untuk memilih jalur program.</dd></div><div><dt>Operator logika</dt><dd>Penghubung antar kondisi: DAN (keduanya harus benar), ATAU (salah satu cukup benar), BUKAN (membalik nilai).</dd></div><div><dt>Tabel kebenaran</dt><dd>Tabel yang mencantumkan semua kombinasi nilai kondisi dan hasil akhirnya.</dd></div><div><dt>Guard clause</dt><dd>Pemeriksaan awal yang langsung menghentikan proses jika syarat dasar tidak terpenuhi.</dd></div></dl>
   <h4>Kartu sintaks</h4><div class="panel">
   <b><code>kondisi1 DAN kondisi2</code></b>
-  
+  <p><em>Dibaca: Baca sebagai pernyataan gabungan yang benar hanya jika kedua kondisinya benar.</em></p>
   <p>Hasilnya benar hanya jika kedua kondisi benar.</p>
   <pre><code>IF judul tidak kosong DAN panjang(judul) &lt;= 120 THEN</code></pre>
   <p><em>Output: Benar hanya untuk judul yang diisi dan tidak melebihi 120 karakter.</em></p>
   <p><em>Hati-hati: DAN bukan pengganti urutan; kondisi yang butuh data lebih banyak bisa error jika diperiksa lebih dulu.</em></p>
 </div><div class="panel">
   <b><code>kondisi1 ATAU kondisi2</code></b>
-  
+  <p><em>Dibaca: Baca sebagai pernyataan gabungan yang benar jika minimal satu kondisinya benar.</em></p>
   <p>Hasilnya benar jika minimal satu kondisi benar.</p>
   <pre><code>IF prioritas = &quot;tinggi&quot; ATAU tenggat hari ini THEN</code></pre>
   <p><em>Output: Benar untuk tugas prioritas tinggi meskipun tenggatnya bukan hari ini.</em></p>
   <p><em>Hati-hati: ATAU tidak berarti keduanya harus benar; menulis DAN saat maksudnya ATAU membuat banyak tugas tidak pernah tampil.</em></p>
 </div><div class="panel">
   <b><code>BUKAN kondisi</code></b>
-  
+  <p><em>Dibaca: Baca sebagai pembalik: nilai benar menjadi salah, dan sebaliknya.</em></p>
   <p>Membalik nilai kondisi: benar menjadi salah, salah menjadi benar.</p>
   <pre><code>IF BUKAN selesai THEN OUTPUT &quot;Belum selesai&quot;</code></pre>
   <p><em>Output: Pesan tampil hanya untuk tugas yang belum selesai.</em></p>
   <p><em>Hati-hati: BUKAN sering membuat kalimat sulit dibaca; gunakan hanya jika versi tanpa BUKAN lebih membingungkan.</em></p>
 </div>
-  
+  <h4>Aturan penulisan</h4><ul><li>Ubah setiap aturan menjadi pertanyaan yang hanya punya jawaban benar atau salah.</li><li>Tulis tabel kebenaran sebelum menulis pseudocode saat aturan memakai lebih dari satu syarat.</li><li>Gunakan tanda kurung untuk mengelompokkan ATAU sebelum digabung dengan DAN.</li><li>Periksa kasus gagal lebih dulu dengan guard clause agar jalur utama tetap rata.</li></ul>
   <section class="lesson-section">
-  <h4>01 · Kondisi boolean dan tabel kebenaran</h4>
+  <h4>01 · Cara membaca kondisi bertingkat</h4>
+  <p>Kondisi bertingkat dibaca dari dalam ke luar. Mulailah dari tanda kurung terdalam, hitung nilainya, lalu naik ke operator berikutnya. Urutan ini sama dengan urutan yang dipakai program, sehingga hasil bacaan Anda harus sama dengan hasil eksekusi.</p><p>Bila aturan terasa rumit, tulis nilainya dalam tabel kebenaran sebelum menulis kode. Tabel memaksa Anda memeriksa setiap kombinasi, termasuk kasus yang jarang, sehingga kesalahan seperti memakai DAN padahal harus ATAU terlihat lebih awal.</p>
+  <pre><code>tampil &lt;- (prioritas = &quot;tinggi&quot; ATAU tenggat hari ini) DAN BUKAN selesai
+
+tabel:
+prioritas | tenggat | selesai | tampil?
+tinggi    | benar   | salah   | benar
+rendah    | salah   | salah   | salah
+rendah    | benar   | benar   | salah</code></pre><div class="panel"><b>Output yang diharapkan</b><p>Hanya kombinasi yang lolos ketiga syarat yang menghasilkan tampil = benar.</p></div><p>Tanda kurung mengelompokkan ATAU lebih dulu, lalu digabung dengan DAN dan BUKAN. Baris-baris tabel memperlihatkan bahwa selesai = benar selalu menutup tampilan.</p><div class="panel"><b>Bedah baris</b><ol><li>Baris 1 · <code>tampil &lt;- (prioritas = &quot;tinggi&quot; ATAU tenggat hari ini) DAN BUKAN selesai</code> — Tanda kurung menentukan ATAU dihitung lebih dulu daripada DAN.</li><li>Baris 4 · <code>prioritas | tenggat | selesai | tampil?</code> — Judul kolom menetapkan peran setiap nilai dalam tabel.</li><li>Baris 5 · <code>tinggi    | benar   | salah   | benar</code> — Baris ini lolos karena prioritas tinggi dan tugas belum selesai.</li><li>Baris 6 · <code>rendah    | salah   | salah   | salah</code> — Baris ini gagal karena kedua syarat utama salah.</li><li>Baris 7 · <code>rendah    | benar   | benar   | salah</code> — Baris ini gagal karena BUKAN selesai bernilai salah.</li></ol></div>
+  <div class="panel warn"><b>Urutan operator</b><p>DAN dan ATAU tidak selalu dibaca dari kiri ke kanan. Bila ragu, tambahkan tanda kurung agar maksud Anda tidak bergantung pada aturan prioritas.</p></div>
+  <div class="panel warn"><b>Cek pemahaman</b><p>Tulis ulang aturan “tampil jika belum selesai dan (prioritas tinggi atau tenggat hari ini)” dengan tanda kurung yang jelas.</p><p>Kriteria berhasil: Kondisi memakai tanda kurung untuk mengelompokkan ATAU sebelum digabung dengan DAN, serta memakai BUKAN selesai atau pemeriksaan setara.</p></div>
+</section><section class="lesson-section">
+  <h4>02 · Kondisi boolean dan tabel kebenaran</h4>
   <p>Percabangan hanya bekerja dengan satu pertanyaan: benar atau salah. “Tugas penting” bukan kondisi yang bisa dievaluasi; “prioritas sama dengan tinggi” baru bisa. Ubah setiap aturan menjadi pertanyaan yang punya jawaban tegas.</p><p>Saat aturan memakai dua syarat, tulis tabel kebenaran sebelum menulis pseudocode. Tabel ini memperlihatkan semua kombinasi dan mencegah kesalahan yang hanya muncul pada satu kasus, misalnya tugas penting yang tenggatnya kosong.</p>
   <pre><code>prioritas tinggi | tenggat hari ini | tampil?
 ------------------------------------------------
 benar            | benar            | benar
 benar            | salah            | benar
 salah            | benar            | benar
-salah            | salah             | salah</code></pre><div class="panel"><b>Output yang diharapkan</b><p>Tiga kombinasi pertama tampil; hanya kombinasi terakhir yang tidak tampil.</p></div><p>Aturan ATAU bernilai benar jika salah satu kolom bernilai benar. Tabel ini menjadi dasar pseudocode IF prioritas = &quot;tinggi&quot; ATAU tenggat hari ini THEN OUTPUT tugas.</p>
+salah            | salah             | salah</code></pre><div class="panel"><b>Output yang diharapkan</b><p>Tiga kombinasi pertama tampil; hanya kombinasi terakhir yang tidak tampil.</p></div><p>Aturan ATAU bernilai benar jika salah satu kolom bernilai benar. Tabel ini menjadi dasar pseudocode IF prioritas = &quot;tinggi&quot; ATAU tenggat hari ini THEN OUTPUT tugas.</p><div class="panel"><b>Bedah baris</b><ol><li>Baris 1 · <code>prioritas tinggi | tenggat hari ini | tampil?</code> — Header menyebut dua kondisi yang digabung.</li><li>Baris 3 · <code>benar            | benar            | benar</code> — Tiga kombinasi pertama menghasilkan tampil benar.</li><li>Baris 5 · <code>salah            | benar            | benar</code> — Satu kombinasi saja yang gagal, tepatnya saat keduanya salah.</li></ol></div>
   
   
 </section><section class="lesson-section">
-  <h4>02 · Merapikan percabangan bertingkat</h4>
+  <h4>03 · Merapikan percabangan bertingkat</h4>
   <p>Percabangan bertingkat mudah menjadi sulit dibaca ketika setiap cabang berisi cabang lagi. Salah satu teknik paling efektif adalah memeriksa kasus gagal lebih dulu dan langsung berhenti, lalu biarkan jalur utama tetap rata.</p><p>Dengan guard clause, aturan yang rumit dibaca sebagai daftar: periksa syarat pertama, periksa syarat kedua, baru kerjakan aksi utama. Pembaca tidak perlu menyimpan banyak cabang di kepalanya.</p>
   <pre><code>LANGKAH Tandai Selesai
   INPUT tugas
@@ -2277,11 +2327,11 @@ salah            | salah             | salah</code></pre><div class="panel"><b>O
   tugas.selesai &lt;- benar
   OUTPUT &quot;Tugas ditandai selesai&quot;</code></pre><div class="panel"><b>Output yang diharapkan</b><p>Tandai Selesai(id tidak ada) -&gt; Tugas tidak ada
 Tandai Selesai(id selesai)   -&gt; Tugas sudah selesai
-Tandai Selesai(id aktif)     -&gt; Tugas ditandai selesai</p></div><p>Dua pemeriksaan awal menghentikan proses lebih cepat. Aksi utama hanya ditulis sekali di bagian bawah, sehingga tidak berulang di setiap cabang.</p>
+Tandai Selesai(id aktif)     -&gt; Tugas ditandai selesai</p></div><p>Dua pemeriksaan awal menghentikan proses lebih cepat. Aksi utama hanya ditulis sekali di bagian bawah, sehingga tidak berulang di setiap cabang.</p><div class="panel"><b>Bedah baris</b><ol><li>Baris 3 · <code>IF tugas tidak ditemukan THEN</code> — Guard clause pertama memeriksa keberadaan data.</li><li>Baris 4 · <code>OUTPUT &quot;Tugas tidak ada&quot;</code> — Kasus gagal langsung berhenti dengan pesan yang jelas.</li><li>Baris 7 · <code>IF tugas.selesai = benar THEN</code> — Guard clause kedua mencegah aksi dijalankan dua kali.</li><li>Baris 11 · <code>tugas.selesai &lt;- benar</code> — Aksi utama hanya ditulis sekali di bagian bawah.</li><li>Baris 12 · <code>OUTPUT &quot;Tugas ditandai selesai&quot;</code> — Konfirmasi ditampilkan setelah aksi berhasil dijalankan.</li></ol></div>
   
   <div class="panel warn"><b>Cek pemahaman</b><p>Tulis ulang aturan “tampilkan tugas jika belum selesai DAN (prioritas tinggi ATAU tenggat hari ini)” sebagai pseudocode dengan tanda kurung yang jelas.</p><p>Kriteria berhasil: Kondisi Anda memakai tanda kurung untuk mengelompokkan ATAU sebelum digabung dengan DAN.</p></div>
 </section><section class="lesson-section">
-  <h4>03 · Contoh: aturan filter yang konsisten</h4>
+  <h4>04 · Contoh: aturan filter yang konsisten</h4>
   <p>Filter daftar tugas adalah tempat kesalahan boolean paling sering muncul. Pengguna memilih satu filter, lalu program harus memutuskan tugas mana yang tampil tanpa mengubah data aslinya.</p><p>Tulis setiap filter sebagai fungsi keputusan yang mengembalikan benar atau salah. Dengan begitu, aturan dapat diuji satu per satu dan ditambahkan tanpa merusak filter lain.</p>
   <pre><code>FUNGSI Cocok(task, filter)
   IF filter = &quot;semua&quot; THEN RETURN benar
@@ -2291,7 +2341,7 @@ Tandai Selesai(id aktif)     -&gt; Tugas ditandai selesai</p></div><p>Dua pemeri
   RETURN salah
 END FUNGSI</code></pre><div class="panel"><b>Output yang diharapkan</b><p>Cocok(tugas aktif, &quot;aktif&quot;) -&gt; benar
 Cocok(tugas selesai, &quot;aktif&quot;) -&gt; salah
-Cocok(tugas aktif, &quot;penting&quot;) -&gt; salah</p></div><p>Setiap filter adalah satu baris yang bisa diuji. Filter yang tidak dikenal mengembalikan salah, bukan menampilkan semua data secara tidak sengaja.</p>
+Cocok(tugas aktif, &quot;penting&quot;) -&gt; salah</p></div><p>Setiap filter adalah satu baris yang bisa diuji. Filter yang tidak dikenal mengembalikan salah, bukan menampilkan semua data secara tidak sengaja.</p><div class="panel"><b>Bedah baris</b><ol><li>Baris 2 · <code>IF filter = &quot;semua&quot; THEN RETURN benar</code> — Filter semua mengembalikan benar untuk setiap tugas.</li><li>Baris 3 · <code>IF filter = &quot;aktif&quot; THEN RETURN BUKAN task.selesai</code> — BUKAN membalik status selesai untuk filter aktif.</li><li>Baris 5 · <code>IF filter = &quot;penting&quot; THEN RETURN task.prioritas = &quot;tinggi&quot;</code> — Filter penting memeriksa prioritas tinggi.</li><li>Baris 6 · <code>RETURN salah</code> — Nilai bawaan salah mencegah filter asing menampilkan semua data.</li></ol></div>
   
   
 </section>
@@ -2315,7 +2365,7 @@ Cocok(tugas aktif, &quot;penting&quot;) -&gt; salah</p></div><p>Setiap filter ad
     <details><summary>Lihat pembahasan</summary><p class="answer">Jawaban: C. Kata “atau” berarti salah satu kondisi cukup benar, sehingga operatornya ATAU.</p></details>
   </div></div>
   <h4>Ringkasan</h4><ul><li>Setiap aturan harus diubah menjadi pertanyaan yang bisa dinilai benar atau salah.</li><li>DAN membutuhkan dua kondisi benar; ATAU cukup satu; BUKAN membalik nilai.</li><li>Guard clause menghentikan proses lebih awal dan menjaga jalur utama tetap rata.</li></ul>
-  
+  <div class="panel"><b>Berikutnya</b><p>Berikutnya: perulangan dan iterasi. Anda akan memilih FOR atau WHILE dan memastikan setiap perulangan pasti berhenti.</p></div>
   <h4>Sumber</h4><ul><li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Control_flow_and_error_handling" rel="noopener noreferrer">MDN: Control flow and error handling</a> <small>Mozilla · rolling</small> — Rujukan resmi struktur if, else, dan pengelompokan kondisi.</li><li><a href="https://developer.mozilla.org/en-US/docs/Glossary/Truthy" rel="noopener noreferrer">MDN: Truthy</a> <small>Mozilla · rolling</small> — Penjelasan nilai yang dianggap benar atau salah dalam JavaScript.</li></ul>
 </article>
 <article class="lesson" id="m02-l05">
@@ -2327,7 +2377,7 @@ Cocok(tugas aktif, &quot;penting&quot;) -&gt; salah</p></div><p>Setiap filter ad
   <h4>Istilah kunci</h4><dl class="glossary"><div><dt>Iterasi</dt><dd>Satu putaran penuh dalam perulangan; perulangan menjalankan iterasi berkali-kali.</dd></div><div><dt>Counter</dt><dd>Variabel yang menghitung sudah berapa kali perulangan berjalan.</dd></div><div><dt>Kondisi berhenti</dt><dd>Syarat yang harus menjadi salah agar perulangan berhenti; tanpa ini program berjalan selamanya.</dd></div><div><dt>Infinite loop</dt><dd>Perulangan yang tidak pernah berhenti karena kondisinya selalu benar atau counter tidak pernah berubah.</dd></div></dl>
   <h4>Kartu sintaks</h4><div class="panel">
   <b><code>FOR i FROM 1 TO n DO ... END FOR</code></b>
-  
+  <p><em>Dibaca: Baca sebagai perintah mengulang blok untuk setiap nilai i dari batas bawah sampai batas atas.</em></p>
   <p>Menjalankan blok untuk setiap nilai i dari 1 sampai n.</p>
   <pre><code>FOR i FROM 1 TO 3 DO
   OUTPUT i
@@ -2338,7 +2388,7 @@ END FOR</code></pre>
   <p><em>Hati-hati: Jika n bernilai 0, blok tidak dijalankan sama sekali; jangan menganggap minimal satu putaran selalu terjadi.</em></p>
 </div><div class="panel">
   <b><code>WHILE kondisi DO ... END WHILE</code></b>
-  
+  <p><em>Dibaca: Baca sebagai perintah mengulang blok selama kondisinya masih bernilai benar.</em></p>
   <p>Menjalankan blok selama kondisi masih benar.</p>
   <pre><code>i &lt;- 1
 WHILE i &lt;= 3 DO
@@ -2350,9 +2400,27 @@ END WHILE</code></pre>
 3</em></p>
   <p><em>Hati-hati: Lupa i &lt;- i + 1 membuat kondisi selalu benar dan program tidak pernah berhenti.</em></p>
 </div>
-  
+  <h4>Aturan penulisan</h4><ul><li>Tentukan kondisi berhenti sebelum menulis isi perulangan.</li><li>Pakai FOR ketika jumlah putaran sudah diketahui dan WHILE ketika berhenti bergantung pada kondisi.</li><li>Ubah satu variabel penentu di dalam perulangan agar kondisinya akhirnya menjadi salah.</li><li>Simpan satu tabel penelusuran berisi nilai variabel pada setiap putaran.</li></ul>
   <section class="lesson-section">
-  <h4>01 · FOR saat jumlah putaran sudah diketahui</h4>
+  <h4>01 · Cara membaca perulangan lewat tabel penelusuran</h4>
+  <p>Perulangan tidak bisa dibaca seperti urutan biasa karena baris yang sama dijalankan berkali-kali. Ubah bacaan menjadi tabel: satu baris untuk setiap putaran, memuat nilai counter dan variabel penentu. Tabel ini menunjukkan dengan tepat kapan perulangan berhenti.</p><p>Perhatikan kesalahan batas satu langkah: apakah putaran terakhir memproses data terakhir atau justru melewatinya. Kesalahan seperti ini tidak terlihat dari kode, tetapi langsung tampak pada tabel.</p>
+  <pre><code>i &lt;- 1
+jumlah &lt;- 0
+WHILE i &lt;= 3 DO
+  jumlah &lt;- jumlah + i
+  i &lt;- i + 1
+END WHILE
+OUTPUT jumlah
+
+putaran | i | jumlah | 3 &lt;= 3?
+1       | 1 | 1      | benar
+2       | 2 | 3      | benar
+3       | 3 | 6      | benar
+berhenti| 4 | 6      | salah</code></pre><div class="panel"><b>Output yang diharapkan</b><p>6</p></div><p>Baris WHILE diulang selama i &lt;= 3. Setelah putaran ketiga, i menjadi 4 sehingga kondisinya salah dan perulangan berhenti dengan jumlah 6.</p><div class="panel"><b>Bedah baris</b><ol><li>Baris 2 · <code>jumlah &lt;- 0</code> — Counter dimulai dari nol sebelum perulangan dimulai.</li><li>Baris 3 · <code>WHILE i &lt;= 3 DO</code> — Kondisi berhenti ditulis pada baris WHILE.</li><li>Baris 4 · <code>jumlah &lt;- jumlah + i</code> — Nilai variabel penentu berubah setiap putaran.</li><li>Baris 5 · <code>i &lt;- i + 1</code> — Perubahan inilah yang membuat kondisi akhirnya menjadi salah.</li><li>Baris 12 · <code>3       | 3 | 6      | benar</code> — Baris ini mencatat hasil setelah putaran terakhir yang berjalan.</li><li>Baris 13 · <code>berhenti| 4 | 6      | salah</code> — Tabel menandai putaran saat kondisi berhenti sudah tidak benar.</li></ol></div>
+  <div class="panel good"><b>Tabel menemukan bug</b><p>Jika tabel penelusuran berakhir berbeda dari harapan, kesalahannya ada di logika, bukan di komputer. Perbaiki logikanya sebelum menulis kode.</p></div>
+  <div class="panel warn"><b>Cek pemahaman</b><p>Buat tabel penelusuran untuk perulangan yang menjumlahkan i dari 1 sampai 4.</p><p>Kriteria berhasil: Tabel berisi empat baris penjumlahan, nilai i naik setiap putaran, dan perulangan berhenti setelah i melewati 4.</p></div>
+</section><section class="lesson-section">
+  <h4>02 · FOR saat jumlah putaran sudah diketahui</h4>
   <p>Gunakan FOR ketika Anda tahu berapa banyak data yang akan diproses, misalnya daftar berisi tujuh tugas. Perulangan FOR mengurus counter secara otomatis sehingga risiko lupa menambah counter hilang.</p><p>Di dalam perulangan, kerjakan satu tugas per putaran: hitung, periksa, atau tampilkan. Jangan mencampur beberapa tujuan dalam satu perulangan jika hasilnya bisa dihitung terpisah.</p>
   <pre><code>daftar &lt;- [Belajar, Olahraga, Membaca]
 jumlahSelesai &lt;- 0
@@ -2361,11 +2429,11 @@ FOR i FROM 1 TO panjang(daftar) DO
     jumlahSelesai &lt;- jumlahSelesai + 1
   END IF
 END FOR
-OUTPUT jumlahSelesai</code></pre><div class="panel"><b>Output yang diharapkan</b><p>2 (jika dua dari tiga tugas selesai)</p></div><p>FOR berjalan tiga kali. Setiap putaran memeriksa satu tugas; jika selesai, counter bertambah satu. Counter harus dimulai dari 0 sebelum perulangan.</p>
+OUTPUT jumlahSelesai</code></pre><div class="panel"><b>Output yang diharapkan</b><p>2 (jika dua dari tiga tugas selesai)</p></div><p>FOR berjalan tiga kali. Setiap putaran memeriksa satu tugas; jika selesai, counter bertambah satu. Counter harus dimulai dari 0 sebelum perulangan.</p><div class="panel"><b>Bedah baris</b><ol><li>Baris 2 · <code>jumlahSelesai &lt;- 0</code> — Counter dimulai dari nol sebelum perulangan dijalankan.</li><li>Baris 3 · <code>FOR i FROM 1 TO panjang(daftar) DO</code> — FOR mengurus kenaikan indeks secara otomatis.</li><li>Baris 4 · <code>IF daftar[i].selesai = benar THEN</code> — Setiap putaran memeriksa satu tugas saja.</li><li>Baris 5 · <code>jumlahSelesai &lt;- jumlahSelesai + 1</code> — Counter hanya bertambah ketika kondisi terpenuhi.</li><li>Baris 8 · <code>OUTPUT jumlahSelesai</code> — Hasil ditampilkan sekali setelah perulangan selesai.</li></ol></div>
   <div class="panel warn"><b>Perhatikan indeks</b><p>Jika daftar dimulai dari indeks 0, perulangan FROM 0 TO panjang(daftar) - 1. Salah indeks adalah penyebab error “data tidak ditemukan” yang paling umum.</p></div>
   
 </section><section class="lesson-section">
-  <h4>02 · WHILE saat berhenti bergantung pada kondisi</h4>
+  <h4>03 · WHILE saat berhenti bergantung pada kondisi</h4>
   <p>Gunakan WHILE ketika jumlah putaran tidak diketahui di awal, misalnya mencari tugas pertama yang cocok atau meminta ulang input sampai valid. Yang penting bukan jumlah putaran, tetapi kapan kondisi berhenti terpenuhi.</p><p>Tulis kondisi berhenti dan perubahan yang membuatnya tercapai sebelum menulis blok. Pola aman: satu baris kondisi, satu blok kerja, satu baris perubahan. Jika perubahan tidak ada, perulangan tidak akan berhenti.</p>
   <pre><code>INPUT judul
 judulValid &lt;- salah
@@ -2377,11 +2445,11 @@ WHILE judulValid = salah DO
     OUTPUT &quot;Judul wajib diisi&quot;
     INPUT judul
   END IF
-END WHILE</code></pre><div class="panel"><b>Output yang diharapkan</b><p>Pengguna diminta mengulang sampai mengisi judul yang tidak kosong.</p></div><p>Kondisi berhenti adalah judulValid = benar. Baris INPUT judul di dalam ELSE memungkinkan pengguna memperbaiki input; tanpa itu, kondisi tidak pernah berubah.</p>
+END WHILE</code></pre><div class="panel"><b>Output yang diharapkan</b><p>Pengguna diminta mengulang sampai mengisi judul yang tidak kosong.</p></div><p>Kondisi berhenti adalah judulValid = benar. Baris INPUT judul di dalam ELSE memungkinkan pengguna memperbaiki input; tanpa itu, kondisi tidak pernah berubah.</p><div class="panel"><b>Bedah baris</b><ol><li>Baris 2 · <code>judulValid &lt;- salah</code> — Variabel penentu dimulai dari nilai salah.</li><li>Baris 3 · <code>WHILE judulValid = salah DO</code> — Perulangan berjalan selama input belum valid.</li><li>Baris 6 · <code>judulValid &lt;- benar</code> — Nilai penentu berubah begitu input diterima.</li><li>Baris 9 · <code>INPUT judul</code> — Input dibaca ulang agar pengguna bisa memperbaiki kesalahan.</li><li>Baris 11 · <code>END WHILE</code> — Perulangan berhenti ketika kondisi berhenti terpenuhi.</li></ol></div>
   
   <div class="panel warn"><b>Cek pemahaman</b><p>Tulis perulangan WHILE yang menjumlahkan nilai dari 1 sampai 5 dan berhenti tepat setelah angka 5.</p><p>Kriteria berhasil: Counter dimulai dari 1, ditambah setiap putaran, dan kondisi i &lt;= 5 membuat perulangan berhenti setelah putaran kelima.</p></div>
 </section><section class="lesson-section">
-  <h4>03 · Menelusuri perulangan</h4>
+  <h4>04 · Menelusuri perulangan</h4>
   <p>Perulangan sulit diperiksa hanya dengan membaca. Buat tabel berisi kolom putaran, nilai counter, nilai variabel, dan hasil sementara, lalu isi baris demi baris sampai perulangan berhenti.</p><p>Tabel penelusuran juga membantu menemukan kesalahan batas: apakah putaran terakhir memproses data terakhir atau justru melewatinya. Kesalahan satu langkah seperti ini tidak terlihat dari kode, tetapi terlihat jelas di tabel.</p>
   <pre><code>i &lt;- 1
 jumlah &lt;- 0
@@ -2389,7 +2457,7 @@ WHILE i &lt;= 3 DO
   jumlah &lt;- jumlah + i
   i &lt;- i + 1
 END WHILE
-OUTPUT jumlah</code></pre><div class="panel"><b>Output yang diharapkan</b><p>6</p></div><p>Putaran 1: jumlah 1, i 2. Putaran 2: jumlah 3, i 3. Putaran 3: jumlah 6, i 4. Kondisi 4 &lt;= 3 salah, perulangan berhenti, output 6.</p>
+OUTPUT jumlah</code></pre><div class="panel"><b>Output yang diharapkan</b><p>6</p></div><p>Putaran 1: jumlah 1, i 2. Putaran 2: jumlah 3, i 3. Putaran 3: jumlah 6, i 4. Kondisi 4 &lt;= 3 salah, perulangan berhenti, output 6.</p><div class="panel"><b>Bedah baris</b><ol><li>Baris 3 · <code>WHILE i &lt;= 3 DO</code> — Kondisi berhenti dapat dibaca langsung dari baris WHILE.</li><li>Baris 4 · <code>jumlah &lt;- jumlah + i</code> — Nilai jumlah berubah setiap putaran.</li><li>Baris 5 · <code>i &lt;- i + 1</code> — Counter naik setiap putaran menuju kondisi berhenti.</li><li>Baris 7 · <code>OUTPUT jumlah</code> — Output hanya ada setelah perulangan berhenti.</li></ol></div>
   
   
 </section>
@@ -2420,7 +2488,7 @@ WHILE i &lt;= panjang(daftar) DAN BUKAN ditemukan DO
     <details><summary>Lihat pembahasan</summary><p class="answer">Jawaban: B. Perulangan harus berhenti segera setelah tujuan tercapai agar tidak memeriksa data yang tidak perlu.</p></details>
   </div></div>
   <h4>Ringkasan</h4><ul><li>FOR dipakai saat jumlah putaran diketahui; WHILE dipakai saat berhenti bergantung pada kondisi.</li><li>Setiap perulangan wajib punya kondisi berhenti dan perubahan nilai yang membuat kondisi itu tercapai.</li><li>Tabel penelusuran memperlihatkan nilai variabel per putaran dan menemukan kesalahan batas.</li></ul>
-  
+  <div class="panel"><b>Berikutnya</b><p>Berikutnya: struktur data dan algoritma. Anda akan memilih list atau peta dan menulis algoritma tambah, cari, serta hapus yang aman.</p></div>
   <h4>Sumber</h4><ul><li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Loops_and_iteration" rel="noopener noreferrer">MDN: Loops and iteration</a> <small>Mozilla · rolling</small> — Rujukan resmi jenis perulangan, kondisi berhenti, dan contoh penelusuran.</li><li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Control_flow_and_error_handling" rel="noopener noreferrer">MDN: Control flow and error handling</a> <small>Mozilla · rolling</small> — Dasar alur eksekusi yang menjelaskan hubungan percabangan dan perulangan.</li></ul>
 </article>
 <article class="lesson" id="m02-l06">
@@ -2432,22 +2500,32 @@ WHILE i &lt;= panjang(daftar) DAN BUKAN ditemukan DO
   <h4>Istilah kunci</h4><dl class="glossary"><div><dt>List (daftar)</dt><dd>Kumpulan nilai berurutan yang diakses memakai posisi atau indeks.</dd></div><div><dt>Record (catatan)</dt><dd>Satu objek yang mengelompokkan beberapa field bernama, misalnya id, judul, dan selesai.</dd></div><div><dt>Key (kunci)</dt><dd>Nilai unik yang dipakai untuk menemukan record tanpa memeriksa seluruh daftar.</dd></div><div><dt>Pencarian linear</dt><dd>Memeriksa elemen satu per satu dari awal sampai ketemu atau sampai habis.</dd></div></dl>
   <h4>Kartu sintaks</h4><div class="panel">
   <b><code>daftar[i].field</code></b>
-  
+  <p><em>Dibaca: Baca sebagai pengambilan field tertentu dari record pada posisi ke-i di dalam daftar.</em></p>
   <p>Mengambil field tertentu dari record pada posisi ke-i.</p>
   <pre><code>OUTPUT daftar[1].judul</code></pre>
   <p><em>Output: Judul tugas pertama (jika indeks dimulai dari 1).</em></p>
   <p><em>Hati-hati: Indeks di luar jumlah data menghasilkan error; periksa panjang daftar sebelum mengakses.</em></p>
 </div><div class="panel">
   <b><code>peta[kunci]</code></b>
-  
+  <p><em>Dibaca: Baca sebagai pengambilan record langsung memakai kunci unik, tanpa memeriksa elemen lain.</em></p>
   <p>Mengambil record langsung berdasarkan kunci unik tanpa memeriksa satu per satu.</p>
   <pre><code>OUTPUT peta[&quot;t-01&quot;].judul</code></pre>
   <p><em>Output: Judul tugas dengan id t-01.</em></p>
   <p><em>Hati-hati: Kunci yang tidak ada menghasilkan nilai kosong; periksa keberadaan kunci sebelum memakai hasilnya.</em></p>
 </div>
-  
+  <h4>Aturan penulisan</h4><ul><li>Simpan data satu kali di satu tempat, lalu hitung ulang ringkasan saat dibutuhkan.</li><li>Pakai list saat urutan penting dan peta saat pencarian berdasarkan kunci unik.</li><li>Catat indeks yang cocok lebih dulu, baru ubah daftar setelah perulangan selesai.</li><li>Kembalikan nilai kosong yang jelas ketika data tidak ditemukan, bukan membiarkan proses berlanjut.</li></ul>
   <section class="lesson-section">
-  <h4>01 · List berisi record</h4>
+  <h4>01 · Cara membaca algoritma tambah, cari, dan hapus</h4>
+  <p>Algoritma struktur data dibaca dengan melacak perubahan pada data, bukan hanya hasil akhirnya. Ambil satu daftar contoh, lalu jalankan operasi baris demi baris dan catat isi daftar setelah setiap langkah. Perubahan itulah yang paling mudah salah, terutama saat menghapus.</p><p>Bedakan pencarian dari perubahan. Pencarian hanya membaca, sedangkan tambah dan hapus mengubah daftar. Dengan memisahkan keduanya, Anda dapat menguji pencarian tanpa risiko merusak data.</p>
+  <pre><code>daftar sebelum: [ t-01 Belajar, t-02 Olahraga ]
+
+cari t-02      -&gt; ditemukan di indeks 2
+hapus t-02     -&gt; catat indeks 2, keluar dari perulangan
+daftar sesudah: [ t-01 Belajar ]</code></pre><div class="panel"><b>Output yang diharapkan</b><p>Daftar tersisa satu record setelah penghapusan.</p></div><p>Indeks dicatat lebih dulu, lalu penghapusan dilakukan setelah perulangan agar posisi record lain tidak bergeser saat masih diperiksa.</p><div class="panel"><b>Bedah baris</b><ol><li>Baris 1 · <code>daftar sebelum: [ t-01 Belajar, t-02 Olahraga ]</code> — Keadaan daftar dicatat sebelum operasi dimulai.</li><li>Baris 3 · <code>cari t-02      -&gt; ditemukan di indeks 2</code> — Pencarian menemukan posisi record yang dimaksud.</li><li>Baris 4 · <code>hapus t-02     -&gt; catat indeks 2, keluar dari perulangan</code> — Indeks disimpan sebelum daftar diubah.</li><li>Baris 5 · <code>daftar sesudah: [ t-01 Belajar ]</code> — Keadaan akhir dibandingkan dengan keadaan awal untuk memastikan hanya satu record yang hilang.</li></ol></div>
+  <div class="panel good"><b>Pisahkan baca dan tulis</b><p>Operasi yang hanya membaca data tidak boleh mengubah daftar. Pisahkan pencarian dari perubahan agar kesalahan lebih mudah dilacak.</p></div>
+  <div class="panel warn"><b>Cek pemahaman</b><p>Jelaskan dalam dua kalimat bagaimana Anda menghapus satu tugas tanpa menggeser posisi tugas lain.</p><p>Kriteria berhasil: Jawaban menyebut mencatat indeks yang cocok lebih dulu, lalu menghapus satu kali setelah perulangan selesai.</p></div>
+</section><section class="lesson-section">
+  <h4>02 · List berisi record</h4>
   <p>Daftar tugas adalah list yang setiap elemennya berupa record. List menjaga urutan tampilan; record menyimpan field yang saling terkait. Memisahkan dua peran ini membuat data mudah diurutkan tanpa mengubah isi record.</p><p>Jangan menyimpan field yang sama di dua tempat, misalnya jumlah tugas selesai di dalam daftar dan juga di variabel terpisah. Hitung ulang saat dibutuhkan agar tidak ada dua angka yang saling bertentangan.</p>
   <pre><code>daftar &lt;- [
   { id: &quot;t-01&quot;, judul: &quot;Belajar&quot;,  selesai: salah },
@@ -2455,11 +2533,11 @@ WHILE i &lt;= panjang(daftar) DAN BUKAN ditemukan DO
 ]
 OUTPUT daftar[1].judul
 OUTPUT panjang(daftar)</code></pre><div class="panel"><b>Output yang diharapkan</b><p>Belajar
-2</p></div><p>daftar[1] mengambil record pertama, lalu .judul membaca field judul. panjang(daftar) menghitung jumlah record tanpa menghitung field di dalamnya.</p>
+2</p></div><p>daftar[1] mengambil record pertama, lalu .judul membaca field judul. panjang(daftar) menghitung jumlah record tanpa menghitung field di dalamnya.</p><div class="panel"><b>Bedah baris</b><ol><li>Baris 1 · <code>daftar &lt;- [</code> — Tanda kurung siku menandai sebuah list berurutan.</li><li>Baris 2 · <code>{ id: &quot;t-01&quot;, judul: &quot;Belajar&quot;,  selesai: salah },</code> — Setiap baris adalah satu record dengan field bernama.</li><li>Baris 5 · <code>OUTPUT daftar[1].judul</code> — Indeks diakses lebih dulu, baru field-nya diambil.</li><li>Baris 6 · <code>OUTPUT panjang(daftar)</code> — panjang menghitung jumlah record, bukan fieldnya.</li></ol></div>
   <div class="panel good"><b>Satu sumber kebenaran</b><p>Simpan data tugas satu kali di list. Angka ringkasan seperti jumlah selesai dihitung dari list, bukan disimpan sebagai salinan terpisah.</p></div>
   
 </section><section class="lesson-section">
-  <h4>02 · Pencarian linear dan pencarian langsung</h4>
+  <h4>03 · Pencarian linear dan pencarian langsung</h4>
   <p>Pencarian linear memeriksa record satu per satu. Cocok untuk daftar kecil dan ketika data tidak punya kunci unik. Biayanya bertambah seiring jumlah data, tetapi logikanya sederhana dan jarang salah.</p><p>Jika setiap record punya id unik, buat peta dari id ke record. Pencarian langsung memakai kunci sehingga jumlah pemeriksaan tidak bergantung pada panjang daftar. Peta dibangun sekali, lalu dipakai berkali-kali.</p>
   <pre><code>FUNGSI CariLinear(daftar, id)
   FOR i FROM 1 TO panjang(daftar) DO
@@ -2471,11 +2549,11 @@ END FUNGSI
 FUNGSI CariPeta(peta, id)
   IF id ada di peta THEN RETURN peta[id]
   RETURN kosong
-END FUNGSI</code></pre><div class="panel"><b>Output yang diharapkan</b><p>CariLinear memeriksa hingga n record; CariPeta memeriksa satu kunci.</p></div><p>Kedua fungsi mengembalikan kosong jika tidak ditemukan. Perbedaannya ada pada jumlah pemeriksaan, bukan pada hasil.</p>
+END FUNGSI</code></pre><div class="panel"><b>Output yang diharapkan</b><p>CariLinear memeriksa hingga n record; CariPeta memeriksa satu kunci.</p></div><p>Kedua fungsi mengembalikan kosong jika tidak ditemukan. Perbedaannya ada pada jumlah pemeriksaan, bukan pada hasil.</p><div class="panel"><b>Bedah baris</b><ol><li>Baris 1 · <code>FUNGSI CariLinear(daftar, id)</code> — Fungsi linear menerima daftar dan id yang dicari.</li><li>Baris 2 · <code>FOR i FROM 1 TO panjang(daftar) DO</code> — Perulangan memeriksa setiap record satu per satu.</li><li>Baris 3 · <code>IF daftar[i].id = id THEN RETURN daftar[i]</code> — Perulangan berhenti lebih awal begitu id cocok.</li><li>Baris 5 · <code>RETURN kosong</code> — Nilai kosong dikembalikan bila tidak ada yang cocok.</li><li>Baris 9 · <code>IF id ada di peta THEN RETURN peta[id]</code> — Pencarian peta langsung mengambil record lewat kunci.</li></ol></div>
   
   <div class="panel warn"><b>Cek pemahaman</b><p>Anda punya 10.000 tugas dan sering mencari berdasarkan id. Struktur mana yang Anda pilih dan mengapa?</p><p>Kriteria berhasil: Jawaban memilih peta id ke record karena pencarian langsung tidak perlu memeriksa seluruh daftar.</p></div>
 </section><section class="lesson-section">
-  <h4>03 · Algoritma hapus yang aman</h4>
+  <h4>04 · Algoritma hapus yang aman</h4>
   <p>Menghapus terlihat sederhana, tetapi mudah salah: menghapus semua record yang cocok, menghapus record yang salah karena indeks bergeser, atau menghapus sambil mengubah daftar yang sedang diperiksa. Tulis urutannya secara eksplisit.</p><p>Pola aman: cari indeks yang cocok terlebih dahulu, hentikan jika tidak ada, baru hapus satu record. Jangan mengubah daftar di tengah perulangan yang sedang memeriksa daftar yang sama.</p>
   <pre><code>FUNGSI Hapus(daftar, id)
   indeks &lt;- kosong
@@ -2491,7 +2569,7 @@ END FUNGSI</code></pre><div class="panel"><b>Output yang diharapkan</b><p>CariLi
   HAPUS daftar[indeks]
   OUTPUT &quot;Tugas dihapus&quot;
   RETURN daftar
-END FUNGSI</code></pre><div class="panel"><b>Output yang diharapkan</b><p>Hapus(daftar, &quot;t-02&quot;) -&gt; Tugas dihapus, daftar tersisa satu record.</p></div><p>Pencarian berhenti mencatat indeks pertama yang cocok. Penghapusan dilakukan setelah perulangan agar posisi tidak bergeser saat masih diperiksa.</p>
+END FUNGSI</code></pre><div class="panel"><b>Output yang diharapkan</b><p>Hapus(daftar, &quot;t-02&quot;) -&gt; Tugas dihapus, daftar tersisa satu record.</p></div><p>Pencarian berhenti mencatat indeks pertama yang cocok. Penghapusan dilakukan setelah perulangan agar posisi tidak bergeser saat masih diperiksa.</p><div class="panel"><b>Bedah baris</b><ol><li>Baris 2 · <code>indeks &lt;- kosong</code> — Indeks penanda dimulai kosong sebelum pencarian.</li><li>Baris 4 · <code>IF daftar[i].id = id DAN indeks = kosong THEN</code> — Pencarian mencatat record pertama yang cocok, bukan semuanya.</li><li>Baris 5 · <code>indeks &lt;- i</code> — Indeks yang cocok disimpan untuk dipakai setelah perulangan.</li><li>Baris 8 · <code>IF indeks = kosong THEN</code> — Penghapusan dibatalkan bila tidak ada yang cocok.</li><li>Baris 12 · <code>HAPUS daftar[indeks]</code> — Daftar baru diubah setelah perulangan selesai.</li></ol></div>
   
   
 </section>
@@ -2517,7 +2595,7 @@ END FOR</code></pre><p><em>Hasil: Penghapusan terjadi sekali setelah indeks dite
     <details><summary>Lihat pembahasan</summary><p class="answer">Jawaban: B. List menjaga urutan tampilan, peta mempercepat pencarian; keduanya bisa dipakai bersama.</p></details>
   </div></div>
   <h4>Ringkasan</h4><ul><li>List menjaga urutan; record mengelompokkan field; peta mempercepat pencarian berdasarkan kunci.</li><li>Pencarian linear memeriksa satu per satu; pencarian peta memakai kunci unik.</li><li>Hapus satu record dengan mencari indeks lebih dulu dan menghapus setelah perulangan selesai.</li></ul>
-  
+  <div class="panel"><b>Berikutnya</b><p>Berikutnya: kompleksitas dan edge case. Anda akan memperkirakan biaya langkah algoritma dan menyusun daftar kasus batas sebelum menulis kode.</p></div>
   <h4>Sumber</h4><ul><li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Indexed_collections" rel="noopener noreferrer">MDN: Indexed collections</a> <small>Mozilla · rolling</small> — Rujukan resmi list dan indeks, termasuk perilaku batas indeks.</li><li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Working_with_objects" rel="noopener noreferrer">MDN: Working with objects</a> <small>Mozilla · rolling</small> — Rujukan resmi record/object dan akses field berdasarkan nama.</li></ul>
 </article>
 <article class="lesson" id="m02-l07">
@@ -2529,29 +2607,38 @@ END FOR</code></pre><p><em>Hasil: Penghapusan terjadi sekali setelah indeks dite
   <h4>Istilah kunci</h4><dl class="glossary"><div><dt>Kompleksitas</dt><dd>Gambaran bagaimana jumlah langkah algoritma bertambah ketika jumlah data bertambah.</dd></div><div><dt>O(1)</dt><dd>Biaya tetap: jumlah langkah tidak berubah berapa pun banyaknya data.</dd></div><div><dt>O(n)</dt><dd>Biaya linear: jumlah langkah bertambah sebanding dengan jumlah data n.</dd></div><div><dt>Edge case</dt><dd>Kasus batas yang jarang terjadi tetapi tetap harus ditangani, misalnya daftar kosong atau judul sangat panjang.</dd></div></dl>
   <h4>Kartu sintaks</h4><div class="panel">
   <b><code>O(1)</code></b>
-  
+  <p><em>Dibaca: Baca sebagai biaya tetap: jumlah langkahnya sama untuk data sedikit maupun banyak.</em></p>
   <p>Operasi dengan jumlah langkah tetap, tidak bergantung pada jumlah data.</p>
   <pre><code>Ambil tugas dari peta berdasarkan id unik.</code></pre>
   <p><em>Output: Satu pemeriksaan untuk 10 tugas maupun 10.000 tugas.</em></p>
   <p><em>Hati-hati: O(1) tidak berarti cepat secara mutlak; yang tetap adalah jumlah langkahnya.</em></p>
 </div><div class="panel">
   <b><code>O(n)</code></b>
-  
+  <p><em>Dibaca: Baca sebagai biaya linear: jumlah langkahnya bertambah sebanding dengan jumlah data n.</em></p>
   <p>Operasi yang memeriksa seluruh data satu per satu.</p>
   <pre><code>FOR i FROM 1 TO panjang(daftar) DO periksa daftar[i]</code></pre>
   <p><em>Output: 10 tugas berarti 10 pemeriksaan; 10.000 tugas berarti 10.000 pemeriksaan.</em></p>
   <p><em>Hati-hati: Perulangan bersarang di dalam perulangan O(n) menghasilkan O(n²), bukan O(n).</em></p>
 </div><div class="panel">
   <b><code>O(n²)</code></b>
-  
+  <p><em>Dibaca: Baca sebagai biaya kuadratik: jumlah langkahnya tumbuh secepat kuadrat jumlah data.</em></p>
   <p>Operasi dengan perulangan di dalam perulangan; langkah bertambah kuadratik.</p>
   <pre><code>FOR setiap tugas DO FOR setiap tugas lain DO bandingkan</code></pre>
   <p><em>Output: 10 tugas berarti sekitar 100 perbandingan; 100 tugas berarti 10.000.</em></p>
   <p><em>Hati-hati: Membandingkan semua pasangan untuk mencari duplikat akan melambat drastis pada data besar.</em></p>
 </div>
-  
+  <h4>Aturan penulisan</h4><ul><li>Bandingkan algoritma lewat pertumbuhan jumlah langkah, bukan waktu eksekusi di satu perangkat.</li><li>Fokus pada operasi yang paling sering dijalankan, misalnya pemeriksaan atau perbandingan.</li><li>Perhatikan perulangan bersarang karena satu perulangan di dalam perulangan lain langsung menaikkan biaya.</li><li>Tulis daftar edge case beserta perilaku yang diharapkan sebelum menulis kode.</li></ul>
   <section class="lesson-section">
-  <h4>01 · Menghitung langkah, bukan milidetik</h4>
+  <h4>01 · Cara membaca biaya algoritma</h4>
+  <p>Biaya algoritma dibaca dari pola perulangannya, bukan dari jumlah barisnya. Cari perulangan yang bergantung pada jumlah data n, lalu periksa apakah ada perulangan lain di dalamnya. Satu perulangan berarti linear; perulangan di dalam perulangan berarti kuadratik.</p><p>Saat membaca edge case, ubah setiap baris menjadi satu kasus uji dengan kondisi awal dan hasil yang diharapkan. Daftar ini nantinya langsung menjadi test case, sehingga perilaku untuk kasus batas tidak perlu ditebak.</p>
+  <pre><code>biaya &quot;hitung selesai&quot;              : 1 perulangan            -&gt; O(n)
+biaya &quot;cari duplikat (pasangan)&quot;    : 2 perulangan bersarang   -&gt; O(n^2)
+biaya &quot;cari duplikat (himpunan)&quot;    : 1 perulangan            -&gt; O(n)
+biaya &quot;ambil tugas dari peta&quot;       : tanpa perulangan         -&gt; O(1)</code></pre><div class="panel"><b>Output yang diharapkan</b><p>Dua cara mencari duplikat memiliki pola biaya berbeda meski hasilnya sama.</p></div><p>Setiap baris memasangkan satu operasi dengan pola perulangannya. Perulangan bersarang menaikkan biaya ke kuadratik, sedangkan akses peta tanpa perulangan tetap konstan.</p><div class="panel"><b>Bedah baris</b><ol><li>Baris 1 · <code>biaya &quot;hitung selesai&quot;              : 1 perulangan            -&gt; O(n)</code> — Satu perulangan yang bergantung pada n menghasilkan pola linear.</li><li>Baris 2 · <code>biaya &quot;cari duplikat (pasangan)&quot;    : 2 perulangan bersarang   -&gt; O(n^2)</code> — Perulangan di dalam perulangan mengubah pola menjadi kuadratik.</li><li>Baris 3 · <code>biaya &quot;cari duplikat (himpunan)&quot;    : 1 perulangan            -&gt; O(n)</code> — Himpunan menghindari perulangan kedua sehingga tetap linear.</li><li>Baris 4 · <code>biaya &quot;ambil tugas dari peta&quot;       : tanpa perulangan         -&gt; O(1)</code> — Akses memakai kunci tidak memakai perulangan sehingga konstan.</li></ol></div>
+  <div class="panel warn"><b>Ukuran data nyata</b><p>Algoritma kuadratik bisa tetap cukup untuk 50 data. Yang penting adalah memperkirakan apa yang terjadi ketika data tumbuh sepuluh kali lebih banyak.</p></div>
+  <div class="panel warn"><b>Cek pemahaman</b><p>Sebuah algoritma memakai tiga perulangan bersarang yang masing-masing berjalan n kali. Perkirakan pola biayanya.</p><p>Kriteria berhasil: Jawaban menyebut biaya tumbuh sekitar n pangkat tiga, jauh lebih cepat daripada linear, sehingga berbahaya untuk data besar.</p></div>
+</section><section class="lesson-section">
+  <h4>02 · Menghitung langkah, bukan milidetik</h4>
   <p>Waktu eksekusi bergantung pada perangkat, browser, dan beban sistem, sehingga tidak bisa dipakai untuk membandingkan algoritma. Yang bisa dibandingkan adalah jumlah langkah sebagai fungsi dari jumlah data n.</p><p>Hitung operasi yang dominan: berapa kali data diperiksa, dibandingkan, atau ditulis. Konstanta kecil diabaikan karena yang penting adalah pola pertumbuhannya saat data bertambah besar.</p>
   <pre><code>ALGORITMA A
   OUTPUT panjang(daftar)
@@ -2562,11 +2649,11 @@ ALGORITMA B
   FOR i FROM 1 TO panjang(daftar) DO
     jumlah &lt;- jumlah + 1
   END FOR
-  -- n langkah, O(n)</code></pre><div class="panel"><b>Output yang diharapkan</b><p>A selalu satu langkah; B bertambah satu langkah untuk setiap tugas.</p></div><p>A membaca satu nilai yang sudah tersedia. B memeriksa setiap elemen, sehingga jumlah langkahnya sebanding dengan n.</p>
+  -- n langkah, O(n)</code></pre><div class="panel"><b>Output yang diharapkan</b><p>A selalu satu langkah; B bertambah satu langkah untuk setiap tugas.</p></div><p>A membaca satu nilai yang sudah tersedia. B memeriksa setiap elemen, sehingga jumlah langkahnya sebanding dengan n.</p><div class="panel"><b>Bedah baris</b><ol><li>Baris 1 · <code>ALGORITMA A</code> — Algoritma pertama dipakai sebagai pembanding pola tetap.</li><li>Baris 3 · <code>-- 1 langkah, O(1)</code> — Komentar menandai bahwa jumlah langkahnya konstan.</li><li>Baris 5 · <code>ALGORITMA B</code> — Algoritma kedua dijelaskan setelah pembandingnya.</li><li>Baris 7 · <code>FOR i FROM 1 TO panjang(daftar) DO</code> — Perulangan memeriksa setiap elemen sehingga bergantung pada n.</li><li>Baris 10 · <code>-- n langkah, O(n)</code> — Komentar mencatat pola biaya linear.</li></ol></div>
   <div class="panel good"><b>Fokus pada pola</b><p>Bertanya “apa yang terjadi jika data menjadi 10 kali lebih banyak?” jauh lebih berguna daripada mengukur milidetik di satu perangkat.</p></div>
   
 </section><section class="lesson-section">
-  <h4>02 · Membandingkan dua cara menyelesaikan masalah</h4>
+  <h4>03 · Membandingkan dua cara menyelesaikan masalah</h4>
   <p>Masalah yang sama sering punya beberapa algoritma dengan biaya berbeda. Mencari tugas duplikat dengan membandingkan setiap pasangan membutuhkan sekitar n × n pemeriksaan. Memakai peta judul yang sudah terlihat hanya membutuhkan satu pemeriksaan per tugas.</p><p>Pilih algoritma yang cukup cepat untuk ukuran data nyata, bukan yang paling rumit. Untuk 50 tugas, perbedaan O(n) dan O(n²) mungkin tidak terasa; untuk 50.000 data, perbedaannya menjadi sangat besar.</p>
   <pre><code>CARA 1: bandingkan semua pasangan
   FOR i FROM 1 TO n DO
@@ -2579,11 +2666,11 @@ CARA 2: catat yang sudah terlihat
   FOR i FROM 1 TO n DO
     IF judul[i] ada di terlihat THEN OUTPUT &quot;Duplikat&quot;
     TAMBAH judul[i] ke terlihat
-  -- n pemeriksaan</code></pre><div class="panel"><b>Output yang diharapkan</b><p>Kedua cara menemukan duplikat, tetapi cara kedua memeriksa data jauh lebih sedikit.</p></div><p>Cara pertama membandingkan setiap tugas dengan semua tugas lain. Cara kedua menyimpan judul yang sudah dilihat sehingga setiap tugas cukup diperiksa sekali.</p>
+  -- n pemeriksaan</code></pre><div class="panel"><b>Output yang diharapkan</b><p>Kedua cara menemukan duplikat, tetapi cara kedua memeriksa data jauh lebih sedikit.</p></div><p>Cara pertama membandingkan setiap tugas dengan semua tugas lain. Cara kedua menyimpan judul yang sudah dilihat sehingga setiap tugas cukup diperiksa sekali.</p><div class="panel"><b>Bedah baris</b><ol><li>Baris 1 · <code>CARA 1: bandingkan semua pasangan</code> — Cara pertama membandingkan setiap pasangan data.</li><li>Baris 3 · <code>FOR j FROM i + 1 TO n DO</code> — Perulangan kedua bersarang di dalam perulangan pertama.</li><li>Baris 7 · <code>CARA 2: catat yang sudah terlihat</code> — Cara kedua memakai struktur pencarian tambahan.</li><li>Baris 9 · <code>FOR i FROM 1 TO n DO</code> — Setiap data cukup diperiksa satu kali.</li><li>Baris 11 · <code>TAMBAH judul[i] ke terlihat</code> — Judul yang sudah terlihat disimpan untuk pemeriksaan berikutnya.</li></ol></div>
   
   <div class="panel warn"><b>Cek pemahaman</b><p>Sebuah algoritma memakai dua perulangan bersarang yang masing-masing berjalan n kali. Berapa perkiraan jumlah pemeriksaan untuk n = 100?</p><p>Kriteria berhasil: Jawaban menyebut sekitar 10.000 pemeriksaan dan menjelaskan bahwa biayanya kuadratik.</p></div>
 </section><section class="lesson-section">
-  <h4>03 · Daftar edge case untuk Aplikasi Catatan Tugas</h4>
+  <h4>04 · Daftar edge case untuk Aplikasi Catatan Tugas</h4>
   <p>Edge case adalah kasus yang jarang muncul tetapi tetap bisa merusak aplikasi. Daftar ini ditulis sebelum kode dibuat agar tidak ditemukan kebetulan saat pengujian.</p><p>Untuk setiap edge case, tulis perilaku yang diharapkan. Tanpa keputusan yang jelas, dua pengembang bisa menangani kasus yang sama dengan cara berbeda.</p>
   <pre><code>EDGE CASE                    PERILAKU YANG DIHARAPKAN
 ---------------------------------------------------------
@@ -2593,7 +2680,7 @@ Judul 121 karakter           Tolak dengan batas 120 karakter
 Dua tugas judul sama         Izinkan, tetapi beri id berbeda
 Tenggat 29 Februari          Tolak jika tahun bukan kabisat
 Hapus tugas yang sama 2x     Hapus pertama sukses, kedua beri pesan
-Prioritas tidak dikenal      Tolak dan sebutkan pilihan valid</code></pre><div class="panel"><b>Output yang diharapkan</b><p>Tujuh edge case dengan perilaku yang bisa diuji satu per satu.</p></div><p>Setiap baris menggabungkan kondisi batas dengan hasil yang diharapkan. Baris terakhir mencegah nilai prioritas asing merusak filter.</p>
+Prioritas tidak dikenal      Tolak dan sebutkan pilihan valid</code></pre><div class="panel"><b>Output yang diharapkan</b><p>Tujuh edge case dengan perilaku yang bisa diuji satu per satu.</p></div><p>Setiap baris menggabungkan kondisi batas dengan hasil yang diharapkan. Baris terakhir mencegah nilai prioritas asing merusak filter.</p><div class="panel"><b>Bedah baris</b><ol><li>Baris 1 · <code>EDGE CASE                    PERILAKU YANG DIHARAPKAN</code> — Judul kolom memisahkan kondisi dari perilaku yang diharapkan.</li><li>Baris 3 · <code>Daftar kosong                Tampilkan pesan &quot;Belum ada tugas&quot;</code> — Kasus daftar kosong punya perilaku tampilan yang jelas.</li><li>Baris 7 · <code>Tenggat 29 Februari          Tolak jika tahun bukan kabisat</code> — Kasus tanggal uji batas menuntut keputusan eksplisit.</li><li>Baris 8 · <code>Hapus tugas yang sama 2x     Hapus pertama sukses, kedua beri pesan</code> — Kasus urutan aksi membedakan keberhasilan pertama dan kedua.</li><li>Baris 9 · <code>Prioritas tidak dikenal      Tolak dan sebutkan pilihan valid</code> — Nilai asing ditolak dengan menyebut pilihan yang sah.</li></ol></div>
   
   
 </section>
@@ -2619,7 +2706,7 @@ cara 2: n = ...</code></pre><p><em>Hasil: Cara kedua dipilih dengan alasan sekit
     <details><summary>Lihat pembahasan</summary><p class="answer">Jawaban: B. Edge case yang ditulis lebih dulu menjadi test case dan mencegah perilaku yang ditebak-tebak.</p></details>
   </div></div>
   <h4>Ringkasan</h4><ul><li>Kompleksitas dibandingkan lewat pertumbuhan jumlah langkah, bukan waktu eksekusi di satu perangkat.</li><li>O(1) tetap, O(n) linear, dan O(n²) muncul dari perulangan bersarang.</li><li>Edge case ditulis sebelum kode dan menjadi test case saat implementasi.</li></ul>
-  
+  <div class="panel"><b>Berikutnya</b><p>Berikutnya: variabel, tipe data, dan operator JavaScript. Anda akan menerjemahkan pseudocode serta aturan yang sudah disusun menjadi kode yang benar-benar berjalan.</p></div>
   <h4>Sumber</h4><ul><li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Indexed_collections" rel="noopener noreferrer">MDN: Indexed collections</a> <small>Mozilla · rolling</small> — Rujukan operasi list dan biaya pemeriksaan elemen.</li><li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Working_with_objects" rel="noopener noreferrer">MDN: Working with objects</a> <small>Mozilla · rolling</small> — Rujukan struktur object yang menjadi dasar peta kunci-nilai.</li></ul>
 </article>
 </section>
@@ -4335,14 +4422,14 @@ tombol?.addEventListener(&quot;click&quot;, () =&gt; {
   <h4>Istilah kunci</h4><dl class="glossary"><div><dt>State</dt><dd>Data yang menentukan tampilan dan perilaku aplikasi pada satu waktu, misalnya daftar tugas dan filter aktif.</dd></div><div><dt>localStorage</dt><dd>Penyimpanan teks kecil per origin dan per browser yang bertahan setelah halaman ditutup, tetapi tidak otomatis tersinkron antarperangkat.</dd></div><div><dt>Serialisasi</dt><dd>Proses mengubah nilai JavaScript menjadi teks yang dapat disimpan atau dikirim, misalnya dengan JSON.stringify.</dd></div><div><dt>Deserialisasi</dt><dd>Proses mengubah teks kembali menjadi nilai JavaScript, misalnya dengan JSON.parse.</dd></div><div><dt>Schema version</dt><dd>Penanda versi bentuk data agar aplikasi dapat mengenali dan memigrasikan data lama.</dd></div></dl>
   <h4>Kartu sintaks</h4><div class="panel">
   <b><code>localStorage.setItem(kunci, nilai)</code></b>
-  
+  <p><em>Dibaca: Baca sebagai perintah menyimpan satu nilai teks dengan nama kunci tertentu di penyimpanan browser.</em></p>
   <p>Menyimpan nilai teks dengan nama kunci tertentu. Nilai harus berupa string; object harus diubah lebih dahulu.</p>
   <pre><code>localStorage.setItem(&quot;demo&quot;, &quot;halo&quot;);</code></pre>
   <p><em>Output: Method mengembalikan undefined, tetapi pasangan kunci dan nilai tersimpan di browser.</em></p>
   <p><em>Hati-hati: Menyimpan object langsung akan menghasilkan teks [object Object], bukan data yang bisa dibaca kembali.</em></p>
 </div><div class="panel">
   <b><code>localStorage.getItem(kunci)</code></b>
-  
+  <p><em>Dibaca: Baca sebagai perintah mengambil nilai teks berdasarkan kuncinya; hasilnya null bila kunci belum ada.</em></p>
   <p>Membaca nilai teks berdasarkan kunci. Jika kunci belum ada, hasilnya null.</p>
   <pre><code>const nilai = localStorage.getItem(&quot;demo&quot;);
 console.log(nilai);</code></pre>
@@ -4350,23 +4437,40 @@ console.log(nilai);</code></pre>
   <p><em>Hati-hati: Jangan langsung memanggil JSON.parse pada null; periksa nilai kosong terlebih dahulu.</em></p>
 </div><div class="panel">
   <b><code>JSON.stringify(nilai)</code></b>
-  
+  <p><em>Dibaca: Baca sebagai perintah mengubah nilai JavaScript menjadi teks JSON agar dapat disimpan.</em></p>
   <p>Mengubah object, array, string, number, atau boolean menjadi teks JSON.</p>
   <pre><code>console.log(JSON.stringify({ id: 1, done: false }));</code></pre>
   <p><em>Output: {&quot;id&quot;:1,&quot;done&quot;:false}</em></p>
   <p><em>Hati-hati: Function dan undefined tidak disimpan sebagai nilai JSON; struktur melingkar akan melempar error.</em></p>
 </div><div class="panel">
   <b><code>JSON.parse(teks)</code></b>
-  
+  <p><em>Dibaca: Baca sebagai perintah mengubah teks JSON kembali menjadi nilai JavaScript.</em></p>
   <p>Mengubah teks JSON kembali menjadi nilai JavaScript.</p>
   <pre><code>const data = JSON.parse(&#39;{&quot;id&quot;:1}&#39;);
 console.log(data.id);</code></pre>
   <p><em>Output: 1</em></p>
   <p><em>Hati-hati: Teks yang tidak valid akan melempar SyntaxError. Lindungi dengan try/catch.</em></p>
 </div>
-  
+  <h4>Aturan penulisan</h4><ul><li>Simpan state pada satu object sebagai sumber kebenaran, bukan di banyak variabel terpisah.</li><li>Ubah object menjadi JSON dengan JSON.stringify sebelum disimpan ke localStorage.</li><li>Bungkus JSON.parse dengan try/catch dan sediakan nilai cadangan bila data rusak.</li><li>Beri kunci yang jelas dan berversi, misalnya bk.tasks.v1, agar data lama dapat dikenali.</li><li>Simpan hanya data non-rahasia dan validasi kembali bentuknya setelah dibaca.</li></ul>
   <section class="lesson-section">
-  <h4>01 · State adalah satu sumber kebenaran</h4>
+  <h4>01 · Cara membaca alur simpan dan muat state</h4>
+  <p>Alur penyimpanan dibaca dari state menuju teks: ambil state, ubah menjadi JSON, lalu tulis ke localStorage. Alur pemuatan berjalan sebaliknya: baca teks, ubah kembali menjadi nilai JavaScript, lalu validasi bentuknya sebelum dipakai untuk menggambar tampilan.</p><p>Setiap simpul pada alur itu dapat gagal. Kunci bisa belum ada, teks bisa tidak valid, dan bentuk data bisa berubah. Membaca kode penyimpanan berarti memeriksa apakah setiap kemungkinan gagal sudah punya jawaban, misalnya mengembalikan daftar kosong alih-alih membuat halaman berhenti.</p>
+  <pre><code>const state = { tasks: [ { id: 1, title: &quot;Belajar&quot;, done: false } ] };
+
+simpan:
+  JSON.stringify(state)         -&gt; teks JSON
+  localStorage.setItem(kunci, teksJSON)
+
+muat:
+  teks &lt;- localStorage.getItem(kunci)
+  jika teks null             -&gt; daftar kosong
+  data &lt;- JSON.parse(teks)     (dibungkus try/catch)
+  jika data.tasks bukan array -&gt; daftar kosong
+  else                       -&gt; pakai data.tasks</code></pre><div class="panel"><b>Output yang diharapkan</b><p>State kembali utuh setelah muat, dan setiap kegagalan menghasilkan daftar kosong yang aman.</p></div><p>Blok simpan mengubah object menjadi teks sebelum disimpan. Blok muat memeriksa null, mem-parse dengan penjagaan, lalu memvalidasi bentuk data sebelum dipercaya.</p><div class="panel"><b>Bedah baris</b><ol><li>Baris 1 · <code>const state = { tasks: [ { id: 1, title: &quot;Belajar&quot;, done: false } ] };</code> — State dimulai dari satu object yang memuat daftar tugas.</li><li>Baris 4 · <code>JSON.stringify(state)         -&gt; teks JSON</code> — Langkah simpan pertama mengubah object menjadi teks JSON.</li><li>Baris 5 · <code>localStorage.setItem(kunci, teksJSON)</code> — Teks itu ditulis bersama nama kuncinya.</li><li>Baris 9 · <code>jika teks null             -&gt; daftar kosong</code> — Kunci yang belum ada ditangani lebih dulu.</li><li>Baris 11 · <code>jika data.tasks bukan array -&gt; daftar kosong</code> — Bentuk data divalidasi sebelum dipakai.</li><li>Baris 12 · <code>else                       -&gt; pakai data.tasks</code> — Hanya data yang lolos validasi yang dijadikan daftar tugas.</li></ol></div>
+  <div class="panel good"><b>Urutan yang penting</b><p>Pada pemuatan, periksa null sebelum mem-parse, dan validasi bentuk setelah mem-parse. Urutan ini mencegah error yang paling sering terjadi.</p></div>
+  <div class="panel warn"><b>Cek pemahaman</b><p>Tuliskan urutan langkah saat pengguna menekan tombol Simpan, dari state sampai tersimpan di localStorage.</p><p>Kriteria berhasil: Jawaban menyebut mengubah state menjadi JSON dengan JSON.stringify, memilih kunci, lalu memanggil localStorage.setItem.</p></div>
+</section><section class="lesson-section">
+  <h4>02 · State adalah satu sumber kebenaran</h4>
   <p>Pada aplikasi catatan tugas, state adalah data yang menjelaskan apa yang sedang terjadi: daftar tugas, filter yang dipilih, dan tugas yang sedang diedit. Tampilan hanyalah hasil dari state tersebut. Jika state berubah, tampilan harus diperbarui. Jika tampilan berubah tanpa mengubah state, aplikasi akan cepat menjadi tidak konsisten.</p><p>Mulailah dengan satu object state yang jelas. Jangan menyimpan potongan data yang sama di banyak variabel global. Satu sumber kebenaran membuat proses simpan, muat, dan debugging lebih mudah.</p>
   <pre><code>const state = {
   tasks: [
@@ -4380,11 +4484,11 @@ console.log(state.tasks.length);
 console.log(state.tasks[0].title);
 console.log(state.filter);</code></pre><div class="panel"><b>Output yang diharapkan</b><p>2
 Belajar DOM
-semua</p></div><p>state.tasks adalah array. state.tasks[0] mengambil object pertama, lalu .title membaca propertinya. state.filter menyimpan pilihan filter saat ini.</p>
+semua</p></div><p>state.tasks adalah array. state.tasks[0] mengambil object pertama, lalu .title membaca propertinya. state.filter menyimpan pilihan filter saat ini.</p><div class="panel"><b>Bedah baris</b><ol><li>Baris 1 · <code>const state = {</code> — Seluruh state dikumpulkan dalam satu object.</li><li>Baris 2 · <code>tasks: [</code> — Array tasks menyimpan daftar tugas berurutan.</li><li>Baris 3 · <code>{ id: 1, title: &quot;Belajar DOM&quot;, done: false },</code> — Setiap tugas adalah object dengan properti bernama.</li><li>Baris 6 · <code>filter: &quot;semua&quot;,</code> — Filter aktif disimpan bersama data, bukan di variabel terpisah.</li><li>Baris 9 · <code>console.log(state.tasks.length);</code> — Jumlah tugas dihitung dari state, bukan disimpan sebagai angka salinan.</li><li>Baris 10 · <code>console.log(state.tasks[0].title);</code> — Field tugas diakses lewat indeks lalu nama properti.</li><li>Baris 11 · <code>console.log(state.filter);</code> — Filter dibaca langsung dari state yang sama.</li></ol></div>
   <div class="panel good"><b>Aturan praktis</b><p>Sebelum menulis DOM, tuliskan bentuk state yang akan dipakai. Jika bentuk state berantakan, kode tampilan juga akan berantakan.</p></div>
   <div class="panel warn"><b>Cek pemahaman</b><p>Prediksi output dari console.log(state.tasks[1].done) dan jelaskan mengapa nilainya bukan string.</p><p>Kriteria berhasil: Anda menjawab true karena properti done disimpan sebagai boolean, bukan teks.</p></div>
 </section><section class="lesson-section">
-  <h4>02 · localStorage hanya menyimpan string</h4>
+  <h4>03 · localStorage hanya menyimpan string</h4>
   <p>localStorage tidak menyimpan object JavaScript secara langsung. Ia menyimpan pasangan kunci dan nilai berupa string. Jika Anda memberikan object, browser akan mengubahnya menjadi teks biasa, sering kali menjadi [object Object], sehingga informasi aslinya hilang.</p><p>Karena itu, object atau array harus diserialisasi dengan JSON.stringify sebelum disimpan. Saat dibaca, teks tersebut dikembalikan menjadi nilai JavaScript dengan JSON.parse. Proses ini terlihat sederhana, tetapi justru di sinilah banyak bug pemula muncul: lupa parse, salah bentuk data, atau memanggil parse pada nilai null.</p>
   <pre><code>const tasks = [{ id: 1, title: &quot;Belajar DOM&quot;, done: false }];
 const teks = JSON.stringify(tasks);
@@ -4395,11 +4499,11 @@ console.log(teks);
 const salinan = JSON.parse(teks);
 console.log(salinan[0].title);</code></pre><div class="panel"><b>Output yang diharapkan</b><p>string
 [{&quot;id&quot;:1,&quot;title&quot;:&quot;Belajar DOM&quot;,&quot;done&quot;:false}]
-Belajar DOM</p></div><p>JSON.stringify mengubah array menjadi string JSON. JSON.parse mengubah string itu kembali menjadi array baru, sehingga salinan[0].title dapat dibaca.</p>
+Belajar DOM</p></div><p>JSON.stringify mengubah array menjadi string JSON. JSON.parse mengubah string itu kembali menjadi array baru, sehingga salinan[0].title dapat dibaca.</p><div class="panel"><b>Bedah baris</b><ol><li>Baris 1 · <code>const tasks = [{ id: 1, title: &quot;Belajar DOM&quot;, done: false }];</code> — Nilai yang akan disimpan berupa array berisi object.</li><li>Baris 2 · <code>const teks = JSON.stringify(tasks);</code> — stringify mengubah array menjadi teks sebelum disimpan.</li><li>Baris 4 · <code>console.log(typeof teks);</code> — Tipe hasil stringify selalu string.</li><li>Baris 7 · <code>const salinan = JSON.parse(teks);</code> — parse mengubah teks kembali menjadi array baru.</li><li>Baris 8 · <code>console.log(salinan[0].title);</code> — Setelah parse, properti object dapat dibaca seperti biasa.</li></ol></div>
   <div class="panel bad"><b>Kesalahan umum</b><p>Menulis localStorage.setItem(&quot;tasks&quot;, tasks) lalu bingung mengapa hasilnya bukan array. Simpan JSON.stringify(tasks), bukan object mentah.</p></div>
   <div class="panel warn"><b>Cek pemahaman</b><p>Mengapa typeof localStorage.getItem(&quot;demo&quot;) selalu string ketika nilainya ada?</p><p>Kriteria berhasil: Anda menjelaskan bahwa localStorage menyimpan teks, bukan tipe JavaScript asli.</p></div>
 </section><section class="lesson-section">
-  <h4>03 · Menyimpan dan membaca dengan fungsi kecil</h4>
+  <h4>04 · Menyimpan dan membaca dengan fungsi kecil</h4>
   <p>Jangan menebar panggilan localStorage di seluruh event handler. Bungkus proses simpan dan baca dalam fungsi kecil. Dengan begitu, perubahan format data hanya dilakukan di satu tempat, dan Anda dapat menambahkan penanganan error tanpa mengubah banyak kode.</p><p>Fungsi baca harus siap menghadapi tiga kondisi: kunci belum ada, teks tidak valid, dan bentuk data tidak sesuai harapan. Nilai null dari getItem bukan error, tetapi tetap harus ditangani. Jika JSON.parse gagal, kembalikan daftar kosong agar aplikasi tetap bisa dibuka.</p>
   <pre><code>const KUNCI = &quot;bk.tasks.v1&quot;;
 
@@ -4421,11 +4525,11 @@ function baca() {
 }
 
 simpan([{ id: 1, title: &quot;Belajar DOM&quot;, done: false }]);
-console.log(baca());</code></pre><div class="panel"><b>Output yang diharapkan</b><p>Array satu object tugas dengan id 1, title Belajar DOM, dan done false.</p></div><p>simpan membungkus tasks dalam object berversi. baca memeriksa null, mem-parse JSON, lalu memastikan data.tasks benar-benar array sebelum dikembalikan.</p>
+console.log(baca());</code></pre><div class="panel"><b>Output yang diharapkan</b><p>Array satu object tugas dengan id 1, title Belajar DOM, dan done false.</p></div><p>simpan membungkus tasks dalam object berversi. baca memeriksa null, mem-parse JSON, lalu memastikan data.tasks benar-benar array sebelum dikembalikan.</p><div class="panel"><b>Bedah baris</b><ol><li>Baris 1 · <code>const KUNCI = &quot;bk.tasks.v1&quot;;</code> — Kunci diberi nama jelas dan berversi agar mudah dikenali.</li><li>Baris 4 · <code>localStorage.setItem(KUNCI, JSON.stringify({ versi: 1, tasks }));</code> — Data dibungkus object berversi, lalu diubah menjadi teks.</li><li>Baris 7 · <code>function baca() {</code> — Pemuatan dibungkus dalam satu fungsi kecil.</li><li>Baris 9 · <code>if (!teks) return [];</code> — Kunci yang belum ada ditangani lebih dulu dengan daftar kosong.</li><li>Baris 12 · <code>const data = JSON.parse(teks);</code> — parse dijalankan di dalam try agar teks rusak tertangkap.</li><li>Baris 13 · <code>return Array.isArray(data.tasks) ? data.tasks : [];</code> — Bentuk data diperiksa sebelum dikembalikan.</li><li>Baris 15 · <code>console.warn(&quot;Data rusak, mulai dari daftar kosong.&quot;, error);</code> — Data rusak dicatat, tetapi aplikasi tidak berhenti.</li><li>Baris 17 · <code>}</code> — Kegagalan apa pun menghasilkan array kosong yang aman.</li></ol></div>
   <div class="panel good"><b>Kebiasaan yang membantu</b><p>Beri nama kunci yang jelas dan berversi, misalnya bk.tasks.v1. Jangan memakai kunci generik seperti data.</p></div>
   <div class="panel warn"><b>Cek pemahaman</b><p>Apa yang terjadi jika kunci bk.tasks.v1 belum ada saat baca dipanggil?</p><p>Kriteria berhasil: Anda menjawab bahwa getItem mengembalikan null dan fungsi mengembalikan array kosong.</p></div>
 </section><section class="lesson-section">
-  <h4>04 · Data rusak, data lama, dan migrasi</h4>
+  <h4>05 · Data rusak, data lama, dan migrasi</h4>
   <p>Data di localStorage dapat berubah karena versi aplikasi lama, bug, atau pengguna yang mengedit DevTools. Aplikasi yang baik tidak menganggap data selalu sempurna. Ia memeriksa bentuk data, memberi nilai cadangan, dan bila perlu menjalankan migrasi dari versi lama ke versi baru.</p><p>Cara paling sederhana adalah menyimpan versi bersama data. Saat membaca, periksa versi tersebut. Jika versinya lebih lama, ubah bentuknya ke bentuk terbaru. Jika bentuknya tidak dikenali, jangan menebak; tampilkan pemberitahuan dan tawarkan reset atau impor cadangan.</p>
   <pre><code>const KUNCI = &quot;bk.tasks.v2&quot;;
 
@@ -4444,17 +4548,17 @@ function bacaAman() {
   }
 }
 
-console.log(bacaAman());</code></pre><div class="panel"><b>Output yang diharapkan</b><p>Object dengan versi 2 dan array tasks; jika data tidak valid, hasilnya object kosong yang aman.</p></div><p>Fungsi ini memeriksa null, mem-parse dengan try/catch, memvalidasi array, lalu memakai versi 2 sebagai cadangan bila versi tidak terbaca.</p>
+console.log(bacaAman());</code></pre><div class="panel"><b>Output yang diharapkan</b><p>Object dengan versi 2 dan array tasks; jika data tidak valid, hasilnya object kosong yang aman.</p></div><p>Fungsi ini memeriksa null, mem-parse dengan try/catch, memvalidasi array, lalu memakai versi 2 sebagai cadangan bila versi tidak terbaca.</p><div class="panel"><b>Bedah baris</b><ol><li>Baris 1 · <code>const KUNCI = &quot;bk.tasks.v2&quot;;</code> — Kunci versi baru memisahkan data dari format lama.</li><li>Baris 5 · <code>if (!teks) return { versi: 2, tasks: [] };</code> — Data yang belum ada langsung memakai bentuk terbaru.</li><li>Baris 8 · <code>const data = JSON.parse(teks);</code> — Teks di-parse dengan penjagaan agar data rusak tidak melempar error.</li><li>Baris 9 · <code>if (!Array.isArray(data.tasks)) {</code> — Bentuk data divalidasi sebelum dipakai.</li><li>Baris 12 · <code>return { versi: Number(data.versi) || 2, tasks: data.tasks };</code> — Versi dibaca dari data, dengan versi saat ini sebagai cadangan.</li><li>Baris 14 · <code>return { versi: 2, tasks: [] };</code> — Kegagalan parse menghasilkan bentuk aman yang sama.</li></ol></div>
   <div class="panel warn"><b>Jangan hapus data tanpa izin</b><p>Jika data tidak terbaca, tawarkan ekspor teks mentah atau konfirmasi reset. Menghapus otomatis dapat menghilangkan catatan pengguna.</p></div>
   <div class="panel warn"><b>Cek pemahaman</b><p>Mengapa memeriksa Array.isArray(data.tasks) lebih aman daripada langsung memakai data.tasks.map?</p><p>Kriteria berhasil: Anda menjelaskan bahwa data.tasks bisa saja bukan array sehingga .map akan melempar TypeError.</p></div>
 </section><section class="lesson-section">
-  <h4>05 · Batas dan keamanan localStorage</h4>
+  <h4>06 · Batas dan keamanan localStorage</h4>
   <p>localStorage terikat pada origin, yaitu kombinasi protokol, host, dan port. Data dari satu situs tidak terlihat oleh situs lain. Namun data ini dapat dibaca oleh JavaScript yang berjalan di origin yang sama. Artinya, jika terjadi XSS, penyerang dapat membaca isi localStorage.</p><p>Jangan menyimpan password, token sesi yang sangat sensitif, atau data pribadi yang tidak perlu. localStorage juga tidak terenkripsi dan tidak menggantikan database server. Untuk aplikasi catatan tugas, simpan data yang memang boleh dilihat pengguna di perangkat itu, dan beri opsi ekspor atau hapus.</p><p>Kuota localStorage biasanya sekitar 5 MB dan berbeda antar-browser. Jika penuh, setItem melempar QuotaExceededError. Tangani dengan memberi tahu pengguna, menawarkan pembersihan data lama, atau memindahkan data besar ke tempat lain.</p>
   <pre><code>try {
   localStorage.setItem(&quot;demo&quot;, &quot;x&quot;.repeat(6 * 1024 * 1024));
 } catch (error) {
   console.warn(&quot;Penyimpanan penuh atau diblokir:&quot;, error.name);
-}</code></pre><div class="panel"><b>Output yang diharapkan</b><p>Penyimpanan penuh atau diblokir: QuotaExceededError</p></div><p>String enam megabita biasanya melebihi kuota. try/catch mencegah halaman berhenti dan memberi kesempatan menampilkan pesan yang dapat dipahami pengguna.</p>
+}</code></pre><div class="panel"><b>Output yang diharapkan</b><p>Penyimpanan penuh atau diblokir: QuotaExceededError</p></div><p>String enam megabita biasanya melebihi kuota. try/catch mencegah halaman berhenti dan memberi kesempatan menampilkan pesan yang dapat dipahami pengguna.</p><div class="panel"><b>Bedah baris</b><ol><li>Baris 1 · <code>try {</code> — Penyimpanan dibungkus try karena kuota bisa terlampaui.</li><li>Baris 2 · <code>localStorage.setItem(&quot;demo&quot;, &quot;x&quot;.repeat(6 * 1024 * 1024));</code> — String raksasa dipakai untuk memicu kegagalan kuota.</li><li>Baris 4 · <code>console.warn(&quot;Penyimpanan penuh atau diblokir:&quot;, error.name);</code> — Nama error ditampilkan agar pengguna tahu penyebabnya.</li></ol></div>
   <div class="panel bad"><b>Jangan simpan rahasia</b><p>localStorage bukan brankas. Simpan data non-rahasia, dan jangan pernah menganggap data dari localStorage sebagai data yang tepercaya tanpa validasi.</p></div>
   <div class="panel warn"><b>Cek pemahaman</b><p>Mengapa data dari localStorage harus divalidasi lagi sebelum dipakai?</p><p>Kriteria berhasil: Anda menyebut data dapat diedit pengguna, rusak, atau berasal dari versi aplikasi lama.</p></div>
 </section>
@@ -4483,7 +4587,7 @@ function reset() {
     <details><summary>Lihat pembahasan</summary><p class="answer">Jawaban: C. localStorage selalu menyimpan dan mengembalikan string; object harus di-parse kembali.</p></details>
   </div></div>
   <h4>Ringkasan</h4><ul><li>State adalah sumber kebenaran aplikasi; localStorage hanya menyimpan representasi teksnya.</li><li>Gunakan JSON.stringify saat menyimpan dan JSON.parse di dalam try/catch saat membaca.</li><li>Validasi bentuk data, simpan versi, dan jangan pernah menyimpan rahasia di localStorage.</li></ul>
-  
+  <div class="panel"><b>Berikutnya</b><p>Berikutnya: promise, async/await, dan fetch. Anda akan mengambil data dari luar tanpa membuat antarmuka membeku, lalu menangani kondisi gagalnya.</p></div>
   <h4>Sumber</h4><ul><li><a href="https://developer.mozilla.org/en-US/docs/Web/API/Window/localStorage" rel="noopener noreferrer">MDN: Window.localStorage</a> <small>Mozilla · rolling</small> — Referensi API localStorage, termasuk batas dan perilaku penyimpanan.</li><li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON" rel="noopener noreferrer">MDN: JSON</a> <small>Mozilla · rolling</small> — Referensi JSON.stringify dan JSON.parse.</li><li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/try...catch" rel="noopener noreferrer">MDN: try...catch</a> <small>Mozilla · rolling</small> — Cara menangani error parsing dan kegagalan penyimpanan.</li></ul>
 </article>
 <article class="lesson" id="m05-l03">

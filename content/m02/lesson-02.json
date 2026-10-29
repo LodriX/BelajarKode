@@ -4,6 +4,7 @@
   "minutes": 90,
   "level": "Dasar",
   "depth": "fondasi",
+  "schema": 3.1,
   "codeLanguage": "text",
   "outcome": "Setelah pelajaran ini, Anda dapat menulis pseudocode yang konsisten dan menerjemahkannya menjadi flowchart dengan simbol keputusan yang benar.",
   "objectives": [
@@ -38,6 +39,7 @@
   "syntax": [
     {
       "token": "IF kondisi THEN ... ELSE ... END IF",
+      "readAs": "Baca sebagai perintah: jika kondisi benar kerjakan blok pertama, selain itu kerjakan blok kedua, lalu tutup dengan END IF.",
       "meaning": "Menjalankan satu blok jika kondisi benar, dan blok lain jika kondisi salah.",
       "example": "IF judul kosong THEN\n  OUTPUT \"Judul wajib diisi\"\nELSE\n  SIMPAN tugas\nEND IF",
       "output": "Hanya satu cabang yang dijalankan untuk setiap input.",
@@ -45,26 +47,107 @@
     },
     {
       "token": "nilai <- ekspresi",
+      "readAs": "Baca sebagai pemberian nilai: hitung ekspresi di kanan, lalu simpan hasilnya ke variabel di kiri panah.",
       "meaning": "Memberi nilai hasil perhitungan ke sebuah variabel.",
       "example": "jumlah <- 0\njumlah <- jumlah + 1",
       "output": "jumlah bernilai 1 setelah baris kedua.",
-      "pitfall": "Tanda <- bukan perbandingan; perbandingan ditulis dengan = atau \u201csama dengan\u201d di kondisi."
+      "pitfall": "Tanda <- bukan perbandingan; perbandingan ditulis dengan = atau “sama dengan” di kondisi."
     }
   ],
   "sections": [
+    {
+      "id": "cara-membaca",
+      "title": "Cara membaca pseudocode dan padanannya di flowchart",
+      "body": [
+        "Membaca pseudocode berarti mengikuti alur dari baris pertama sampai baris yang mengakhiri program. Mulailah dari INPUT untuk mengetahui data yang masuk, lalu telusuri percabangan: setiap IF memilih satu cabang, dan END IF menandai akhir pilihan.",
+        "Padanan di flowchart memakai simbol dengan arti yang sama. Jajar genjang mewakili input atau output, persegi panjang mewakili proses, dan belah ketupat mewakili keputusan. Jika sebuah keputusan hanya punya satu panah keluar, berarti ada jalur yang belum Anda tentukan."
+      ],
+      "code": {
+        "language": "text",
+        "lab": false,
+        "code": "INPUT judul\nIF judul kosong THEN\n  OUTPUT \"Judul wajib diisi\"\nELSE\n  SIMPAN tugas\nEND IF",
+        "output": "Input \"\" menampilkan pesan; input \"Belajar\" menyimpan tugas.",
+        "explain": "Baris IF membaca kondisi judul kosong. Karena hanya satu cabang yang dijalankan, pembaca tahu pesan error dan penyimpanan tidak pernah terjadi bersamaan.",
+        "annotations": [
+          {
+            "line": 1,
+            "code": "INPUT judul",
+            "note": "Input adalah jajar genjang pada flowchart."
+          },
+          {
+            "line": 2,
+            "code": "IF judul kosong THEN",
+            "note": "IF adalah belah ketupat dengan dua jalur keluar."
+          },
+          {
+            "line": 3,
+            "code": "OUTPUT \"Judul wajib diisi\"",
+            "note": "Cabang THEN adalah output untuk jalur gagal."
+          },
+          {
+            "line": 5,
+            "code": "SIMPAN tugas",
+            "note": "Cabang ELSE adalah proses untuk jalur sukses."
+          },
+          {
+            "line": 6,
+            "code": "END IF",
+            "note": "END IF menutup pilihan dan menyatukan kembali kedua jalur."
+          }
+        ]
+      },
+      "callouts": [
+        {
+          "tone": "good",
+          "title": "Ikuti alurnya, bukan barisnya",
+          "body": "Bacalah sesuai alur eksekusi, bukan sekadar urutan baris. Percabangan membuat sebagian baris dilewati untuk input tertentu."
+        }
+      ],
+      "checkpoint": {
+        "prompt": "Terjemahkan pseudocode pada blok kode di atas menjadi urutan panah flowchart.",
+        "success": "Jawaban menyebut jajar genjang untuk INPUT dan OUTPUT, persegi panjang untuk SIMPAN, serta belah ketupat untuk IF dengan dua jalur berlabel."
+      }
+    },
     {
       "id": "aturan-pseudocode",
       "title": "Empat aturan pseudocode yang konsisten",
       "body": [
         "Pseudocode tidak punya kompiler, jadi konsistensi harus Anda jaga sendiri. Pakai satu gaya penulisan untuk seluruh proyek: kata kunci huruf besar, satu langkah per baris, dan indentasi untuk menunjukkan langkah yang berada di dalam percabangan atau perulangan.",
-        "Beri nama variabel dengan jelas: judul, daftarTugas, jumlahSelesai. Hindari nama seperti x atau data karena pembaca harus menebak isinya. Tuliskan juga tipe nilai secara singkat di komentar bila perlu, misalnya \u201cjudul: teks\u201d."
+        "Beri nama variabel dengan jelas: judul, daftarTugas, jumlahSelesai. Hindari nama seperti x atau data karena pembaca harus menebak isinya. Tuliskan juga tipe nilai secara singkat di komentar bila perlu, misalnya “judul: teks”."
       ],
       "code": {
         "language": "text",
         "lab": false,
         "code": "-- pseudocode: tambah tugas\nINPUT judul            -- teks\nIF judul kosong THEN\n  OUTPUT \"Judul wajib diisi\"\nELSE\n  SIMPAN tugas dengan judul\n  OUTPUT \"Tugas disimpan\"\nEND IF",
         "output": "Input \"Belajar\" -> Tugas disimpan\nInput \"\"        -> Judul wajib diisi",
-        "explain": "Kata kunci INPUT, IF, ELSE, dan OUTPUT ditulis konsisten. Indentasi menunjukkan bahwa SIMPAN dan OUTPUT hanya dijalankan pada cabang ELSE."
+        "explain": "Kata kunci INPUT, IF, ELSE, dan OUTPUT ditulis konsisten. Indentasi menunjukkan bahwa SIMPAN dan OUTPUT hanya dijalankan pada cabang ELSE.",
+        "annotations": [
+          {
+            "line": 1,
+            "code": "-- pseudocode: tambah tugas",
+            "note": "Komentar menandai tujuan blok tanpa mengubah alurnya."
+          },
+          {
+            "line": 2,
+            "code": "INPUT judul            -- teks",
+            "note": "Komentar tipe di samping input menjaga tipe nilai tetap jelas."
+          },
+          {
+            "line": 3,
+            "code": "IF judul kosong THEN",
+            "note": "Kata kunci huruf besar menandai awal percabangan."
+          },
+          {
+            "line": 6,
+            "code": "SIMPAN tugas dengan judul",
+            "note": "Indentasi menunjukkan baris ini hanya dijalankan pada cabang ELSE."
+          },
+          {
+            "line": 8,
+            "code": "END IF",
+            "note": "END IF menutup percabangan dan mengembalikan alur utama."
+          }
+        ]
       },
       "callouts": [
         {
@@ -86,7 +169,39 @@
         "lab": false,
         "code": "(MULAI)\n   |\n   v\n[ baca judul ]\n   |\n   v\n< judul kosong? > --Ya--> [ tampilkan pesan ] --> (SELESAI)\n   |\n  Tidak\n   v\n[ simpan tugas ]\n   |\n   v\n( SELESAI )",
         "output": "Alur bercabang dua: jalur gagal berhenti setelah pesan, jalur sukses menyimpan lalu selesai.",
-        "explain": "Simbol <> adalah keputusan. Label Ya dan Tidak wajib ada supaya pembaca tahu jalur mana yang diambil untuk setiap kondisi."
+        "explain": "Simbol <> adalah keputusan. Label Ya dan Tidak wajib ada supaya pembaca tahu jalur mana yang diambil untuk setiap kondisi.",
+        "annotations": [
+          {
+            "line": 1,
+            "code": "(MULAI)",
+            "note": "Oval menandai titik mulai program."
+          },
+          {
+            "line": 4,
+            "code": "[ baca judul ]",
+            "note": "Persegi panjang adalah proses membaca judul."
+          },
+          {
+            "line": 7,
+            "code": "< judul kosong? > --Ya--> [ tampilkan pesan ] --> (SELESAI)",
+            "note": "Belah ketupat adalah keputusan dengan dua panah keluar."
+          },
+          {
+            "line": 9,
+            "code": "Tidak",
+            "note": "Label pada panah menyatakan hasil keputusan yang diambil."
+          },
+          {
+            "line": 11,
+            "code": "[ simpan tugas ]",
+            "note": "Persegi panjang kedua adalah proses menyimpan tugas."
+          },
+          {
+            "line": 14,
+            "code": "( SELESAI )",
+            "note": "Oval terakhir menutup alur pada jalur sukses."
+          }
+        ]
       },
       "checkpoint": {
         "prompt": "Gambarkan flowchart untuk aturan: tugas hanya disimpan jika judul tidak kosong DAN panjang judul maksimal 120 karakter.",
@@ -105,7 +220,34 @@
         "lab": false,
         "code": "INPUT judul = \"Belajar\"\nIF judul kosong THEN        -- salah\n  OUTPUT \"Judul wajib diisi\"\nELSE\n  SIMPAN tugas\nEND IF",
         "output": "Tidak ada output yang salah pada input normal, tetapi input kosong juga akan tersimpan karena kondisi ditulis terbalik.",
-        "explain": "Penelusuran dengan judul kosong menunjukkan kondisi \u201cjudul kosong\u201d bernilai benar, sehingga cabang pesan error dijalankan; namun pada input normal kondisi bernilai salah sehingga SIMPAN berjalan. Kesalahan baru terlihat jika Anda menguji keduanya."
+        "explain": "Penelusuran dengan judul kosong menunjukkan kondisi “judul kosong” bernilai benar, sehingga cabang pesan error dijalankan; namun pada input normal kondisi bernilai salah sehingga SIMPAN berjalan. Kesalahan baru terlihat jika Anda menguji keduanya.",
+        "annotations": [
+          {
+            "line": 1,
+            "code": "INPUT judul = \"Belajar\"",
+            "note": "Nilai contoh ditulis langsung agar penelusuran bisa dimulai."
+          },
+          {
+            "line": 2,
+            "code": "IF judul kosong THEN        -- salah",
+            "note": "Komentar menandai kondisi yang perlu diperiksa dengan teliti."
+          },
+          {
+            "line": 3,
+            "code": "OUTPUT \"Judul wajib diisi\"",
+            "note": "Cabang ini hanya dijalankan bila kondisinya benar."
+          },
+          {
+            "line": 5,
+            "code": "SIMPAN tugas",
+            "note": "Penelusuran memeriksa apakah cabang ini benar-benar berjalan."
+          },
+          {
+            "line": 6,
+            "code": "END IF",
+            "note": "END IF menutup percabangan setelah kedua cabang ditelusuri."
+          }
+        ]
       }
     }
   ],
@@ -136,7 +278,7 @@
       "id": "latihan-2",
       "level": "variasi",
       "title": "Telusuri aturan prioritas",
-      "task": "Telusuri pseudocode yang menampilkan pesan \u201cPenting\u201d jika prioritas bernilai tinggi ATAU tenggat hari ini.",
+      "task": "Telusuri pseudocode yang menampilkan pesan “Penting” jika prioritas bernilai tinggi ATAU tenggat hari ini.",
       "steps": [
         "Uji dengan prioritas rendah dan tenggat besok.",
         "Uji dengan prioritas tinggi dan tenggat besok.",
@@ -166,7 +308,7 @@
         "Tulis output untuk kedua jalur."
       ],
       "starterCode": "INPUT id\n...",
-      "expected": "Flowchart memuat satu keputusan \u201cditemukan?\u201d dan dua output berbeda.",
+      "expected": "Flowchart memuat satu keputusan “ditemukan?” dan dua output berbeda.",
       "hints": [
         "Pencarian dan penghapusan adalah dua proses terpisah.",
         "Pesan untuk id yang tidak ada harus menyebut id tersebut agar mudah dilacak."
@@ -254,5 +396,12 @@
     "Pseudocode yang konsisten memakai satu gaya kata kunci, satu langkah per baris, dan nama variabel yang jelas.",
     "Flowchart memakai simbol MULAI/SELESAI, proses, input/output, dan keputusan dengan dua jalur berlabel.",
     "Penelusuran dua kasus, sukses dan gagal, menemukan kesalahan logika sebelum kode ditulis."
-  ]
+  ],
+  "conventions": [
+    "Tulis kata kunci dengan huruf besar secara konsisten: INPUT, IF, ELSE, WHILE, OUTPUT.",
+    "Gunakan satu langkah per baris dan indentasi untuk langkah di dalam percabangan atau perulangan.",
+    "Beri nama variabel yang menggambarkan isinya, misalnya judul, daftarTugas, jumlahSelesai.",
+    "Pastikan setiap belah ketupat pada flowchart punya dua panah keluar berlabel Ya dan Tidak."
+  ],
+  "next": "Berikutnya: tipe data, input, dan validasi. Anda akan menentukan tipe setiap field tugas dan menulis aturan validasi yang menolak input tidak masuk akal."
 }

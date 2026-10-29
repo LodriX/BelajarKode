@@ -41,6 +41,7 @@
       "minutes": 120,
       "level": "Dasar",
       "depth": "integrasi",
+      "schema": 3.1,
       "codeLanguage": "javascript",
       "outcome": "Setelah pelajaran ini, Anda dapat memodelkan state aplikasi catatan tugas, menyimpannya ke localStorage sebagai JSON, dan memulihkannya dengan aman ketika data kosong, rusak, atau berasal dari versi lama.",
       "objectives": [
@@ -84,6 +85,7 @@
       "syntax": [
         {
           "token": "localStorage.setItem(kunci, nilai)",
+          "readAs": "Baca sebagai perintah menyimpan satu nilai teks dengan nama kunci tertentu di penyimpanan browser.",
           "meaning": "Menyimpan nilai teks dengan nama kunci tertentu. Nilai harus berupa string; object harus diubah lebih dahulu.",
           "example": "localStorage.setItem(\"demo\", \"halo\");",
           "output": "Method mengembalikan undefined, tetapi pasangan kunci dan nilai tersimpan di browser.",
@@ -91,6 +93,7 @@
         },
         {
           "token": "localStorage.getItem(kunci)",
+          "readAs": "Baca sebagai perintah mengambil nilai teks berdasarkan kuncinya; hasilnya null bila kunci belum ada.",
           "meaning": "Membaca nilai teks berdasarkan kunci. Jika kunci belum ada, hasilnya null.",
           "example": "const nilai = localStorage.getItem(\"demo\");\nconsole.log(nilai);",
           "output": "halo",
@@ -98,6 +101,7 @@
         },
         {
           "token": "JSON.stringify(nilai)",
+          "readAs": "Baca sebagai perintah mengubah nilai JavaScript menjadi teks JSON agar dapat disimpan.",
           "meaning": "Mengubah object, array, string, number, atau boolean menjadi teks JSON.",
           "example": "console.log(JSON.stringify({ id: 1, done: false }));",
           "output": "{\"id\":1,\"done\":false}",
@@ -105,6 +109,7 @@
         },
         {
           "token": "JSON.parse(teks)",
+          "readAs": "Baca sebagai perintah mengubah teks JSON kembali menjadi nilai JavaScript.",
           "meaning": "Mengubah teks JSON kembali menjadi nilai JavaScript.",
           "example": "const data = JSON.parse('{\"id\":1}');\nconsole.log(data.id);",
           "output": "1",
@@ -112,6 +117,64 @@
         }
       ],
       "sections": [
+        {
+          "id": "cara-membaca",
+          "title": "Cara membaca alur simpan dan muat state",
+          "body": [
+            "Alur penyimpanan dibaca dari state menuju teks: ambil state, ubah menjadi JSON, lalu tulis ke localStorage. Alur pemuatan berjalan sebaliknya: baca teks, ubah kembali menjadi nilai JavaScript, lalu validasi bentuknya sebelum dipakai untuk menggambar tampilan.",
+            "Setiap simpul pada alur itu dapat gagal. Kunci bisa belum ada, teks bisa tidak valid, dan bentuk data bisa berubah. Membaca kode penyimpanan berarti memeriksa apakah setiap kemungkinan gagal sudah punya jawaban, misalnya mengembalikan daftar kosong alih-alih membuat halaman berhenti."
+          ],
+          "code": {
+            "language": "javascript",
+            "lab": false,
+            "code": "const state = { tasks: [ { id: 1, title: \"Belajar\", done: false } ] };\n\nsimpan:\n  JSON.stringify(state)         -> teks JSON\n  localStorage.setItem(kunci, teksJSON)\n\nmuat:\n  teks <- localStorage.getItem(kunci)\n  jika teks null             -> daftar kosong\n  data <- JSON.parse(teks)     (dibungkus try/catch)\n  jika data.tasks bukan array -> daftar kosong\n  else                       -> pakai data.tasks",
+            "output": "State kembali utuh setelah muat, dan setiap kegagalan menghasilkan daftar kosong yang aman.",
+            "explain": "Blok simpan mengubah object menjadi teks sebelum disimpan. Blok muat memeriksa null, mem-parse dengan penjagaan, lalu memvalidasi bentuk data sebelum dipercaya.",
+            "annotations": [
+              {
+                "line": 1,
+                "code": "const state = { tasks: [ { id: 1, title: \"Belajar\", done: false } ] };",
+                "note": "State dimulai dari satu object yang memuat daftar tugas."
+              },
+              {
+                "line": 4,
+                "code": "JSON.stringify(state)         -> teks JSON",
+                "note": "Langkah simpan pertama mengubah object menjadi teks JSON."
+              },
+              {
+                "line": 5,
+                "code": "localStorage.setItem(kunci, teksJSON)",
+                "note": "Teks itu ditulis bersama nama kuncinya."
+              },
+              {
+                "line": 9,
+                "code": "jika teks null             -> daftar kosong",
+                "note": "Kunci yang belum ada ditangani lebih dulu."
+              },
+              {
+                "line": 11,
+                "code": "jika data.tasks bukan array -> daftar kosong",
+                "note": "Bentuk data divalidasi sebelum dipakai."
+              },
+              {
+                "line": 12,
+                "code": "else                       -> pakai data.tasks",
+                "note": "Hanya data yang lolos validasi yang dijadikan daftar tugas."
+              }
+            ]
+          },
+          "callouts": [
+            {
+              "tone": "good",
+              "title": "Urutan yang penting",
+              "body": "Pada pemuatan, periksa null sebelum mem-parse, dan validasi bentuk setelah mem-parse. Urutan ini mencegah error yang paling sering terjadi."
+            }
+          ],
+          "checkpoint": {
+            "prompt": "Tuliskan urutan langkah saat pengguna menekan tombol Simpan, dari state sampai tersimpan di localStorage.",
+            "success": "Jawaban menyebut mengubah state menjadi JSON dengan JSON.stringify, memilih kunci, lalu memanggil localStorage.setItem."
+          }
+        },
         {
           "id": "state-sumber-kebenaran",
           "title": "State adalah satu sumber kebenaran",
@@ -124,7 +187,44 @@
             "lab": false,
             "code": "const state = {\n  tasks: [\n    { id: 1, title: \"Belajar DOM\", done: false },\n    { id: 2, title: \"Latihan localStorage\", done: true },\n  ],\n  filter: \"semua\",\n};\n\nconsole.log(state.tasks.length);\nconsole.log(state.tasks[0].title);\nconsole.log(state.filter);",
             "output": "2\nBelajar DOM\nsemua",
-            "explain": "state.tasks adalah array. state.tasks[0] mengambil object pertama, lalu .title membaca propertinya. state.filter menyimpan pilihan filter saat ini."
+            "explain": "state.tasks adalah array. state.tasks[0] mengambil object pertama, lalu .title membaca propertinya. state.filter menyimpan pilihan filter saat ini.",
+            "annotations": [
+              {
+                "line": 1,
+                "code": "const state = {",
+                "note": "Seluruh state dikumpulkan dalam satu object."
+              },
+              {
+                "line": 2,
+                "code": "tasks: [",
+                "note": "Array tasks menyimpan daftar tugas berurutan."
+              },
+              {
+                "line": 3,
+                "code": "{ id: 1, title: \"Belajar DOM\", done: false },",
+                "note": "Setiap tugas adalah object dengan properti bernama."
+              },
+              {
+                "line": 6,
+                "code": "filter: \"semua\",",
+                "note": "Filter aktif disimpan bersama data, bukan di variabel terpisah."
+              },
+              {
+                "line": 9,
+                "code": "console.log(state.tasks.length);",
+                "note": "Jumlah tugas dihitung dari state, bukan disimpan sebagai angka salinan."
+              },
+              {
+                "line": 10,
+                "code": "console.log(state.tasks[0].title);",
+                "note": "Field tugas diakses lewat indeks lalu nama properti."
+              },
+              {
+                "line": 11,
+                "code": "console.log(state.filter);",
+                "note": "Filter dibaca langsung dari state yang sama."
+              }
+            ]
           },
           "callouts": [
             {
@@ -150,7 +250,34 @@
             "lab": false,
             "code": "const tasks = [{ id: 1, title: \"Belajar DOM\", done: false }];\nconst teks = JSON.stringify(tasks);\n\nconsole.log(typeof teks);\nconsole.log(teks);\n\nconst salinan = JSON.parse(teks);\nconsole.log(salinan[0].title);",
             "output": "string\n[{\"id\":1,\"title\":\"Belajar DOM\",\"done\":false}]\nBelajar DOM",
-            "explain": "JSON.stringify mengubah array menjadi string JSON. JSON.parse mengubah string itu kembali menjadi array baru, sehingga salinan[0].title dapat dibaca."
+            "explain": "JSON.stringify mengubah array menjadi string JSON. JSON.parse mengubah string itu kembali menjadi array baru, sehingga salinan[0].title dapat dibaca.",
+            "annotations": [
+              {
+                "line": 1,
+                "code": "const tasks = [{ id: 1, title: \"Belajar DOM\", done: false }];",
+                "note": "Nilai yang akan disimpan berupa array berisi object."
+              },
+              {
+                "line": 2,
+                "code": "const teks = JSON.stringify(tasks);",
+                "note": "stringify mengubah array menjadi teks sebelum disimpan."
+              },
+              {
+                "line": 4,
+                "code": "console.log(typeof teks);",
+                "note": "Tipe hasil stringify selalu string."
+              },
+              {
+                "line": 7,
+                "code": "const salinan = JSON.parse(teks);",
+                "note": "parse mengubah teks kembali menjadi array baru."
+              },
+              {
+                "line": 8,
+                "code": "console.log(salinan[0].title);",
+                "note": "Setelah parse, properti object dapat dibaca seperti biasa."
+              }
+            ]
           },
           "callouts": [
             {
@@ -176,7 +303,49 @@
             "lab": false,
             "code": "const KUNCI = \"bk.tasks.v1\";\n\nfunction simpan(tasks) {\n  localStorage.setItem(KUNCI, JSON.stringify({ versi: 1, tasks }));\n}\n\nfunction baca() {\n  const teks = localStorage.getItem(KUNCI);\n  if (!teks) return [];\n\n  try {\n    const data = JSON.parse(teks);\n    return Array.isArray(data.tasks) ? data.tasks : [];\n  } catch (error) {\n    console.warn(\"Data rusak, mulai dari daftar kosong.\", error);\n    return [];\n  }\n}\n\nsimpan([{ id: 1, title: \"Belajar DOM\", done: false }]);\nconsole.log(baca());",
             "output": "Array satu object tugas dengan id 1, title Belajar DOM, dan done false.",
-            "explain": "simpan membungkus tasks dalam object berversi. baca memeriksa null, mem-parse JSON, lalu memastikan data.tasks benar-benar array sebelum dikembalikan."
+            "explain": "simpan membungkus tasks dalam object berversi. baca memeriksa null, mem-parse JSON, lalu memastikan data.tasks benar-benar array sebelum dikembalikan.",
+            "annotations": [
+              {
+                "line": 1,
+                "code": "const KUNCI = \"bk.tasks.v1\";",
+                "note": "Kunci diberi nama jelas dan berversi agar mudah dikenali."
+              },
+              {
+                "line": 4,
+                "code": "localStorage.setItem(KUNCI, JSON.stringify({ versi: 1, tasks }));",
+                "note": "Data dibungkus object berversi, lalu diubah menjadi teks."
+              },
+              {
+                "line": 7,
+                "code": "function baca() {",
+                "note": "Pemuatan dibungkus dalam satu fungsi kecil."
+              },
+              {
+                "line": 9,
+                "code": "if (!teks) return [];",
+                "note": "Kunci yang belum ada ditangani lebih dulu dengan daftar kosong."
+              },
+              {
+                "line": 12,
+                "code": "const data = JSON.parse(teks);",
+                "note": "parse dijalankan di dalam try agar teks rusak tertangkap."
+              },
+              {
+                "line": 13,
+                "code": "return Array.isArray(data.tasks) ? data.tasks : [];",
+                "note": "Bentuk data diperiksa sebelum dikembalikan."
+              },
+              {
+                "line": 15,
+                "code": "console.warn(\"Data rusak, mulai dari daftar kosong.\", error);",
+                "note": "Data rusak dicatat, tetapi aplikasi tidak berhenti."
+              },
+              {
+                "line": 17,
+                "code": "}",
+                "note": "Kegagalan apa pun menghasilkan array kosong yang aman."
+              }
+            ]
           },
           "callouts": [
             {
@@ -202,7 +371,39 @@
             "lab": false,
             "code": "const KUNCI = \"bk.tasks.v2\";\n\nfunction bacaAman() {\n  const teks = localStorage.getItem(KUNCI);\n  if (!teks) return { versi: 2, tasks: [] };\n\n  try {\n    const data = JSON.parse(teks);\n    if (!Array.isArray(data.tasks)) {\n      return { versi: 2, tasks: [] };\n    }\n    return { versi: Number(data.versi) || 2, tasks: data.tasks };\n  } catch {\n    return { versi: 2, tasks: [] };\n  }\n}\n\nconsole.log(bacaAman());",
             "output": "Object dengan versi 2 dan array tasks; jika data tidak valid, hasilnya object kosong yang aman.",
-            "explain": "Fungsi ini memeriksa null, mem-parse dengan try/catch, memvalidasi array, lalu memakai versi 2 sebagai cadangan bila versi tidak terbaca."
+            "explain": "Fungsi ini memeriksa null, mem-parse dengan try/catch, memvalidasi array, lalu memakai versi 2 sebagai cadangan bila versi tidak terbaca.",
+            "annotations": [
+              {
+                "line": 1,
+                "code": "const KUNCI = \"bk.tasks.v2\";",
+                "note": "Kunci versi baru memisahkan data dari format lama."
+              },
+              {
+                "line": 5,
+                "code": "if (!teks) return { versi: 2, tasks: [] };",
+                "note": "Data yang belum ada langsung memakai bentuk terbaru."
+              },
+              {
+                "line": 8,
+                "code": "const data = JSON.parse(teks);",
+                "note": "Teks di-parse dengan penjagaan agar data rusak tidak melempar error."
+              },
+              {
+                "line": 9,
+                "code": "if (!Array.isArray(data.tasks)) {",
+                "note": "Bentuk data divalidasi sebelum dipakai."
+              },
+              {
+                "line": 12,
+                "code": "return { versi: Number(data.versi) || 2, tasks: data.tasks };",
+                "note": "Versi dibaca dari data, dengan versi saat ini sebagai cadangan."
+              },
+              {
+                "line": 14,
+                "code": "return { versi: 2, tasks: [] };",
+                "note": "Kegagalan parse menghasilkan bentuk aman yang sama."
+              }
+            ]
           },
           "callouts": [
             {
@@ -229,7 +430,24 @@
             "lab": false,
             "code": "try {\n  localStorage.setItem(\"demo\", \"x\".repeat(6 * 1024 * 1024));\n} catch (error) {\n  console.warn(\"Penyimpanan penuh atau diblokir:\", error.name);\n}",
             "output": "Penyimpanan penuh atau diblokir: QuotaExceededError",
-            "explain": "String enam megabita biasanya melebihi kuota. try/catch mencegah halaman berhenti dan memberi kesempatan menampilkan pesan yang dapat dipahami pengguna."
+            "explain": "String enam megabita biasanya melebihi kuota. try/catch mencegah halaman berhenti dan memberi kesempatan menampilkan pesan yang dapat dipahami pengguna.",
+            "annotations": [
+              {
+                "line": 1,
+                "code": "try {",
+                "note": "Penyimpanan dibungkus try karena kuota bisa terlampaui."
+              },
+              {
+                "line": 2,
+                "code": "localStorage.setItem(\"demo\", \"x\".repeat(6 * 1024 * 1024));",
+                "note": "String raksasa dipakai untuk memicu kegagalan kuota."
+              },
+              {
+                "line": 4,
+                "code": "console.warn(\"Penyimpanan penuh atau diblokir:\", error.name);",
+                "note": "Nama error ditampilkan agar pengguna tahu penyebabnya."
+              }
+            ]
           },
           "callouts": [
             {
@@ -392,7 +610,15 @@
         "State adalah sumber kebenaran aplikasi; localStorage hanya menyimpan representasi teksnya.",
         "Gunakan JSON.stringify saat menyimpan dan JSON.parse di dalam try/catch saat membaca.",
         "Validasi bentuk data, simpan versi, dan jangan pernah menyimpan rahasia di localStorage."
-      ]
+      ],
+      "conventions": [
+        "Simpan state pada satu object sebagai sumber kebenaran, bukan di banyak variabel terpisah.",
+        "Ubah object menjadi JSON dengan JSON.stringify sebelum disimpan ke localStorage.",
+        "Bungkus JSON.parse dengan try/catch dan sediakan nilai cadangan bila data rusak.",
+        "Beri kunci yang jelas dan berversi, misalnya bk.tasks.v1, agar data lama dapat dikenali.",
+        "Simpan hanya data non-rahasia dan validasi kembali bentuknya setelah dibaca."
+      ],
+      "next": "Berikutnya: promise, async/await, dan fetch. Anda akan mengambil data dari luar tanpa membuat antarmuka membeku, lalu menangani kondisi gagalnya."
     },
     {
       "id": "m05-l03",

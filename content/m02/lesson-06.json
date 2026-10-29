@@ -4,6 +4,7 @@
   "minutes": 90,
   "level": "Dasar",
   "depth": "fondasi",
+  "schema": 3.1,
   "codeLanguage": "text",
   "outcome": "Setelah pelajaran ini, Anda dapat memilih struktur data yang tepat untuk daftar tugas dan menulis algoritma tambah, cari, dan hapus yang tidak merusak data lain.",
   "objectives": [
@@ -38,6 +39,7 @@
   "syntax": [
     {
       "token": "daftar[i].field",
+      "readAs": "Baca sebagai pengambilan field tertentu dari record pada posisi ke-i di dalam daftar.",
       "meaning": "Mengambil field tertentu dari record pada posisi ke-i.",
       "example": "OUTPUT daftar[1].judul",
       "output": "Judul tugas pertama (jika indeks dimulai dari 1).",
@@ -45,6 +47,7 @@
     },
     {
       "token": "peta[kunci]",
+      "readAs": "Baca sebagai pengambilan record langsung memakai kunci unik, tanpa memeriksa elemen lain.",
       "meaning": "Mengambil record langsung berdasarkan kunci unik tanpa memeriksa satu per satu.",
       "example": "OUTPUT peta[\"t-01\"].judul",
       "output": "Judul tugas dengan id t-01.",
@@ -52,6 +55,54 @@
     }
   ],
   "sections": [
+    {
+      "id": "cara-membaca",
+      "title": "Cara membaca algoritma tambah, cari, dan hapus",
+      "body": [
+        "Algoritma struktur data dibaca dengan melacak perubahan pada data, bukan hanya hasil akhirnya. Ambil satu daftar contoh, lalu jalankan operasi baris demi baris dan catat isi daftar setelah setiap langkah. Perubahan itulah yang paling mudah salah, terutama saat menghapus.",
+        "Bedakan pencarian dari perubahan. Pencarian hanya membaca, sedangkan tambah dan hapus mengubah daftar. Dengan memisahkan keduanya, Anda dapat menguji pencarian tanpa risiko merusak data."
+      ],
+      "code": {
+        "language": "text",
+        "lab": false,
+        "code": "daftar sebelum: [ t-01 Belajar, t-02 Olahraga ]\n\ncari t-02      -> ditemukan di indeks 2\nhapus t-02     -> catat indeks 2, keluar dari perulangan\ndaftar sesudah: [ t-01 Belajar ]",
+        "output": "Daftar tersisa satu record setelah penghapusan.",
+        "explain": "Indeks dicatat lebih dulu, lalu penghapusan dilakukan setelah perulangan agar posisi record lain tidak bergeser saat masih diperiksa.",
+        "annotations": [
+          {
+            "line": 1,
+            "code": "daftar sebelum: [ t-01 Belajar, t-02 Olahraga ]",
+            "note": "Keadaan daftar dicatat sebelum operasi dimulai."
+          },
+          {
+            "line": 3,
+            "code": "cari t-02      -> ditemukan di indeks 2",
+            "note": "Pencarian menemukan posisi record yang dimaksud."
+          },
+          {
+            "line": 4,
+            "code": "hapus t-02     -> catat indeks 2, keluar dari perulangan",
+            "note": "Indeks disimpan sebelum daftar diubah."
+          },
+          {
+            "line": 5,
+            "code": "daftar sesudah: [ t-01 Belajar ]",
+            "note": "Keadaan akhir dibandingkan dengan keadaan awal untuk memastikan hanya satu record yang hilang."
+          }
+        ]
+      },
+      "callouts": [
+        {
+          "tone": "good",
+          "title": "Pisahkan baca dan tulis",
+          "body": "Operasi yang hanya membaca data tidak boleh mengubah daftar. Pisahkan pencarian dari perubahan agar kesalahan lebih mudah dilacak."
+        }
+      ],
+      "checkpoint": {
+        "prompt": "Jelaskan dalam dua kalimat bagaimana Anda menghapus satu tugas tanpa menggeser posisi tugas lain.",
+        "success": "Jawaban menyebut mencatat indeks yang cocok lebih dulu, lalu menghapus satu kali setelah perulangan selesai."
+      }
+    },
     {
       "id": "list-dan-record",
       "title": "List berisi record",
@@ -64,7 +115,29 @@
         "lab": false,
         "code": "daftar <- [\n  { id: \"t-01\", judul: \"Belajar\",  selesai: salah },\n  { id: \"t-02\", judul: \"Olahraga\", selesai: benar }\n]\nOUTPUT daftar[1].judul\nOUTPUT panjang(daftar)",
         "output": "Belajar\n2",
-        "explain": "daftar[1] mengambil record pertama, lalu .judul membaca field judul. panjang(daftar) menghitung jumlah record tanpa menghitung field di dalamnya."
+        "explain": "daftar[1] mengambil record pertama, lalu .judul membaca field judul. panjang(daftar) menghitung jumlah record tanpa menghitung field di dalamnya.",
+        "annotations": [
+          {
+            "line": 1,
+            "code": "daftar <- [",
+            "note": "Tanda kurung siku menandai sebuah list berurutan."
+          },
+          {
+            "line": 2,
+            "code": "{ id: \"t-01\", judul: \"Belajar\",  selesai: salah },",
+            "note": "Setiap baris adalah satu record dengan field bernama."
+          },
+          {
+            "line": 5,
+            "code": "OUTPUT daftar[1].judul",
+            "note": "Indeks diakses lebih dulu, baru field-nya diambil."
+          },
+          {
+            "line": 6,
+            "code": "OUTPUT panjang(daftar)",
+            "note": "panjang menghitung jumlah record, bukan fieldnya."
+          }
+        ]
       },
       "callouts": [
         {
@@ -86,7 +159,34 @@
         "lab": false,
         "code": "FUNGSI CariLinear(daftar, id)\n  FOR i FROM 1 TO panjang(daftar) DO\n    IF daftar[i].id = id THEN RETURN daftar[i]\n  END FOR\n  RETURN kosong\nEND FUNGSI\n\nFUNGSI CariPeta(peta, id)\n  IF id ada di peta THEN RETURN peta[id]\n  RETURN kosong\nEND FUNGSI",
         "output": "CariLinear memeriksa hingga n record; CariPeta memeriksa satu kunci.",
-        "explain": "Kedua fungsi mengembalikan kosong jika tidak ditemukan. Perbedaannya ada pada jumlah pemeriksaan, bukan pada hasil."
+        "explain": "Kedua fungsi mengembalikan kosong jika tidak ditemukan. Perbedaannya ada pada jumlah pemeriksaan, bukan pada hasil.",
+        "annotations": [
+          {
+            "line": 1,
+            "code": "FUNGSI CariLinear(daftar, id)",
+            "note": "Fungsi linear menerima daftar dan id yang dicari."
+          },
+          {
+            "line": 2,
+            "code": "FOR i FROM 1 TO panjang(daftar) DO",
+            "note": "Perulangan memeriksa setiap record satu per satu."
+          },
+          {
+            "line": 3,
+            "code": "IF daftar[i].id = id THEN RETURN daftar[i]",
+            "note": "Perulangan berhenti lebih awal begitu id cocok."
+          },
+          {
+            "line": 5,
+            "code": "RETURN kosong",
+            "note": "Nilai kosong dikembalikan bila tidak ada yang cocok."
+          },
+          {
+            "line": 9,
+            "code": "IF id ada di peta THEN RETURN peta[id]",
+            "note": "Pencarian peta langsung mengambil record lewat kunci."
+          }
+        ]
       },
       "checkpoint": {
         "prompt": "Anda punya 10.000 tugas dan sering mencari berdasarkan id. Struktur mana yang Anda pilih dan mengapa?",
@@ -105,7 +205,34 @@
         "lab": false,
         "code": "FUNGSI Hapus(daftar, id)\n  indeks <- kosong\n  FOR i FROM 1 TO panjang(daftar) DO\n    IF daftar[i].id = id DAN indeks = kosong THEN\n      indeks <- i\n    END IF\n  END FOR\n  IF indeks = kosong THEN\n    OUTPUT \"Tugas tidak ditemukan\"\n    RETURN daftar\n  END IF\n  HAPUS daftar[indeks]\n  OUTPUT \"Tugas dihapus\"\n  RETURN daftar\nEND FUNGSI",
         "output": "Hapus(daftar, \"t-02\") -> Tugas dihapus, daftar tersisa satu record.",
-        "explain": "Pencarian berhenti mencatat indeks pertama yang cocok. Penghapusan dilakukan setelah perulangan agar posisi tidak bergeser saat masih diperiksa."
+        "explain": "Pencarian berhenti mencatat indeks pertama yang cocok. Penghapusan dilakukan setelah perulangan agar posisi tidak bergeser saat masih diperiksa.",
+        "annotations": [
+          {
+            "line": 2,
+            "code": "indeks <- kosong",
+            "note": "Indeks penanda dimulai kosong sebelum pencarian."
+          },
+          {
+            "line": 4,
+            "code": "IF daftar[i].id = id DAN indeks = kosong THEN",
+            "note": "Pencarian mencatat record pertama yang cocok, bukan semuanya."
+          },
+          {
+            "line": 5,
+            "code": "indeks <- i",
+            "note": "Indeks yang cocok disimpan untuk dipakai setelah perulangan."
+          },
+          {
+            "line": 8,
+            "code": "IF indeks = kosong THEN",
+            "note": "Penghapusan dibatalkan bila tidak ada yang cocok."
+          },
+          {
+            "line": 12,
+            "code": "HAPUS daftar[indeks]",
+            "note": "Daftar baru diubah setelah perulangan selesai."
+          }
+        ]
       }
     }
   ],
@@ -252,5 +379,12 @@
     "List menjaga urutan; record mengelompokkan field; peta mempercepat pencarian berdasarkan kunci.",
     "Pencarian linear memeriksa satu per satu; pencarian peta memakai kunci unik.",
     "Hapus satu record dengan mencari indeks lebih dulu dan menghapus setelah perulangan selesai."
-  ]
+  ],
+  "conventions": [
+    "Simpan data satu kali di satu tempat, lalu hitung ulang ringkasan saat dibutuhkan.",
+    "Pakai list saat urutan penting dan peta saat pencarian berdasarkan kunci unik.",
+    "Catat indeks yang cocok lebih dulu, baru ubah daftar setelah perulangan selesai.",
+    "Kembalikan nilai kosong yang jelas ketika data tidak ditemukan, bukan membiarkan proses berlanjut."
+  ],
+  "next": "Berikutnya: kompleksitas dan edge case. Anda akan memperkirakan biaya langkah algoritma dan menyusun daftar kasus batas sebelum menulis kode."
 }

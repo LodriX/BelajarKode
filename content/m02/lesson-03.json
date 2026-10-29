@@ -4,6 +4,7 @@
   "minutes": 90,
   "level": "Dasar",
   "depth": "fondasi",
+  "schema": 3.1,
   "codeLanguage": "text",
   "outcome": "Setelah pelajaran ini, Anda dapat menentukan tipe data setiap field tugas dan menulis aturan validasi yang menolak input tidak masuk akal.",
   "objectives": [
@@ -38,6 +39,7 @@
   "syntax": [
     {
       "token": "TEXT",
+      "readAs": "Baca sebagai penanda tipe: field ini berisi deretan karakter, bukan angka.",
       "meaning": "Menandai bahwa sebuah field berisi teks.",
       "example": "judul: TEXT, wajib, 1 sampai 120 karakter",
       "output": "judul = \"Belajar\" diterima; judul = \"\" ditolak.",
@@ -45,6 +47,7 @@
     },
     {
       "token": "BOOLEAN",
+      "readAs": "Baca sebagai penanda tipe: field ini hanya boleh bernilai benar atau salah.",
       "meaning": "Menandai field yang hanya berisi benar atau salah.",
       "example": "selesai: BOOLEAN, bawaan salah",
       "output": "selesai = benar diterima; selesai = \"mungkin\" ditolak.",
@@ -52,13 +55,67 @@
     },
     {
       "token": "IF tidak valid THEN OUTPUT pesan",
+      "readAs": "Baca sebagai penjaga: jika aturan tidak terpenuhi, hentikan proses dan tampilkan alasannya.",
       "meaning": "Menghentikan proses dan menampilkan alasan penolakan saat aturan validasi gagal.",
       "example": "IF panjang(judul) > 120 THEN\n  OUTPUT \"Judul maksimal 120 karakter\"",
       "output": "Pesan spesifik muncul tepat di field yang salah.",
-      "pitfall": "Satu pesan umum \u201cdata tidak valid\u201d memaksa pengguna menebak field mana yang bermasalah."
+      "pitfall": "Satu pesan umum “data tidak valid” memaksa pengguna menebak field mana yang bermasalah."
     }
   ],
   "sections": [
+    {
+      "id": "cara-membaca",
+      "title": "Cara membaca aturan validasi",
+      "body": [
+        "Aturan validasi dibaca seperti daftar pemeriksaan berurutan. Mulailah dari baris pertama; jika aturan itu gagal, proses berhenti dan sisa baris tidak dijalankan. Karena itu, urutan baris menentukan pesan mana yang lebih dulu muncul.",
+        "Setiap aturan membandingkan satu nilai dengan satu batas. Sebelum memercayai hasilnya, pastikan input sudah dinormalisasi, misalnya spasi dipangkas dan huruf disamakan. Tanpa normalisasi, aturan yang benar bisa menolak input yang sebenarnya sah."
+      ],
+      "code": {
+        "language": "text",
+        "lab": false,
+        "code": "INPUT judul, tenggat\njudul <- pangkas(judul)\nIF judul = \"\" THEN\n  OUTPUT \"Judul wajib diisi\"\n  SELESAI\nEND IF\nIF tenggat diisi DAN tenggat < hari ini THEN\n  OUTPUT \"Tenggat tidak boleh sebelum hari ini\"\n  SELESAI\nEND IF\nOUTPUT \"Valid\"",
+        "output": "Validasi(\"\", kosong) -> Judul wajib diisi\nValidasi(\"Belajar\", kosong) -> Valid",
+        "explain": "Setiap pemeriksaan diakhiri SELESAI agar validasi berhenti pada kegagalan pertama. Aturan judul diperiksa sebelum tenggat karena lebih murah dan lebih mendasar.",
+        "annotations": [
+          {
+            "line": 1,
+            "code": "INPUT judul, tenggat",
+            "note": "Input mentah dibaca dulu sebelum aturan apa pun dijalankan."
+          },
+          {
+            "line": 2,
+            "code": "judul <- pangkas(judul)",
+            "note": "Normalisasi memangkas spasi agar pemeriksaan kosong akurat."
+          },
+          {
+            "line": 3,
+            "code": "IF judul = \"\" THEN",
+            "note": "Aturan pertama, yang paling mendasar, diperiksa lebih dulu."
+          },
+          {
+            "line": 7,
+            "code": "IF tenggat diisi DAN tenggat < hari ini THEN",
+            "note": "Aturan tenggat dijalankan hanya jika judul sudah lolos."
+          },
+          {
+            "line": 11,
+            "code": "OUTPUT \"Valid\"",
+            "note": "Baris ini tercapai hanya jika seluruh aturan terpenuhi."
+          }
+        ]
+      },
+      "callouts": [
+        {
+          "tone": "warn",
+          "title": "Satu pesan per aturan",
+          "body": "Pesan umum seperti “data tidak valid” memaksa pengguna menebak. Sebut field dan batasannya agar pengguna tahu cara memperbaiki."
+        }
+      ],
+      "checkpoint": {
+        "prompt": "Tulis urutan validasi untuk field tenggat dan prioritas, lalu tentukan pesan error masing-masing.",
+        "success": "Jawaban memeriksa tenggat sebelum prioritas yang lebih mahal, dan setiap pesan menyebut nama field beserta batasannya."
+      }
+    },
     {
       "id": "model-field",
       "title": "Model data tugas: tentukan sebelum validasi",
@@ -71,7 +128,39 @@
         "lab": false,
         "code": "TUGAS\n  id         : TEXT, dibuat otomatis, unik\n  judul      : TEXT, wajib, 1-120 karakter setelah dipangkas\n  tenggat    : TANGGAL, opsional, tidak boleh sebelum hari ini\n  prioritas  : PILIHAN(rendah, sedang, tinggi), bawaan sedang\n  selesai    : BOOLEAN, bawaan salah",
         "output": "Lima field dengan tipe dan aturan yang bisa diperiksa satu per satu.",
-        "explain": "id dibuat sistem sehingga tidak divalidasi dari input pengguna. tenggat opsional tetapi tetap punya aturan jika diisi. prioritas dibatasi pada tiga nilai agar tampilan filter tidak menemui nilai tak dikenal."
+        "explain": "id dibuat sistem sehingga tidak divalidasi dari input pengguna. tenggat opsional tetapi tetap punya aturan jika diisi. prioritas dibatasi pada tiga nilai agar tampilan filter tidak menemui nilai tak dikenal.",
+        "annotations": [
+          {
+            "line": 1,
+            "code": "TUGAS",
+            "note": "Nama record menyatakan satu jenis data yang dikelola."
+          },
+          {
+            "line": 2,
+            "code": "id         : TEXT, dibuat otomatis, unik",
+            "note": "id dibuat sistem sehingga tidak divalidasi dari input pengguna."
+          },
+          {
+            "line": 3,
+            "code": "judul      : TEXT, wajib, 1-120 karakter setelah dipangkas",
+            "note": "Judul wajib dengan batas panjang setelah dipangkas."
+          },
+          {
+            "line": 4,
+            "code": "tenggat    : TANGGAL, opsional, tidak boleh sebelum hari ini",
+            "note": "Tenggat opsional, tetapi tetap punya aturan bila diisi."
+          },
+          {
+            "line": 5,
+            "code": "prioritas  : PILIHAN(rendah, sedang, tinggi), bawaan sedang",
+            "note": "Prioritas dibatasi pada daftar nilai agar filter tidak menemui nilai asing."
+          },
+          {
+            "line": 6,
+            "code": "selesai    : BOOLEAN, bawaan salah",
+            "note": "Selesai bertipe boolean dengan nilai bawaan salah."
+          }
+        ]
       },
       "callouts": [
         {
@@ -93,7 +182,39 @@
         "lab": false,
         "code": "LANGKAH Validasi Tugas\n  INPUT judul, tenggat, prioritas\n  judul <- pangkas(judul)\n  IF judul = \"\" THEN\n    OUTPUT \"Judul wajib diisi\"\n    SELESAI\n  END IF\n  IF panjang(judul) > 120 THEN\n    OUTPUT \"Judul maksimal 120 karakter\"\n    SELESAI\n  END IF\n  IF tenggat diisi DAN tenggat < hari ini THEN\n    OUTPUT \"Tenggat tidak boleh sebelum hari ini\"\n    SELESAI\n  END IF\n  IF prioritas BUKAN salah satu dari rendah, sedang, tinggi THEN\n    OUTPUT \"Prioritas tidak dikenal\"\n    SELESAI\n  END IF\n  OUTPUT \"Valid\"",
         "output": "Validasi Tugas(\"Belajar\", kosong, \"sedang\") -> Valid\nValidasi Tugas(\"   \", kosong, \"sedang\") -> Judul wajib diisi",
-        "explain": "Setiap pemeriksaan berhenti pada kegagalan pertama agar pengguna memperbaiki satu hal pada satu waktu. pangkas(judul) menghapus spasi di awal dan akhir sebelum aturan kosong diperiksa."
+        "explain": "Setiap pemeriksaan berhenti pada kegagalan pertama agar pengguna memperbaiki satu hal pada satu waktu. pangkas(judul) menghapus spasi di awal dan akhir sebelum aturan kosong diperiksa.",
+        "annotations": [
+          {
+            "line": 3,
+            "code": "judul <- pangkas(judul)",
+            "note": "Normalisasi dilakukan sebelum aturan kosong diperiksa."
+          },
+          {
+            "line": 4,
+            "code": "IF judul = \"\" THEN",
+            "note": "Pemeriksaan pertama menangani kasus paling mendasar."
+          },
+          {
+            "line": 8,
+            "code": "IF panjang(judul) > 120 THEN",
+            "note": "Panjang diperiksa setelah judul terbukti tidak kosong."
+          },
+          {
+            "line": 12,
+            "code": "IF tenggat diisi DAN tenggat < hari ini THEN",
+            "note": "Aturan tenggat hanya berlaku bila tanggal diisi."
+          },
+          {
+            "line": 16,
+            "code": "IF prioritas BUKAN salah satu dari rendah, sedang, tinggi THEN",
+            "note": "Aturan prioritas memeriksa keanggotaan daftar nilai yang sah."
+          },
+          {
+            "line": 20,
+            "code": "OUTPUT \"Valid\"",
+            "note": "Output terakhir hanya muncul ketika semua aturan lolos."
+          }
+        ]
       },
       "checkpoint": {
         "prompt": "Tentukan pesan error untuk tiga kasus: judul kosong, judul 130 karakter, dan prioritas \"urgent\".",
@@ -112,7 +233,29 @@
         "lab": false,
         "code": "ATURAN TANGGAL\n  1. Tugas baru: tenggat tidak boleh sebelum hari ini.\n  2. Tugas selesai: tenggat boleh di masa lalu.\n  3. Tenggat kosong: selalu boleh.\n\nPERTANYAAN TERBUKA\n  Apakah tenggat boleh diubah menjadi masa lalu saat mengedit tugas yang belum selesai?",
         "output": "Tiga aturan tegas dan satu pertanyaan yang harus diputuskan sebelum implementasi.",
-        "explain": "Aturan dipisahkan berdasarkan konteks pembuatan dan penyelesaian. Pertanyaan terbuka dicatat agar tidak diam-diam diputuskan berbeda oleh dua orang."
+        "explain": "Aturan dipisahkan berdasarkan konteks pembuatan dan penyelesaian. Pertanyaan terbuka dicatat agar tidak diam-diam diputuskan berbeda oleh dua orang.",
+        "annotations": [
+          {
+            "line": 1,
+            "code": "ATURAN TANGGAL",
+            "note": "Judul blok menyatakan aturan yang dibahas."
+          },
+          {
+            "line": 2,
+            "code": "1. Tugas baru: tenggat tidak boleh sebelum hari ini.",
+            "note": "Aturan ditulis spesifik agar bisa diuji lulus atau gagal."
+          },
+          {
+            "line": 6,
+            "code": "PERTANYAAN TERBUKA",
+            "note": "Pertanyaan terbuka dipisahkan dari aturan yang sudah pasti."
+          },
+          {
+            "line": 7,
+            "code": "Apakah tenggat boleh diubah menjadi masa lalu saat mengedit tugas yang belum selesai?",
+            "note": "Pertanyaan dicatat agar tidak diputuskan diam-diam saat implementasi."
+          }
+        ]
       }
     }
   ],
@@ -190,7 +333,7 @@
   },
   "troubleshooting": [
     {
-      "symptom": "Pengguna menerima pesan \u201cdata tidak valid\u201d tanpa tahu field mana yang salah.",
+      "symptom": "Pengguna menerima pesan “data tidak valid” tanpa tahu field mana yang salah.",
       "cause": "Validasi memakai satu pesan umum untuk semua aturan.",
       "fix": "Buat pesan per aturan yang menyebut nama field dan batasannya."
     },
@@ -259,5 +402,12 @@
     "Model data menentukan field, tipe, aturan wajib, dan nilai bawaan sebelum validasi ditulis.",
     "Urutkan validasi dari pemeriksaan termurah dan paling mendasar, dan berhenti pada kegagalan pertama.",
     "Setiap pesan error harus menyebut field dan batasannya agar pengguna tahu cara memperbaiki."
-  ]
+  ],
+  "conventions": [
+    "Tentukan tipe, status wajib, dan nilai bawaan setiap field sebelum menulis validasi.",
+    "Pangkas spasi di awal dan akhir input sebelum memeriksa apakah nilainya kosong.",
+    "Urutkan pemeriksaan dari yang paling murah dan mendasar, lalu berhenti pada kegagalan pertama.",
+    "Tulis pesan error yang menyebut nama field dan batasannya, bukan satu pesan umum."
+  ],
+  "next": "Berikutnya: percabangan dan boolean. Anda akan menyusun kondisi dari operator DAN, ATAU, dan BUKAN serta memakainya bersama tabel kebenaran."
 }

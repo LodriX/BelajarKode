@@ -4,6 +4,7 @@
   "minutes": 90,
   "level": "Dasar",
   "depth": "fondasi",
+  "schema": 3.1,
   "codeLanguage": "text",
   "outcome": "Setelah pelajaran ini, Anda dapat memilih perulangan yang tepat untuk daftar tugas dan memastikan setiap perulangan pasti berhenti.",
   "objectives": [
@@ -38,6 +39,7 @@
   "syntax": [
     {
       "token": "FOR i FROM 1 TO n DO ... END FOR",
+      "readAs": "Baca sebagai perintah mengulang blok untuk setiap nilai i dari batas bawah sampai batas atas.",
       "meaning": "Menjalankan blok untuk setiap nilai i dari 1 sampai n.",
       "example": "FOR i FROM 1 TO 3 DO\n  OUTPUT i\nEND FOR",
       "output": "1\n2\n3",
@@ -45,6 +47,7 @@
     },
     {
       "token": "WHILE kondisi DO ... END WHILE",
+      "readAs": "Baca sebagai perintah mengulang blok selama kondisinya masih bernilai benar.",
       "meaning": "Menjalankan blok selama kondisi masih benar.",
       "example": "i <- 1\nWHILE i <= 3 DO\n  OUTPUT i\n  i <- i + 1\nEND WHILE",
       "output": "1\n2\n3",
@@ -52,6 +55,64 @@
     }
   ],
   "sections": [
+    {
+      "id": "cara-membaca",
+      "title": "Cara membaca perulangan lewat tabel penelusuran",
+      "body": [
+        "Perulangan tidak bisa dibaca seperti urutan biasa karena baris yang sama dijalankan berkali-kali. Ubah bacaan menjadi tabel: satu baris untuk setiap putaran, memuat nilai counter dan variabel penentu. Tabel ini menunjukkan dengan tepat kapan perulangan berhenti.",
+        "Perhatikan kesalahan batas satu langkah: apakah putaran terakhir memproses data terakhir atau justru melewatinya. Kesalahan seperti ini tidak terlihat dari kode, tetapi langsung tampak pada tabel."
+      ],
+      "code": {
+        "language": "text",
+        "lab": false,
+        "code": "i <- 1\njumlah <- 0\nWHILE i <= 3 DO\n  jumlah <- jumlah + i\n  i <- i + 1\nEND WHILE\nOUTPUT jumlah\n\nputaran | i | jumlah | 3 <= 3?\n1       | 1 | 1      | benar\n2       | 2 | 3      | benar\n3       | 3 | 6      | benar\nberhenti| 4 | 6      | salah",
+        "output": "6",
+        "explain": "Baris WHILE diulang selama i <= 3. Setelah putaran ketiga, i menjadi 4 sehingga kondisinya salah dan perulangan berhenti dengan jumlah 6.",
+        "annotations": [
+          {
+            "line": 2,
+            "code": "jumlah <- 0",
+            "note": "Counter dimulai dari nol sebelum perulangan dimulai."
+          },
+          {
+            "line": 3,
+            "code": "WHILE i <= 3 DO",
+            "note": "Kondisi berhenti ditulis pada baris WHILE."
+          },
+          {
+            "line": 4,
+            "code": "jumlah <- jumlah + i",
+            "note": "Nilai variabel penentu berubah setiap putaran."
+          },
+          {
+            "line": 5,
+            "code": "i <- i + 1",
+            "note": "Perubahan inilah yang membuat kondisi akhirnya menjadi salah."
+          },
+          {
+            "line": 12,
+            "code": "3       | 3 | 6      | benar",
+            "note": "Baris ini mencatat hasil setelah putaran terakhir yang berjalan."
+          },
+          {
+            "line": 13,
+            "code": "berhenti| 4 | 6      | salah",
+            "note": "Tabel menandai putaran saat kondisi berhenti sudah tidak benar."
+          }
+        ]
+      },
+      "callouts": [
+        {
+          "tone": "good",
+          "title": "Tabel menemukan bug",
+          "body": "Jika tabel penelusuran berakhir berbeda dari harapan, kesalahannya ada di logika, bukan di komputer. Perbaiki logikanya sebelum menulis kode."
+        }
+      ],
+      "checkpoint": {
+        "prompt": "Buat tabel penelusuran untuk perulangan yang menjumlahkan i dari 1 sampai 4.",
+        "success": "Tabel berisi empat baris penjumlahan, nilai i naik setiap putaran, dan perulangan berhenti setelah i melewati 4."
+      }
+    },
     {
       "id": "for-untuk-daftar",
       "title": "FOR saat jumlah putaran sudah diketahui",
@@ -64,13 +125,40 @@
         "lab": false,
         "code": "daftar <- [Belajar, Olahraga, Membaca]\njumlahSelesai <- 0\nFOR i FROM 1 TO panjang(daftar) DO\n  IF daftar[i].selesai = benar THEN\n    jumlahSelesai <- jumlahSelesai + 1\n  END IF\nEND FOR\nOUTPUT jumlahSelesai",
         "output": "2 (jika dua dari tiga tugas selesai)",
-        "explain": "FOR berjalan tiga kali. Setiap putaran memeriksa satu tugas; jika selesai, counter bertambah satu. Counter harus dimulai dari 0 sebelum perulangan."
+        "explain": "FOR berjalan tiga kali. Setiap putaran memeriksa satu tugas; jika selesai, counter bertambah satu. Counter harus dimulai dari 0 sebelum perulangan.",
+        "annotations": [
+          {
+            "line": 2,
+            "code": "jumlahSelesai <- 0",
+            "note": "Counter dimulai dari nol sebelum perulangan dijalankan."
+          },
+          {
+            "line": 3,
+            "code": "FOR i FROM 1 TO panjang(daftar) DO",
+            "note": "FOR mengurus kenaikan indeks secara otomatis."
+          },
+          {
+            "line": 4,
+            "code": "IF daftar[i].selesai = benar THEN",
+            "note": "Setiap putaran memeriksa satu tugas saja."
+          },
+          {
+            "line": 5,
+            "code": "jumlahSelesai <- jumlahSelesai + 1",
+            "note": "Counter hanya bertambah ketika kondisi terpenuhi."
+          },
+          {
+            "line": 8,
+            "code": "OUTPUT jumlahSelesai",
+            "note": "Hasil ditampilkan sekali setelah perulangan selesai."
+          }
+        ]
       },
       "callouts": [
         {
           "tone": "warn",
           "title": "Perhatikan indeks",
-          "body": "Jika daftar dimulai dari indeks 0, perulangan FROM 0 TO panjang(daftar) - 1. Salah indeks adalah penyebab error \u201cdata tidak ditemukan\u201d yang paling umum."
+          "body": "Jika daftar dimulai dari indeks 0, perulangan FROM 0 TO panjang(daftar) - 1. Salah indeks adalah penyebab error “data tidak ditemukan” yang paling umum."
         }
       ]
     },
@@ -86,7 +174,34 @@
         "lab": false,
         "code": "INPUT judul\njudulValid <- salah\nWHILE judulValid = salah DO\n  judul <- pangkas(judul)\n  IF judul tidak kosong THEN\n    judulValid <- benar\n  ELSE\n    OUTPUT \"Judul wajib diisi\"\n    INPUT judul\n  END IF\nEND WHILE",
         "output": "Pengguna diminta mengulang sampai mengisi judul yang tidak kosong.",
-        "explain": "Kondisi berhenti adalah judulValid = benar. Baris INPUT judul di dalam ELSE memungkinkan pengguna memperbaiki input; tanpa itu, kondisi tidak pernah berubah."
+        "explain": "Kondisi berhenti adalah judulValid = benar. Baris INPUT judul di dalam ELSE memungkinkan pengguna memperbaiki input; tanpa itu, kondisi tidak pernah berubah.",
+        "annotations": [
+          {
+            "line": 2,
+            "code": "judulValid <- salah",
+            "note": "Variabel penentu dimulai dari nilai salah."
+          },
+          {
+            "line": 3,
+            "code": "WHILE judulValid = salah DO",
+            "note": "Perulangan berjalan selama input belum valid."
+          },
+          {
+            "line": 6,
+            "code": "judulValid <- benar",
+            "note": "Nilai penentu berubah begitu input diterima."
+          },
+          {
+            "line": 9,
+            "code": "INPUT judul",
+            "note": "Input dibaca ulang agar pengguna bisa memperbaiki kesalahan."
+          },
+          {
+            "line": 11,
+            "code": "END WHILE",
+            "note": "Perulangan berhenti ketika kondisi berhenti terpenuhi."
+          }
+        ]
       },
       "checkpoint": {
         "prompt": "Tulis perulangan WHILE yang menjumlahkan nilai dari 1 sampai 5 dan berhenti tepat setelah angka 5.",
@@ -105,7 +220,29 @@
         "lab": false,
         "code": "i <- 1\njumlah <- 0\nWHILE i <= 3 DO\n  jumlah <- jumlah + i\n  i <- i + 1\nEND WHILE\nOUTPUT jumlah",
         "output": "6",
-        "explain": "Putaran 1: jumlah 1, i 2. Putaran 2: jumlah 3, i 3. Putaran 3: jumlah 6, i 4. Kondisi 4 <= 3 salah, perulangan berhenti, output 6."
+        "explain": "Putaran 1: jumlah 1, i 2. Putaran 2: jumlah 3, i 3. Putaran 3: jumlah 6, i 4. Kondisi 4 <= 3 salah, perulangan berhenti, output 6.",
+        "annotations": [
+          {
+            "line": 3,
+            "code": "WHILE i <= 3 DO",
+            "note": "Kondisi berhenti dapat dibaca langsung dari baris WHILE."
+          },
+          {
+            "line": 4,
+            "code": "jumlah <- jumlah + i",
+            "note": "Nilai jumlah berubah setiap putaran."
+          },
+          {
+            "line": 5,
+            "code": "i <- i + 1",
+            "note": "Counter naik setiap putaran menuju kondisi berhenti."
+          },
+          {
+            "line": 7,
+            "code": "OUTPUT jumlah",
+            "note": "Output hanya ada setelah perulangan berhenti."
+          }
+        ]
       }
     }
   ],
@@ -252,5 +389,12 @@
     "FOR dipakai saat jumlah putaran diketahui; WHILE dipakai saat berhenti bergantung pada kondisi.",
     "Setiap perulangan wajib punya kondisi berhenti dan perubahan nilai yang membuat kondisi itu tercapai.",
     "Tabel penelusuran memperlihatkan nilai variabel per putaran dan menemukan kesalahan batas."
-  ]
+  ],
+  "conventions": [
+    "Tentukan kondisi berhenti sebelum menulis isi perulangan.",
+    "Pakai FOR ketika jumlah putaran sudah diketahui dan WHILE ketika berhenti bergantung pada kondisi.",
+    "Ubah satu variabel penentu di dalam perulangan agar kondisinya akhirnya menjadi salah.",
+    "Simpan satu tabel penelusuran berisi nilai variabel pada setiap putaran."
+  ],
+  "next": "Berikutnya: struktur data dan algoritma. Anda akan memilih list atau peta dan menulis algoritma tambah, cari, serta hapus yang aman."
 }

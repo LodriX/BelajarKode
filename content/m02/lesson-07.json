@@ -4,6 +4,7 @@
   "minutes": 90,
   "level": "Dasar",
   "depth": "fondasi",
+  "schema": 3.1,
   "codeLanguage": "text",
   "outcome": "Setelah pelajaran ini, Anda dapat memperkirakan biaya langkah sebuah algoritma dan menyusun daftar edge case sebelum menulis kode.",
   "objectives": [
@@ -38,6 +39,7 @@
   "syntax": [
     {
       "token": "O(1)",
+      "readAs": "Baca sebagai biaya tetap: jumlah langkahnya sama untuk data sedikit maupun banyak.",
       "meaning": "Operasi dengan jumlah langkah tetap, tidak bergantung pada jumlah data.",
       "example": "Ambil tugas dari peta berdasarkan id unik.",
       "output": "Satu pemeriksaan untuk 10 tugas maupun 10.000 tugas.",
@@ -45,13 +47,15 @@
     },
     {
       "token": "O(n)",
+      "readAs": "Baca sebagai biaya linear: jumlah langkahnya bertambah sebanding dengan jumlah data n.",
       "meaning": "Operasi yang memeriksa seluruh data satu per satu.",
       "example": "FOR i FROM 1 TO panjang(daftar) DO periksa daftar[i]",
       "output": "10 tugas berarti 10 pemeriksaan; 10.000 tugas berarti 10.000 pemeriksaan.",
-      "pitfall": "Perulangan bersarang di dalam perulangan O(n) menghasilkan O(n\u00b2), bukan O(n)."
+      "pitfall": "Perulangan bersarang di dalam perulangan O(n) menghasilkan O(n²), bukan O(n)."
     },
     {
-      "token": "O(n\u00b2)",
+      "token": "O(n²)",
+      "readAs": "Baca sebagai biaya kuadratik: jumlah langkahnya tumbuh secepat kuadrat jumlah data.",
       "meaning": "Operasi dengan perulangan di dalam perulangan; langkah bertambah kuadratik.",
       "example": "FOR setiap tugas DO FOR setiap tugas lain DO bandingkan",
       "output": "10 tugas berarti sekitar 100 perbandingan; 100 tugas berarti 10.000.",
@@ -59,6 +63,54 @@
     }
   ],
   "sections": [
+    {
+      "id": "cara-membaca",
+      "title": "Cara membaca biaya algoritma",
+      "body": [
+        "Biaya algoritma dibaca dari pola perulangannya, bukan dari jumlah barisnya. Cari perulangan yang bergantung pada jumlah data n, lalu periksa apakah ada perulangan lain di dalamnya. Satu perulangan berarti linear; perulangan di dalam perulangan berarti kuadratik.",
+        "Saat membaca edge case, ubah setiap baris menjadi satu kasus uji dengan kondisi awal dan hasil yang diharapkan. Daftar ini nantinya langsung menjadi test case, sehingga perilaku untuk kasus batas tidak perlu ditebak."
+      ],
+      "code": {
+        "language": "text",
+        "lab": false,
+        "code": "biaya \"hitung selesai\"              : 1 perulangan            -> O(n)\nbiaya \"cari duplikat (pasangan)\"    : 2 perulangan bersarang   -> O(n^2)\nbiaya \"cari duplikat (himpunan)\"    : 1 perulangan            -> O(n)\nbiaya \"ambil tugas dari peta\"       : tanpa perulangan         -> O(1)",
+        "output": "Dua cara mencari duplikat memiliki pola biaya berbeda meski hasilnya sama.",
+        "explain": "Setiap baris memasangkan satu operasi dengan pola perulangannya. Perulangan bersarang menaikkan biaya ke kuadratik, sedangkan akses peta tanpa perulangan tetap konstan.",
+        "annotations": [
+          {
+            "line": 1,
+            "code": "biaya \"hitung selesai\"              : 1 perulangan            -> O(n)",
+            "note": "Satu perulangan yang bergantung pada n menghasilkan pola linear."
+          },
+          {
+            "line": 2,
+            "code": "biaya \"cari duplikat (pasangan)\"    : 2 perulangan bersarang   -> O(n^2)",
+            "note": "Perulangan di dalam perulangan mengubah pola menjadi kuadratik."
+          },
+          {
+            "line": 3,
+            "code": "biaya \"cari duplikat (himpunan)\"    : 1 perulangan            -> O(n)",
+            "note": "Himpunan menghindari perulangan kedua sehingga tetap linear."
+          },
+          {
+            "line": 4,
+            "code": "biaya \"ambil tugas dari peta\"       : tanpa perulangan         -> O(1)",
+            "note": "Akses memakai kunci tidak memakai perulangan sehingga konstan."
+          }
+        ]
+      },
+      "callouts": [
+        {
+          "tone": "warn",
+          "title": "Ukuran data nyata",
+          "body": "Algoritma kuadratik bisa tetap cukup untuk 50 data. Yang penting adalah memperkirakan apa yang terjadi ketika data tumbuh sepuluh kali lebih banyak."
+        }
+      ],
+      "checkpoint": {
+        "prompt": "Sebuah algoritma memakai tiga perulangan bersarang yang masing-masing berjalan n kali. Perkirakan pola biayanya.",
+        "success": "Jawaban menyebut biaya tumbuh sekitar n pangkat tiga, jauh lebih cepat daripada linear, sehingga berbahaya untuk data besar."
+      }
+    },
     {
       "id": "hitung-langkah",
       "title": "Menghitung langkah, bukan milidetik",
@@ -71,13 +123,40 @@
         "lab": false,
         "code": "ALGORITMA A\n  OUTPUT panjang(daftar)\n  -- 1 langkah, O(1)\n\nALGORITMA B\n  jumlah <- 0\n  FOR i FROM 1 TO panjang(daftar) DO\n    jumlah <- jumlah + 1\n  END FOR\n  -- n langkah, O(n)",
         "output": "A selalu satu langkah; B bertambah satu langkah untuk setiap tugas.",
-        "explain": "A membaca satu nilai yang sudah tersedia. B memeriksa setiap elemen, sehingga jumlah langkahnya sebanding dengan n."
+        "explain": "A membaca satu nilai yang sudah tersedia. B memeriksa setiap elemen, sehingga jumlah langkahnya sebanding dengan n.",
+        "annotations": [
+          {
+            "line": 1,
+            "code": "ALGORITMA A",
+            "note": "Algoritma pertama dipakai sebagai pembanding pola tetap."
+          },
+          {
+            "line": 3,
+            "code": "-- 1 langkah, O(1)",
+            "note": "Komentar menandai bahwa jumlah langkahnya konstan."
+          },
+          {
+            "line": 5,
+            "code": "ALGORITMA B",
+            "note": "Algoritma kedua dijelaskan setelah pembandingnya."
+          },
+          {
+            "line": 7,
+            "code": "FOR i FROM 1 TO panjang(daftar) DO",
+            "note": "Perulangan memeriksa setiap elemen sehingga bergantung pada n."
+          },
+          {
+            "line": 10,
+            "code": "-- n langkah, O(n)",
+            "note": "Komentar mencatat pola biaya linear."
+          }
+        ]
       },
       "callouts": [
         {
           "tone": "good",
           "title": "Fokus pada pola",
-          "body": "Bertanya \u201capa yang terjadi jika data menjadi 10 kali lebih banyak?\u201d jauh lebih berguna daripada mengukur milidetik di satu perangkat."
+          "body": "Bertanya “apa yang terjadi jika data menjadi 10 kali lebih banyak?” jauh lebih berguna daripada mengukur milidetik di satu perangkat."
         }
       ]
     },
@@ -85,15 +164,42 @@
       "id": "bandingkan-algoritma",
       "title": "Membandingkan dua cara menyelesaikan masalah",
       "body": [
-        "Masalah yang sama sering punya beberapa algoritma dengan biaya berbeda. Mencari tugas duplikat dengan membandingkan setiap pasangan membutuhkan sekitar n \u00d7 n pemeriksaan. Memakai peta judul yang sudah terlihat hanya membutuhkan satu pemeriksaan per tugas.",
-        "Pilih algoritma yang cukup cepat untuk ukuran data nyata, bukan yang paling rumit. Untuk 50 tugas, perbedaan O(n) dan O(n\u00b2) mungkin tidak terasa; untuk 50.000 data, perbedaannya menjadi sangat besar."
+        "Masalah yang sama sering punya beberapa algoritma dengan biaya berbeda. Mencari tugas duplikat dengan membandingkan setiap pasangan membutuhkan sekitar n × n pemeriksaan. Memakai peta judul yang sudah terlihat hanya membutuhkan satu pemeriksaan per tugas.",
+        "Pilih algoritma yang cukup cepat untuk ukuran data nyata, bukan yang paling rumit. Untuk 50 tugas, perbedaan O(n) dan O(n²) mungkin tidak terasa; untuk 50.000 data, perbedaannya menjadi sangat besar."
       ],
       "code": {
         "language": "text",
         "lab": false,
         "code": "CARA 1: bandingkan semua pasangan\n  FOR i FROM 1 TO n DO\n    FOR j FROM i + 1 TO n DO\n      IF judul[i] = judul[j] THEN OUTPUT \"Duplikat\"\n  -- sekitar n x n pemeriksaan\n\nCARA 2: catat yang sudah terlihat\n  terlihat <- himpunan kosong\n  FOR i FROM 1 TO n DO\n    IF judul[i] ada di terlihat THEN OUTPUT \"Duplikat\"\n    TAMBAH judul[i] ke terlihat\n  -- n pemeriksaan",
         "output": "Kedua cara menemukan duplikat, tetapi cara kedua memeriksa data jauh lebih sedikit.",
-        "explain": "Cara pertama membandingkan setiap tugas dengan semua tugas lain. Cara kedua menyimpan judul yang sudah dilihat sehingga setiap tugas cukup diperiksa sekali."
+        "explain": "Cara pertama membandingkan setiap tugas dengan semua tugas lain. Cara kedua menyimpan judul yang sudah dilihat sehingga setiap tugas cukup diperiksa sekali.",
+        "annotations": [
+          {
+            "line": 1,
+            "code": "CARA 1: bandingkan semua pasangan",
+            "note": "Cara pertama membandingkan setiap pasangan data."
+          },
+          {
+            "line": 3,
+            "code": "FOR j FROM i + 1 TO n DO",
+            "note": "Perulangan kedua bersarang di dalam perulangan pertama."
+          },
+          {
+            "line": 7,
+            "code": "CARA 2: catat yang sudah terlihat",
+            "note": "Cara kedua memakai struktur pencarian tambahan."
+          },
+          {
+            "line": 9,
+            "code": "FOR i FROM 1 TO n DO",
+            "note": "Setiap data cukup diperiksa satu kali."
+          },
+          {
+            "line": 11,
+            "code": "TAMBAH judul[i] ke terlihat",
+            "note": "Judul yang sudah terlihat disimpan untuk pemeriksaan berikutnya."
+          }
+        ]
       },
       "checkpoint": {
         "prompt": "Sebuah algoritma memakai dua perulangan bersarang yang masing-masing berjalan n kali. Berapa perkiraan jumlah pemeriksaan untuk n = 100?",
@@ -112,7 +218,34 @@
         "lab": false,
         "code": "EDGE CASE                    PERILAKU YANG DIHARAPKAN\n---------------------------------------------------------\nDaftar kosong                Tampilkan pesan \"Belum ada tugas\"\nJudul spasi saja             Tolak dengan \"Judul wajib diisi\"\nJudul 121 karakter           Tolak dengan batas 120 karakter\nDua tugas judul sama         Izinkan, tetapi beri id berbeda\nTenggat 29 Februari          Tolak jika tahun bukan kabisat\nHapus tugas yang sama 2x     Hapus pertama sukses, kedua beri pesan\nPrioritas tidak dikenal      Tolak dan sebutkan pilihan valid",
         "output": "Tujuh edge case dengan perilaku yang bisa diuji satu per satu.",
-        "explain": "Setiap baris menggabungkan kondisi batas dengan hasil yang diharapkan. Baris terakhir mencegah nilai prioritas asing merusak filter."
+        "explain": "Setiap baris menggabungkan kondisi batas dengan hasil yang diharapkan. Baris terakhir mencegah nilai prioritas asing merusak filter.",
+        "annotations": [
+          {
+            "line": 1,
+            "code": "EDGE CASE                    PERILAKU YANG DIHARAPKAN",
+            "note": "Judul kolom memisahkan kondisi dari perilaku yang diharapkan."
+          },
+          {
+            "line": 3,
+            "code": "Daftar kosong                Tampilkan pesan \"Belum ada tugas\"",
+            "note": "Kasus daftar kosong punya perilaku tampilan yang jelas."
+          },
+          {
+            "line": 7,
+            "code": "Tenggat 29 Februari          Tolak jika tahun bukan kabisat",
+            "note": "Kasus tanggal uji batas menuntut keputusan eksplisit."
+          },
+          {
+            "line": 8,
+            "code": "Hapus tugas yang sama 2x     Hapus pertama sukses, kedua beri pesan",
+            "note": "Kasus urutan aksi membedakan keberhasilan pertama dan kedua."
+          },
+          {
+            "line": 9,
+            "code": "Prioritas tidak dikenal      Tolak dan sebutkan pilihan valid",
+            "note": "Nilai asing ditolak dengan menyebut pilihan yang sah."
+          }
+        ]
       }
     }
   ],
@@ -121,14 +254,14 @@
       "id": "latihan-1",
       "level": "guided",
       "title": "Klasifikasikan biaya",
-      "task": "Klasifikasikan tiga operasi berikut sebagai O(1), O(n), atau O(n\u00b2): mengambil tugas dari peta berdasarkan id, menghitung semua tugas selesai, membandingkan semua pasangan judul.",
+      "task": "Klasifikasikan tiga operasi berikut sebagai O(1), O(n), atau O(n²): mengambil tugas dari peta berdasarkan id, menghitung semua tugas selesai, membandingkan semua pasangan judul.",
       "steps": [
         "Tentukan apakah jumlah langkah bergantung pada n.",
         "Periksa apakah ada perulangan bersarang.",
         "Tulis klasifikasi beserta alasan singkat."
       ],
       "starterCode": "1. peta[id]            -> ...\n2. hitung semua selesai -> ...\n3. semua pasangan       -> ...",
-      "expected": "O(1), O(n), O(n\u00b2) dengan alasan masing-masing.",
+      "expected": "O(1), O(n), O(n²) dengan alasan masing-masing.",
       "hints": [
         "Akses peta memakai kunci langsung.",
         "Menghitung semua tugas memerlukan satu perulangan.",
@@ -226,10 +359,10 @@
         "options": [
           "O(1)",
           "O(n)",
-          "O(n\u00b2)"
+          "O(n²)"
         ],
         "answer": 2,
-        "explanation": "n langkah dikalikan n langkah menghasilkan n\u00b2 pemeriksaan."
+        "explanation": "n langkah dikalikan n langkah menghasilkan n² pemeriksaan."
       },
       {
         "id": "q3",
@@ -257,7 +390,14 @@
   ],
   "summary": [
     "Kompleksitas dibandingkan lewat pertumbuhan jumlah langkah, bukan waktu eksekusi di satu perangkat.",
-    "O(1) tetap, O(n) linear, dan O(n\u00b2) muncul dari perulangan bersarang.",
+    "O(1) tetap, O(n) linear, dan O(n²) muncul dari perulangan bersarang.",
     "Edge case ditulis sebelum kode dan menjadi test case saat implementasi."
-  ]
+  ],
+  "conventions": [
+    "Bandingkan algoritma lewat pertumbuhan jumlah langkah, bukan waktu eksekusi di satu perangkat.",
+    "Fokus pada operasi yang paling sering dijalankan, misalnya pemeriksaan atau perbandingan.",
+    "Perhatikan perulangan bersarang karena satu perulangan di dalam perulangan lain langsung menaikkan biaya.",
+    "Tulis daftar edge case beserta perilaku yang diharapkan sebelum menulis kode."
+  ],
+  "next": "Berikutnya: variabel, tipe data, dan operator JavaScript. Anda akan menerjemahkan pseudocode serta aturan yang sudah disusun menjadi kode yang benar-benar berjalan."
 }

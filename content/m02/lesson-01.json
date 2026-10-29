@@ -4,6 +4,7 @@
   "minutes": 90,
   "level": "Dasar",
   "depth": "fondasi",
+  "schema": 3.1,
   "codeLanguage": "text",
   "outcome": "Setelah pelajaran ini, Anda dapat memecah satu fitur aplikasi catatan tugas menjadi langkah input, proses, dan output yang masing-masing bisa diuji.",
   "objectives": [
@@ -38,6 +39,7 @@
   "syntax": [
     {
       "token": "INPUT nama",
+      "readAs": "Baca sebagai perintah membaca satu nilai dari pengguna lalu menyimpannya ke dalam variabel bernama.",
       "meaning": "Membaca satu nilai dari pengguna dan menyimpannya ke variabel bernama.",
       "example": "INPUT judul",
       "output": "Variabel judul berisi teks yang diketik pengguna.",
@@ -45,6 +47,7 @@
     },
     {
       "token": "OUTPUT nilai",
+      "readAs": "Baca sebagai perintah menampilkan satu nilai atau pesan sebagai hasil akhir sebuah langkah.",
       "meaning": "Menampilkan satu nilai atau pesan sebagai hasil akhir langkah.",
       "example": "OUTPUT \"Tugas disimpan\"",
       "output": "Tugas disimpan",
@@ -53,24 +56,104 @@
   ],
   "sections": [
     {
+      "id": "cara-membaca",
+      "title": "Cara membaca satu fitur sebagai langkah kecil",
+      "body": [
+        "Membaca dekomposisi berarti menelusuri satu fitur dari data yang masuk sampai hasil yang keluar. Mulailah dari input: apa yang diketik pengguna atau data apa yang sudah tersedia. Lalu ikuti setiap langkah proses satu per satu, dan berhenti pada output yang dapat diperiksa.",
+        "Untuk setiap baris, tanyakan apakah baris itu melakukan tepat satu pekerjaan. Baris yang memakai kata “dan” untuk dua pekerjaan berbeda menandakan langkah masih perlu dipecah. Kebiasaan ini membuat bug lebih mudah dilacak karena penyebabnya bisa dipersempit ke satu langkah."
+      ],
+      "code": {
+        "language": "text",
+        "lab": false,
+        "code": "FITUR Tambah Tugas\n  Input  : judul dari pengguna\n  Proses : periksa judul   -> jalur gagal berhenti\n  Proses : simpan tugas    -> hanya jika judul valid\n  Output : daftar bertambah atau pesan error",
+        "output": "Satu input, dua langkah proses yang terpisah, dan satu output yang dapat diperiksa.",
+        "explain": "Baris proses dipisah agar pemeriksaan dan penyimpanan bisa diuji sendiri-sendiri. Urutannya jelas: pemeriksaan selalu mendahului penyimpanan.",
+        "annotations": [
+          {
+            "line": 1,
+            "code": "FITUR Tambah Tugas",
+            "note": "Judul fitur menyebut satu pekerjaan pengguna yang jelas."
+          },
+          {
+            "line": 2,
+            "code": "Input  : judul dari pengguna",
+            "note": "Input mencatat data yang masuk sebelum langkah apa pun dijalankan."
+          },
+          {
+            "line": 3,
+            "code": "Proses : periksa judul   -> jalur gagal berhenti",
+            "note": "Langkah pemeriksaan hanya memutuskan valid atau tidak, lalu berhenti bila gagal."
+          },
+          {
+            "line": 4,
+            "code": "Proses : simpan tugas    -> hanya jika judul valid",
+            "note": "Langkah penyimpanan hanya menulis data dan bergantung pada hasil pemeriksaan."
+          },
+          {
+            "line": 5,
+            "code": "Output : daftar bertambah atau pesan error",
+            "note": "Output menyatakan hasil yang bisa diamati pengguna untuk kedua jalur."
+          }
+        ]
+      },
+      "callouts": [
+        {
+          "tone": "good",
+          "title": "Langkah terkecil yang berguna",
+          "body": "Sebuah langkah cukup kecil jika Anda bisa menyebutkan satu contoh input dan satu hasil yang dapat diperiksa untuk langkah itu saja."
+        }
+      ],
+      "checkpoint": {
+        "prompt": "Ambil fitur hapus tugas, lalu tuliskan langkah dekomposisinya sebagai input, proses, dan output.",
+        "success": "Jawaban menyebut id tugas sebagai input, pencarian dan penghapusan sebagai dua langkah proses terpisah, serta daftar terbaru atau pesan gagal sebagai output."
+      }
+    },
+    {
       "id": "masalah-besar",
       "title": "Mengapa masalah besar harus dipecah",
       "body": [
-        "Permintaan \u201cbuat aplikasi catatan tugas\u201d terdengar sederhana, tetapi di dalamnya ada banyak keputusan: data apa yang disimpan, bagaimana urutan tampil, apa yang terjadi jika judul kosong, dan bagaimana pengguna menghapus tugas. Jika semua keputusan itu dikerjakan sekaligus, Anda akan cepat kehilangan jejak bagian mana yang salah.",
-        "Dekomposisi menjawab masalah itu dengan satu aturan: satu langkah hanya boleh punya satu tanggung jawab yang jelas. Langkah \u201cperiksa judul\u201d terpisah dari langkah \u201csimpan tugas\u201d. Ketika nanti muncul bug, Anda tahu harus memeriksa langkah yang mana."
+        "Permintaan “buat aplikasi catatan tugas” terdengar sederhana, tetapi di dalamnya ada banyak keputusan: data apa yang disimpan, bagaimana urutan tampil, apa yang terjadi jika judul kosong, dan bagaimana pengguna menghapus tugas. Jika semua keputusan itu dikerjakan sekaligus, Anda akan cepat kehilangan jejak bagian mana yang salah.",
+        "Dekomposisi menjawab masalah itu dengan satu aturan: satu langkah hanya boleh punya satu tanggung jawab yang jelas. Langkah “periksa judul” terpisah dari langkah “simpan tugas”. Ketika nanti muncul bug, Anda tahu harus memeriksa langkah yang mana."
       ],
       "code": {
         "language": "text",
         "lab": false,
         "code": "PROGRAM Catatan Tugas\n  INPUT judul\n  PERIKSA judul\n  SIMPAN tugas\n  TAMPILKAN daftar tugas",
         "output": "Program berjalan dari atas ke bawah, satu tanggung jawab per baris.",
-        "explain": "Setiap baris adalah satu langkah yang bisa diuji sendiri. Baris PERIKSA hanya memutuskan valid atau tidak; baris SIMPAN hanya menulis data; baris TAMPILKAN hanya menampilkan."
+        "explain": "Setiap baris adalah satu langkah yang bisa diuji sendiri. Baris PERIKSA hanya memutuskan valid atau tidak; baris SIMPAN hanya menulis data; baris TAMPILKAN hanya menampilkan.",
+        "annotations": [
+          {
+            "line": 1,
+            "code": "PROGRAM Catatan Tugas",
+            "note": "Nama program menyatakan satu fitur besar yang akan dipecah."
+          },
+          {
+            "line": 2,
+            "code": "INPUT judul",
+            "note": "Langkah pertama membaca data dari pengguna."
+          },
+          {
+            "line": 3,
+            "code": "PERIKSA judul",
+            "note": "Pemeriksaan dipisah dari penyimpanan agar mudah diuji sendiri."
+          },
+          {
+            "line": 4,
+            "code": "SIMPAN tugas",
+            "note": "Penyimpanan hanya menulis data, tanpa memutuskan valid atau tidak."
+          },
+          {
+            "line": 5,
+            "code": "TAMPILKAN daftar tugas",
+            "note": "Langkah terakhir menghasilkan output yang dapat diperiksa pengguna."
+          }
+        ]
       },
       "callouts": [
         {
           "tone": "good",
           "title": "Aturan satu langkah",
-          "body": "Jika satu langkah memakai kata \u201cdan\u201d untuk dua pekerjaan berbeda, pecah lagi. \u201cPeriksa dan simpan\u201d adalah dua langkah, bukan satu."
+          "body": "Jika satu langkah memakai kata “dan” untuk dua pekerjaan berbeda, pecah lagi. “Periksa dan simpan” adalah dua langkah, bukan satu."
         }
       ]
     },
@@ -86,10 +169,37 @@
         "lab": false,
         "code": "LANGKAH Tambah Tugas\n  INPUT judul\n  JIKA judul kosong MAKA\n    OUTPUT \"Judul wajib diisi\"\n    SELESAI\n  AKHIR JIKA\n  SIMPAN tugas dengan judul\n  OUTPUT \"Tugas disimpan\"",
         "output": "Tambah Tugas(\"Belajar\") -> Tugas disimpan\nTambah Tugas(\"\")        -> Judul wajib diisi",
-        "explain": "Baris JIKA memisahkan jalur gagal dan jalur sukses. Tanpa pemisahan itu, tugas kosong akan tetap tersimpan dan merusak daftar."
+        "explain": "Baris JIKA memisahkan jalur gagal dan jalur sukses. Tanpa pemisahan itu, tugas kosong akan tetap tersimpan dan merusak daftar.",
+        "annotations": [
+          {
+            "line": 1,
+            "code": "LANGKAH Tambah Tugas",
+            "note": "Nama langkah menyebut satu pekerjaan pengguna."
+          },
+          {
+            "line": 3,
+            "code": "JIKA judul kosong MAKA",
+            "note": "Kondisi memisahkan jalur gagal dan jalur sukses."
+          },
+          {
+            "line": 5,
+            "code": "SELESAI",
+            "note": "SELESAI menghentikan proses pada kegagalan pertama."
+          },
+          {
+            "line": 7,
+            "code": "SIMPAN tugas dengan judul",
+            "note": "Penyimpanan hanya dijalankan setelah validasi lolos."
+          },
+          {
+            "line": 8,
+            "code": "OUTPUT \"Tugas disimpan\"",
+            "note": "Pesan sukses ditampilkan hanya pada jalur yang benar."
+          }
+        ]
       },
       "checkpoint": {
-        "prompt": "Tuliskan input, proses, dan output untuk fitur \u201chardus tugas\u201d sebelum melihat pelajaran berikutnya.",
+        "prompt": "Tuliskan input, proses, dan output untuk fitur “hardus tugas” sebelum melihat pelajaran berikutnya.",
         "success": "Jawaban Anda menyebut tugas mana yang dihapus sebagai input, pencarian dan penghapusan sebagai proses, serta daftar terbaru atau pesan gagal sebagai output."
       }
     },
@@ -97,7 +207,7 @@
       "id": "kriteria-penerimaan",
       "title": "Kriteria penerimaan yang bisa diuji",
       "body": [
-        "Kriteria penerimaan mengubah harapan menjadi pernyataan yang bisa dinilai. \u201cTampilan harus bagus\u201d tidak bisa diuji. \u201cJudul kosong ditolak dengan pesan Judul wajib diisi\u201d bisa diuji dengan satu percobaan.",
+        "Kriteria penerimaan mengubah harapan menjadi pernyataan yang bisa dinilai. “Tampilan harus bagus” tidak bisa diuji. “Judul kosong ditolak dengan pesan Judul wajib diisi” bisa diuji dengan satu percobaan.",
         "Tulis kriteria dalam bentuk: diberikan kondisi tertentu, ketika pengguna melakukan aksi, maka hasilnya harus tertentu. Pola ini disebut juga given-when-then dan dipakai untuk menyusun test case di modul berikutnya."
       ],
       "code": {
@@ -105,7 +215,34 @@
         "lab": false,
         "code": "KRITERIA 1\n  DIBERIKAN daftar tugas kosong\n  KETIKA pengguna mengisi judul \"Belajar\" dan menekan Simpan\n  MAKA daftar berisi satu tugas berjudul Belajar\n\nKRITERIA 2\n  DIBERIKAN judul berisi spasi saja\n  KETIKA pengguna menekan Simpan\n  MAKA muncul pesan \"Judul wajib diisi\" dan daftar tidak berubah",
         "output": "Dua kriteria yang masing-masing bisa lulus atau gagal tanpa menebak maksud penulis.",
-        "explain": "Kriteria pertama menguji jalur sukses; kriteria kedua menguji jalur gagal. Keduanya menyebut kondisi awal, aksi, dan hasil yang bisa diamati."
+        "explain": "Kriteria pertama menguji jalur sukses; kriteria kedua menguji jalur gagal. Keduanya menyebut kondisi awal, aksi, dan hasil yang bisa diamati.",
+        "annotations": [
+          {
+            "line": 1,
+            "code": "KRITERIA 1",
+            "note": "Setiap kriteria diberi nomor agar bisa dirujuk saat pengujian."
+          },
+          {
+            "line": 2,
+            "code": "DIBERIKAN daftar tugas kosong",
+            "note": "DIBERIKAN menyebut kondisi awal yang bisa diperiksa."
+          },
+          {
+            "line": 4,
+            "code": "MAKA daftar berisi satu tugas berjudul Belajar",
+            "note": "MAKA menyatakan hasil yang dapat diamati, bukan perasaan pengguna."
+          },
+          {
+            "line": 6,
+            "code": "KRITERIA 2",
+            "note": "Kriteria kedua menguji jalur gagal, bukan mengulang jalur sukses."
+          },
+          {
+            "line": 9,
+            "code": "MAKA muncul pesan \"Judul wajib diisi\" dan daftar tidak berubah",
+            "note": "Hasil menggabungkan pesan dan keadaan data setelah aksi."
+          }
+        ]
       }
     }
   ],
@@ -135,7 +272,7 @@
       "id": "latihan-2",
       "level": "variasi",
       "title": "Pecah fitur filter",
-      "task": "Pecah fitur \u201ctampilkan hanya tugas yang belum selesai\u201d menjadi langkah input, proses, dan output.",
+      "task": "Pecah fitur “tampilkan hanya tugas yang belum selesai” menjadi langkah input, proses, dan output.",
       "steps": [
         "Tentukan input: daftar tugas dan pilihan filter.",
         "Tentukan proses: memilih tugas yang status selesainya salah.",
@@ -184,7 +321,7 @@
     {
       "symptom": "Pseudocode terasa panjang tetapi tidak jelas harus mulai dari mana.",
       "cause": "Langkah masih bercampur antara input, validasi, penyimpanan, dan tampilan.",
-      "fix": "Pecah setiap kalimat yang memakai kata \u201cdan\u201d menjadi dua baris; beri satu tanggung jawab per baris."
+      "fix": "Pecah setiap kalimat yang memakai kata “dan” menjadi dua baris; beri satu tanggung jawab per baris."
     },
     {
       "symptom": "Kriteria penerimaan selalu terasa benar setelah dicoba.",
@@ -251,5 +388,12 @@
     "Masalah besar dipecah menjadi langkah kecil dengan satu tanggung jawab per langkah.",
     "Setiap langkah dijelaskan lewat input, proses, dan output yang konkret.",
     "Kriteria penerimaan memakai pola diberikan-ketika-maka dan harus bisa lulus atau gagal."
-  ]
+  ],
+  "conventions": [
+    "Tulis satu langkah per baris dan beri satu tanggung jawab saja untuk setiap langkah.",
+    "Awali setiap langkah dengan kata kerja yang jelas: INPUT, PERIKSA, SIMPAN, TAMPILKAN.",
+    "Pisahkan jalur sukses dan jalur gagal dengan SELESAI agar proses berhenti pada kegagalan pertama.",
+    "Nyatakan setiap fitur sebagai input, proses, dan output sebelum menulis detail langkahnya."
+  ],
+  "next": "Berikutnya: pseudocode dan flowchart. Anda akan menerjemahkan langkah dekomposisi menjadi pseudocode yang konsisten dan diagram alur."
 }

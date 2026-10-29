@@ -6405,7 +6405,7 @@
             {
               "token": "INPUT nama",
               "meaning": "Membaca satu nilai dari pengguna dan menyimpannya ke variabel bernama.",
-              "readAs": "",
+              "readAs": "Baca sebagai perintah membaca satu nilai dari pengguna lalu menyimpannya ke dalam variabel bernama.",
               "example": "INPUT judul",
               "output": "Variabel judul berisi teks yang diketik pengguna.",
               "pitfall": "Membaca input dua kali akan meminta pengguna mengetik dua kali; baca sekali lalu simpan."
@@ -6413,15 +6413,73 @@
             {
               "token": "OUTPUT nilai",
               "meaning": "Menampilkan satu nilai atau pesan sebagai hasil akhir langkah.",
-              "readAs": "",
+              "readAs": "Baca sebagai perintah menampilkan satu nilai atau pesan sebagai hasil akhir sebuah langkah.",
               "example": "OUTPUT \"Tugas disimpan\"",
               "output": "Tugas disimpan",
               "pitfall": "Menulis OUTPUT sebelum data divalidasi membuat pengguna menerima pesan sukses untuk data yang salah."
             }
           ],
-          "conventions": [],
-          "next": "",
+          "conventions": [
+            "Tulis satu langkah per baris dan beri satu tanggung jawab saja untuk setiap langkah.",
+            "Awali setiap langkah dengan kata kerja yang jelas: INPUT, PERIKSA, SIMPAN, TAMPILKAN.",
+            "Pisahkan jalur sukses dan jalur gagal dengan SELESAI agar proses berhenti pada kegagalan pertama.",
+            "Nyatakan setiap fitur sebagai input, proses, dan output sebelum menulis detail langkahnya."
+          ],
+          "next": "Berikutnya: pseudocode dan flowchart. Anda akan menerjemahkan langkah dekomposisi menjadi pseudocode yang konsisten dan diagram alur.",
           "sections": [
+            {
+              "id": "cara-membaca",
+              "title": "Cara membaca satu fitur sebagai langkah kecil",
+              "body": [
+                "Membaca dekomposisi berarti menelusuri satu fitur dari data yang masuk sampai hasil yang keluar. Mulailah dari input: apa yang diketik pengguna atau data apa yang sudah tersedia. Lalu ikuti setiap langkah proses satu per satu, dan berhenti pada output yang dapat diperiksa.",
+                "Untuk setiap baris, tanyakan apakah baris itu melakukan tepat satu pekerjaan. Baris yang memakai kata “dan” untuk dua pekerjaan berbeda menandakan langkah masih perlu dipecah. Kebiasaan ini membuat bug lebih mudah dilacak karena penyebabnya bisa dipersempit ke satu langkah."
+              ],
+              "code": {
+                "language": "text",
+                "code": "FITUR Tambah Tugas\n  Input  : judul dari pengguna\n  Proses : periksa judul   -> jalur gagal berhenti\n  Proses : simpan tugas    -> hanya jika judul valid\n  Output : daftar bertambah atau pesan error",
+                "output": "Satu input, dua langkah proses yang terpisah, dan satu output yang dapat diperiksa.",
+                "explain": "Baris proses dipisah agar pemeriksaan dan penyimpanan bisa diuji sendiri-sendiri. Urutannya jelas: pemeriksaan selalu mendahului penyimpanan.",
+                "annotations": [
+                  {
+                    "line": 1,
+                    "code": "FITUR Tambah Tugas",
+                    "note": "Judul fitur menyebut satu pekerjaan pengguna yang jelas."
+                  },
+                  {
+                    "line": 2,
+                    "code": "Input  : judul dari pengguna",
+                    "note": "Input mencatat data yang masuk sebelum langkah apa pun dijalankan."
+                  },
+                  {
+                    "line": 3,
+                    "code": "Proses : periksa judul   -> jalur gagal berhenti",
+                    "note": "Langkah pemeriksaan hanya memutuskan valid atau tidak, lalu berhenti bila gagal."
+                  },
+                  {
+                    "line": 4,
+                    "code": "Proses : simpan tugas    -> hanya jika judul valid",
+                    "note": "Langkah penyimpanan hanya menulis data dan bergantung pada hasil pemeriksaan."
+                  },
+                  {
+                    "line": 5,
+                    "code": "Output : daftar bertambah atau pesan error",
+                    "note": "Output menyatakan hasil yang bisa diamati pengguna untuk kedua jalur."
+                  }
+                ],
+                "lab": false
+              },
+              "callouts": [
+                {
+                  "tone": "good",
+                  "title": "Langkah terkecil yang berguna",
+                  "body": "Sebuah langkah cukup kecil jika Anda bisa menyebutkan satu contoh input dan satu hasil yang dapat diperiksa untuk langkah itu saja."
+                }
+              ],
+              "checkpoint": {
+                "prompt": "Ambil fitur hapus tugas, lalu tuliskan langkah dekomposisinya sebagai input, proses, dan output.",
+                "success": "Jawaban menyebut id tugas sebagai input, pencarian dan penghapusan sebagai dua langkah proses terpisah, serta daftar terbaru atau pesan gagal sebagai output."
+              }
+            },
             {
               "id": "masalah-besar",
               "title": "Mengapa masalah besar harus dipecah",
@@ -6434,7 +6492,33 @@
                 "code": "PROGRAM Catatan Tugas\n  INPUT judul\n  PERIKSA judul\n  SIMPAN tugas\n  TAMPILKAN daftar tugas",
                 "output": "Program berjalan dari atas ke bawah, satu tanggung jawab per baris.",
                 "explain": "Setiap baris adalah satu langkah yang bisa diuji sendiri. Baris PERIKSA hanya memutuskan valid atau tidak; baris SIMPAN hanya menulis data; baris TAMPILKAN hanya menampilkan.",
-                "annotations": [],
+                "annotations": [
+                  {
+                    "line": 1,
+                    "code": "PROGRAM Catatan Tugas",
+                    "note": "Nama program menyatakan satu fitur besar yang akan dipecah."
+                  },
+                  {
+                    "line": 2,
+                    "code": "INPUT judul",
+                    "note": "Langkah pertama membaca data dari pengguna."
+                  },
+                  {
+                    "line": 3,
+                    "code": "PERIKSA judul",
+                    "note": "Pemeriksaan dipisah dari penyimpanan agar mudah diuji sendiri."
+                  },
+                  {
+                    "line": 4,
+                    "code": "SIMPAN tugas",
+                    "note": "Penyimpanan hanya menulis data, tanpa memutuskan valid atau tidak."
+                  },
+                  {
+                    "line": 5,
+                    "code": "TAMPILKAN daftar tugas",
+                    "note": "Langkah terakhir menghasilkan output yang dapat diperiksa pengguna."
+                  }
+                ],
                 "lab": false
               },
               "callouts": [
@@ -6458,7 +6542,33 @@
                 "code": "LANGKAH Tambah Tugas\n  INPUT judul\n  JIKA judul kosong MAKA\n    OUTPUT \"Judul wajib diisi\"\n    SELESAI\n  AKHIR JIKA\n  SIMPAN tugas dengan judul\n  OUTPUT \"Tugas disimpan\"",
                 "output": "Tambah Tugas(\"Belajar\") -> Tugas disimpan\nTambah Tugas(\"\")        -> Judul wajib diisi",
                 "explain": "Baris JIKA memisahkan jalur gagal dan jalur sukses. Tanpa pemisahan itu, tugas kosong akan tetap tersimpan dan merusak daftar.",
-                "annotations": [],
+                "annotations": [
+                  {
+                    "line": 1,
+                    "code": "LANGKAH Tambah Tugas",
+                    "note": "Nama langkah menyebut satu pekerjaan pengguna."
+                  },
+                  {
+                    "line": 3,
+                    "code": "JIKA judul kosong MAKA",
+                    "note": "Kondisi memisahkan jalur gagal dan jalur sukses."
+                  },
+                  {
+                    "line": 5,
+                    "code": "SELESAI",
+                    "note": "SELESAI menghentikan proses pada kegagalan pertama."
+                  },
+                  {
+                    "line": 7,
+                    "code": "SIMPAN tugas dengan judul",
+                    "note": "Penyimpanan hanya dijalankan setelah validasi lolos."
+                  },
+                  {
+                    "line": 8,
+                    "code": "OUTPUT \"Tugas disimpan\"",
+                    "note": "Pesan sukses ditampilkan hanya pada jalur yang benar."
+                  }
+                ],
                 "lab": false
               },
               "callouts": [],
@@ -6479,7 +6589,33 @@
                 "code": "KRITERIA 1\n  DIBERIKAN daftar tugas kosong\n  KETIKA pengguna mengisi judul \"Belajar\" dan menekan Simpan\n  MAKA daftar berisi satu tugas berjudul Belajar\n\nKRITERIA 2\n  DIBERIKAN judul berisi spasi saja\n  KETIKA pengguna menekan Simpan\n  MAKA muncul pesan \"Judul wajib diisi\" dan daftar tidak berubah",
                 "output": "Dua kriteria yang masing-masing bisa lulus atau gagal tanpa menebak maksud penulis.",
                 "explain": "Kriteria pertama menguji jalur sukses; kriteria kedua menguji jalur gagal. Keduanya menyebut kondisi awal, aksi, dan hasil yang bisa diamati.",
-                "annotations": [],
+                "annotations": [
+                  {
+                    "line": 1,
+                    "code": "KRITERIA 1",
+                    "note": "Setiap kriteria diberi nomor agar bisa dirujuk saat pengujian."
+                  },
+                  {
+                    "line": 2,
+                    "code": "DIBERIKAN daftar tugas kosong",
+                    "note": "DIBERIKAN menyebut kondisi awal yang bisa diperiksa."
+                  },
+                  {
+                    "line": 4,
+                    "code": "MAKA daftar berisi satu tugas berjudul Belajar",
+                    "note": "MAKA menyatakan hasil yang dapat diamati, bukan perasaan pengguna."
+                  },
+                  {
+                    "line": 6,
+                    "code": "KRITERIA 2",
+                    "note": "Kriteria kedua menguji jalur gagal, bukan mengulang jalur sukses."
+                  },
+                  {
+                    "line": 9,
+                    "code": "MAKA muncul pesan \"Judul wajib diisi\" dan daftar tidak berubah",
+                    "note": "Hasil menggabungkan pesan dan keadaan data setelah aksi."
+                  }
+                ],
                 "lab": false
               },
               "callouts": [],
@@ -6656,9 +6792,9 @@
             "Kriteria penerimaan memakai pola diberikan-ketika-maka dan harus bisa lulus atau gagal."
           ],
           "legacy": false,
-          "code": "PROGRAM Catatan Tugas\n  INPUT judul\n  PERIKSA judul\n  SIMPAN tugas\n  TAMPILKAN daftar tugas",
-          "wordCount": 1079,
-          "schema": 3
+          "code": "FITUR Tambah Tugas\n  Input  : judul dari pengguna\n  Proses : periksa judul   -> jalur gagal berhenti\n  Proses : simpan tugas    -> hanya jika judul valid\n  Output : daftar bertambah atau pesan error",
+          "wordCount": 1502,
+          "schema": 3.1
         },
         {
           "id": "m02-l02",
@@ -6701,7 +6837,7 @@
             {
               "token": "IF kondisi THEN ... ELSE ... END IF",
               "meaning": "Menjalankan satu blok jika kondisi benar, dan blok lain jika kondisi salah.",
-              "readAs": "",
+              "readAs": "Baca sebagai perintah: jika kondisi benar kerjakan blok pertama, selain itu kerjakan blok kedua, lalu tutup dengan END IF.",
               "example": "IF judul kosong THEN\n  OUTPUT \"Judul wajib diisi\"\nELSE\n  SIMPAN tugas\nEND IF",
               "output": "Hanya satu cabang yang dijalankan untuk setiap input.",
               "pitfall": "Lupa END IF membuat batas cabang tidak jelas dan mudah salah saat diterjemahkan menjadi kode."
@@ -6709,15 +6845,73 @@
             {
               "token": "nilai <- ekspresi",
               "meaning": "Memberi nilai hasil perhitungan ke sebuah variabel.",
-              "readAs": "",
+              "readAs": "Baca sebagai pemberian nilai: hitung ekspresi di kanan, lalu simpan hasilnya ke variabel di kiri panah.",
               "example": "jumlah <- 0\njumlah <- jumlah + 1",
               "output": "jumlah bernilai 1 setelah baris kedua.",
               "pitfall": "Tanda <- bukan perbandingan; perbandingan ditulis dengan = atau “sama dengan” di kondisi."
             }
           ],
-          "conventions": [],
-          "next": "",
+          "conventions": [
+            "Tulis kata kunci dengan huruf besar secara konsisten: INPUT, IF, ELSE, WHILE, OUTPUT.",
+            "Gunakan satu langkah per baris dan indentasi untuk langkah di dalam percabangan atau perulangan.",
+            "Beri nama variabel yang menggambarkan isinya, misalnya judul, daftarTugas, jumlahSelesai.",
+            "Pastikan setiap belah ketupat pada flowchart punya dua panah keluar berlabel Ya dan Tidak."
+          ],
+          "next": "Berikutnya: tipe data, input, dan validasi. Anda akan menentukan tipe setiap field tugas dan menulis aturan validasi yang menolak input tidak masuk akal.",
           "sections": [
+            {
+              "id": "cara-membaca",
+              "title": "Cara membaca pseudocode dan padanannya di flowchart",
+              "body": [
+                "Membaca pseudocode berarti mengikuti alur dari baris pertama sampai baris yang mengakhiri program. Mulailah dari INPUT untuk mengetahui data yang masuk, lalu telusuri percabangan: setiap IF memilih satu cabang, dan END IF menandai akhir pilihan.",
+                "Padanan di flowchart memakai simbol dengan arti yang sama. Jajar genjang mewakili input atau output, persegi panjang mewakili proses, dan belah ketupat mewakili keputusan. Jika sebuah keputusan hanya punya satu panah keluar, berarti ada jalur yang belum Anda tentukan."
+              ],
+              "code": {
+                "language": "text",
+                "code": "INPUT judul\nIF judul kosong THEN\n  OUTPUT \"Judul wajib diisi\"\nELSE\n  SIMPAN tugas\nEND IF",
+                "output": "Input \"\" menampilkan pesan; input \"Belajar\" menyimpan tugas.",
+                "explain": "Baris IF membaca kondisi judul kosong. Karena hanya satu cabang yang dijalankan, pembaca tahu pesan error dan penyimpanan tidak pernah terjadi bersamaan.",
+                "annotations": [
+                  {
+                    "line": 1,
+                    "code": "INPUT judul",
+                    "note": "Input adalah jajar genjang pada flowchart."
+                  },
+                  {
+                    "line": 2,
+                    "code": "IF judul kosong THEN",
+                    "note": "IF adalah belah ketupat dengan dua jalur keluar."
+                  },
+                  {
+                    "line": 3,
+                    "code": "OUTPUT \"Judul wajib diisi\"",
+                    "note": "Cabang THEN adalah output untuk jalur gagal."
+                  },
+                  {
+                    "line": 5,
+                    "code": "SIMPAN tugas",
+                    "note": "Cabang ELSE adalah proses untuk jalur sukses."
+                  },
+                  {
+                    "line": 6,
+                    "code": "END IF",
+                    "note": "END IF menutup pilihan dan menyatukan kembali kedua jalur."
+                  }
+                ],
+                "lab": false
+              },
+              "callouts": [
+                {
+                  "tone": "good",
+                  "title": "Ikuti alurnya, bukan barisnya",
+                  "body": "Bacalah sesuai alur eksekusi, bukan sekadar urutan baris. Percabangan membuat sebagian baris dilewati untuk input tertentu."
+                }
+              ],
+              "checkpoint": {
+                "prompt": "Terjemahkan pseudocode pada blok kode di atas menjadi urutan panah flowchart.",
+                "success": "Jawaban menyebut jajar genjang untuk INPUT dan OUTPUT, persegi panjang untuk SIMPAN, serta belah ketupat untuk IF dengan dua jalur berlabel."
+              }
+            },
             {
               "id": "aturan-pseudocode",
               "title": "Empat aturan pseudocode yang konsisten",
@@ -6730,7 +6924,33 @@
                 "code": "-- pseudocode: tambah tugas\nINPUT judul            -- teks\nIF judul kosong THEN\n  OUTPUT \"Judul wajib diisi\"\nELSE\n  SIMPAN tugas dengan judul\n  OUTPUT \"Tugas disimpan\"\nEND IF",
                 "output": "Input \"Belajar\" -> Tugas disimpan\nInput \"\"        -> Judul wajib diisi",
                 "explain": "Kata kunci INPUT, IF, ELSE, dan OUTPUT ditulis konsisten. Indentasi menunjukkan bahwa SIMPAN dan OUTPUT hanya dijalankan pada cabang ELSE.",
-                "annotations": [],
+                "annotations": [
+                  {
+                    "line": 1,
+                    "code": "-- pseudocode: tambah tugas",
+                    "note": "Komentar menandai tujuan blok tanpa mengubah alurnya."
+                  },
+                  {
+                    "line": 2,
+                    "code": "INPUT judul            -- teks",
+                    "note": "Komentar tipe di samping input menjaga tipe nilai tetap jelas."
+                  },
+                  {
+                    "line": 3,
+                    "code": "IF judul kosong THEN",
+                    "note": "Kata kunci huruf besar menandai awal percabangan."
+                  },
+                  {
+                    "line": 6,
+                    "code": "SIMPAN tugas dengan judul",
+                    "note": "Indentasi menunjukkan baris ini hanya dijalankan pada cabang ELSE."
+                  },
+                  {
+                    "line": 8,
+                    "code": "END IF",
+                    "note": "END IF menutup percabangan dan mengembalikan alur utama."
+                  }
+                ],
                 "lab": false
               },
               "callouts": [
@@ -6754,7 +6974,38 @@
                 "code": "(MULAI)\n   |\n   v\n[ baca judul ]\n   |\n   v\n< judul kosong? > --Ya--> [ tampilkan pesan ] --> (SELESAI)\n   |\n  Tidak\n   v\n[ simpan tugas ]\n   |\n   v\n( SELESAI )",
                 "output": "Alur bercabang dua: jalur gagal berhenti setelah pesan, jalur sukses menyimpan lalu selesai.",
                 "explain": "Simbol <> adalah keputusan. Label Ya dan Tidak wajib ada supaya pembaca tahu jalur mana yang diambil untuk setiap kondisi.",
-                "annotations": [],
+                "annotations": [
+                  {
+                    "line": 1,
+                    "code": "(MULAI)",
+                    "note": "Oval menandai titik mulai program."
+                  },
+                  {
+                    "line": 4,
+                    "code": "[ baca judul ]",
+                    "note": "Persegi panjang adalah proses membaca judul."
+                  },
+                  {
+                    "line": 7,
+                    "code": "< judul kosong? > --Ya--> [ tampilkan pesan ] --> (SELESAI)",
+                    "note": "Belah ketupat adalah keputusan dengan dua panah keluar."
+                  },
+                  {
+                    "line": 9,
+                    "code": "Tidak",
+                    "note": "Label pada panah menyatakan hasil keputusan yang diambil."
+                  },
+                  {
+                    "line": 11,
+                    "code": "[ simpan tugas ]",
+                    "note": "Persegi panjang kedua adalah proses menyimpan tugas."
+                  },
+                  {
+                    "line": 14,
+                    "code": "( SELESAI )",
+                    "note": "Oval terakhir menutup alur pada jalur sukses."
+                  }
+                ],
                 "lab": false
               },
               "callouts": [],
@@ -6775,7 +7026,33 @@
                 "code": "INPUT judul = \"Belajar\"\nIF judul kosong THEN        -- salah\n  OUTPUT \"Judul wajib diisi\"\nELSE\n  SIMPAN tugas\nEND IF",
                 "output": "Tidak ada output yang salah pada input normal, tetapi input kosong juga akan tersimpan karena kondisi ditulis terbalik.",
                 "explain": "Penelusuran dengan judul kosong menunjukkan kondisi “judul kosong” bernilai benar, sehingga cabang pesan error dijalankan; namun pada input normal kondisi bernilai salah sehingga SIMPAN berjalan. Kesalahan baru terlihat jika Anda menguji keduanya.",
-                "annotations": [],
+                "annotations": [
+                  {
+                    "line": 1,
+                    "code": "INPUT judul = \"Belajar\"",
+                    "note": "Nilai contoh ditulis langsung agar penelusuran bisa dimulai."
+                  },
+                  {
+                    "line": 2,
+                    "code": "IF judul kosong THEN        -- salah",
+                    "note": "Komentar menandai kondisi yang perlu diperiksa dengan teliti."
+                  },
+                  {
+                    "line": 3,
+                    "code": "OUTPUT \"Judul wajib diisi\"",
+                    "note": "Cabang ini hanya dijalankan bila kondisinya benar."
+                  },
+                  {
+                    "line": 5,
+                    "code": "SIMPAN tugas",
+                    "note": "Penelusuran memeriksa apakah cabang ini benar-benar berjalan."
+                  },
+                  {
+                    "line": 6,
+                    "code": "END IF",
+                    "note": "END IF menutup percabangan setelah kedua cabang ditelusuri."
+                  }
+                ],
                 "lab": false
               },
               "callouts": [],
@@ -6955,9 +7232,9 @@
             "Penelusuran dua kasus, sukses dan gagal, menemukan kesalahan logika sebelum kode ditulis."
           ],
           "legacy": false,
-          "code": "-- pseudocode: tambah tugas\nINPUT judul            -- teks\nIF judul kosong THEN\n  OUTPUT \"Judul wajib diisi\"\nELSE\n  SIMPAN tugas dengan judul\n  OUTPUT \"Tugas disimpan\"\nEND IF",
-          "wordCount": 1085,
-          "schema": 3
+          "code": "INPUT judul\nIF judul kosong THEN\n  OUTPUT \"Judul wajib diisi\"\nELSE\n  SIMPAN tugas\nEND IF",
+          "wordCount": 1506,
+          "schema": 3.1
         },
         {
           "id": "m02-l03",
@@ -7000,7 +7277,7 @@
             {
               "token": "TEXT",
               "meaning": "Menandai bahwa sebuah field berisi teks.",
-              "readAs": "",
+              "readAs": "Baca sebagai penanda tipe: field ini berisi deretan karakter, bukan angka.",
               "example": "judul: TEXT, wajib, 1 sampai 120 karakter",
               "output": "judul = \"Belajar\" diterima; judul = \"\" ditolak.",
               "pitfall": "Teks berisi spasi saja tetap dianggap kosong setelah dipangkas; validasi harus memeriksa hasil pangkasan."
@@ -7008,7 +7285,7 @@
             {
               "token": "BOOLEAN",
               "meaning": "Menandai field yang hanya berisi benar atau salah.",
-              "readAs": "",
+              "readAs": "Baca sebagai penanda tipe: field ini hanya boleh bernilai benar atau salah.",
               "example": "selesai: BOOLEAN, bawaan salah",
               "output": "selesai = benar diterima; selesai = \"mungkin\" ditolak.",
               "pitfall": "Teks \"benar\" bukan boolean benar; jangan mencampur teks dan boolean."
@@ -7016,15 +7293,73 @@
             {
               "token": "IF tidak valid THEN OUTPUT pesan",
               "meaning": "Menghentikan proses dan menampilkan alasan penolakan saat aturan validasi gagal.",
-              "readAs": "",
+              "readAs": "Baca sebagai penjaga: jika aturan tidak terpenuhi, hentikan proses dan tampilkan alasannya.",
               "example": "IF panjang(judul) > 120 THEN\n  OUTPUT \"Judul maksimal 120 karakter\"",
               "output": "Pesan spesifik muncul tepat di field yang salah.",
               "pitfall": "Satu pesan umum “data tidak valid” memaksa pengguna menebak field mana yang bermasalah."
             }
           ],
-          "conventions": [],
-          "next": "",
+          "conventions": [
+            "Tentukan tipe, status wajib, dan nilai bawaan setiap field sebelum menulis validasi.",
+            "Pangkas spasi di awal dan akhir input sebelum memeriksa apakah nilainya kosong.",
+            "Urutkan pemeriksaan dari yang paling murah dan mendasar, lalu berhenti pada kegagalan pertama.",
+            "Tulis pesan error yang menyebut nama field dan batasannya, bukan satu pesan umum."
+          ],
+          "next": "Berikutnya: percabangan dan boolean. Anda akan menyusun kondisi dari operator DAN, ATAU, dan BUKAN serta memakainya bersama tabel kebenaran.",
           "sections": [
+            {
+              "id": "cara-membaca",
+              "title": "Cara membaca aturan validasi",
+              "body": [
+                "Aturan validasi dibaca seperti daftar pemeriksaan berurutan. Mulailah dari baris pertama; jika aturan itu gagal, proses berhenti dan sisa baris tidak dijalankan. Karena itu, urutan baris menentukan pesan mana yang lebih dulu muncul.",
+                "Setiap aturan membandingkan satu nilai dengan satu batas. Sebelum memercayai hasilnya, pastikan input sudah dinormalisasi, misalnya spasi dipangkas dan huruf disamakan. Tanpa normalisasi, aturan yang benar bisa menolak input yang sebenarnya sah."
+              ],
+              "code": {
+                "language": "text",
+                "code": "INPUT judul, tenggat\njudul <- pangkas(judul)\nIF judul = \"\" THEN\n  OUTPUT \"Judul wajib diisi\"\n  SELESAI\nEND IF\nIF tenggat diisi DAN tenggat < hari ini THEN\n  OUTPUT \"Tenggat tidak boleh sebelum hari ini\"\n  SELESAI\nEND IF\nOUTPUT \"Valid\"",
+                "output": "Validasi(\"\", kosong) -> Judul wajib diisi\nValidasi(\"Belajar\", kosong) -> Valid",
+                "explain": "Setiap pemeriksaan diakhiri SELESAI agar validasi berhenti pada kegagalan pertama. Aturan judul diperiksa sebelum tenggat karena lebih murah dan lebih mendasar.",
+                "annotations": [
+                  {
+                    "line": 1,
+                    "code": "INPUT judul, tenggat",
+                    "note": "Input mentah dibaca dulu sebelum aturan apa pun dijalankan."
+                  },
+                  {
+                    "line": 2,
+                    "code": "judul <- pangkas(judul)",
+                    "note": "Normalisasi memangkas spasi agar pemeriksaan kosong akurat."
+                  },
+                  {
+                    "line": 3,
+                    "code": "IF judul = \"\" THEN",
+                    "note": "Aturan pertama, yang paling mendasar, diperiksa lebih dulu."
+                  },
+                  {
+                    "line": 7,
+                    "code": "IF tenggat diisi DAN tenggat < hari ini THEN",
+                    "note": "Aturan tenggat dijalankan hanya jika judul sudah lolos."
+                  },
+                  {
+                    "line": 11,
+                    "code": "OUTPUT \"Valid\"",
+                    "note": "Baris ini tercapai hanya jika seluruh aturan terpenuhi."
+                  }
+                ],
+                "lab": false
+              },
+              "callouts": [
+                {
+                  "tone": "warn",
+                  "title": "Satu pesan per aturan",
+                  "body": "Pesan umum seperti “data tidak valid” memaksa pengguna menebak. Sebut field dan batasannya agar pengguna tahu cara memperbaiki."
+                }
+              ],
+              "checkpoint": {
+                "prompt": "Tulis urutan validasi untuk field tenggat dan prioritas, lalu tentukan pesan error masing-masing.",
+                "success": "Jawaban memeriksa tenggat sebelum prioritas yang lebih mahal, dan setiap pesan menyebut nama field beserta batasannya."
+              }
+            },
             {
               "id": "model-field",
               "title": "Model data tugas: tentukan sebelum validasi",
@@ -7037,7 +7372,38 @@
                 "code": "TUGAS\n  id         : TEXT, dibuat otomatis, unik\n  judul      : TEXT, wajib, 1-120 karakter setelah dipangkas\n  tenggat    : TANGGAL, opsional, tidak boleh sebelum hari ini\n  prioritas  : PILIHAN(rendah, sedang, tinggi), bawaan sedang\n  selesai    : BOOLEAN, bawaan salah",
                 "output": "Lima field dengan tipe dan aturan yang bisa diperiksa satu per satu.",
                 "explain": "id dibuat sistem sehingga tidak divalidasi dari input pengguna. tenggat opsional tetapi tetap punya aturan jika diisi. prioritas dibatasi pada tiga nilai agar tampilan filter tidak menemui nilai tak dikenal.",
-                "annotations": [],
+                "annotations": [
+                  {
+                    "line": 1,
+                    "code": "TUGAS",
+                    "note": "Nama record menyatakan satu jenis data yang dikelola."
+                  },
+                  {
+                    "line": 2,
+                    "code": "id         : TEXT, dibuat otomatis, unik",
+                    "note": "id dibuat sistem sehingga tidak divalidasi dari input pengguna."
+                  },
+                  {
+                    "line": 3,
+                    "code": "judul      : TEXT, wajib, 1-120 karakter setelah dipangkas",
+                    "note": "Judul wajib dengan batas panjang setelah dipangkas."
+                  },
+                  {
+                    "line": 4,
+                    "code": "tenggat    : TANGGAL, opsional, tidak boleh sebelum hari ini",
+                    "note": "Tenggat opsional, tetapi tetap punya aturan bila diisi."
+                  },
+                  {
+                    "line": 5,
+                    "code": "prioritas  : PILIHAN(rendah, sedang, tinggi), bawaan sedang",
+                    "note": "Prioritas dibatasi pada daftar nilai agar filter tidak menemui nilai asing."
+                  },
+                  {
+                    "line": 6,
+                    "code": "selesai    : BOOLEAN, bawaan salah",
+                    "note": "Selesai bertipe boolean dengan nilai bawaan salah."
+                  }
+                ],
                 "lab": false
               },
               "callouts": [
@@ -7061,7 +7427,38 @@
                 "code": "LANGKAH Validasi Tugas\n  INPUT judul, tenggat, prioritas\n  judul <- pangkas(judul)\n  IF judul = \"\" THEN\n    OUTPUT \"Judul wajib diisi\"\n    SELESAI\n  END IF\n  IF panjang(judul) > 120 THEN\n    OUTPUT \"Judul maksimal 120 karakter\"\n    SELESAI\n  END IF\n  IF tenggat diisi DAN tenggat < hari ini THEN\n    OUTPUT \"Tenggat tidak boleh sebelum hari ini\"\n    SELESAI\n  END IF\n  IF prioritas BUKAN salah satu dari rendah, sedang, tinggi THEN\n    OUTPUT \"Prioritas tidak dikenal\"\n    SELESAI\n  END IF\n  OUTPUT \"Valid\"",
                 "output": "Validasi Tugas(\"Belajar\", kosong, \"sedang\") -> Valid\nValidasi Tugas(\"   \", kosong, \"sedang\") -> Judul wajib diisi",
                 "explain": "Setiap pemeriksaan berhenti pada kegagalan pertama agar pengguna memperbaiki satu hal pada satu waktu. pangkas(judul) menghapus spasi di awal dan akhir sebelum aturan kosong diperiksa.",
-                "annotations": [],
+                "annotations": [
+                  {
+                    "line": 3,
+                    "code": "judul <- pangkas(judul)",
+                    "note": "Normalisasi dilakukan sebelum aturan kosong diperiksa."
+                  },
+                  {
+                    "line": 4,
+                    "code": "IF judul = \"\" THEN",
+                    "note": "Pemeriksaan pertama menangani kasus paling mendasar."
+                  },
+                  {
+                    "line": 8,
+                    "code": "IF panjang(judul) > 120 THEN",
+                    "note": "Panjang diperiksa setelah judul terbukti tidak kosong."
+                  },
+                  {
+                    "line": 12,
+                    "code": "IF tenggat diisi DAN tenggat < hari ini THEN",
+                    "note": "Aturan tenggat hanya berlaku bila tanggal diisi."
+                  },
+                  {
+                    "line": 16,
+                    "code": "IF prioritas BUKAN salah satu dari rendah, sedang, tinggi THEN",
+                    "note": "Aturan prioritas memeriksa keanggotaan daftar nilai yang sah."
+                  },
+                  {
+                    "line": 20,
+                    "code": "OUTPUT \"Valid\"",
+                    "note": "Output terakhir hanya muncul ketika semua aturan lolos."
+                  }
+                ],
                 "lab": false
               },
               "callouts": [],
@@ -7082,7 +7479,28 @@
                 "code": "ATURAN TANGGAL\n  1. Tugas baru: tenggat tidak boleh sebelum hari ini.\n  2. Tugas selesai: tenggat boleh di masa lalu.\n  3. Tenggat kosong: selalu boleh.\n\nPERTANYAAN TERBUKA\n  Apakah tenggat boleh diubah menjadi masa lalu saat mengedit tugas yang belum selesai?",
                 "output": "Tiga aturan tegas dan satu pertanyaan yang harus diputuskan sebelum implementasi.",
                 "explain": "Aturan dipisahkan berdasarkan konteks pembuatan dan penyelesaian. Pertanyaan terbuka dicatat agar tidak diam-diam diputuskan berbeda oleh dua orang.",
-                "annotations": [],
+                "annotations": [
+                  {
+                    "line": 1,
+                    "code": "ATURAN TANGGAL",
+                    "note": "Judul blok menyatakan aturan yang dibahas."
+                  },
+                  {
+                    "line": 2,
+                    "code": "1. Tugas baru: tenggat tidak boleh sebelum hari ini.",
+                    "note": "Aturan ditulis spesifik agar bisa diuji lulus atau gagal."
+                  },
+                  {
+                    "line": 6,
+                    "code": "PERTANYAAN TERBUKA",
+                    "note": "Pertanyaan terbuka dipisahkan dari aturan yang sudah pasti."
+                  },
+                  {
+                    "line": 7,
+                    "code": "Apakah tenggat boleh diubah menjadi masa lalu saat mengedit tugas yang belum selesai?",
+                    "note": "Pertanyaan dicatat agar tidak diputuskan diam-diam saat implementasi."
+                  }
+                ],
                 "lab": false
               },
               "callouts": [],
@@ -7260,9 +7678,9 @@
             "Setiap pesan error harus menyebut field dan batasannya agar pengguna tahu cara memperbaiki."
           ],
           "legacy": false,
-          "code": "TUGAS\n  id         : TEXT, dibuat otomatis, unik\n  judul      : TEXT, wajib, 1-120 karakter setelah dipangkas\n  tenggat    : TANGGAL, opsional, tidak boleh sebelum hari ini\n  prioritas  : PILIHAN(rendah, sedang, tinggi), bawaan sedang\n  selesai    : BOOLEAN, bawaan salah",
-          "wordCount": 1091,
-          "schema": 3
+          "code": "INPUT judul, tenggat\njudul <- pangkas(judul)\nIF judul = \"\" THEN\n  OUTPUT \"Judul wajib diisi\"\n  SELESAI\nEND IF\nIF tenggat diisi DAN tenggat < hari ini THEN\n  OUTPUT \"Tenggat tidak boleh sebelum hari ini\"\n  SELESAI\nEND IF\nOUTPUT \"Valid\"",
+          "wordCount": 1499,
+          "schema": 3.1
         },
         {
           "id": "m02-l04",
@@ -7305,7 +7723,7 @@
             {
               "token": "kondisi1 DAN kondisi2",
               "meaning": "Hasilnya benar hanya jika kedua kondisi benar.",
-              "readAs": "",
+              "readAs": "Baca sebagai pernyataan gabungan yang benar hanya jika kedua kondisinya benar.",
               "example": "IF judul tidak kosong DAN panjang(judul) <= 120 THEN",
               "output": "Benar hanya untuk judul yang diisi dan tidak melebihi 120 karakter.",
               "pitfall": "DAN bukan pengganti urutan; kondisi yang butuh data lebih banyak bisa error jika diperiksa lebih dulu."
@@ -7313,7 +7731,7 @@
             {
               "token": "kondisi1 ATAU kondisi2",
               "meaning": "Hasilnya benar jika minimal satu kondisi benar.",
-              "readAs": "",
+              "readAs": "Baca sebagai pernyataan gabungan yang benar jika minimal satu kondisinya benar.",
               "example": "IF prioritas = \"tinggi\" ATAU tenggat hari ini THEN",
               "output": "Benar untuk tugas prioritas tinggi meskipun tenggatnya bukan hari ini.",
               "pitfall": "ATAU tidak berarti keduanya harus benar; menulis DAN saat maksudnya ATAU membuat banyak tugas tidak pernah tampil."
@@ -7321,15 +7739,73 @@
             {
               "token": "BUKAN kondisi",
               "meaning": "Membalik nilai kondisi: benar menjadi salah, salah menjadi benar.",
-              "readAs": "",
+              "readAs": "Baca sebagai pembalik: nilai benar menjadi salah, dan sebaliknya.",
               "example": "IF BUKAN selesai THEN OUTPUT \"Belum selesai\"",
               "output": "Pesan tampil hanya untuk tugas yang belum selesai.",
               "pitfall": "BUKAN sering membuat kalimat sulit dibaca; gunakan hanya jika versi tanpa BUKAN lebih membingungkan."
             }
           ],
-          "conventions": [],
-          "next": "",
+          "conventions": [
+            "Ubah setiap aturan menjadi pertanyaan yang hanya punya jawaban benar atau salah.",
+            "Tulis tabel kebenaran sebelum menulis pseudocode saat aturan memakai lebih dari satu syarat.",
+            "Gunakan tanda kurung untuk mengelompokkan ATAU sebelum digabung dengan DAN.",
+            "Periksa kasus gagal lebih dulu dengan guard clause agar jalur utama tetap rata."
+          ],
+          "next": "Berikutnya: perulangan dan iterasi. Anda akan memilih FOR atau WHILE dan memastikan setiap perulangan pasti berhenti.",
           "sections": [
+            {
+              "id": "cara-membaca",
+              "title": "Cara membaca kondisi bertingkat",
+              "body": [
+                "Kondisi bertingkat dibaca dari dalam ke luar. Mulailah dari tanda kurung terdalam, hitung nilainya, lalu naik ke operator berikutnya. Urutan ini sama dengan urutan yang dipakai program, sehingga hasil bacaan Anda harus sama dengan hasil eksekusi.",
+                "Bila aturan terasa rumit, tulis nilainya dalam tabel kebenaran sebelum menulis kode. Tabel memaksa Anda memeriksa setiap kombinasi, termasuk kasus yang jarang, sehingga kesalahan seperti memakai DAN padahal harus ATAU terlihat lebih awal."
+              ],
+              "code": {
+                "language": "text",
+                "code": "tampil <- (prioritas = \"tinggi\" ATAU tenggat hari ini) DAN BUKAN selesai\n\ntabel:\nprioritas | tenggat | selesai | tampil?\ntinggi    | benar   | salah   | benar\nrendah    | salah   | salah   | salah\nrendah    | benar   | benar   | salah",
+                "output": "Hanya kombinasi yang lolos ketiga syarat yang menghasilkan tampil = benar.",
+                "explain": "Tanda kurung mengelompokkan ATAU lebih dulu, lalu digabung dengan DAN dan BUKAN. Baris-baris tabel memperlihatkan bahwa selesai = benar selalu menutup tampilan.",
+                "annotations": [
+                  {
+                    "line": 1,
+                    "code": "tampil <- (prioritas = \"tinggi\" ATAU tenggat hari ini) DAN BUKAN selesai",
+                    "note": "Tanda kurung menentukan ATAU dihitung lebih dulu daripada DAN."
+                  },
+                  {
+                    "line": 4,
+                    "code": "prioritas | tenggat | selesai | tampil?",
+                    "note": "Judul kolom menetapkan peran setiap nilai dalam tabel."
+                  },
+                  {
+                    "line": 5,
+                    "code": "tinggi    | benar   | salah   | benar",
+                    "note": "Baris ini lolos karena prioritas tinggi dan tugas belum selesai."
+                  },
+                  {
+                    "line": 6,
+                    "code": "rendah    | salah   | salah   | salah",
+                    "note": "Baris ini gagal karena kedua syarat utama salah."
+                  },
+                  {
+                    "line": 7,
+                    "code": "rendah    | benar   | benar   | salah",
+                    "note": "Baris ini gagal karena BUKAN selesai bernilai salah."
+                  }
+                ],
+                "lab": false
+              },
+              "callouts": [
+                {
+                  "tone": "warn",
+                  "title": "Urutan operator",
+                  "body": "DAN dan ATAU tidak selalu dibaca dari kiri ke kanan. Bila ragu, tambahkan tanda kurung agar maksud Anda tidak bergantung pada aturan prioritas."
+                }
+              ],
+              "checkpoint": {
+                "prompt": "Tulis ulang aturan “tampil jika belum selesai dan (prioritas tinggi atau tenggat hari ini)” dengan tanda kurung yang jelas.",
+                "success": "Kondisi memakai tanda kurung untuk mengelompokkan ATAU sebelum digabung dengan DAN, serta memakai BUKAN selesai atau pemeriksaan setara."
+              }
+            },
             {
               "id": "kondisi-boolean",
               "title": "Kondisi boolean dan tabel kebenaran",
@@ -7342,7 +7818,23 @@
                 "code": "prioritas tinggi | tenggat hari ini | tampil?\n------------------------------------------------\nbenar            | benar            | benar\nbenar            | salah            | benar\nsalah            | benar            | benar\nsalah            | salah             | salah",
                 "output": "Tiga kombinasi pertama tampil; hanya kombinasi terakhir yang tidak tampil.",
                 "explain": "Aturan ATAU bernilai benar jika salah satu kolom bernilai benar. Tabel ini menjadi dasar pseudocode IF prioritas = \"tinggi\" ATAU tenggat hari ini THEN OUTPUT tugas.",
-                "annotations": [],
+                "annotations": [
+                  {
+                    "line": 1,
+                    "code": "prioritas tinggi | tenggat hari ini | tampil?",
+                    "note": "Header menyebut dua kondisi yang digabung."
+                  },
+                  {
+                    "line": 3,
+                    "code": "benar            | benar            | benar",
+                    "note": "Tiga kombinasi pertama menghasilkan tampil benar."
+                  },
+                  {
+                    "line": 5,
+                    "code": "salah            | benar            | benar",
+                    "note": "Satu kombinasi saja yang gagal, tepatnya saat keduanya salah."
+                  }
+                ],
                 "lab": false
               },
               "callouts": [],
@@ -7360,7 +7852,33 @@
                 "code": "LANGKAH Tandai Selesai\n  INPUT tugas\n  IF tugas tidak ditemukan THEN\n    OUTPUT \"Tugas tidak ada\"\n    SELESAI\n  END IF\n  IF tugas.selesai = benar THEN\n    OUTPUT \"Tugas sudah selesai\"\n    SELESAI\n  END IF\n  tugas.selesai <- benar\n  OUTPUT \"Tugas ditandai selesai\"",
                 "output": "Tandai Selesai(id tidak ada) -> Tugas tidak ada\nTandai Selesai(id selesai)   -> Tugas sudah selesai\nTandai Selesai(id aktif)     -> Tugas ditandai selesai",
                 "explain": "Dua pemeriksaan awal menghentikan proses lebih cepat. Aksi utama hanya ditulis sekali di bagian bawah, sehingga tidak berulang di setiap cabang.",
-                "annotations": [],
+                "annotations": [
+                  {
+                    "line": 3,
+                    "code": "IF tugas tidak ditemukan THEN",
+                    "note": "Guard clause pertama memeriksa keberadaan data."
+                  },
+                  {
+                    "line": 4,
+                    "code": "OUTPUT \"Tugas tidak ada\"",
+                    "note": "Kasus gagal langsung berhenti dengan pesan yang jelas."
+                  },
+                  {
+                    "line": 7,
+                    "code": "IF tugas.selesai = benar THEN",
+                    "note": "Guard clause kedua mencegah aksi dijalankan dua kali."
+                  },
+                  {
+                    "line": 11,
+                    "code": "tugas.selesai <- benar",
+                    "note": "Aksi utama hanya ditulis sekali di bagian bawah."
+                  },
+                  {
+                    "line": 12,
+                    "code": "OUTPUT \"Tugas ditandai selesai\"",
+                    "note": "Konfirmasi ditampilkan setelah aksi berhasil dijalankan."
+                  }
+                ],
                 "lab": false
               },
               "callouts": [],
@@ -7381,7 +7899,28 @@
                 "code": "FUNGSI Cocok(task, filter)\n  IF filter = \"semua\" THEN RETURN benar\n  IF filter = \"aktif\" THEN RETURN BUKAN task.selesai\n  IF filter = \"selesai\" THEN RETURN task.selesai\n  IF filter = \"penting\" THEN RETURN task.prioritas = \"tinggi\"\n  RETURN salah\nEND FUNGSI",
                 "output": "Cocok(tugas aktif, \"aktif\") -> benar\nCocok(tugas selesai, \"aktif\") -> salah\nCocok(tugas aktif, \"penting\") -> salah",
                 "explain": "Setiap filter adalah satu baris yang bisa diuji. Filter yang tidak dikenal mengembalikan salah, bukan menampilkan semua data secara tidak sengaja.",
-                "annotations": [],
+                "annotations": [
+                  {
+                    "line": 2,
+                    "code": "IF filter = \"semua\" THEN RETURN benar",
+                    "note": "Filter semua mengembalikan benar untuk setiap tugas."
+                  },
+                  {
+                    "line": 3,
+                    "code": "IF filter = \"aktif\" THEN RETURN BUKAN task.selesai",
+                    "note": "BUKAN membalik status selesai untuk filter aktif."
+                  },
+                  {
+                    "line": 5,
+                    "code": "IF filter = \"penting\" THEN RETURN task.prioritas = \"tinggi\"",
+                    "note": "Filter penting memeriksa prioritas tinggi."
+                  },
+                  {
+                    "line": 6,
+                    "code": "RETURN salah",
+                    "note": "Nilai bawaan salah mencegah filter asing menampilkan semua data."
+                  }
+                ],
                 "lab": false
               },
               "callouts": [],
@@ -7560,9 +8099,9 @@
             "Guard clause menghentikan proses lebih awal dan menjaga jalur utama tetap rata."
           ],
           "legacy": false,
-          "code": "prioritas tinggi | tenggat hari ini | tampil?\n------------------------------------------------\nbenar            | benar            | benar\nbenar            | salah            | benar\nsalah            | benar            | benar\nsalah            | salah             | salah",
-          "wordCount": 1027,
-          "schema": 3
+          "code": "tampil <- (prioritas = \"tinggi\" ATAU tenggat hari ini) DAN BUKAN selesai\n\ntabel:\nprioritas | tenggat | selesai | tampil?\ntinggi    | benar   | salah   | benar\nrendah    | salah   | salah   | salah\nrendah    | benar   | benar   | salah",
+          "wordCount": 1407,
+          "schema": 3.1
         },
         {
           "id": "m02-l05",
@@ -7605,7 +8144,7 @@
             {
               "token": "FOR i FROM 1 TO n DO ... END FOR",
               "meaning": "Menjalankan blok untuk setiap nilai i dari 1 sampai n.",
-              "readAs": "",
+              "readAs": "Baca sebagai perintah mengulang blok untuk setiap nilai i dari batas bawah sampai batas atas.",
               "example": "FOR i FROM 1 TO 3 DO\n  OUTPUT i\nEND FOR",
               "output": "1\n2\n3",
               "pitfall": "Jika n bernilai 0, blok tidak dijalankan sama sekali; jangan menganggap minimal satu putaran selalu terjadi."
@@ -7613,15 +8152,78 @@
             {
               "token": "WHILE kondisi DO ... END WHILE",
               "meaning": "Menjalankan blok selama kondisi masih benar.",
-              "readAs": "",
+              "readAs": "Baca sebagai perintah mengulang blok selama kondisinya masih bernilai benar.",
               "example": "i <- 1\nWHILE i <= 3 DO\n  OUTPUT i\n  i <- i + 1\nEND WHILE",
               "output": "1\n2\n3",
               "pitfall": "Lupa i <- i + 1 membuat kondisi selalu benar dan program tidak pernah berhenti."
             }
           ],
-          "conventions": [],
-          "next": "",
+          "conventions": [
+            "Tentukan kondisi berhenti sebelum menulis isi perulangan.",
+            "Pakai FOR ketika jumlah putaran sudah diketahui dan WHILE ketika berhenti bergantung pada kondisi.",
+            "Ubah satu variabel penentu di dalam perulangan agar kondisinya akhirnya menjadi salah.",
+            "Simpan satu tabel penelusuran berisi nilai variabel pada setiap putaran."
+          ],
+          "next": "Berikutnya: struktur data dan algoritma. Anda akan memilih list atau peta dan menulis algoritma tambah, cari, serta hapus yang aman.",
           "sections": [
+            {
+              "id": "cara-membaca",
+              "title": "Cara membaca perulangan lewat tabel penelusuran",
+              "body": [
+                "Perulangan tidak bisa dibaca seperti urutan biasa karena baris yang sama dijalankan berkali-kali. Ubah bacaan menjadi tabel: satu baris untuk setiap putaran, memuat nilai counter dan variabel penentu. Tabel ini menunjukkan dengan tepat kapan perulangan berhenti.",
+                "Perhatikan kesalahan batas satu langkah: apakah putaran terakhir memproses data terakhir atau justru melewatinya. Kesalahan seperti ini tidak terlihat dari kode, tetapi langsung tampak pada tabel."
+              ],
+              "code": {
+                "language": "text",
+                "code": "i <- 1\njumlah <- 0\nWHILE i <= 3 DO\n  jumlah <- jumlah + i\n  i <- i + 1\nEND WHILE\nOUTPUT jumlah\n\nputaran | i | jumlah | 3 <= 3?\n1       | 1 | 1      | benar\n2       | 2 | 3      | benar\n3       | 3 | 6      | benar\nberhenti| 4 | 6      | salah",
+                "output": "6",
+                "explain": "Baris WHILE diulang selama i <= 3. Setelah putaran ketiga, i menjadi 4 sehingga kondisinya salah dan perulangan berhenti dengan jumlah 6.",
+                "annotations": [
+                  {
+                    "line": 2,
+                    "code": "jumlah <- 0",
+                    "note": "Counter dimulai dari nol sebelum perulangan dimulai."
+                  },
+                  {
+                    "line": 3,
+                    "code": "WHILE i <= 3 DO",
+                    "note": "Kondisi berhenti ditulis pada baris WHILE."
+                  },
+                  {
+                    "line": 4,
+                    "code": "jumlah <- jumlah + i",
+                    "note": "Nilai variabel penentu berubah setiap putaran."
+                  },
+                  {
+                    "line": 5,
+                    "code": "i <- i + 1",
+                    "note": "Perubahan inilah yang membuat kondisi akhirnya menjadi salah."
+                  },
+                  {
+                    "line": 12,
+                    "code": "3       | 3 | 6      | benar",
+                    "note": "Baris ini mencatat hasil setelah putaran terakhir yang berjalan."
+                  },
+                  {
+                    "line": 13,
+                    "code": "berhenti| 4 | 6      | salah",
+                    "note": "Tabel menandai putaran saat kondisi berhenti sudah tidak benar."
+                  }
+                ],
+                "lab": false
+              },
+              "callouts": [
+                {
+                  "tone": "good",
+                  "title": "Tabel menemukan bug",
+                  "body": "Jika tabel penelusuran berakhir berbeda dari harapan, kesalahannya ada di logika, bukan di komputer. Perbaiki logikanya sebelum menulis kode."
+                }
+              ],
+              "checkpoint": {
+                "prompt": "Buat tabel penelusuran untuk perulangan yang menjumlahkan i dari 1 sampai 4.",
+                "success": "Tabel berisi empat baris penjumlahan, nilai i naik setiap putaran, dan perulangan berhenti setelah i melewati 4."
+              }
+            },
             {
               "id": "for-untuk-daftar",
               "title": "FOR saat jumlah putaran sudah diketahui",
@@ -7634,7 +8236,33 @@
                 "code": "daftar <- [Belajar, Olahraga, Membaca]\njumlahSelesai <- 0\nFOR i FROM 1 TO panjang(daftar) DO\n  IF daftar[i].selesai = benar THEN\n    jumlahSelesai <- jumlahSelesai + 1\n  END IF\nEND FOR\nOUTPUT jumlahSelesai",
                 "output": "2 (jika dua dari tiga tugas selesai)",
                 "explain": "FOR berjalan tiga kali. Setiap putaran memeriksa satu tugas; jika selesai, counter bertambah satu. Counter harus dimulai dari 0 sebelum perulangan.",
-                "annotations": [],
+                "annotations": [
+                  {
+                    "line": 2,
+                    "code": "jumlahSelesai <- 0",
+                    "note": "Counter dimulai dari nol sebelum perulangan dijalankan."
+                  },
+                  {
+                    "line": 3,
+                    "code": "FOR i FROM 1 TO panjang(daftar) DO",
+                    "note": "FOR mengurus kenaikan indeks secara otomatis."
+                  },
+                  {
+                    "line": 4,
+                    "code": "IF daftar[i].selesai = benar THEN",
+                    "note": "Setiap putaran memeriksa satu tugas saja."
+                  },
+                  {
+                    "line": 5,
+                    "code": "jumlahSelesai <- jumlahSelesai + 1",
+                    "note": "Counter hanya bertambah ketika kondisi terpenuhi."
+                  },
+                  {
+                    "line": 8,
+                    "code": "OUTPUT jumlahSelesai",
+                    "note": "Hasil ditampilkan sekali setelah perulangan selesai."
+                  }
+                ],
                 "lab": false
               },
               "callouts": [
@@ -7658,7 +8286,33 @@
                 "code": "INPUT judul\njudulValid <- salah\nWHILE judulValid = salah DO\n  judul <- pangkas(judul)\n  IF judul tidak kosong THEN\n    judulValid <- benar\n  ELSE\n    OUTPUT \"Judul wajib diisi\"\n    INPUT judul\n  END IF\nEND WHILE",
                 "output": "Pengguna diminta mengulang sampai mengisi judul yang tidak kosong.",
                 "explain": "Kondisi berhenti adalah judulValid = benar. Baris INPUT judul di dalam ELSE memungkinkan pengguna memperbaiki input; tanpa itu, kondisi tidak pernah berubah.",
-                "annotations": [],
+                "annotations": [
+                  {
+                    "line": 2,
+                    "code": "judulValid <- salah",
+                    "note": "Variabel penentu dimulai dari nilai salah."
+                  },
+                  {
+                    "line": 3,
+                    "code": "WHILE judulValid = salah DO",
+                    "note": "Perulangan berjalan selama input belum valid."
+                  },
+                  {
+                    "line": 6,
+                    "code": "judulValid <- benar",
+                    "note": "Nilai penentu berubah begitu input diterima."
+                  },
+                  {
+                    "line": 9,
+                    "code": "INPUT judul",
+                    "note": "Input dibaca ulang agar pengguna bisa memperbaiki kesalahan."
+                  },
+                  {
+                    "line": 11,
+                    "code": "END WHILE",
+                    "note": "Perulangan berhenti ketika kondisi berhenti terpenuhi."
+                  }
+                ],
                 "lab": false
               },
               "callouts": [],
@@ -7679,7 +8333,28 @@
                 "code": "i <- 1\njumlah <- 0\nWHILE i <= 3 DO\n  jumlah <- jumlah + i\n  i <- i + 1\nEND WHILE\nOUTPUT jumlah",
                 "output": "6",
                 "explain": "Putaran 1: jumlah 1, i 2. Putaran 2: jumlah 3, i 3. Putaran 3: jumlah 6, i 4. Kondisi 4 <= 3 salah, perulangan berhenti, output 6.",
-                "annotations": [],
+                "annotations": [
+                  {
+                    "line": 3,
+                    "code": "WHILE i <= 3 DO",
+                    "note": "Kondisi berhenti dapat dibaca langsung dari baris WHILE."
+                  },
+                  {
+                    "line": 4,
+                    "code": "jumlah <- jumlah + i",
+                    "note": "Nilai jumlah berubah setiap putaran."
+                  },
+                  {
+                    "line": 5,
+                    "code": "i <- i + 1",
+                    "note": "Counter naik setiap putaran menuju kondisi berhenti."
+                  },
+                  {
+                    "line": 7,
+                    "code": "OUTPUT jumlah",
+                    "note": "Output hanya ada setelah perulangan berhenti."
+                  }
+                ],
                 "lab": false
               },
               "callouts": [],
@@ -7857,9 +8532,9 @@
             "Tabel penelusuran memperlihatkan nilai variabel per putaran dan menemukan kesalahan batas."
           ],
           "legacy": false,
-          "code": "daftar <- [Belajar, Olahraga, Membaca]\njumlahSelesai <- 0\nFOR i FROM 1 TO panjang(daftar) DO\n  IF daftar[i].selesai = benar THEN\n    jumlahSelesai <- jumlahSelesai + 1\n  END IF\nEND FOR\nOUTPUT jumlahSelesai",
-          "wordCount": 992,
-          "schema": 3
+          "code": "i <- 1\njumlah <- 0\nWHILE i <= 3 DO\n  jumlah <- jumlah + i\n  i <- i + 1\nEND WHILE\nOUTPUT jumlah\n\nputaran | i | jumlah | 3 <= 3?\n1       | 1 | 1      | benar\n2       | 2 | 3      | benar\n3       | 3 | 6      | benar\nberhenti| 4 | 6      | salah",
+          "wordCount": 1355,
+          "schema": 3.1
         },
         {
           "id": "m02-l06",
@@ -7902,7 +8577,7 @@
             {
               "token": "daftar[i].field",
               "meaning": "Mengambil field tertentu dari record pada posisi ke-i.",
-              "readAs": "",
+              "readAs": "Baca sebagai pengambilan field tertentu dari record pada posisi ke-i di dalam daftar.",
               "example": "OUTPUT daftar[1].judul",
               "output": "Judul tugas pertama (jika indeks dimulai dari 1).",
               "pitfall": "Indeks di luar jumlah data menghasilkan error; periksa panjang daftar sebelum mengakses."
@@ -7910,15 +8585,68 @@
             {
               "token": "peta[kunci]",
               "meaning": "Mengambil record langsung berdasarkan kunci unik tanpa memeriksa satu per satu.",
-              "readAs": "",
+              "readAs": "Baca sebagai pengambilan record langsung memakai kunci unik, tanpa memeriksa elemen lain.",
               "example": "OUTPUT peta[\"t-01\"].judul",
               "output": "Judul tugas dengan id t-01.",
               "pitfall": "Kunci yang tidak ada menghasilkan nilai kosong; periksa keberadaan kunci sebelum memakai hasilnya."
             }
           ],
-          "conventions": [],
-          "next": "",
+          "conventions": [
+            "Simpan data satu kali di satu tempat, lalu hitung ulang ringkasan saat dibutuhkan.",
+            "Pakai list saat urutan penting dan peta saat pencarian berdasarkan kunci unik.",
+            "Catat indeks yang cocok lebih dulu, baru ubah daftar setelah perulangan selesai.",
+            "Kembalikan nilai kosong yang jelas ketika data tidak ditemukan, bukan membiarkan proses berlanjut."
+          ],
+          "next": "Berikutnya: kompleksitas dan edge case. Anda akan memperkirakan biaya langkah algoritma dan menyusun daftar kasus batas sebelum menulis kode.",
           "sections": [
+            {
+              "id": "cara-membaca",
+              "title": "Cara membaca algoritma tambah, cari, dan hapus",
+              "body": [
+                "Algoritma struktur data dibaca dengan melacak perubahan pada data, bukan hanya hasil akhirnya. Ambil satu daftar contoh, lalu jalankan operasi baris demi baris dan catat isi daftar setelah setiap langkah. Perubahan itulah yang paling mudah salah, terutama saat menghapus.",
+                "Bedakan pencarian dari perubahan. Pencarian hanya membaca, sedangkan tambah dan hapus mengubah daftar. Dengan memisahkan keduanya, Anda dapat menguji pencarian tanpa risiko merusak data."
+              ],
+              "code": {
+                "language": "text",
+                "code": "daftar sebelum: [ t-01 Belajar, t-02 Olahraga ]\n\ncari t-02      -> ditemukan di indeks 2\nhapus t-02     -> catat indeks 2, keluar dari perulangan\ndaftar sesudah: [ t-01 Belajar ]",
+                "output": "Daftar tersisa satu record setelah penghapusan.",
+                "explain": "Indeks dicatat lebih dulu, lalu penghapusan dilakukan setelah perulangan agar posisi record lain tidak bergeser saat masih diperiksa.",
+                "annotations": [
+                  {
+                    "line": 1,
+                    "code": "daftar sebelum: [ t-01 Belajar, t-02 Olahraga ]",
+                    "note": "Keadaan daftar dicatat sebelum operasi dimulai."
+                  },
+                  {
+                    "line": 3,
+                    "code": "cari t-02      -> ditemukan di indeks 2",
+                    "note": "Pencarian menemukan posisi record yang dimaksud."
+                  },
+                  {
+                    "line": 4,
+                    "code": "hapus t-02     -> catat indeks 2, keluar dari perulangan",
+                    "note": "Indeks disimpan sebelum daftar diubah."
+                  },
+                  {
+                    "line": 5,
+                    "code": "daftar sesudah: [ t-01 Belajar ]",
+                    "note": "Keadaan akhir dibandingkan dengan keadaan awal untuk memastikan hanya satu record yang hilang."
+                  }
+                ],
+                "lab": false
+              },
+              "callouts": [
+                {
+                  "tone": "good",
+                  "title": "Pisahkan baca dan tulis",
+                  "body": "Operasi yang hanya membaca data tidak boleh mengubah daftar. Pisahkan pencarian dari perubahan agar kesalahan lebih mudah dilacak."
+                }
+              ],
+              "checkpoint": {
+                "prompt": "Jelaskan dalam dua kalimat bagaimana Anda menghapus satu tugas tanpa menggeser posisi tugas lain.",
+                "success": "Jawaban menyebut mencatat indeks yang cocok lebih dulu, lalu menghapus satu kali setelah perulangan selesai."
+              }
+            },
             {
               "id": "list-dan-record",
               "title": "List berisi record",
@@ -7931,7 +8659,28 @@
                 "code": "daftar <- [\n  { id: \"t-01\", judul: \"Belajar\",  selesai: salah },\n  { id: \"t-02\", judul: \"Olahraga\", selesai: benar }\n]\nOUTPUT daftar[1].judul\nOUTPUT panjang(daftar)",
                 "output": "Belajar\n2",
                 "explain": "daftar[1] mengambil record pertama, lalu .judul membaca field judul. panjang(daftar) menghitung jumlah record tanpa menghitung field di dalamnya.",
-                "annotations": [],
+                "annotations": [
+                  {
+                    "line": 1,
+                    "code": "daftar <- [",
+                    "note": "Tanda kurung siku menandai sebuah list berurutan."
+                  },
+                  {
+                    "line": 2,
+                    "code": "{ id: \"t-01\", judul: \"Belajar\",  selesai: salah },",
+                    "note": "Setiap baris adalah satu record dengan field bernama."
+                  },
+                  {
+                    "line": 5,
+                    "code": "OUTPUT daftar[1].judul",
+                    "note": "Indeks diakses lebih dulu, baru field-nya diambil."
+                  },
+                  {
+                    "line": 6,
+                    "code": "OUTPUT panjang(daftar)",
+                    "note": "panjang menghitung jumlah record, bukan fieldnya."
+                  }
+                ],
                 "lab": false
               },
               "callouts": [
@@ -7955,7 +8704,33 @@
                 "code": "FUNGSI CariLinear(daftar, id)\n  FOR i FROM 1 TO panjang(daftar) DO\n    IF daftar[i].id = id THEN RETURN daftar[i]\n  END FOR\n  RETURN kosong\nEND FUNGSI\n\nFUNGSI CariPeta(peta, id)\n  IF id ada di peta THEN RETURN peta[id]\n  RETURN kosong\nEND FUNGSI",
                 "output": "CariLinear memeriksa hingga n record; CariPeta memeriksa satu kunci.",
                 "explain": "Kedua fungsi mengembalikan kosong jika tidak ditemukan. Perbedaannya ada pada jumlah pemeriksaan, bukan pada hasil.",
-                "annotations": [],
+                "annotations": [
+                  {
+                    "line": 1,
+                    "code": "FUNGSI CariLinear(daftar, id)",
+                    "note": "Fungsi linear menerima daftar dan id yang dicari."
+                  },
+                  {
+                    "line": 2,
+                    "code": "FOR i FROM 1 TO panjang(daftar) DO",
+                    "note": "Perulangan memeriksa setiap record satu per satu."
+                  },
+                  {
+                    "line": 3,
+                    "code": "IF daftar[i].id = id THEN RETURN daftar[i]",
+                    "note": "Perulangan berhenti lebih awal begitu id cocok."
+                  },
+                  {
+                    "line": 5,
+                    "code": "RETURN kosong",
+                    "note": "Nilai kosong dikembalikan bila tidak ada yang cocok."
+                  },
+                  {
+                    "line": 9,
+                    "code": "IF id ada di peta THEN RETURN peta[id]",
+                    "note": "Pencarian peta langsung mengambil record lewat kunci."
+                  }
+                ],
                 "lab": false
               },
               "callouts": [],
@@ -7976,7 +8751,33 @@
                 "code": "FUNGSI Hapus(daftar, id)\n  indeks <- kosong\n  FOR i FROM 1 TO panjang(daftar) DO\n    IF daftar[i].id = id DAN indeks = kosong THEN\n      indeks <- i\n    END IF\n  END FOR\n  IF indeks = kosong THEN\n    OUTPUT \"Tugas tidak ditemukan\"\n    RETURN daftar\n  END IF\n  HAPUS daftar[indeks]\n  OUTPUT \"Tugas dihapus\"\n  RETURN daftar\nEND FUNGSI",
                 "output": "Hapus(daftar, \"t-02\") -> Tugas dihapus, daftar tersisa satu record.",
                 "explain": "Pencarian berhenti mencatat indeks pertama yang cocok. Penghapusan dilakukan setelah perulangan agar posisi tidak bergeser saat masih diperiksa.",
-                "annotations": [],
+                "annotations": [
+                  {
+                    "line": 2,
+                    "code": "indeks <- kosong",
+                    "note": "Indeks penanda dimulai kosong sebelum pencarian."
+                  },
+                  {
+                    "line": 4,
+                    "code": "IF daftar[i].id = id DAN indeks = kosong THEN",
+                    "note": "Pencarian mencatat record pertama yang cocok, bukan semuanya."
+                  },
+                  {
+                    "line": 5,
+                    "code": "indeks <- i",
+                    "note": "Indeks yang cocok disimpan untuk dipakai setelah perulangan."
+                  },
+                  {
+                    "line": 8,
+                    "code": "IF indeks = kosong THEN",
+                    "note": "Penghapusan dibatalkan bila tidak ada yang cocok."
+                  },
+                  {
+                    "line": 12,
+                    "code": "HAPUS daftar[indeks]",
+                    "note": "Daftar baru diubah setelah perulangan selesai."
+                  }
+                ],
                 "lab": false
               },
               "callouts": [],
@@ -8154,9 +8955,9 @@
             "Hapus satu record dengan mencari indeks lebih dulu dan menghapus setelah perulangan selesai."
           ],
           "legacy": false,
-          "code": "daftar <- [\n  { id: \"t-01\", judul: \"Belajar\",  selesai: salah },\n  { id: \"t-02\", judul: \"Olahraga\", selesai: benar }\n]\nOUTPUT daftar[1].judul\nOUTPUT panjang(daftar)",
-          "wordCount": 975,
-          "schema": 3
+          "code": "daftar sebelum: [ t-01 Belajar, t-02 Olahraga ]\n\ncari t-02      -> ditemukan di indeks 2\nhapus t-02     -> catat indeks 2, keluar dari perulangan\ndaftar sesudah: [ t-01 Belajar ]",
+          "wordCount": 1338,
+          "schema": 3.1
         },
         {
           "id": "m02-l07",
@@ -8199,7 +9000,7 @@
             {
               "token": "O(1)",
               "meaning": "Operasi dengan jumlah langkah tetap, tidak bergantung pada jumlah data.",
-              "readAs": "",
+              "readAs": "Baca sebagai biaya tetap: jumlah langkahnya sama untuk data sedikit maupun banyak.",
               "example": "Ambil tugas dari peta berdasarkan id unik.",
               "output": "Satu pemeriksaan untuk 10 tugas maupun 10.000 tugas.",
               "pitfall": "O(1) tidak berarti cepat secara mutlak; yang tetap adalah jumlah langkahnya."
@@ -8207,7 +9008,7 @@
             {
               "token": "O(n)",
               "meaning": "Operasi yang memeriksa seluruh data satu per satu.",
-              "readAs": "",
+              "readAs": "Baca sebagai biaya linear: jumlah langkahnya bertambah sebanding dengan jumlah data n.",
               "example": "FOR i FROM 1 TO panjang(daftar) DO periksa daftar[i]",
               "output": "10 tugas berarti 10 pemeriksaan; 10.000 tugas berarti 10.000 pemeriksaan.",
               "pitfall": "Perulangan bersarang di dalam perulangan O(n) menghasilkan O(n²), bukan O(n)."
@@ -8215,15 +9016,68 @@
             {
               "token": "O(n²)",
               "meaning": "Operasi dengan perulangan di dalam perulangan; langkah bertambah kuadratik.",
-              "readAs": "",
+              "readAs": "Baca sebagai biaya kuadratik: jumlah langkahnya tumbuh secepat kuadrat jumlah data.",
               "example": "FOR setiap tugas DO FOR setiap tugas lain DO bandingkan",
               "output": "10 tugas berarti sekitar 100 perbandingan; 100 tugas berarti 10.000.",
               "pitfall": "Membandingkan semua pasangan untuk mencari duplikat akan melambat drastis pada data besar."
             }
           ],
-          "conventions": [],
-          "next": "",
+          "conventions": [
+            "Bandingkan algoritma lewat pertumbuhan jumlah langkah, bukan waktu eksekusi di satu perangkat.",
+            "Fokus pada operasi yang paling sering dijalankan, misalnya pemeriksaan atau perbandingan.",
+            "Perhatikan perulangan bersarang karena satu perulangan di dalam perulangan lain langsung menaikkan biaya.",
+            "Tulis daftar edge case beserta perilaku yang diharapkan sebelum menulis kode."
+          ],
+          "next": "Berikutnya: variabel, tipe data, dan operator JavaScript. Anda akan menerjemahkan pseudocode serta aturan yang sudah disusun menjadi kode yang benar-benar berjalan.",
           "sections": [
+            {
+              "id": "cara-membaca",
+              "title": "Cara membaca biaya algoritma",
+              "body": [
+                "Biaya algoritma dibaca dari pola perulangannya, bukan dari jumlah barisnya. Cari perulangan yang bergantung pada jumlah data n, lalu periksa apakah ada perulangan lain di dalamnya. Satu perulangan berarti linear; perulangan di dalam perulangan berarti kuadratik.",
+                "Saat membaca edge case, ubah setiap baris menjadi satu kasus uji dengan kondisi awal dan hasil yang diharapkan. Daftar ini nantinya langsung menjadi test case, sehingga perilaku untuk kasus batas tidak perlu ditebak."
+              ],
+              "code": {
+                "language": "text",
+                "code": "biaya \"hitung selesai\"              : 1 perulangan            -> O(n)\nbiaya \"cari duplikat (pasangan)\"    : 2 perulangan bersarang   -> O(n^2)\nbiaya \"cari duplikat (himpunan)\"    : 1 perulangan            -> O(n)\nbiaya \"ambil tugas dari peta\"       : tanpa perulangan         -> O(1)",
+                "output": "Dua cara mencari duplikat memiliki pola biaya berbeda meski hasilnya sama.",
+                "explain": "Setiap baris memasangkan satu operasi dengan pola perulangannya. Perulangan bersarang menaikkan biaya ke kuadratik, sedangkan akses peta tanpa perulangan tetap konstan.",
+                "annotations": [
+                  {
+                    "line": 1,
+                    "code": "biaya \"hitung selesai\"              : 1 perulangan            -> O(n)",
+                    "note": "Satu perulangan yang bergantung pada n menghasilkan pola linear."
+                  },
+                  {
+                    "line": 2,
+                    "code": "biaya \"cari duplikat (pasangan)\"    : 2 perulangan bersarang   -> O(n^2)",
+                    "note": "Perulangan di dalam perulangan mengubah pola menjadi kuadratik."
+                  },
+                  {
+                    "line": 3,
+                    "code": "biaya \"cari duplikat (himpunan)\"    : 1 perulangan            -> O(n)",
+                    "note": "Himpunan menghindari perulangan kedua sehingga tetap linear."
+                  },
+                  {
+                    "line": 4,
+                    "code": "biaya \"ambil tugas dari peta\"       : tanpa perulangan         -> O(1)",
+                    "note": "Akses memakai kunci tidak memakai perulangan sehingga konstan."
+                  }
+                ],
+                "lab": false
+              },
+              "callouts": [
+                {
+                  "tone": "warn",
+                  "title": "Ukuran data nyata",
+                  "body": "Algoritma kuadratik bisa tetap cukup untuk 50 data. Yang penting adalah memperkirakan apa yang terjadi ketika data tumbuh sepuluh kali lebih banyak."
+                }
+              ],
+              "checkpoint": {
+                "prompt": "Sebuah algoritma memakai tiga perulangan bersarang yang masing-masing berjalan n kali. Perkirakan pola biayanya.",
+                "success": "Jawaban menyebut biaya tumbuh sekitar n pangkat tiga, jauh lebih cepat daripada linear, sehingga berbahaya untuk data besar."
+              }
+            },
             {
               "id": "hitung-langkah",
               "title": "Menghitung langkah, bukan milidetik",
@@ -8236,7 +9090,33 @@
                 "code": "ALGORITMA A\n  OUTPUT panjang(daftar)\n  -- 1 langkah, O(1)\n\nALGORITMA B\n  jumlah <- 0\n  FOR i FROM 1 TO panjang(daftar) DO\n    jumlah <- jumlah + 1\n  END FOR\n  -- n langkah, O(n)",
                 "output": "A selalu satu langkah; B bertambah satu langkah untuk setiap tugas.",
                 "explain": "A membaca satu nilai yang sudah tersedia. B memeriksa setiap elemen, sehingga jumlah langkahnya sebanding dengan n.",
-                "annotations": [],
+                "annotations": [
+                  {
+                    "line": 1,
+                    "code": "ALGORITMA A",
+                    "note": "Algoritma pertama dipakai sebagai pembanding pola tetap."
+                  },
+                  {
+                    "line": 3,
+                    "code": "-- 1 langkah, O(1)",
+                    "note": "Komentar menandai bahwa jumlah langkahnya konstan."
+                  },
+                  {
+                    "line": 5,
+                    "code": "ALGORITMA B",
+                    "note": "Algoritma kedua dijelaskan setelah pembandingnya."
+                  },
+                  {
+                    "line": 7,
+                    "code": "FOR i FROM 1 TO panjang(daftar) DO",
+                    "note": "Perulangan memeriksa setiap elemen sehingga bergantung pada n."
+                  },
+                  {
+                    "line": 10,
+                    "code": "-- n langkah, O(n)",
+                    "note": "Komentar mencatat pola biaya linear."
+                  }
+                ],
                 "lab": false
               },
               "callouts": [
@@ -8260,7 +9140,33 @@
                 "code": "CARA 1: bandingkan semua pasangan\n  FOR i FROM 1 TO n DO\n    FOR j FROM i + 1 TO n DO\n      IF judul[i] = judul[j] THEN OUTPUT \"Duplikat\"\n  -- sekitar n x n pemeriksaan\n\nCARA 2: catat yang sudah terlihat\n  terlihat <- himpunan kosong\n  FOR i FROM 1 TO n DO\n    IF judul[i] ada di terlihat THEN OUTPUT \"Duplikat\"\n    TAMBAH judul[i] ke terlihat\n  -- n pemeriksaan",
                 "output": "Kedua cara menemukan duplikat, tetapi cara kedua memeriksa data jauh lebih sedikit.",
                 "explain": "Cara pertama membandingkan setiap tugas dengan semua tugas lain. Cara kedua menyimpan judul yang sudah dilihat sehingga setiap tugas cukup diperiksa sekali.",
-                "annotations": [],
+                "annotations": [
+                  {
+                    "line": 1,
+                    "code": "CARA 1: bandingkan semua pasangan",
+                    "note": "Cara pertama membandingkan setiap pasangan data."
+                  },
+                  {
+                    "line": 3,
+                    "code": "FOR j FROM i + 1 TO n DO",
+                    "note": "Perulangan kedua bersarang di dalam perulangan pertama."
+                  },
+                  {
+                    "line": 7,
+                    "code": "CARA 2: catat yang sudah terlihat",
+                    "note": "Cara kedua memakai struktur pencarian tambahan."
+                  },
+                  {
+                    "line": 9,
+                    "code": "FOR i FROM 1 TO n DO",
+                    "note": "Setiap data cukup diperiksa satu kali."
+                  },
+                  {
+                    "line": 11,
+                    "code": "TAMBAH judul[i] ke terlihat",
+                    "note": "Judul yang sudah terlihat disimpan untuk pemeriksaan berikutnya."
+                  }
+                ],
                 "lab": false
               },
               "callouts": [],
@@ -8281,7 +9187,33 @@
                 "code": "EDGE CASE                    PERILAKU YANG DIHARAPKAN\n---------------------------------------------------------\nDaftar kosong                Tampilkan pesan \"Belum ada tugas\"\nJudul spasi saja             Tolak dengan \"Judul wajib diisi\"\nJudul 121 karakter           Tolak dengan batas 120 karakter\nDua tugas judul sama         Izinkan, tetapi beri id berbeda\nTenggat 29 Februari          Tolak jika tahun bukan kabisat\nHapus tugas yang sama 2x     Hapus pertama sukses, kedua beri pesan\nPrioritas tidak dikenal      Tolak dan sebutkan pilihan valid",
                 "output": "Tujuh edge case dengan perilaku yang bisa diuji satu per satu.",
                 "explain": "Setiap baris menggabungkan kondisi batas dengan hasil yang diharapkan. Baris terakhir mencegah nilai prioritas asing merusak filter.",
-                "annotations": [],
+                "annotations": [
+                  {
+                    "line": 1,
+                    "code": "EDGE CASE                    PERILAKU YANG DIHARAPKAN",
+                    "note": "Judul kolom memisahkan kondisi dari perilaku yang diharapkan."
+                  },
+                  {
+                    "line": 3,
+                    "code": "Daftar kosong                Tampilkan pesan \"Belum ada tugas\"",
+                    "note": "Kasus daftar kosong punya perilaku tampilan yang jelas."
+                  },
+                  {
+                    "line": 7,
+                    "code": "Tenggat 29 Februari          Tolak jika tahun bukan kabisat",
+                    "note": "Kasus tanggal uji batas menuntut keputusan eksplisit."
+                  },
+                  {
+                    "line": 8,
+                    "code": "Hapus tugas yang sama 2x     Hapus pertama sukses, kedua beri pesan",
+                    "note": "Kasus urutan aksi membedakan keberhasilan pertama dan kedua."
+                  },
+                  {
+                    "line": 9,
+                    "code": "Prioritas tidak dikenal      Tolak dan sebutkan pilihan valid",
+                    "note": "Nilai asing ditolak dengan menyebut pilihan yang sah."
+                  }
+                ],
                 "lab": false
               },
               "callouts": [],
@@ -8459,13 +9391,13 @@
             "Edge case ditulis sebelum kode dan menjadi test case saat implementasi."
           ],
           "legacy": false,
-          "code": "ALGORITMA A\n  OUTPUT panjang(daftar)\n  -- 1 langkah, O(1)\n\nALGORITMA B\n  jumlah <- 0\n  FOR i FROM 1 TO panjang(daftar) DO\n    jumlah <- jumlah + 1\n  END FOR\n  -- n langkah, O(n)",
-          "wordCount": 1004,
-          "schema": 3
+          "code": "biaya \"hitung selesai\"              : 1 perulangan            -> O(n)\nbiaya \"cari duplikat (pasangan)\"    : 2 perulangan bersarang   -> O(n^2)\nbiaya \"cari duplikat (himpunan)\"    : 1 perulangan            -> O(n)\nbiaya \"ambil tugas dari peta\"       : tanpa perulangan         -> O(1)",
+          "wordCount": 1393,
+          "schema": 3.1
         }
       ],
       "lessonCount": 7,
-      "wordCount": 7253
+      "wordCount": 10000
     },
     {
       "id": "m03",
@@ -14471,7 +15403,7 @@
             {
               "token": "localStorage.setItem(kunci, nilai)",
               "meaning": "Menyimpan nilai teks dengan nama kunci tertentu. Nilai harus berupa string; object harus diubah lebih dahulu.",
-              "readAs": "",
+              "readAs": "Baca sebagai perintah menyimpan satu nilai teks dengan nama kunci tertentu di penyimpanan browser.",
               "example": "localStorage.setItem(\"demo\", \"halo\");",
               "output": "Method mengembalikan undefined, tetapi pasangan kunci dan nilai tersimpan di browser.",
               "pitfall": "Menyimpan object langsung akan menghasilkan teks [object Object], bukan data yang bisa dibaca kembali."
@@ -14479,7 +15411,7 @@
             {
               "token": "localStorage.getItem(kunci)",
               "meaning": "Membaca nilai teks berdasarkan kunci. Jika kunci belum ada, hasilnya null.",
-              "readAs": "",
+              "readAs": "Baca sebagai perintah mengambil nilai teks berdasarkan kuncinya; hasilnya null bila kunci belum ada.",
               "example": "const nilai = localStorage.getItem(\"demo\");\nconsole.log(nilai);",
               "output": "halo",
               "pitfall": "Jangan langsung memanggil JSON.parse pada null; periksa nilai kosong terlebih dahulu."
@@ -14487,7 +15419,7 @@
             {
               "token": "JSON.stringify(nilai)",
               "meaning": "Mengubah object, array, string, number, atau boolean menjadi teks JSON.",
-              "readAs": "",
+              "readAs": "Baca sebagai perintah mengubah nilai JavaScript menjadi teks JSON agar dapat disimpan.",
               "example": "console.log(JSON.stringify({ id: 1, done: false }));",
               "output": "{\"id\":1,\"done\":false}",
               "pitfall": "Function dan undefined tidak disimpan sebagai nilai JSON; struktur melingkar akan melempar error."
@@ -14495,15 +15427,79 @@
             {
               "token": "JSON.parse(teks)",
               "meaning": "Mengubah teks JSON kembali menjadi nilai JavaScript.",
-              "readAs": "",
+              "readAs": "Baca sebagai perintah mengubah teks JSON kembali menjadi nilai JavaScript.",
               "example": "const data = JSON.parse('{\"id\":1}');\nconsole.log(data.id);",
               "output": "1",
               "pitfall": "Teks yang tidak valid akan melempar SyntaxError. Lindungi dengan try/catch."
             }
           ],
-          "conventions": [],
-          "next": "",
+          "conventions": [
+            "Simpan state pada satu object sebagai sumber kebenaran, bukan di banyak variabel terpisah.",
+            "Ubah object menjadi JSON dengan JSON.stringify sebelum disimpan ke localStorage.",
+            "Bungkus JSON.parse dengan try/catch dan sediakan nilai cadangan bila data rusak.",
+            "Beri kunci yang jelas dan berversi, misalnya bk.tasks.v1, agar data lama dapat dikenali.",
+            "Simpan hanya data non-rahasia dan validasi kembali bentuknya setelah dibaca."
+          ],
+          "next": "Berikutnya: promise, async/await, dan fetch. Anda akan mengambil data dari luar tanpa membuat antarmuka membeku, lalu menangani kondisi gagalnya.",
           "sections": [
+            {
+              "id": "cara-membaca",
+              "title": "Cara membaca alur simpan dan muat state",
+              "body": [
+                "Alur penyimpanan dibaca dari state menuju teks: ambil state, ubah menjadi JSON, lalu tulis ke localStorage. Alur pemuatan berjalan sebaliknya: baca teks, ubah kembali menjadi nilai JavaScript, lalu validasi bentuknya sebelum dipakai untuk menggambar tampilan.",
+                "Setiap simpul pada alur itu dapat gagal. Kunci bisa belum ada, teks bisa tidak valid, dan bentuk data bisa berubah. Membaca kode penyimpanan berarti memeriksa apakah setiap kemungkinan gagal sudah punya jawaban, misalnya mengembalikan daftar kosong alih-alih membuat halaman berhenti."
+              ],
+              "code": {
+                "language": "javascript",
+                "code": "const state = { tasks: [ { id: 1, title: \"Belajar\", done: false } ] };\n\nsimpan:\n  JSON.stringify(state)         -> teks JSON\n  localStorage.setItem(kunci, teksJSON)\n\nmuat:\n  teks <- localStorage.getItem(kunci)\n  jika teks null             -> daftar kosong\n  data <- JSON.parse(teks)     (dibungkus try/catch)\n  jika data.tasks bukan array -> daftar kosong\n  else                       -> pakai data.tasks",
+                "output": "State kembali utuh setelah muat, dan setiap kegagalan menghasilkan daftar kosong yang aman.",
+                "explain": "Blok simpan mengubah object menjadi teks sebelum disimpan. Blok muat memeriksa null, mem-parse dengan penjagaan, lalu memvalidasi bentuk data sebelum dipercaya.",
+                "annotations": [
+                  {
+                    "line": 1,
+                    "code": "const state = { tasks: [ { id: 1, title: \"Belajar\", done: false } ] };",
+                    "note": "State dimulai dari satu object yang memuat daftar tugas."
+                  },
+                  {
+                    "line": 4,
+                    "code": "JSON.stringify(state)         -> teks JSON",
+                    "note": "Langkah simpan pertama mengubah object menjadi teks JSON."
+                  },
+                  {
+                    "line": 5,
+                    "code": "localStorage.setItem(kunci, teksJSON)",
+                    "note": "Teks itu ditulis bersama nama kuncinya."
+                  },
+                  {
+                    "line": 9,
+                    "code": "jika teks null             -> daftar kosong",
+                    "note": "Kunci yang belum ada ditangani lebih dulu."
+                  },
+                  {
+                    "line": 11,
+                    "code": "jika data.tasks bukan array -> daftar kosong",
+                    "note": "Bentuk data divalidasi sebelum dipakai."
+                  },
+                  {
+                    "line": 12,
+                    "code": "else                       -> pakai data.tasks",
+                    "note": "Hanya data yang lolos validasi yang dijadikan daftar tugas."
+                  }
+                ],
+                "lab": false
+              },
+              "callouts": [
+                {
+                  "tone": "good",
+                  "title": "Urutan yang penting",
+                  "body": "Pada pemuatan, periksa null sebelum mem-parse, dan validasi bentuk setelah mem-parse. Urutan ini mencegah error yang paling sering terjadi."
+                }
+              ],
+              "checkpoint": {
+                "prompt": "Tuliskan urutan langkah saat pengguna menekan tombol Simpan, dari state sampai tersimpan di localStorage.",
+                "success": "Jawaban menyebut mengubah state menjadi JSON dengan JSON.stringify, memilih kunci, lalu memanggil localStorage.setItem."
+              }
+            },
             {
               "id": "state-sumber-kebenaran",
               "title": "State adalah satu sumber kebenaran",
@@ -14516,7 +15512,43 @@
                 "code": "const state = {\n  tasks: [\n    { id: 1, title: \"Belajar DOM\", done: false },\n    { id: 2, title: \"Latihan localStorage\", done: true },\n  ],\n  filter: \"semua\",\n};\n\nconsole.log(state.tasks.length);\nconsole.log(state.tasks[0].title);\nconsole.log(state.filter);",
                 "output": "2\nBelajar DOM\nsemua",
                 "explain": "state.tasks adalah array. state.tasks[0] mengambil object pertama, lalu .title membaca propertinya. state.filter menyimpan pilihan filter saat ini.",
-                "annotations": [],
+                "annotations": [
+                  {
+                    "line": 1,
+                    "code": "const state = {",
+                    "note": "Seluruh state dikumpulkan dalam satu object."
+                  },
+                  {
+                    "line": 2,
+                    "code": "tasks: [",
+                    "note": "Array tasks menyimpan daftar tugas berurutan."
+                  },
+                  {
+                    "line": 3,
+                    "code": "{ id: 1, title: \"Belajar DOM\", done: false },",
+                    "note": "Setiap tugas adalah object dengan properti bernama."
+                  },
+                  {
+                    "line": 6,
+                    "code": "filter: \"semua\",",
+                    "note": "Filter aktif disimpan bersama data, bukan di variabel terpisah."
+                  },
+                  {
+                    "line": 9,
+                    "code": "console.log(state.tasks.length);",
+                    "note": "Jumlah tugas dihitung dari state, bukan disimpan sebagai angka salinan."
+                  },
+                  {
+                    "line": 10,
+                    "code": "console.log(state.tasks[0].title);",
+                    "note": "Field tugas diakses lewat indeks lalu nama properti."
+                  },
+                  {
+                    "line": 11,
+                    "code": "console.log(state.filter);",
+                    "note": "Filter dibaca langsung dari state yang sama."
+                  }
+                ],
                 "lab": false
               },
               "callouts": [
@@ -14543,7 +15575,33 @@
                 "code": "const tasks = [{ id: 1, title: \"Belajar DOM\", done: false }];\nconst teks = JSON.stringify(tasks);\n\nconsole.log(typeof teks);\nconsole.log(teks);\n\nconst salinan = JSON.parse(teks);\nconsole.log(salinan[0].title);",
                 "output": "string\n[{\"id\":1,\"title\":\"Belajar DOM\",\"done\":false}]\nBelajar DOM",
                 "explain": "JSON.stringify mengubah array menjadi string JSON. JSON.parse mengubah string itu kembali menjadi array baru, sehingga salinan[0].title dapat dibaca.",
-                "annotations": [],
+                "annotations": [
+                  {
+                    "line": 1,
+                    "code": "const tasks = [{ id: 1, title: \"Belajar DOM\", done: false }];",
+                    "note": "Nilai yang akan disimpan berupa array berisi object."
+                  },
+                  {
+                    "line": 2,
+                    "code": "const teks = JSON.stringify(tasks);",
+                    "note": "stringify mengubah array menjadi teks sebelum disimpan."
+                  },
+                  {
+                    "line": 4,
+                    "code": "console.log(typeof teks);",
+                    "note": "Tipe hasil stringify selalu string."
+                  },
+                  {
+                    "line": 7,
+                    "code": "const salinan = JSON.parse(teks);",
+                    "note": "parse mengubah teks kembali menjadi array baru."
+                  },
+                  {
+                    "line": 8,
+                    "code": "console.log(salinan[0].title);",
+                    "note": "Setelah parse, properti object dapat dibaca seperti biasa."
+                  }
+                ],
                 "lab": false
               },
               "callouts": [
@@ -14570,7 +15628,48 @@
                 "code": "const KUNCI = \"bk.tasks.v1\";\n\nfunction simpan(tasks) {\n  localStorage.setItem(KUNCI, JSON.stringify({ versi: 1, tasks }));\n}\n\nfunction baca() {\n  const teks = localStorage.getItem(KUNCI);\n  if (!teks) return [];\n\n  try {\n    const data = JSON.parse(teks);\n    return Array.isArray(data.tasks) ? data.tasks : [];\n  } catch (error) {\n    console.warn(\"Data rusak, mulai dari daftar kosong.\", error);\n    return [];\n  }\n}\n\nsimpan([{ id: 1, title: \"Belajar DOM\", done: false }]);\nconsole.log(baca());",
                 "output": "Array satu object tugas dengan id 1, title Belajar DOM, dan done false.",
                 "explain": "simpan membungkus tasks dalam object berversi. baca memeriksa null, mem-parse JSON, lalu memastikan data.tasks benar-benar array sebelum dikembalikan.",
-                "annotations": [],
+                "annotations": [
+                  {
+                    "line": 1,
+                    "code": "const KUNCI = \"bk.tasks.v1\";",
+                    "note": "Kunci diberi nama jelas dan berversi agar mudah dikenali."
+                  },
+                  {
+                    "line": 4,
+                    "code": "localStorage.setItem(KUNCI, JSON.stringify({ versi: 1, tasks }));",
+                    "note": "Data dibungkus object berversi, lalu diubah menjadi teks."
+                  },
+                  {
+                    "line": 7,
+                    "code": "function baca() {",
+                    "note": "Pemuatan dibungkus dalam satu fungsi kecil."
+                  },
+                  {
+                    "line": 9,
+                    "code": "if (!teks) return [];",
+                    "note": "Kunci yang belum ada ditangani lebih dulu dengan daftar kosong."
+                  },
+                  {
+                    "line": 12,
+                    "code": "const data = JSON.parse(teks);",
+                    "note": "parse dijalankan di dalam try agar teks rusak tertangkap."
+                  },
+                  {
+                    "line": 13,
+                    "code": "return Array.isArray(data.tasks) ? data.tasks : [];",
+                    "note": "Bentuk data diperiksa sebelum dikembalikan."
+                  },
+                  {
+                    "line": 15,
+                    "code": "console.warn(\"Data rusak, mulai dari daftar kosong.\", error);",
+                    "note": "Data rusak dicatat, tetapi aplikasi tidak berhenti."
+                  },
+                  {
+                    "line": 17,
+                    "code": "}",
+                    "note": "Kegagalan apa pun menghasilkan array kosong yang aman."
+                  }
+                ],
                 "lab": false
               },
               "callouts": [
@@ -14597,7 +15696,38 @@
                 "code": "const KUNCI = \"bk.tasks.v2\";\n\nfunction bacaAman() {\n  const teks = localStorage.getItem(KUNCI);\n  if (!teks) return { versi: 2, tasks: [] };\n\n  try {\n    const data = JSON.parse(teks);\n    if (!Array.isArray(data.tasks)) {\n      return { versi: 2, tasks: [] };\n    }\n    return { versi: Number(data.versi) || 2, tasks: data.tasks };\n  } catch {\n    return { versi: 2, tasks: [] };\n  }\n}\n\nconsole.log(bacaAman());",
                 "output": "Object dengan versi 2 dan array tasks; jika data tidak valid, hasilnya object kosong yang aman.",
                 "explain": "Fungsi ini memeriksa null, mem-parse dengan try/catch, memvalidasi array, lalu memakai versi 2 sebagai cadangan bila versi tidak terbaca.",
-                "annotations": [],
+                "annotations": [
+                  {
+                    "line": 1,
+                    "code": "const KUNCI = \"bk.tasks.v2\";",
+                    "note": "Kunci versi baru memisahkan data dari format lama."
+                  },
+                  {
+                    "line": 5,
+                    "code": "if (!teks) return { versi: 2, tasks: [] };",
+                    "note": "Data yang belum ada langsung memakai bentuk terbaru."
+                  },
+                  {
+                    "line": 8,
+                    "code": "const data = JSON.parse(teks);",
+                    "note": "Teks di-parse dengan penjagaan agar data rusak tidak melempar error."
+                  },
+                  {
+                    "line": 9,
+                    "code": "if (!Array.isArray(data.tasks)) {",
+                    "note": "Bentuk data divalidasi sebelum dipakai."
+                  },
+                  {
+                    "line": 12,
+                    "code": "return { versi: Number(data.versi) || 2, tasks: data.tasks };",
+                    "note": "Versi dibaca dari data, dengan versi saat ini sebagai cadangan."
+                  },
+                  {
+                    "line": 14,
+                    "code": "return { versi: 2, tasks: [] };",
+                    "note": "Kegagalan parse menghasilkan bentuk aman yang sama."
+                  }
+                ],
                 "lab": false
               },
               "callouts": [
@@ -14625,7 +15755,23 @@
                 "code": "try {\n  localStorage.setItem(\"demo\", \"x\".repeat(6 * 1024 * 1024));\n} catch (error) {\n  console.warn(\"Penyimpanan penuh atau diblokir:\", error.name);\n}",
                 "output": "Penyimpanan penuh atau diblokir: QuotaExceededError",
                 "explain": "String enam megabita biasanya melebihi kuota. try/catch mencegah halaman berhenti dan memberi kesempatan menampilkan pesan yang dapat dipahami pengguna.",
-                "annotations": [],
+                "annotations": [
+                  {
+                    "line": 1,
+                    "code": "try {",
+                    "note": "Penyimpanan dibungkus try karena kuota bisa terlampaui."
+                  },
+                  {
+                    "line": 2,
+                    "code": "localStorage.setItem(\"demo\", \"x\".repeat(6 * 1024 * 1024));",
+                    "note": "String raksasa dipakai untuk memicu kegagalan kuota."
+                  },
+                  {
+                    "line": 4,
+                    "code": "console.warn(\"Penyimpanan penuh atau diblokir:\", error.name);",
+                    "note": "Nama error ditampilkan agar pengguna tahu penyebabnya."
+                  }
+                ],
                 "lab": false
               },
               "callouts": [
@@ -14824,9 +15970,9 @@
             "Validasi bentuk data, simpan versi, dan jangan pernah menyimpan rahasia di localStorage."
           ],
           "legacy": false,
-          "code": "const state = {\n  tasks: [\n    { id: 1, title: \"Belajar DOM\", done: false },\n    { id: 2, title: \"Latihan localStorage\", done: true },\n  ],\n  filter: \"semua\",\n};\n\nconsole.log(state.tasks.length);\nconsole.log(state.tasks[0].title);\nconsole.log(state.filter);",
-          "wordCount": 1599,
-          "schema": 3
+          "code": "const state = { tasks: [ { id: 1, title: \"Belajar\", done: false } ] };\n\nsimpan:\n  JSON.stringify(state)         -> teks JSON\n  localStorage.setItem(kunci, teksJSON)\n\nmuat:\n  teks <- localStorage.getItem(kunci)\n  jika teks null             -> daftar kosong\n  data <- JSON.parse(teks)     (dibungkus try/catch)\n  jika data.tasks bukan array -> daftar kosong\n  else                       -> pakai data.tasks",
+          "wordCount": 2140,
+          "schema": 3.1
         },
         {
           "id": "m05-l03",
@@ -15360,7 +16506,7 @@
         }
       ],
       "lessonCount": 7,
-      "wordCount": 2513
+      "wordCount": 3054
     },
     {
       "id": "m06",
@@ -22462,7 +23608,7 @@
   "stats": {
     "modules": 14,
     "lessons": 97,
-    "words": 80191,
+    "words": 83479,
     "minutes": 5735
   }
 }
