@@ -1269,6 +1269,60 @@
       "tier": "official",
       "version": "rolling",
       "accessedAt": "2026-10-29"
+    },
+    {
+      "id": "postgresql-tutorial",
+      "title": "PostgreSQL Tutorial",
+      "publisher": "PostgreSQL Global Development Group",
+      "url": "https://www.postgresql.org/docs/current/tutorial.html",
+      "tier": "official",
+      "version": "current",
+      "accessedAt": "2026-10-29"
+    },
+    {
+      "id": "postgresql-constraints",
+      "title": "PostgreSQL: Constraints",
+      "publisher": "PostgreSQL Global Development Group",
+      "url": "https://www.postgresql.org/docs/current/ddl-constraints.html",
+      "tier": "official",
+      "version": "current",
+      "accessedAt": "2026-10-29"
+    },
+    {
+      "id": "postgresql-indexes",
+      "title": "PostgreSQL: Indexes",
+      "publisher": "PostgreSQL Global Development Group",
+      "url": "https://www.postgresql.org/docs/current/indexes.html",
+      "tier": "official",
+      "version": "current",
+      "accessedAt": "2026-10-29"
+    },
+    {
+      "id": "postgresql-transactions",
+      "title": "PostgreSQL: Transactions",
+      "publisher": "PostgreSQL Global Development Group",
+      "url": "https://www.postgresql.org/docs/current/tutorial-transactions.html",
+      "tier": "official",
+      "version": "current",
+      "accessedAt": "2026-10-29"
+    },
+    {
+      "id": "postgresql-backup",
+      "title": "PostgreSQL: Backup and Restore",
+      "publisher": "PostgreSQL Global Development Group",
+      "url": "https://www.postgresql.org/docs/current/backup.html",
+      "tier": "official",
+      "version": "current",
+      "accessedAt": "2026-10-29"
+    },
+    {
+      "id": "owasp-sqli",
+      "title": "OWASP: SQL Injection Prevention Cheat Sheet",
+      "publisher": "OWASP Foundation",
+      "url": "https://cheatsheetseries.owasp.org/cheatsheets/SQL_Injection_Prevention_Cheat_Sheet.html",
+      "tier": "official",
+      "version": "rolling",
+      "accessedAt": "2026-10-29"
     }
   ],
   "modules": [
@@ -1388,7 +1442,14 @@
       "m06-l01",
       "m06-l02",
       "m06-l03",
-      "m06-l04"
+      "m06-l04",
+      "m07-l01",
+      "m07-l02",
+      "m07-l03",
+      "m07-l04",
+      "m07-l05",
+      "m07-l06",
+      "m07-l07"
     ],
     "depthWordBands": {
       "fondasi": [
