@@ -9493,261 +9493,671 @@ Perangkat uji: ...</code></pre><p><em>Hasil: Daftar pemeriksaan lengkap dan hasi
   <p class="subtitle">Menggabungkan seluruh konsep menjadi proyek portofolio</p>
   <div class="panel"><b>Tujuan modul</b><p>Menyelesaikan MVP web–API–mobile beserta dokumentasi dan tes.</p></div>
   <article class="lesson" id="m12-l01">
-  <div class="lesson-meta">Pelajaran 01 · 45 menit · Lanjutan · JavaScript</div>
+  <div class="lesson-meta">Pelajaran 01 · 150 menit · Lanjutan · markdown</div>
   <h3>Menulis PRD dan user story</h3>
-  
-  
-  
-  
-  
-  
+  <div class="panel good"><b>Hasil belajar</b><p>Setelah pelajaran ini, Anda dapat menyusun dokumen kebutuhan produk yang ringkas serta menerjemahkannya menjadi user story beserta kriteria penerimaan yang dapat diuji.</p></div>
+  <h4>Tujuan</h4><ul><li>Menjelaskan maksud dokumen kebutuhan produk dan isinya.</li><li>Membedakan masalah, sasaran, dan ruang lingkup pada sebuah fitur.</li><li>Menulis user story dari sudut pandang pengguna.</li><li>Menyusun kriteria penerimaan yang dapat diuji.</li></ul>
+  <div class="panel"><b>Prasyarat</b><p>Performance dan aksesibilitas produksi</p></div>
+  <h4>Istilah kunci</h4><dl class="glossary"><div><dt>Dokumen kebutuhan produk</dt><dd>Catatan ringkas yang menyatakan masalah yang dipecahkan, sasaran, ruang lingkup, dan batas pekerjaan.</dd></div><div><dt>Masalah</dt><dd>Keadaan yang membuat pengguna tidak dapat mencapai tujuannya, yang menjadi alasan fitur dibuat.</dd></div><div><dt>Ruang lingkup</dt><dd>Daftar pekerjaan yang termasuk dalam versi yang sedang dibangun.</dd></div><div><dt>Di luar lingkup</dt><dd>Daftar pekerjaan yang sengaja tidak dikerjakan pada versi ini agar batasnya jelas.</dd></div><div><dt>Kriteria penerimaan</dt><dd>Pernyataan yang dapat diperiksa untuk menentukan apakah sebuah cerita sudah selesai dengan benar.</dd></div></dl>
+  <h4>Kartu sintaks</h4><div class="panel">
+  <b><code>## Masalah</code></b>
+  <p><em>Dibaca: Baca sebagai bagian yang menyatakan keadaan yang sedang diperbaiki sebelum merancang solusinya.</em></p>
+  <p>Bagian masalah menjelaskan keadaan yang dialami pengguna. Ia ditulis sebelum solusi agar pekerjaan tidak berangkat dari dugaan.</p>
+  <pre><code>## Masalah</code></pre>
+  <p><em>Output: Dokumen menyebut keadaan yang diperbaiki dengan jelas.</em></p>
+  <p><em>Hati-hati: Melewati bagian masalah membuat pembaca tidak tahu mengapa pekerjaan ini dilakukan.</em></p>
+</div><div class="panel">
+  <b><code>Sebagai &lt;pengguna&gt;, saya ingin &lt;tindakan&gt; agar &lt;manfaat&gt;.</code></b>
+  <p><em>Dibaca: Baca sebagai pola user story yang menyebut pelaku, tindakan, dan manfaatnya.</em></p>
+  <p>Pola ini menempatkan kebutuhan pengguna di depan dan menutup cerita dengan manfaat yang menjelaskan alasannya.</p>
+  <pre><code>Sebagai pengguna, saya ingin menandai tugas selesai agar saya dapat memantau kemajuan.</code></pre>
+  <p><em>Output: Cerita menyatakan siapa, tindakan apa, dan manfaat apa yang diharapkan.</em></p>
+  <p><em>Hati-hati: Menulis cerita tanpa manfaat membuat prioritas sulit ditentukan ketika waktu terbatas.</em></p>
+</div><div class="panel">
+  <b><code>- [ ] Tugas berubah menjadi selesai saat ditandai.</code></b>
+  <p><em>Dibaca: Baca sebagai kriteria penerimaan yang dapat diperiksa satu per satu.</em></p>
+  <p>Kriteria yang dapat diperiksa menentukan kapan pekerjaan dianggap selesai. Ia menjadi dasar pengujian dan peninjauan.</p>
+  <pre><code>- [ ] Tugas berubah menjadi selesai saat ditandai.</code></pre>
+  <p><em>Output: Setiap kriteria dapat diperiksa benar atau salah tanpa tafsir ganda.</em></p>
+  <p><em>Hati-hati: Kriteria yang kabur membuat pekerjaan dianggap selesai padahal belum sesuai harapan.</em></p>
+</div>
+  <h4>Aturan penulisan</h4><ul><li>Tulis masalah sebelum solusi agar pekerjaan berangkat dari kebutuhan.</li><li>Sebutkan ruang lingkup dan yang di luar lingkup secara eksplisit.</li><li>Tulis user story dari sudut pandang pengguna, bukan dari sudut pandang kode.</li><li>Sertakan kriteria penerimaan yang dapat diperiksa untuk setiap cerita.</li><li>Jaga dokumen tetap ringkas dan perbarui ketika keputusan berubah.</li></ul>
   <section class="lesson-section">
-  <h4>01 · Memahami konsepnya</h4>
-  <p>PRD mencatat masalah, pengguna, tujuan, scope, alur, acceptance criteria, kebutuhan non-fungsional, dan risiko. User story berbunyi: sebagai [peran], saya ingin [aksi], sehingga [manfaat].</p><p>Pilih aplikasi manajemen tugas/persediaan sederhana, bukan langsung sistem enterprise. Tentukan MVP jelas dan hal-hal di luar scope. Jadikan acceptance criteria dapat diuji.</p>
-  
-  <div class="panel good"><b>Best practice</b><p>Definisikan keberhasilan yang bisa diverifikasi, bukan fitur sebanyak mungkin.</p></div><div class="panel bad"><b>Kesalahan umum</b><p>Memulai coding tanpa merumuskan siapa pengguna dan masalahnya.</p></div>
-  
+  <h4>01 · Cara membaca dokumen kebutuhan</h4>
+  <p>Dokumen kebutuhan dibaca dari atas ke bawah sebagai urutan pertimbangan: masalah apa yang diperbaiki, apa yang ingin dicapai, apa saja yang termasuk, dan apa yang sengaja ditinggalkan.</p><p>Pada contoh, masalah menyebut kesulitan pengguna, sasaran menyebut hasil yang diharapkan, dan ruang lingkup menyebut pekerjaan yang termasuk. Bagian di luar lingkup menutup pekerjaan yang sengaja tidak dikerjakan.</p><p>Perhatikan bahwa bagian di luar lingkup sama pentingnya dengan ruang lingkup. Tanpa batas yang jelas, pekerjaan mudah melebar dan versi pertama tidak pernah selesai.</p>
+  <pre><code># PRD: Aplikasi Catatan Tugas
+
+## Masalah
+Pengguna kesulitan mencatat dan memantau tugas harian.
+
+## Sasaran
+Membantu pengguna mencatat, mengubah, dan menyelesaikan tugas.
+
+## Ruang lingkup
+- Daftar tugas
+- Penambahan tugas
+- Penandaan selesai
+
+## Di luar lingkup
+- Kerja sama tim</code></pre><div class="panel"><b>Output yang diharapkan</b><p>Dokumen menyatakan masalah, sasaran, ruang lingkup, dan batas pekerjaan secara berurutan.</p></div><p>Dokumen dibaca sebagai urutan pertimbangan. Masalah dan sasaran menjelaskan alasan, sedangkan ruang lingkup dan batasnya menjelaskan pekerjaan.</p><div class="panel"><b>Bedah baris</b><ol><li>Baris 3 · <code>## Masalah</code> — Bagian masalah menyatakan keadaan yang diperbaiki.</li><li>Baris 6 · <code>## Sasaran</code> — Bagian sasaran menyatakan hasil yang diharapkan.</li><li>Baris 9 · <code>## Ruang lingkup</code> — Ruang lingkup menyebut pekerjaan yang termasuk.</li><li>Baris 14 · <code>## Di luar lingkup</code> — Bagian di luar lingkup membatasi pekerjaan versi ini.</li></ol></div>
+  <div class="panel good"><b>Batas yang jelas</b><p>Menuliskan yang di luar lingkup mencegah pekerjaan melebar dan membuat versi pertama lebih cepat selesai.</p></div>
+  <div class="panel warn"><b>Cek pemahaman</b><p>Mengapa bagian di luar lingkup perlu ditulis, bukan hanya ruang lingkup?</p><p>Kriteria berhasil: Agar batas pekerjaan jelas sehingga versi pertama tidak melebar dan dapat selesai.</p></div>
 </section><section class="lesson-section">
-  <h4>02 · Contoh kode</h4>
-  <p>Perhatikan input, proses, dan output. Ketik ulang, lalu ubah satu nilai.</p>
-  <pre><code>// Story: sebagai pengguna, saya bisa membuat tugas
-// Acceptance:
-// judul wajib, sukses muncul di daftar,
-// error tidak menghilangkan input.</code></pre>
+  <h4>02 · Menerjemahkan kebutuhan menjadi cerita</h4>
+  <p>User story dibaca sebagai satu kalimat yang memuat pelaku, tindakan, dan manfaat. Ketiganya membuat cerita mudah dipahami oleh orang teknis maupun bukan teknis.</p><p>Pada contoh, cerita menyebut pengguna sebagai pelaku, penandaan selesai sebagai tindakan, dan pemantauan kemajuan sebagai manfaat. Manfaat itu menjelaskan mengapa tindakannya penting.</p><p>Kriteria penerimaan menyusul di bawah cerita. Setiap kriteria dapat diperiksa benar atau salah, sehingga pekerjaan dianggap selesai hanya ketika seluruh kriteria terpenuhi.</p>
+  <pre><code>## User story
+Sebagai pengguna, saya ingin menandai tugas selesai
+agar saya dapat memantau kemajuan.
+
+## Kriteria penerimaan
+- [ ] Tugas berubah menjadi selesai saat ditandai.
+- [ ] Perubahan tersimpan dan terlihat setelah dimuat ulang.</code></pre><div class="panel"><b>Output yang diharapkan</b><p>Cerita menyatakan pelaku, tindakan, dan manfaat, diikuti kriteria yang dapat diperiksa.</p></div><p>Cerita memuat pelaku, tindakan, dan manfaat. Kriteria penerimaan di bawahnya menjadi dasar pemeriksaan apakah cerita sudah selesai.</p><div class="panel"><b>Bedah baris</b><ol><li>Baris 2 · <code>Sebagai pengguna, saya ingin menandai tugas selesai</code> — Cerita menyebut pelaku dan tindakan yang diinginkan.</li><li>Baris 3 · <code>agar saya dapat memantau kemajuan.</code> — Cerita menutup dengan manfaat yang menjelaskan alasannya.</li><li>Baris 6 · <code>- [ ] Tugas berubah menjadi selesai saat ditandai.</code> — Kriteria penerimaan dapat diperiksa satu per satu.</li><li>Baris 7 · <code>- [ ] Perubahan tersimpan dan terlihat setelah dimuat ulang.</code> — Kriteria menyebut perilaku yang dapat diuji.</li></ol></div>
+  <div class="panel good"><b>Manfaat menentukan prioritas</b><p>Manfaat pada cerita menjelaskan alasannya. Ketika waktu terbatas, cerita dengan manfaat paling jelas didahulukan.</p></div>
+  <div class="panel warn"><b>Cek pemahaman</b><p>Apa tiga bagian yang menyusun sebuah user story?</p><p>Kriteria berhasil: Pelaku yang memakai fitur, tindakan yang ingin dilakukan, dan manfaat yang diharapkan.</p></div>
+</section><section class="lesson-section">
+  <h4>03 · Menulis kriteria yang dapat diuji</h4>
+  <p>Kriteria penerimaan yang baik dapat diperiksa tanpa tafsir ganda. Bila dua orang membacanya dan menyimpulkan hal yang berbeda, kriteria itu belum cukup jelas.</p><p>Tulis kriteria sebagai perilaku yang dapat diamati. Misalnya, tugas berubah menjadi selesai saat ditandai. Perilaku itu dapat diperiksa langsung tanpa menebak maksudnya.</p><p>Sertakan keadaan yang mudah terlewat, seperti keadaan kosong, masukan yang salah, dan kegagalan jaringan. Kriteria untuk keadaan itu mencegah pekerjaan dianggap selesai padahal belum tertangani.</p><p>Kriteria yang baik juga menyebut keadaan yang tidak wajar, bukan hanya jalur utama. Misalnya, apa yang terjadi ketika daftar masih kosong, ketika koneksi terputus, atau ketika pengguna mengirim data yang sama dua kali. Kriteria untuk keadaan itu mencegah pekerjaan dianggap selesai padahal masih menyisakan lubang yang kelak ditemukan pengguna.</p>
   
   
+  <div class="panel warn"><b>Cek pemahaman</b><p>Bagaimana cara mengetahui sebuah kriteria penerimaan sudah cukup jelas?</p><p>Kriteria berhasil: Bila dua orang membacanya menyimpulkan hal yang sama dan perilakunya dapat diperiksa langsung.</p></div>
+</section><section class="lesson-section">
+  <h4>04 · Menjaga dokumen tetap berguna</h4>
+  <p>Dokumen kebutuhan yang terlalu panjang jarang dibaca ulang. Jaga isinya ringkas dan fokus pada keputusan yang perlu diketahui seluruh pihak.</p><p>Perbarui dokumen ketika keputusan berubah. Dokumen yang tertinggal dari keadaan sebenarnya justru menyesatkan dan membuat orang berhenti mempercayainya.</p><p>Simpan dokumen bersama kode proyek agar mudah ditemukan. Dengan begitu, alasan di balik sebuah pekerjaan tetap dapat ditelusuri ketika seseorang bertanya kemudian.</p>
+  
+  
+  <div class="panel warn"><b>Cek pemahaman</b><p>Apa yang harus dilakukan ketika keputusan berubah setelah dokumen kebutuhan ditulis?</p><p>Kriteria berhasil: Perbarui dokumen agar sesuai keadaan sebenarnya sehingga tidak menyesatkan pembacanya.</p></div>
 </section>
-  <h4>Latihan bertingkat</h4><ol><li><b>Latihan 1</b> <em>(Mandiri)</em><p>Buat PRD 1–2 halaman untuk aplikasi task manager web dan Flutter.</p></li><li><b>Latihan 2</b> <em>(Mandiri)</em><p>Ubah satu input atau asumsi pada contoh, catat hasil dan jelaskan alasannya.</p></li></ol>
-  
-  
+  <h4>Latihan bertingkat</h4><ol><li><b>Susun dokumen kebutuhan satu fitur</b> <em>(Terbimbing)</em><p>Tulis dokumen kebutuhan ringkas untuk fitur pencarian tugas, memuat masalah, sasaran, ruang lingkup, dan batasnya.</p><ol><li>Tulis keadaan yang membuat pencarian dibutuhkan.</li><li>Tentukan hasil yang diharapkan.</li><li>Daftar pekerjaan yang termasuk.</li><li>Daftar pekerjaan yang sengaja ditinggalkan.</li></ol><pre><code># PRD: Pencarian Tugas
+## Masalah
+...</code></pre><p><em>Hasil: Dokumen menyatakan masalah, sasaran, ruang lingkup, dan batas dengan jelas.</em></p><details><summary>Petunjuk bertahap</summary><ol><li>Masalah ditulis sebelum solusi.</li><li>Ruang lingkup menyebut pekerjaan yang termasuk.</li><li>Bagian di luar lingkup membatasi pekerjaan.</li></ol></details><p><em>Tantangan: Tambahkan perkiraan keberhasilan yang dapat diukur.</em></p></li><li><b>Tulis cerita beserta kriteria</b> <em>(Mandiri)</em><p>Tulis dua user story untuk fitur pencarian beserta kriteria penerimaan yang dapat diuji untuk setiap cerita.</p><ol><li>Tulis cerita memuat pelaku, tindakan, dan manfaat.</li><li>Susun kriteria yang dapat diperiksa.</li><li>Sertakan keadaan kosong dan masukan salah.</li><li>Periksa setiap kriteria dapat diuji.</li></ol><pre><code>## User story
+Sebagai ..., saya ingin ... agar ...</code></pre><p><em>Hasil: Setiap cerita memuat tiga bagian dan kriterianya dapat diperiksa langsung.</em></p><details><summary>Petunjuk bertahap</summary><ol><li>Cerita menyebut pelaku, tindakan, dan manfaat.</li><li>Kriteria berupa perilaku yang dapat diamati.</li><li>Sertakan keadaan yang mudah terlewat.</li></ol></details><p><em>Tantangan: Tambahkan kriteria untuk perilaku saat koneksi terputus.</em></p></li><li><b>Susun dokumen versi pertama</b> <em>(Penerapan)</em><p>Susun dokumen kebutuhan untuk versi pertama proyek akhir yang memuat masalah, sasaran, ruang lingkup, batas, dan seluruh cerita utamanya.</p><ol><li>Tentukan masalah utama yang dipecahkan proyek.</li><li>Tentukan sasaran versi pertama.</li><li>Daftar seluruh cerita utama beserta kriterianya.</li><li>Tentukan pekerjaan yang ditinggalkan untuk versi berikutnya.</li></ol><pre><code># PRD Proyek Akhir
+## Masalah
+...
+## Cerita
+...</code></pre><p><em>Hasil: Dokumen memuat seluruh keputusan versi pertama dan batasnya yang jelas.</em></p><details><summary>Petunjuk bertahap</summary><ol><li>Masalah menentukan ruang lingkup.</li><li>Setiap cerita punya kriteria yang dapat diuji.</li><li>Pekerjaan berikutnya dicatat terpisah.</li></ol></details><p><em>Tantangan: Perkirakan urutan pengerjaan cerita berdasarkan manfaatnya.</em></p></li></ol>
+  <h4>Verifikasi</h4><div class="panel"><b>Mode: Manual</b><pre><code>Tinjau dokumen kebutuhan dan cerita bersama rekan, lalu periksa setiap kriteria dapat diuji.</code></pre><p><em>Hasil yang diharapkan: Dokumen menyatakan masalah, sasaran, ruang lingkup, dan batas; setiap cerita memuat pelaku, tindakan, dan manfaat beserta kriteria yang dapat diperiksa.</em></p><p><em>Bukti yang disimpan: Simpan dokumen kebutuhan, daftar cerita, dan catatan hasil tinjauan.</em></p></div>
+  <h4>Mengatasi masalah</h4><ul><li><b>Pekerjaan versi pertama tidak kunjung selesai.</b><br>Penyebab umum: Ruang lingkup tidak dibatasi dan tidak ada daftar pekerjaan di luar lingkup.<br>Perbaikan: Tuliskan secara eksplisit pekerjaan yang sengaja ditinggalkan untuk versi berikutnya.</li><li><b>Dua orang memahami kebutuhan secara berbeda.</b><br>Penyebab umum: Cerita atau kriteria masih kabur dan dapat ditafsirkan beragam.<br>Perbaikan: Tulis kriteria sebagai perilaku yang dapat diamati sehingga hasilnya dapat diperiksa.</li><li><b>Fitur dianggap selesai padahal masih bermasalah.</b><br>Penyebab umum: Kriteria penerimaan tidak memuat keadaan kosong dan kegagalan.<br>Perbaikan: Tambahkan kriteria untuk keadaan kosong, masukan salah, dan kegagalan jaringan.</li><li><b>Dokumen kebutuhan ditinggalkan dan diabaikan.</b><br>Penyebab umum: Isinya terlalu panjang atau tidak diperbarui ketika keputusan berubah.<br>Perbaikan: Jaga dokumen tetap ringkas dan perbarui setiap kali keputusan berubah.</li></ul>
   <div class="quiz"><strong>Uji pemahaman</strong><div class="quiz-question">
-    <b>1. Apa prinsip yang paling tepat untuk topik “Menulis PRD dan user story”?</b>
-    <ol type="A"><li>Definisikan keberhasilan yang bisa diverifikasi, bukan fitur sebanyak mungkin.</li><li>Gunakan solusi paling rumit sejak awal, meski kebutuhan belum jelas.</li><li>Lewati pengujian karena contoh kecil pasti benar.</li></ol>
-    <details><summary>Lihat pembahasan</summary><p class="answer">Jawaban: A. Definisikan keberhasilan yang bisa diverifikasi, bukan fitur sebanyak mungkin.</p></details>
+    <b>1. Apa tiga bagian sebuah user story?</b>
+    <ol type="A"><li>Pelaku, tindakan, dan manfaat</li><li>Masalah, solusi, dan biaya</li><li>Judul, tanggal, dan penulis</li></ol>
+    <details><summary>Lihat pembahasan</summary><p class="answer">Jawaban: A. User story memuat pelaku, tindakan yang diinginkan, dan manfaat yang diharapkan.</p></details>
+  </div><div class="quiz-question">
+    <b>2. Mengapa bagian masalah ditulis sebelum solusi pada dokumen kebutuhan?</b>
+    <ol type="A"><li>Agar dokumen lebih panjang</li><li>Agar pekerjaan berangkat dari kebutuhan, bukan dari dugaan solusi</li><li>Agar urutan abjad teratur</li></ol>
+    <details><summary>Lihat pembahasan</summary><p class="answer">Jawaban: B. Menulis masalah lebih dulu memastikan pekerjaan berangkat dari kebutuhan nyata, bukan dugaan.</p></details>
+  </div><div class="quiz-question">
+    <b>3. Sebuah kriteria penerimaan dapat ditafsirkan dua cara berbeda. Tindakan tepat...</b>
+    <ol type="A"><li>Membiarkannya karena sudah ditulis</li><li>Menulis ulang agar menjadi perilaku yang dapat diperiksa</li><li>Menghapus kriteria itu</li></ol>
+    <details><summary>Lihat pembahasan</summary><p class="answer">Jawaban: B. Kriteria ditulis sebagai perilaku yang dapat diamati agar tidak menimbulkan tafsir ganda.</p></details>
   </div></div>
-  
-  
-  
+  <h4>Ringkasan</h4><ul><li>Dokumen kebutuhan memuat masalah, sasaran, ruang lingkup, dan batas pekerjaan.</li><li>User story memuat pelaku, tindakan, dan manfaat.</li><li>Kriteria penerimaan ditulis sebagai perilaku yang dapat diperiksa.</li><li>Dokumen dijaga ringkas dan diperbarui ketika keputusan berubah.</li></ul>
+  <div class="panel"><b>Berikutnya</b><p>Berikutnya: rancangan data dan migrasi. Anda akan menyusun struktur data proyek akhir beserta perubahan skemanya.</p></div>
+  <h4>Sumber</h4><ul><li><a href="https://docs.github.com/en/pull-requests" rel="noopener noreferrer">GitHub Docs: Pull requests</a> <small>GitHub · rolling</small> — Panduan menulis usulan perubahan yang jelas, sejalan dengan dokumen kebutuhan.</li><li><a href="https://docs.github.com/en" rel="noopener noreferrer">GitHub Docs</a> <small>GitHub · rolling</small> — Cara menyimpan dokumen dan riwayat keputusan bersama kode proyek.</li><li><a href="https://developer.mozilla.org/en-US/docs/Learn_web_development" rel="noopener noreferrer">MDN: Learn web development</a> <small>Mozilla · rolling</small> — Rujukan alur kerja merancang aplikasi web sebelum menulis kode.</li></ul>
 </article>
 <article class="lesson" id="m12-l02">
-  <div class="lesson-meta">Pelajaran 02 · 45 menit · Lanjutan · JavaScript</div>
+  <div class="lesson-meta">Pelajaran 02 · 150 menit · Lanjutan · SQL</div>
   <h3>ERD, data dictionary, dan migrasi</h3>
-  
-  
-  
-  
-  
-  
+  <div class="panel good"><b>Hasil belajar</b><p>Setelah pelajaran ini, Anda dapat merancang struktur data proyek, menjelaskan setiap kolomnya, serta menyusun perubahan skema yang dapat diulang dan dikembalikan.</p></div>
+  <h4>Tujuan</h4><ul><li>Menyusun hubungan antar tabel berdasarkan kebutuhan.</li><li>Menjelaskan setiap kolom pada kamus data.</li><li>Menentukan batasan yang menjaga keutuhan data.</li><li>Menulis migrasi yang dapat diulang dan dikembalikan.</li></ul>
+  <div class="panel"><b>Prasyarat</b><p>Menulis PRD dan user story</p></div>
+  <h4>Istilah kunci</h4><dl class="glossary"><div><dt>Hubungan antar tabel</dt><dd>Kaitan antara dua tabel yang menyatakan bagaimana data yang satu mengacu ke data yang lain.</dd></div><div><dt>Kamus data</dt><dd>Daftar kolom beserta tipe, batasan, dan maksudnya sehingga setiap kolom mudah dipahami.</dd></div><div><dt>Batasan</dt><dd>Aturan pada tabel atau kolom yang menjaga data tetap sah, misalnya wajib diisi atau harus unik.</dd></div><div><dt>Kunci asing</dt><dd>Kolom yang mengacu ke baris pada tabel lain dan menjaga hubungan antar tabel tetap utuh.</dd></div><div><dt>Migrasi</dt><dd>Berkas perubahan skema yang dijalankan berurutan agar struktur data dapat diulang di semua lingkungan.</dd></div></dl>
+  <h4>Kartu sintaks</h4><div class="panel">
+  <b><code>FOREIGN KEY (pengguna_id) REFERENCES pengguna(id)</code></b>
+  <p><em>Dibaca: Baca sebagai penetapan bahwa kolom ini mengacu ke baris pada tabel pengguna.</em></p>
+  <p>Kunci asing menjaga hubungan antar tabel tetap utuh. Baris yang mengacu ke tabel tidak dapat menunjuk nilai yang tidak ada.</p>
+  <pre><code>FOREIGN KEY (pengguna_id) REFERENCES pengguna(id)</code></pre>
+  <p><em>Output: Baris dengan acuan yang tidak ada ditolak oleh basis data.</em></p>
+  <p><em>Hati-hati: Membiarkan acuan tanpa kunci asing membuat data yatim menumpuk tanpa disadari.</em></p>
+</div><div class="panel">
+  <b><code>judul TEXT NOT NULL,</code></b>
+  <p><em>Dibaca: Baca sebagai penetapan kolom yang selalu wajib berisi nilai.</em></p>
+  <p>Batasan wajib diisi menjaga kolom penting tetap terisi sehingga program tidak perlu menangani nilai kosong yang tidak seharusnya ada.</p>
+  <pre><code>judul TEXT NOT NULL,</code></pre>
+  <p><em>Output: Baris tanpa nilai pada kolom itu ditolak.</em></p>
+  <p><em>Hati-hati: Membiarkan kolom penting boleh kosong memaksa seluruh program menangani keadaan yang sebenarnya tidak perlu.</em></p>
+</div><div class="panel">
+  <b><code>CREATE INDEX idx_tugas_pengguna ON tugas(pengguna_id);</code></b>
+  <p><em>Dibaca: Baca sebagai penyiapan penunjuk agar pencarian menurut kolom itu lebih cepat.</em></p>
+  <p>Penunjuk mempercepat pencarian pada kolom yang sering dipakai untuk memilih baris, misalnya kunci asing.</p>
+  <pre><code>CREATE INDEX idx_tugas_pengguna ON tugas(pengguna_id);</code></pre>
+  <p><em>Output: Pencarian baris menurut kolom itu berjalan lebih cepat.</em></p>
+  <p><em>Hati-hati: Membuat penunjuk pada setiap kolom memperlambat penyimpanan tanpa manfaat yang jelas.</em></p>
+</div>
+  <h4>Aturan penulisan</h4><ul><li>Rancang hubungan antar tabel dari kebutuhan penyimpanan, bukan dari tampilan.</li><li>Beri setiap tabel kunci utama yang tetap agar acuan stabil.</li><li>Tuliskan maksud setiap kolom pada kamus data.</li><li>Pasang batasan yang menjaga keutuhan data sedekat mungkin ke basis data.</li><li>Tulis migrasi yang dapat diulang dan dapat dikembalikan.</li></ul>
   <section class="lesson-section">
-  <h4>01 · Memahami konsepnya</h4>
-  <p>Dari kebutuhan, turunkan tabel, atribut, tipe, constraints, dan relasi. Tulis data dictionary agar nama dan makna kolom seragam.</p><p>Pertimbangkan owner_id, created_at, updated_at, status, dan indeks. Jangan menyimpan password sendiri; gunakan mekanisme auth framework.</p>
-  
-  <div class="panel good"><b>Best practice</b><p>Review model data sebelum membuat controller dan UI.</p></div><div class="panel bad"><b>Kesalahan umum</b><p>Mengubah skema produksi langsung tanpa migrasi berversi.</p></div>
-  
+  <h4>01 · Cara membaca rancangan tabel</h4>
+  <p>Tabel dibaca dari kunci, kolom, dan batasannya. Kunci utama menyatakan identitas baris, kolom menyatakan data yang disimpan, dan batasan menyatakan aturan yang harus dipatuhi.</p><p>Pada contoh, tabel tugas memiliki kunci utama, acuan ke tabel pengguna, judul yang wajib diisi, penanda selesai dengan nilai bawaan, dan waktu pembuatan. Setiap batasan menyatakan harapan atas isi baris.</p><p>Perhatikan bahwa kolom penanda selesai dan waktu pembuatan diberi nilai bawaan. Nilai bawaan mengurangi pekerjaan pemanggil dan menjaga data tetap terisi meski tidak disebutkan.</p>
+  <pre><code>CREATE TABLE tugas (
+  id SERIAL PRIMARY KEY,
+  pengguna_id INTEGER NOT NULL,
+  judul TEXT NOT NULL,
+  selesai BOOLEAN NOT NULL DEFAULT FALSE,
+  dibuat_pada TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  FOREIGN KEY (pengguna_id) REFERENCES pengguna(id)
+);</code></pre><div class="panel"><b>Output yang diharapkan</b><p>Tabel terbentuk dengan kunci utama, acuan ke pengguna, dan batasan yang menjaga isinya.</p></div><p>Kunci utama menyatakan identitas baris. Batasan wajib diisi dan kunci asing menjaga data tetap sah dan berhubungan.</p><div class="panel"><b>Bedah baris</b><ol><li>Baris 2 · <code>id SERIAL PRIMARY KEY,</code> — Kunci utama menyatakan identitas tiap baris.</li><li>Baris 3 · <code>pengguna_id INTEGER NOT NULL,</code> — Kunci asing mengacu ke tabel pengguna.</li><li>Baris 4 · <code>judul TEXT NOT NULL,</code> — Judul wajib diisi.</li><li>Baris 5 · <code>selesai BOOLEAN NOT NULL DEFAULT FALSE,</code> — Penanda selesai diberi nilai bawaan.</li><li>Baris 7 · <code>FOREIGN KEY (pengguna_id) REFERENCES pengguna(id)</code> — Batasan menjaga acuan tetap mengarah ke baris yang ada.</li></ol></div>
+  <div class="panel good"><b>Batasan di basis data</b><p>Batasan yang dipasang di basis data berlaku untuk semua jalur, sehingga aturan tidak bergantung pada satu program saja.</p></div>
+  <div class="panel warn"><b>Cek pemahaman</b><p>Mengapa batasan lebih baik dipasang di basis data, bukan hanya di program?</p><p>Kriteria berhasil: Agar aturan berlaku untuk semua jalur pemakaian, bukan hanya pada satu program tertentu.</p></div>
 </section><section class="lesson-section">
-  <h4>02 · Contoh kode</h4>
-  <p>Perhatikan input, proses, dan output. Ketik ulang, lalu ubah satu nilai.</p>
-  <pre><code>users: id, name, email
-tasks: id, user_id, title, status, due_date
-index: tasks(user_id, status)</code></pre>
+  <h4>02 · Menyusun hubungan antar tabel</h4>
+  <p>Hubungan antar tabel dibaca dari kebutuhan penyimpanan. Bila satu pengguna memiliki banyak tugas, hubungannya satu ke banyak, dan acuannya diletakkan pada tabel yang banyak.</p><p>Kunci asing menjaga hubungan itu tetap utuh. Baris pada tabel tugas tidak dapat menunjuk pengguna yang tidak ada, sehingga data yatim tidak menumpuk.</p><p>Tentukan pula perilaku ketika baris induk dihapus. Sebagian hubungan sebaiknya ikut menghapus baris anak, sedangkan sebagian lain sebaiknya menolak penghapusan. Pilihan itu menyatakan maksud sistem.</p><p>Ketika hubungannya banyak ke banyak, kebutuhan itu dipecahkan dengan tabel penghubung. Tabel itu hanya menyimpan pasangan acuan antara dua tabel, sehingga hubungannya menjadi dua hubungan satu ke banyak yang lebih mudah dijaga. Cara ini menghindari pengulangan data pada salah satu tabel dan menjaga setiap acuan tetap punya tempat yang jelas.</p>
   
+  
+  <div class="panel warn"><b>Cek pemahaman</b><p>Di tabel mana acuan diletakkan pada hubungan satu ke banyak?</p><p>Kriteria berhasil: Di tabel yang banyak, sebagai kunci asing yang menunjuk ke tabel yang satu.</p></div>
+</section><section class="lesson-section">
+  <h4>03 · Menjelaskan kolom pada kamus data</h4>
+  <p>Kamus data mencatat setiap kolom beserta tipe, batasan, dan maksudnya. Catatan ini membuat kolom mudah dipahami tanpa harus membaca seluruh program.</p><p>Maksud kolom penting dicatat, bukan hanya namanya. Kolom bernama status dapat berarti banyak hal; penjelasannya menentukan nilai apa saja yang sah dan apa artinya masing-masing.</p><p>Perbarui kamus data bersama migrasi. Kamus yang tertinggal membuat pembaca berikutnya bekerja dengan dugaan yang keliru.</p><p>Untuk kolom yang berupa pilihan, catat nilai yang sah beserta artinya masing-masing. Dengan begitu, pembaca tidak perlu menelusuri program untuk mengetahui nilai mana yang mungkin muncul, dan perubahan pada daftar nilai dapat ditelusuri dengan mudah.</p>
+  
+  
+  <div class="panel warn"><b>Cek pemahaman</b><p>Apa yang perlu dicatat pada kamus data selain nama kolom?</p><p>Kriteria berhasil: Tipe, batasan, dan maksud kolom, termasuk nilai yang sah bila kolomnya berupa pilihan.</p></div>
+</section><section class="lesson-section">
+  <h4>04 · Menulis migrasi yang dapat diulang</h4>
+  <p>Migrasi dibaca sebagai perubahan skema yang berurutan. Setiap migrasi menambah satu perubahan, dan perubahan itu dicatat agar dapat dijalankan di semua lingkungan.</p><p>Pada contoh, satu kolom ditambahkan pada tabel tugas. Komentar di bawahnya mencatat langkah kebalikannya, sehingga perubahan dapat dibatalkan bila perlu.</p><p>Migrasi sebaiknya dijalankan berurutan dan tidak diubah setelah dipakai. Mengubah migrasi yang sudah dijalankan membuat lingkungan yang berbeda memakai skema yang berbeda pula.</p><p>Simpan berkas migrasi bersama kode proyek dan beri nama yang menyatakan urutannya. Nama yang menyatakan langkah, misalnya nomor urut di depan, membuat urutan perubahan terbaca tanpa membuka setiap berkas. Ketika seseorang menyiapkan lingkungan baru, ia cukup menjalankan seluruh migrasi berurutan dan mendapatkan skema yang sama.</p>
+  <pre><code>ALTER TABLE tugas
+  ADD COLUMN tenggat TIMESTAMPTZ;
+
+-- untuk dikembalikan:
+-- ALTER TABLE tugas DROP COLUMN tenggat;</code></pre><div class="panel"><b>Output yang diharapkan</b><p>Kolom baru ditambahkan pada tabel, dengan langkah kebalikannya tercatat pada komentar.</p></div><p>Migrasi menambah perubahan skema secara berurutan. Langkah kebalikannya dicatat agar perubahan dapat dibatalkan bila perlu.</p><div class="panel"><b>Bedah baris</b><ol><li>Baris 1 · <code>ALTER TABLE tugas</code> — Perubahan dikenakan pada tabel yang sudah ada.</li><li>Baris 2 · <code>ADD COLUMN tenggat TIMESTAMPTZ;</code> — Satu kolom ditambahkan sebagai perubahan tunggal.</li><li>Baris 5 · <code>-- ALTER TABLE tugas DROP COLUMN tenggat;</code> — Langkah kebalikannya dicatat agar dapat dikembalikan.</li></ol></div>
+  <div class="panel warn"><b>Jangan ubah migrasi lama</b><p>Migrasi yang sudah dijalankan jangan diubah. Buat migrasi baru agar setiap lingkungan memiliki urutan skema yang sama.</p></div>
   
 </section>
-  <h4>Latihan bertingkat</h4><ol><li><b>Latihan 1</b> <em>(Mandiri)</em><p>Gambar ERD dan tulis constraints untuk users dan tasks.</p></li><li><b>Latihan 2</b> <em>(Mandiri)</em><p>Ubah satu input atau asumsi pada contoh, catat hasil dan jelaskan alasannya.</p></li></ol>
-  
-  
+  <h4>Latihan bertingkat</h4><ol><li><b>Rancang dua tabel berhubungan</b> <em>(Terbimbing)</em><p>Rancang tabel pengguna dan tugas dengan hubungan satu ke banyak beserta batasannya.</p><ol><li>Tentukan kunci utama setiap tabel.</li><li>Tentukan acuan dari tabel tugas ke tabel pengguna.</li><li>Tambahkan batasan wajib diisi pada kolom penting.</li><li>Tentukan perilaku saat baris induk dihapus.</li></ol><pre><code>CREATE TABLE tugas (
+  -- lengkapi
+);</code></pre><p><em>Hasil: Kedua tabel berhubungan dengan kunci asing dan kolom penting dijaga batasan.</em></p><details><summary>Petunjuk bertahap</summary><ol><li>Acuan diletakkan pada tabel yang banyak.</li><li>Beri setiap tabel kunci utama.</li><li>Batasan menjaga keutuhan data.</li></ol></details><p><em>Tantangan: Tambahkan penunjuk pada kunci asing untuk mempercepat pencarian.</em></p></li><li><b>Tulis kamus data</b> <em>(Mandiri)</em><p>Tulis kamus data untuk tabel tugas yang memuat setiap kolom beserta tipe, batasan, dan maksudnya.</p><ol><li>Daftar seluruh kolom tabel.</li><li>Catat tipe dan batasan setiap kolom.</li><li>Jelaskan maksud setiap kolom.</li><li>Tandai kolom yang punya nilai terbatas.</li></ol><pre><code>| kolom | tipe | batasan | maksud |
+| --- | --- | --- | --- |</code></pre><p><em>Hasil: Setiap kolom punya tipe, batasan, dan maksud yang jelas.</em></p><details><summary>Petunjuk bertahap</summary><ol><li>Maksud kolom dijelaskan, bukan hanya namanya.</li><li>Kolom pilihan menyebut nilai yang sah.</li><li>Kamus diperbarui bersama migrasi.</li></ol></details><p><em>Tantangan: Tambahkan contoh nilai untuk kolom yang berupa pilihan.</em></p></li><li><b>Susun migrasi bertahap</b> <em>(Penerapan)</em><p>Susun urutan migrasi untuk proyek akhir dari tabel awal sampai kolom tambahan, beserta langkah kebalikannya.</p><ol><li>Tentukan urutan pembuatan tabel.</li><li>Tentukan kolom tambahan pada tahap berikutnya.</li><li>Catat langkah kebalikan setiap migrasi.</li><li>Uji menjalankan dan mengembalikan migrasi.</li></ol><pre><code>001-buat-tabel.sql
+002-tambah-kolom.sql</code></pre><p><em>Hasil: Migrasi berjalan berurutan dan dapat dikembalikan pada setiap tahap.</em></p><details><summary>Petunjuk bertahap</summary><ol><li>Setiap migrasi menambah satu perubahan.</li><li>Migrasi lama tidak diubah.</li><li>Langkah kebalikannya disiapkan.</li></ol></details><p><em>Tantangan: Jalankan migrasi pada basis data kosong lalu pada basis data berisi data.</em></p></li></ol>
+  <h4>Verifikasi</h4><div class="panel"><b>Mode: Manual</b><pre><code>Jalankan migrasi pada basis data kosong, sisipkan data, lalu periksa batasan dan pengembalian migrasi.</code></pre><p><em>Hasil yang diharapkan: Skema terbentuk, batasan menolak data yang tidak sah, dan migrasi dapat dikembalikan tanpa menyisakan perubahan.</em></p><p><em>Bukti yang disimpan: Simpan berkas migrasi, kamus data, dan catatan hasil pengujian.</em></p></div>
+  <h4>Mengatasi masalah</h4><ul><li><b>Banyak baris menunjuk ke data yang sudah tidak ada.</b><br>Penyebab umum: Hubungan antar tabel tidak dijaga kunci asing.<br>Perbaikan: Tambahkan kunci asing dan tentukan perilaku saat baris induk dihapus.</li><li><b>Pencarian data terasa lambat meski datanya sedikit.</b><br>Penyebab umum: Kolom yang sering dipakai untuk memilih baris belum diberi penunjuk.<br>Perbaikan: Tambahkan penunjuk pada kolom yang sering dipakai untuk pencarian.</li><li><b>Lingkungan berbeda memakai skema yang berbeda.</b><br>Penyebab umum: Migrasi yang sudah dijalankan diubah setelahnya.<br>Perbaikan: Jangan ubah migrasi lama; buat migrasi baru untuk setiap perubahan.</li><li><b>Program penuh pemeriksaan nilai kosong yang tidak perlu.</b><br>Penyebab umum: Kolom penting dibiarkan boleh kosong.<br>Perbaikan: Pasang batasan wajib diisi pada kolom yang memang selalu terisi.</li></ul>
   <div class="quiz"><strong>Uji pemahaman</strong><div class="quiz-question">
-    <b>1. Apa prinsip yang paling tepat untuk topik “ERD, data dictionary, dan migrasi”?</b>
-    <ol type="A"><li>Review model data sebelum membuat controller dan UI.</li><li>Gunakan solusi paling rumit sejak awal, meski kebutuhan belum jelas.</li><li>Lewati pengujian karena contoh kecil pasti benar.</li></ol>
-    <details><summary>Lihat pembahasan</summary><p class="answer">Jawaban: A. Review model data sebelum membuat controller dan UI.</p></details>
+    <b>1. Apa kegunaan kunci asing?</b>
+    <ol type="A"><li>Mempercepat tampilan</li><li>Menjaga hubungan antar tabel tetap utuh</li><li>Menghapus baris otomatis</li></ol>
+    <details><summary>Lihat pembahasan</summary><p class="answer">Jawaban: B. Kunci asing menjaga acuan antar tabel tetap menunjuk baris yang ada.</p></details>
+  </div><div class="quiz-question">
+    <b>2. Mengapa migrasi yang sudah dijalankan tidak boleh diubah?</b>
+    <ol type="A"><li>Agar berkasnya lebih rapi</li><li>Agar setiap lingkungan memiliki urutan skema yang sama</li><li>Agar lebih cepat dijalankan</li></ol>
+    <details><summary>Lihat pembahasan</summary><p class="answer">Jawaban: B. Mengubah migrasi lama membuat lingkungan yang berbeda memakai skema yang berbeda.</p></details>
+  </div><div class="quiz-question">
+    <b>3. Sebuah kolom berisi pilihan keadaan tugas yang punya beberapa nilai sah. Tindakan tepat...</b>
+    <ol type="A"><li>Membiarkannya bebas tanpa penjelasan</li><li>Mencatat nilai yang sah beserta maksudnya pada kamus data</li><li>Menghapus kolomnya</li></ol>
+    <details><summary>Lihat pembahasan</summary><p class="answer">Jawaban: B. Kolom berupa pilihan perlu menyebut nilai sah dan maksudnya pada kamus data.</p></details>
   </div></div>
-  
-  
-  
+  <h4>Ringkasan</h4><ul><li>Hubungan antar tabel mengikuti kebutuhan penyimpanan, dengan kunci asing yang menjaga keutuhan.</li><li>Kamus data mencatat tipe, batasan, dan maksud setiap kolom.</li><li>Batasan dipasang di basis data agar berlaku untuk semua jalur.</li><li>Migrasi dijalankan berurutan, tidak diubah setelah dijalankan, dan dapat dikembalikan.</li></ul>
+  <div class="panel"><b>Berikutnya</b><p>Berikutnya: API dan pengujian kontrak. Anda akan menyusun antarmuka layanan beserta pengujian yang menjaga janjinya.</p></div>
+  <h4>Sumber</h4><ul><li><a href="https://www.postgresql.org/docs/current/ddl-constraints.html" rel="noopener noreferrer">PostgreSQL: Constraints</a> <small>PostgreSQL Global Development Group · current</small> — Dokumentasi batasan tabel yang menjaga keutuhan data.</li><li><a href="https://www.postgresql.org/docs/current/indexes.html" rel="noopener noreferrer">PostgreSQL: Indexes</a> <small>PostgreSQL Global Development Group · current</small> — Dokumentasi penunjuk untuk mempercepat pencarian data.</li><li><a href="https://www.postgresql.org/docs/current/tutorial.html" rel="noopener noreferrer">PostgreSQL Tutorial</a> <small>PostgreSQL Global Development Group · current</small> — Panduan dasar merancang tabel dan hubungan antar tabel.</li></ul>
 </article>
 <article class="lesson" id="m12-l03">
-  <div class="lesson-meta">Pelajaran 03 · 45 menit · Lanjutan · JavaScript</div>
+  <div class="lesson-meta">Pelajaran 03 · 150 menit · Lanjutan · JavaScript</div>
   <h3>Membuat API dan test kontrak</h3>
-  
-  
-  
-  
-  
-  
+  <div class="panel good"><b>Hasil belajar</b><p>Setelah pelajaran ini, Anda dapat merancang API proyek akhir, menuliskan kontraknya, serta menyusun pengujian yang menjaga agar janji kontrak itu tidak berubah diam-diam.</p></div>
+  <h4>Tujuan</h4><ul><li>Merancang alamat dan bentuk tanggapan API.</li><li>Menuliskan kontrak API yang dapat dibaca mesin.</li><li>Menyusun pengujian kontrak untuk setiap jalur penting.</li><li>Menjaga kontrak tetap stabil ketika kode berubah.</li></ul>
+  <div class="panel"><b>Prasyarat</b><p>ERD, data dictionary, dan migrasi</p></div>
+  <h4>Istilah kunci</h4><dl class="glossary"><div><dt>Kontrak API</dt><dd>Kesepakatan tentang alamat, masukan, dan bentuk tanggapan yang dipatuhi oleh peladen dan pemanggilnya.</dd></div><div><dt>Pengujian kontrak</dt><dd>Pengujian yang memeriksa apakah tanggapan API masih sesuai bentuk dan aturan yang dijanjikan.</dd></div><div><dt>Kode status</dt><dd>Angka pada tanggapan yang menyatakan hasil permintaan, misalnya berhasil atau tidak sah.</dd></div><div><dt>Bentuk tanggapan</dt><dd>Susunan data yang dikembalikan API beserta nama kolom dan jenis nilainya.</dd></div><div><dt>Perubahan yang merusak</dt><dd>Perubahan pada API yang membuat pemanggil lama tidak lagi dapat memakainya.</dd></div></dl>
+  <h4>Kartu sintaks</h4><div class="panel">
+  <b><code>GET /v1/tugas?selesai=false</code></b>
+  <p><em>Dibaca: Baca sebagai alamat sumber daya dengan penyaring yang dipisahkan dari alamatnya.</em></p>
+  <p>Alamat menunjuk sumber daya, sedangkan penyaring menyempitkan hasilnya. Pemisahan ini membuat satu alamat melayani beberapa kebutuhan.</p>
+  <pre><code>GET /v1/tugas?selesai=false</code></pre>
+  <p><em>Output: Hanya tugas yang belum selesai yang dikembalikan.</em></p>
+  <p><em>Hati-hati: Menaruh maksud tindakan pada alamat yang seharusnya menunjuk sumber daya membuatnya sulit dipahami.</em></p>
+</div><div class="panel">
+  <b><code>{ &quot;data&quot;: [...], &quot;meta&quot;: { &quot;total&quot;: 12 } }</code></b>
+  <p><em>Dibaca: Baca sebagai bentuk tanggapan dengan data dan keterangan tambahan yang dipisahkan.</em></p>
+  <p>Memisahkan data dari keterangannya membuat pemanggil dapat membaca data tanpa menebak bagian mana yang berisi keterangan.</p>
+  <pre><code>{ &quot;data&quot;: [...], &quot;meta&quot;: { &quot;total&quot;: 12 } }</code></pre>
+  <p><em>Output: Pemanggil membaca data beserta keterangan jumlahnya dari bentuk yang tetap.</em></p>
+  <p><em>Hati-hati: Mengembalikan data sebagai larangan di akar tanggapan menyulitkan penambahan keterangan di kemudian hari.</em></p>
+</div><div class="panel">
+  <b><code>expect(res.status).toBe(200);</code></b>
+  <p><em>Dibaca: Baca sebagai pemeriksaan bahwa tanggapan memakai kode status yang dijanjikan.</em></p>
+  <p>Pengujian kontrak memeriksa kode status dan bentuk tanggapan, sehingga perubahan yang tidak disengaja tertangkap.</p>
+  <pre><code>expect(res.status).toBe(200);</code></pre>
+  <p><em>Output: Perubahan pada kode status atau bentuk tanggapan membuat pengujian gagal.</em></p>
+  <p><em>Hati-hati: Menguji hanya bahwa permintaan berjalan tanpa memeriksa bentuknya membuat perubahan merusak lolos.</em></p>
+</div>
+  <h4>Aturan penulisan</h4><ul><li>Rancang alamat API menurut sumber daya, bukan menurut tindakan.</li><li>Tetapkan bentuk tanggapan yang tetap dan pisahkan data dari keterangannya.</li><li>Tulis kontrak API pada berkas yang dapat dibaca mesin.</li><li>Uji setiap jalur penting beserta bentuk tanggapannya.</li><li>Perkenalkan perubahan bentuk sebagai versi baru, bukan menimpa yang lama.</li></ul>
   <section class="lesson-section">
-  <h4>01 · Memahami konsepnya</h4>
-  <p>Rancang REST endpoints dari kebutuhan, implementasikan Laravel routes, Form Request, policies, Resource, dan tests.</p><p>Tentukan error shape, filter, sort, pagination, serta batas akses per user. Gunakan database test terpisah dari produksi.</p>
+  <h4>01 · Cara membaca penanganan API</h4>
+  <p>Penanganan API dibaca sebagai alur: terima permintaan, ambil data, lalu susun tanggapan dengan bentuk yang dijanjikan. Setiap langkah menjawab satu pertanyaan.</p><p>Pada contoh, data diambil dari basis data, lalu disusun menjadi bentuk ringkas, dan dikembalikan bersama keterangan jumlahnya. Pemisahan data dan keterangan membuat bentuknya tetap.</p><p>Perhatikan bahwa bentuk yang dikembalikan bukan baris basis data apa adanya. Penyusunan bentuk itu sengaja dipisahkan agar perubahan pada struktur penyimpanan tidak langsung mengubah janji kepada pemanggil.</p>
+  <pre><code>export async function daftarTugas(req, res) {
+  const tugas = await db.tugas.cari({ selesai: false });
+  res.json({
+    data: tugas.map(keBentukRingkas),
+    meta: { total: tugas.length },
+  });
+}</code></pre><div class="panel"><b>Output yang diharapkan</b><p>API mengembalikan data ringkas beserta keterangan jumlahnya dalam bentuk yang tetap.</p></div><p>Data diambil, disusun menjadi bentuk ringkas, dan dikembalikan bersama keterangannya. Bentuk tanggapan dipisahkan dari struktur penyimpanan.</p><div class="panel"><b>Bedah baris</b><ol><li>Baris 1 · <code>export async function daftarTugas(req, res) {</code> — Penanganan menerima permintaan dan wadah tanggapan.</li><li>Baris 2 · <code>const tugas = await db.tugas.cari({ selesai: false });</code> — Data diambil sesuai penyaring yang dipakai.</li><li>Baris 3 · <code>res.json({</code> — Tanggapan disusun dalam bentuk yang dijanjikan.</li><li>Baris 5 · <code>meta: { total: tugas.length },</code> — Keterangan jumlah dipisahkan dari datanya.</li></ol></div>
+  <div class="panel good"><b>Bentuk terpisah dari penyimpanan</b><p>Menyusun bentuk tanggapan secara terpisah membuat perubahan struktur penyimpanan tidak langsung merusak pemanggil.</p></div>
+  <div class="panel warn"><b>Cek pemahaman</b><p>Mengapa data dikembalikan dalam bentuk ringkas, bukan baris basis data apa adanya?</p><p>Kriteria berhasil: Agar perubahan pada struktur penyimpanan tidak langsung mengubah janji bentuk tanggapan kepada pemanggil.</p></div>
+</section><section class="lesson-section">
+  <h4>02 · Menuliskan kontrak yang dapat dibaca mesin</h4>
+  <p>Kontrak API yang ditulis pada berkas dapat dibaca mesin menjadi rujukan bersama. Alat dapat memeriksa apakah tanggapan sesuai, dan dokumentasi dapat dibuat dari berkas yang sama.</p><p>Tuliskan alamat, masukan, bentuk tanggapan, dan kode status yang mungkin untuk setiap jalur. Keterangan ini membuat pemanggil tahu apa yang boleh diharapkan tanpa menebak.</p><p>Jaga kontrak tetap sejalan dengan penanganan sebenarnya. Kontrak yang berbeda dari kenyataan lebih berbahaya daripada tidak ada kontrak, karena menyesatkan pemanggil.</p><p>Dokumentasi yang dibuat dari berkas kontrak selalu sejalan dengan kontrak itu sendiri. Karena keduanya berasal dari satu sumber, tidak ada dua tempat yang perlu diperbarui bersamaan. Kebiasaan ini menghilangkan kejadian dokumentasi yang menjelaskan bentuk lama sementara API sudah berubah.</p>
   
-  <div class="panel good"><b>Best practice</b><p>Kunci perilaku API dengan feature tests sebelum menambah klien mobile.</p></div><div class="panel bad"><b>Kesalahan umum</b><p>Menguji seluruh API hanya dari Postman secara manual.</p></div>
+  <div class="panel warn"><b>Kontrak harus sesuai kenyataan</b><p>Kontrak yang berbeda dari tanggapan sebenarnya menyesatkan pemanggil. Perbarui kontrak bersama perubahan penanganan.</p></div>
+  <div class="panel warn"><b>Cek pemahaman</b><p>Apa manfaat menulis kontrak API pada berkas yang dapat dibaca mesin?</p><p>Kriteria berhasil: Alat dapat memeriksa kesesuaian tanggapan, dan dokumentasi dapat dibuat dari berkas yang sama.</p></div>
+</section><section class="lesson-section">
+  <h4>03 · Menyusun pengujian kontrak</h4>
+  <p>Pengujian kontrak dibaca sebagai pemeriksaan janji. Setiap pemeriksaan menyatakan satu bagian bentuk atau aturan yang harus dipenuhi tanggapan.</p><p>Pada contoh, kode status diperiksa, lalu bentuk data dan keterangannya. Bila salah satu berubah, pengujian gagal dan menunjukkan bagian yang tidak sesuai janji.</p><p>Uji juga jalur yang gagal, misalnya permintaan tanpa izin atau masukan yang salah. Jalur gagal sering terlewat padahal bentuk tanggapannya juga bagian dari kontrak.</p><p>Jalankan pengujian kontrak pada setiap perubahan yang menyentuh penanganan API. Menjalankannya hanya sesekali membuat perubahan merusak dapat lolos dan baru diketahui setelah pemanggil terganggu. Biaya menjalankan pengujian jauh lebih kecil daripada biaya memperbaiki pemanggil yang sudah terlanjur berhenti bekerja.</p>
+  <pre><code>describe(&quot;GET /v1/tugas&quot;, () =&gt; {
+  it(&quot;mengembalikan bentuk yang dijanjikan&quot;, async () =&gt; {
+    const res = await panggil(&quot;/v1/tugas&quot;);
+    expect(res.status).toBe(200);
+    expect(Array.isArray(res.body.data)).toBe(true);
+    expect(typeof res.body.meta.total).toBe(&quot;number&quot;);
+  });
+});</code></pre><div class="panel"><b>Output yang diharapkan</b><p>Pengujian memeriksa kode status, bentuk data, dan keterangan jumlahnya.</p></div><p>Setiap pemeriksaan menyatakan satu bagian janji kontrak. Perubahan bentuk yang tidak disengaja membuat pengujian gagal.</p><div class="panel"><b>Bedah baris</b><ol><li>Baris 2 · <code>it(&quot;mengembalikan bentuk yang dijanjikan&quot;, async () =&gt; {</code> — Nama pengujian menyatakan janji yang diperiksa.</li><li>Baris 4 · <code>expect(res.status).toBe(200);</code> — Kode status yang dijanjikan diperiksa.</li><li>Baris 5 · <code>expect(Array.isArray(res.body.data)).toBe(true);</code> — Bentuk data diperiksa.</li><li>Baris 6 · <code>expect(typeof res.body.meta.total).toBe(&quot;number&quot;);</code> — Keterangan jumlah beserta jenisnya diperiksa.</li></ol></div>
+  <div class="panel good"><b>Uji bentuk, bukan hanya keberhasilan</b><p>Menguji keberhasilan saja tidak menangkap perubahan bentuk. Periksa juga susunan dan jenis nilai pada tanggapan.</p></div>
   
 </section><section class="lesson-section">
-  <h4>02 · Contoh kode</h4>
-  <p>Perhatikan input, proses, dan output. Ketik ulang, lalu ubah satu nilai.</p>
-  <pre><code>GET /api/tasks
-POST /api/tasks
-PATCH /api/tasks/{id}
-DELETE /api/tasks/{id}</code></pre>
+  <h4>04 · Menjaga kontrak tetap stabil</h4>
+  <p>Kontrak API dipakai oleh banyak pemanggil yang belum tentu dapat diperbarui bersamaan. Karena itu, kontrak perlu dijaga stabil meski kode di dalamnya berubah.</p><p>Perubahan yang menambah hal baru biasanya aman, sedangkan perubahan yang menghapus atau mengubah nama dan jenis nilai biasanya merusak. Kenali mana yang termasuk merusak sebelum mengubahnya.</p><p>Bila perubahan merusak memang perlu, perkenalkan sebagai versi baru. Versi lama dibiarkan berjalan sementara pemanggil berpindah secara bertahap.</p><p>Kebiasaan yang baik adalah menandai setiap perubahan yang menyentuh bentuk tanggapan. Penanda itu mengingatkan peninjau untuk memeriksa apakah perubahannya merusak pemanggil yang ada. Tanpa penanda, perubahan kecil pada bentuk tanggapan dapat lolos ke versi yang dipakai pengguna.</p><p>Catat setiap versi API yang masih dipakai beserta pemanggil yang menggunakannya. Catatan itu membuat keputusan menghentikan sebuah versi dapat diambil dengan yakin, karena diketahui siapa saja yang perlu berpindah lebih dulu dan seberapa jauh persiapan yang dibutuhkan.</p>
   
   
+  <div class="panel warn"><b>Cek pemahaman</b><p>Bagaimana cara memperkenalkan perubahan API yang merusak pemanggil lama?</p><p>Kriteria berhasil: Dengan memperkenalkannya sebagai versi baru dan membiarkan versi lama berjalan sementara pemanggil berpindah.</p></div>
 </section>
-  <h4>Latihan bertingkat</h4><ol><li><b>Latihan 1</b> <em>(Mandiri)</em><p>Bangun endpoint daftar dan tambah tugas dengan status 401, 403, 422, 201 diuji.</p></li><li><b>Latihan 2</b> <em>(Mandiri)</em><p>Ubah satu input atau asumsi pada contoh, catat hasil dan jelaskan alasannya.</p></li></ol>
-  
-  
+  <h4>Latihan bertingkat</h4><ol><li><b>Rancang satu alamat API</b> <em>(Terbimbing)</em><p>Rancang alamat untuk mengambil daftar tugas dengan penyaring dan bentuk tanggapan yang memisahkan data dari keterangannya.</p><ol><li>Tentukan alamat menurut sumber daya.</li><li>Tentukan penyaring yang dipakai.</li><li>Tentukan bentuk tanggapan.</li><li>Tentukan kode status untuk jalur berhasil dan gagal.</li></ol><pre><code>GET /v1/tugas?selesai=false</code></pre><p><em>Hasil: Alamat menunjuk sumber daya dan bentuk tanggapan tetap dengan data terpisah dari keterangannya.</em></p><details><summary>Petunjuk bertahap</summary><ol><li>Alamat menunjuk sumber daya.</li><li>Penyaring menyempitkan hasil.</li><li>Data dipisahkan dari keterangannya.</li></ol></details><p><em>Tantangan: Tambahkan penyaring kedua dan pastikan bentuknya tetap.</em></p></li><li><b>Tulis pengujian kontrak</b> <em>(Mandiri)</em><p>Tulis pengujian kontrak untuk alamat daftar tugas yang memeriksa kode status dan bentuk tanggapan.</p><ol><li>Panggil alamat pada lingkungan uji.</li><li>Periksa kode status yang dijanjikan.</li><li>Periksa bentuk data.</li><li>Periksa keterangan jumlahnya.</li></ol><pre><code>expect(res.status).toBe(200);</code></pre><p><em>Hasil: Perubahan bentuk tanggapan membuat pengujian gagal.</em></p><details><summary>Petunjuk bertahap</summary><ol><li>Setiap pemeriksaan menyatakan satu janji.</li><li>Uji juga jalur gagal.</li><li>Periksa jenis nilai, bukan hanya keberadaannya.</li></ol></details><p><em>Tantangan: Tambahkan pengujian untuk jalur tanpa izin.</em></p></li><li><b>Susun kontrak API proyek</b> <em>(Penerapan)</em><p>Susun kontrak API untuk seluruh jalur utama proyek akhir beserta pengujian kontraknya.</p><ol><li>Daftar seluruh jalur utama API.</li><li>Tulis alamat, masukan, dan bentuk tanggapan setiap jalur.</li><li>Tulis pengujian kontrak untuk setiap jalur.</li><li>Tandai jalur yang bentuknya belum stabil.</li></ol><pre><code>Jalur: ...
+Masukan: ...
+Bentuk tanggapan: ...</code></pre><p><em>Hasil: Seluruh jalur utama punya kontrak dan pengujian yang menjaga janjinya.</em></p><details><summary>Petunjuk bertahap</summary><ol><li>Setiap jalur punya bentuk tanggapan tetap.</li><li>Jalur gagal juga bagian kontrak.</li><li>Kontrak sejalan dengan penanganan sebenarnya.</li></ol></details><p><em>Tantangan: Buat dokumentasi dari berkas kontrak secara otomatis.</em></p></li></ol>
+  <h4>Verifikasi</h4><div class="panel"><b>Mode: Manual</b><pre><code>Jalankan pengujian kontrak untuk seluruh jalur utama, baik jalur berhasil maupun jalur gagal.</code></pre><p><em>Hasil yang diharapkan: Setiap jalur mengembalikan bentuk yang dijanjikan, jalur gagal juga sesuai kontrak, dan perubahan bentuk yang tidak disengaja tertangkap pengujian.</em></p><p><em>Bukti yang disimpan: Simpan berkas kontrak, berkas pengujian, dan keluarannya.</em></p></div>
+  <h4>Mengatasi masalah</h4><ul><li><b>Pemanggil lama berhenti bekerja setelah perubahan API.</b><br>Penyebab umum: Bentuk tanggapan diubah atau dihapus tanpa memperkenalkan versi baru.<br>Perbaikan: Perkenalkan perubahan sebagai versi baru dan biarkan versi lama berjalan sementara.</li><li><b>Pemanggil tidak tahu bentuk tanggapan yang diharapkan.</b><br>Penyebab umum: Kontrak API tidak ditulis atau berbeda dari kenyataan.<br>Perbaikan: Tulis kontrak yang dapat dibaca mesin dan jaga tetap sejalan dengan penanganan sebenarnya.</li><li><b>Perubahan bentuk lolos sampai produksi.</b><br>Penyebab umum: Pengujian hanya memeriksa keberhasilan, bukan bentuk tanggapan.<br>Perbaikan: Tambahkan pengujian yang memeriksa susunan dan jenis nilai pada tanggapan.</li><li><b>Jalur gagal mengembalikan bentuk yang berbeda-beda.</b><br>Penyebab umum: Bentuk tanggapan jalur gagal tidak dijadikan bagian kontrak.<br>Perbaikan: Tetapkan bentuk tanggapan jalur gagal dan uji seperti jalur berhasil.</li></ul>
   <div class="quiz"><strong>Uji pemahaman</strong><div class="quiz-question">
-    <b>1. Apa prinsip yang paling tepat untuk topik “Membuat API dan test kontrak”?</b>
-    <ol type="A"><li>Kunci perilaku API dengan feature tests sebelum menambah klien mobile.</li><li>Gunakan solusi paling rumit sejak awal, meski kebutuhan belum jelas.</li><li>Lewati pengujian karena contoh kecil pasti benar.</li></ol>
-    <details><summary>Lihat pembahasan</summary><p class="answer">Jawaban: A. Kunci perilaku API dengan feature tests sebelum menambah klien mobile.</p></details>
+    <b>1. Apa yang diperiksa pengujian kontrak?</b>
+    <ol type="A"><li>Kecepatan jaringan</li><li>Kesesuaian tanggapan dengan bentuk dan aturan yang dijanjikan</li><li>Jumlah pengguna</li></ol>
+    <details><summary>Lihat pembahasan</summary><p class="answer">Jawaban: B. Pengujian kontrak memeriksa apakah tanggapan masih sesuai janji bentuk dan aturannya.</p></details>
+  </div><div class="quiz-question">
+    <b>2. Mengapa bentuk tanggapan dipisahkan dari struktur penyimpanan?</b>
+    <ol type="A"><li>Agar lebih cepat</li><li>Agar perubahan struktur penyimpanan tidak langsung merusak pemanggil</li><li>Agar data lebih sedikit</li></ol>
+    <details><summary>Lihat pembahasan</summary><p class="answer">Jawaban: B. Pemisahan itu menjaga janji bentuk tanggapan tetap stabil meski penyimpanan berubah.</p></details>
+  </div><div class="quiz-question">
+    <b>3. Anda perlu menghapus sebuah kolom dari bentuk tanggapan API. Tindakan tepat...</b>
+    <ol type="A"><li>Menghapusnya langsung dari versi yang berjalan</li><li>Memperkenalkan versi baru dan membiarkan versi lama sementara</li><li>Mengganti nama kolomnya diam-diam</li></ol>
+    <details><summary>Lihat pembahasan</summary><p class="answer">Jawaban: B. Perubahan yang merusak diperkenalkan sebagai versi baru agar pemanggil dapat berpindah bertahap.</p></details>
   </div></div>
-  
-  
-  
+  <h4>Ringkasan</h4><ul><li>Alamat API dirancang menurut sumber daya, dengan penyaring dipisahkan dari alamat.</li><li>Bentuk tanggapan tetap, dengan data dipisahkan dari keterangannya.</li><li>Kontrak API ditulis pada berkas yang dapat dibaca mesin dan dijaga sejalan dengan kenyataan.</li><li>Perubahan yang merusak diperkenalkan sebagai versi baru, bukan menimpa yang lama.</li></ul>
+  <div class="panel"><b>Berikutnya</b><p>Berikutnya: dasbor web. Anda akan menyusun antarmuka yang memakai API yang baru dibangun.</p></div>
+  <h4>Sumber</h4><ul><li><a href="https://spec.openapis.org/oas/latest.html" rel="noopener noreferrer">OpenAPI Specification</a> <small>OpenAPI Initiative · latest</small> — Standar menuliskan kontrak API yang dapat dibaca mesin.</li><li><a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Status" rel="noopener noreferrer">MDN: HTTP response status codes</a> <small>Mozilla · rolling</small> — Daftar kode status tanggapan yang dipakai API.</li><li><a href="https://vitest.dev/guide/" rel="noopener noreferrer">Vitest: Getting Started</a> <small>Vitest · rolling</small> — Panduan menulis pengujian untuk memeriksa janji kontrak.</li></ul>
 </article>
 <article class="lesson" id="m12-l04">
-  <div class="lesson-meta">Pelajaran 04 · 45 menit · Lanjutan · JavaScript</div>
+  <div class="lesson-meta">Pelajaran 04 · 150 menit · Lanjutan · PHP</div>
   <h3>Dashboard web Laravel</h3>
-  
-  
-  
-  
-  
-  
+  <div class="panel good"><b>Hasil belajar</b><p>Setelah pelajaran ini, Anda dapat menyusun dasbor web yang memakai API, memisahkan tampilan dari data, serta menangani keadaan memuat, gagal, dan izin dengan rapi.</p></div>
+  <h4>Tujuan</h4><ul><li>Menghubungkan halaman dengan data dari API.</li><li>Memisahkan tampilan dari pengambilan data.</li><li>Menangani keadaan memuat dan gagal pada dasbor.</li><li>Membatasi tampilan menurut izin pengguna.</li></ul>
+  <div class="panel"><b>Prasyarat</b><p>Membuat API dan test kontrak</p></div>
+  <h4>Istilah kunci</h4><dl class="glossary"><div><dt>Rute</dt><dd>Penanda alamat yang menghubungkan permintaan pengguna dengan penanganannya.</dd></div><div><dt>Pengendali</dt><dd>Bagian yang menerima permintaan, menyiapkan data, dan menyerahkannya ke tampilan.</dd></div><div><dt>Tampilan</dt><dd>Bagian yang menyusun keluaran untuk pengguna dari data yang sudah disiapkan.</dd></div><div><dt>Izin</dt><dd>Aturan yang menentukan tindakan apa yang boleh dilakukan seorang pengguna.</dd></div><div><dt>Keadaan tampilan</dt><dd>Keadaan yang perlu ditampilkan kepada pengguna, misalnya memuat, kosong, atau gagal.</dd></div></dl>
+  <h4>Kartu sintaks</h4><div class="panel">
+  <b><code>Route::get(&#39;/tugas&#39;, [TugasController::class, &#39;index&#39;]);</code></b>
+  <p><em>Dibaca: Baca sebagai penghubung alamat dengan penanganan yang menyiapkan datanya.</em></p>
+  <p>Rute memisahkan alamat dari penanganannya. Alamat dapat berubah tanpa mengubah logika penyusunan datanya.</p>
+  <pre><code>Route::get(&#39;/tugas&#39;, [TugasController::class, &#39;index&#39;]);</code></pre>
+  <p><em>Output: Permintaan ke alamat itu diteruskan ke penanganan yang sesuai.</em></p>
+  <p><em>Hati-hati: Menaruh logika penyusunan data langsung pada berkas rute membuatnya sulit diuji dan dipakai ulang.</em></p>
+</div><div class="panel">
+  <b><code>$tugas = Tugas::where(&quot;selesai&quot;, false)-&gt;get();</code></b>
+  <p><em>Dibaca: Baca sebagai pengambilan data sesuai penyaring sebelum diserahkan ke tampilan.</em></p>
+  <p>Pengambilan data dilakukan di pengendali sehingga tampilan hanya menerima data yang sudah siap.</p>
+  <pre><code>$tugas = Tugas::where(&quot;selesai&quot;, false)-&gt;get();</code></pre>
+  <p><em>Output: Tampilan menerima daftar tugas yang belum selesai.</em></p>
+  <p><em>Hati-hati: Mengambil data langsung dari tampilan mencampur penyiapan data dengan penyusunan keluaran.</em></p>
+</div><div class="panel">
+  <b><code>@can(&#39;ubah&#39;, $tugas) ... @endcan</code></b>
+  <p><em>Dibaca: Baca sebagai penjagaan yang menampilkan bagian tampilan hanya bila pengguna berhak.</em></p>
+  <p>Pemeriksaan izin pada tampilan menyembunyikan tindakan yang tidak boleh dilakukan pengguna sebelum dicoba.</p>
+  <pre><code>@can(&#39;ubah&#39;, $tugas) ... @endcan</code></pre>
+  <p><em>Output: Bagian tampilan hanya muncul bagi pengguna yang berhak.</em></p>
+  <p><em>Hati-hati: Menyembunyikan tindakan di tampilan tanpa memeriksa izin di peladen membuat tindakan itu tetap dapat dipanggil.</em></p>
+</div>
+  <h4>Aturan penulisan</h4><ul><li>Hubungkan halaman dengan data lewat pengendali, bukan langsung pada tampilan.</li><li>Siapkan data di pengendali dan serahkan ke tampilan dalam bentuk yang siap dipakai.</li><li>Tampilkan keadaan memuat, kosong, dan gagal secara berbeda.</li><li>Periksa izin di peladen, bukan hanya menyembunyikan tampilannya.</li><li>Jaga tampilan tetap ringkas dengan memindahkan bagian berulang ke komponen.</li></ul>
   <section class="lesson-section">
-  <h4>01 · Memahami konsepnya</h4>
-  <p>Bangun dashboard berbasis Blade/Livewire yang memanfaatkan backend sama. Buat komponen daftar, form, filter, konfirmasi hapus, serta feedback status.</p><p>Pisahkan presentasi, request validation dan domain logic. Uji responsive dan akses keyboard. Pastikan halaman privat tidak bocor lewat caching.</p>
+  <h4>01 · Cara membaca pengendali dasbor</h4>
+  <p>Pengendali dibaca sebagai penyiapan data untuk tampilan. Ia mengambil data sesuai kebutuhan, lalu menyerahkannya ke tampilan dalam bentuk yang siap dipakai.</p><p>Pada contoh, tugas yang belum selesai diambil dan diurutkan dari yang terbaru, lalu diserahkan ke tampilan. Tampilan tinggal menampilkan data itu tanpa mengurus pengambilannya.</p><p>Pemisahan ini penting karena pengambilan data berkaitan dengan aturan dan izin, sedangkan tampilan berkaitan dengan penyusunan keluaran. Mencampur keduanya membuat keduanya sulit diuji.</p>
+  <pre><code>class TugasController extends Controller
+{
+    public function index()
+    {
+        $tugas = Tugas::where(&quot;selesai&quot;, false)
+            -&gt;latest()
+            -&gt;get();
+
+        return view(&quot;tugas.index&quot;, compact(&quot;tugas&quot;));
+    }
+}</code></pre><div class="panel"><b>Output yang diharapkan</b><p>Halaman menampilkan tugas yang belum selesai, diurutkan dari yang terbaru.</p></div><p>Pengendali mengambil dan mengurutkan data, lalu menyerahkannya ke tampilan. Tampilan hanya menyusun keluaran dari data yang siap.</p><div class="panel"><b>Bedah baris</b><ol><li>Baris 3 · <code>public function index()</code> — Penanganan menerima permintaan halaman.</li><li>Baris 5 · <code>$tugas = Tugas::where(&quot;selesai&quot;, false)</code> — Data diambil dengan penyaring yang sesuai.</li><li>Baris 6 · <code>-&gt;latest()</code> — Data diurutkan sebelum diserahkan.</li><li>Baris 9 · <code>return view(&quot;tugas.index&quot;, compact(&quot;tugas&quot;));</code> — Data diserahkan ke tampilan dalam bentuk yang siap.</li></ol></div>
+  <div class="panel good"><b>Data siap sebelum tampilan</b><p>Menyiapkan data di pengendali membuat tampilan tetap sederhana dan mudah diperiksa.</p></div>
+  <div class="panel warn"><b>Cek pemahaman</b><p>Mengapa pengambilan data dilakukan di pengendali, bukan di tampilan?</p><p>Kriteria berhasil: Agar tampilan hanya menyusun keluaran, sehingga penyiapan data dan penyusunan tampilan dapat diuji terpisah.</p></div>
+</section><section class="lesson-section">
+  <h4>02 · Menangani keadaan tampilan</h4>
+  <p>Dasbor perlu menampilkan beberapa keadaan: memuat, kosong, berhasil, dan gagal. Setiap keadaan memerlukan tampilan yang berbeda agar pengguna tahu apa yang sedang terjadi.</p><p>Keadaan kosong bukan kesalahan. Tampilkan keterangan yang menjelaskan bahwa memang belum ada data, bukan pesan kesalahan yang membingungkan.</p><p>Keadaan gagal menyebut apa yang gagal dan langkah berikutnya, misalnya mencoba lagi. Tanpa keterangan itu, pengguna hanya melihat halaman kosong tanpa tahu harus berbuat apa.</p><p>Urutan tampilnya keadaan juga perlu dipikirkan. Umumnya layar menampilkan keadaan memuat ketika pemanggilan berjalan, lalu berganti menjadi berisi, kosong, atau gagal sesuai hasilnya. Menetapkan urutan itu lebih dulu membantu memastikan tidak ada keadaan yang saling menimpa dan membingungkan pengguna.</p><p>Sertakan keterangan yang menuntun tindakan berikutnya. Keadaan gagal dapat menyebutkan sebab yang paling mungkin dan tombol untuk mencoba lagi. Keadaan kosong dapat menyebutkan langkah pertama yang dapat dilakukan pengguna, misalnya menambahkan tugas baru lewat tautan yang terlihat.</p>
   
-  <div class="panel good"><b>Best practice</b><p>Terapkan responsive, aksesibilitas, dan otorisasi di semua aksi.</p></div><div class="panel bad"><b>Kesalahan umum</b><p>Hanya menyembunyikan menu admin tetapi route backend terbuka.</p></div>
+  
+  <div class="panel warn"><b>Cek pemahaman</b><p>Mengapa keadaan kosong perlu dibedakan dari keadaan gagal?</p><p>Kriteria berhasil: Karena keadaan kosong bukan kesalahan, sehingga menampilkannya sebagai kesalahan akan membingungkan pengguna.</p></div>
+</section><section class="lesson-section">
+  <h4>03 · Membatasi tampilan menurut izin</h4>
+  <p>Pembatasan tampilan dibaca sebagai penjagaan: bagian tertentu hanya muncul bila pengguna berhak. Pemeriksaan itu menyembunyikan tindakan yang tidak boleh dilakukan.</p><p>Pada contoh, tautan perubahan hanya muncul bagi pengguna yang berhak, sedangkan pengguna lain melihat keterangan bahwa tugas itu hanya dapat dilihat. Kedua keadaan disampaikan tanpa kesan kesalahan.</p><p>Namun pemeriksaan tampilan bukan pengganti pemeriksaan di peladen. Tindakan tetap harus diperiksa saat dipanggil, karena permintaan dapat dibuat tanpa melalui tampilan.</p>
+  <pre><code>@can(&quot;ubah&quot;, $tugas)
+    &lt;a href=&quot;{{ route(&quot;tugas.edit&quot;, $tugas) }}&quot;&gt;Ubah&lt;/a&gt;
+@endcan
+
+@cannot(&quot;ubah&quot;, $tugas)
+    &lt;span&gt;Hanya dapat dilihat&lt;/span&gt;
+@endcannot</code></pre><div class="panel"><b>Output yang diharapkan</b><p>Tautan perubahan hanya muncul bagi pengguna yang berhak; pengguna lain melihat keterangan.</p></div><p>Pemeriksaan izin menyembunyikan tindakan yang tidak boleh dilakukan. Pemeriksaan di peladen tetap wajib karena permintaan dapat dibuat tanpa tampilan.</p><div class="panel"><b>Bedah baris</b><ol><li>Baris 1 · <code>@can(&quot;ubah&quot;, $tugas)</code> — Pemeriksaan izin membuka bagian untuk pengguna yang berhak.</li><li>Baris 2 · <code>&lt;a href=&quot;{{ route(&quot;tugas.edit&quot;, $tugas) }}&quot;&gt;Ubah&lt;/a&gt;</code> — Tindakan ditampilkan hanya pada keadaan berhak.</li><li>Baris 5 · <code>@cannot(&quot;ubah&quot;, $tugas)</code> — Bagian lain ditampilkan bagi pengguna yang tidak berhak.</li><li>Baris 6 · <code>&lt;span&gt;Hanya dapat dilihat&lt;/span&gt;</code> — Keterangan menjelaskan keadaan tanpa kesan kesalahan.</li></ol></div>
+  <div class="panel warn"><b>Tampilan bukan pengaman</b><p>Menyembunyikan tindakan di tampilan tidak mengamankan tindakan itu. Periksa izin di peladen pada setiap pemanggilan.</p></div>
   
 </section><section class="lesson-section">
-  <h4>02 · Contoh kode</h4>
-  <p>Perhatikan input, proses, dan output. Ketik ulang, lalu ubah satu nilai.</p>
-  <pre><code>// Screen web:
-// Daftar tugas -&gt; filter -&gt; tambah -&gt; edit
-// state: loading, empty, error, success</code></pre>
+  <h4>04 · Menyusun tampilan yang mudah dirawat</h4>
+  <p>Tampilan tumbuh cepat ketika setiap halaman ditulis dari awal. Pindahkan bagian yang berulang, misalnya kepala halaman, kartu tugas, dan pesan keadaan, ke komponen tersendiri.</p><p>Komponen dengan nama yang menyatakan perannya membuat halaman mudah dibaca. Pembaca dapat memahami susunan halaman dari nama komponennya tanpa membaca seluruh isinya.</p><p>Jaga agar komponen tetap sederhana. Komponen yang menerima terlalu banyak data dan pilihan sulit dipakai ulang dan cenderung menimbulkan kesalahan.</p><p>Kelompokkan tampilan menurut bagian yang bermakna bagi pengguna, bukan menurut jenis widget. Halaman daftar tugas, misalnya, tersusun dari kepala halaman, penyaring, daftar, dan pesan keadaan. Pembagian seperti itu membuat nama komponennya langsung menjelaskan perannya kepada pembaca.</p><p>Hindari menaruh aturan izin dan pengambilan data di dalam komponen tampilan. Komponen sebaiknya hanya menerima data yang sudah siap dan menampilkannya. Dengan begitu, komponen itu dapat dipakai pada beberapa halaman tanpa membawa urusan yang bukan tanggung jawabnya.</p><p>Ukur keberhasilan tampilan dari kemudahan pengguna menyelesaikan tugasnya, bukan dari banyaknya bagian yang ada. Tampilan yang sederhana tetapi membuat pengguna menemukan tindakan yang dicari lebih berhasil daripada tampilan yang penuh pilihan tetapi menyulitkan keputusan.</p>
   
   
+  <div class="panel warn"><b>Cek pemahaman</b><p>Kapan sebuah bagian tampilan sebaiknya dipindahkan menjadi komponen tersendiri?</p><p>Kriteria berhasil: Ketika bagian itu dipakai berulang atau cukup besar sehingga nama komponennya membantu membaca halaman.</p></div>
 </section>
-  <h4>Latihan bertingkat</h4><ol><li><b>Latihan 1</b> <em>(Mandiri)</em><p>Bangun halaman daftar dan form tambah/edit dengan validasi dan penanda error.</p></li><li><b>Latihan 2</b> <em>(Mandiri)</em><p>Ubah satu input atau asumsi pada contoh, catat hasil dan jelaskan alasannya.</p></li></ol>
-  
-  
+  <h4>Latihan bertingkat</h4><ol><li><b>Penanganan halaman daftar</b> <em>(Terbimbing)</em><p>Buat penanganan yang mengambil daftar tugas dan menyerahkannya ke tampilan.</p><ol><li>Hubungkan alamat dengan penangannya.</li><li>Ambil data dengan penyaring yang sesuai.</li><li>Urutkan data sebelum diserahkan.</li><li>Serahkan data ke tampilan.</li></ol><pre><code>public function index()
+{
+    // lengkapi
+}</code></pre><p><em>Hasil: Halaman menampilkan daftar tugas yang sudah siap tanpa pengambilan data di tampilan.</em></p><details><summary>Petunjuk bertahap</summary><ol><li>Data diambil di pengendali.</li><li>Data diserahkan dalam bentuk siap.</li><li>Tampilan hanya menampilkan.</li></ol></details><p><em>Tantangan: Tambahkan penyaring sederhana dari permintaan pengguna.</em></p></li><li><b>Tampilkan empat keadaan</b> <em>(Mandiri)</em><p>Buat tampilan yang membedakan keadaan memuat, kosong, berhasil, dan gagal pada halaman daftar tugas.</p><ol><li>Tentukan tampilan untuk setiap keadaan.</li><li>Tentukan cara berpindah antar keadaan.</li><li>Tulis pesan yang jelas untuk keadaan gagal.</li><li>Pastikan keadaan kosong bukan pesan kesalahan.</li></ol><pre><code>@if ($tugas-&gt;isEmpty())
+    ...
+@endif</code></pre><p><em>Hasil: Keempat keadaan tampil berbeda dengan pesan yang jelas.</em></p><details><summary>Petunjuk bertahap</summary><ol><li>Setiap keadaan punya tampilan berbeda.</li><li>Keadaan kosong bukan kesalahan.</li><li>Keadaan gagal menyebut langkah berikutnya.</li></ol></details><p><em>Tantangan: Tambahkan tombol coba lagi pada keadaan gagal.</em></p></li><li><b>Susun dasbor proyek</b> <em>(Penerapan)</em><p>Susun dasbor proyek akhir yang memuat daftar tugas, penyaring, penandaan selesai, dan pembatasan menurut izin.</p><ol><li>Tentukan bagian yang perlu pada dasbor.</li><li>Tentukan data yang dibutuhkan setiap bagian.</li><li>Tentukan izin untuk tindakan yang mengubah data.</li><li>Uji dasbor dengan pengguna berhak dan tidak berhak.</li></ol><pre><code>Rute: ...
+Data: ...
+Izin: ...</code></pre><p><em>Hasil: Dasbor memuat bagian yang direncanakan dan membatasi tindakan sesuai izin.</em></p><details><summary>Petunjuk bertahap</summary><ol><li>Data disiapkan di pengendali.</li><li>Izin diperiksa di peladen juga.</li><li>Bagian berulang dipindahkan ke komponen.</li></ol></details><p><em>Tantangan: Pindahkan bagian berulang menjadi komponen tersendiri.</em></p></li></ol>
+  <h4>Verifikasi</h4><div class="panel"><b>Mode: Manual</b><pre><code>Jalankan dasbor sebagai pengguna berbeda, uji setiap keadaan tampilan, dan periksa pembatasan izin.</code></pre><p><em>Hasil yang diharapkan: Data tampil sesuai penyaringnya, keempat keadaan tampil berbeda, dan tindakan hanya tersedia bagi pengguna yang berhak.</em></p><p><em>Bukti yang disimpan: Simpan kode dasbor dan catatan hasil pengujian.</em></p></div>
+  <h4>Mengatasi masalah</h4><ul><li><b>Tampilan menampilkan data yang salah atau tertukar.</b><br>Penyebab umum: Data diambil atau disaring di tampilan sehingga aturannya tersebar.<br>Perbaikan: Pindahkan pengambilan dan penyaringan data ke pengendali.</li><li><b>Pengguna melihat halaman kosong tanpa keterangan.</b><br>Penyebab umum: Keadaan kosong tidak dibedakan dari keadaan memuat atau gagal.<br>Perbaikan: Tampilkan keterangan khusus untuk setiap keadaan.</li><li><b>Tindakan terlarang masih dapat dijalankan.</b><br>Penyebab umum: Izin hanya diperiksa di tampilan, bukan di peladen.<br>Perbaikan: Periksa izin di peladen pada setiap pemanggilan tindakan.</li><li><b>Halaman sulit dirawat karena isinya panjang.</b><br>Penyebab umum: Bagian berulang ditulis ulang pada setiap halaman.<br>Perbaikan: Pindahkan bagian berulang menjadi komponen dengan nama yang jelas.</li></ul>
   <div class="quiz"><strong>Uji pemahaman</strong><div class="quiz-question">
-    <b>1. Apa prinsip yang paling tepat untuk topik “Dashboard web Laravel”?</b>
-    <ol type="A"><li>Terapkan responsive, aksesibilitas, dan otorisasi di semua aksi.</li><li>Gunakan solusi paling rumit sejak awal, meski kebutuhan belum jelas.</li><li>Lewati pengujian karena contoh kecil pasti benar.</li></ol>
-    <details><summary>Lihat pembahasan</summary><p class="answer">Jawaban: A. Terapkan responsive, aksesibilitas, dan otorisasi di semua aksi.</p></details>
+    <b>1. Di bagian mana data sebaiknya disiapkan pada dasbor?</b>
+    <ol type="A"><li>Tampilan</li><li>Pengendali</li><li>Berkas rute</li></ol>
+    <details><summary>Lihat pembahasan</summary><p class="answer">Jawaban: B. Data disiapkan di pengendali, sedangkan tampilan hanya menyusun keluaran.</p></details>
+  </div><div class="quiz-question">
+    <b>2. Apa fungsi pemeriksaan izin pada tampilan?</b>
+    <ol type="A"><li>Mengamankan tindakan sepenuhnya</li><li>Menyembunyikan tindakan yang tidak boleh dilakukan pengguna</li><li>Mempercepat halaman</li></ol>
+    <details><summary>Lihat pembahasan</summary><p class="answer">Jawaban: B. Pemeriksaan tampilan menyembunyikan tindakan, tetapi keamanannya tetap dijaga pemeriksaan di peladen.</p></details>
+  </div><div class="quiz-question">
+    <b>3. Halaman daftar belum memiliki data sama sekali. Tindakan tepat...</b>
+    <ol type="A"><li>Menampilkannya sebagai kesalahan</li><li>Menampilkan keterangan khusus keadaan kosong</li><li>Menyembunyikan halaman</li></ol>
+    <details><summary>Lihat pembahasan</summary><p class="answer">Jawaban: B. Keadaan kosong bukan kesalahan dan perlu keterangan sendiri.</p></details>
   </div></div>
-  
-  
-  
+  <h4>Ringkasan</h4><ul><li>Pengendali menyiapkan data, sedangkan tampilan menyusun keluaran.</li><li>Dasbor membedakan keadaan memuat, kosong, berhasil, dan gagal.</li><li>Izin diperiksa di peladen, bukan hanya disembunyikan di tampilan.</li><li>Bagian berulang dipindahkan menjadi komponen agar halaman mudah dirawat.</li></ul>
+  <div class="panel"><b>Berikutnya</b><p>Berikutnya: klien Flutter untuk API yang sama. Anda akan memakai ulang API itu pada aplikasi mobile.</p></div>
+  <h4>Sumber</h4><ul><li><a href="https://laravel.com/docs/13.x/routing" rel="noopener noreferrer">Laravel Docs: Routing</a> <small>Laravel · 13.x</small> — Dokumentasi resmi rute dan penghubungnya dengan penanganan.</li><li><a href="https://laravel.com/docs/13.x/authorization" rel="noopener noreferrer">Laravel Docs: Authorization</a> <small>Laravel · 13.x</small> — Dokumentasi resmi izin pengguna pada tindakan aplikasi.</li><li><a href="https://laravel.com/docs/13.x/eloquent" rel="noopener noreferrer">Laravel Docs: Eloquent ORM</a> <small>Laravel · 13.x</small> — Dokumentasi resmi pengambilan data dari basis data.</li></ul>
 </article>
 <article class="lesson" id="m12-l05">
-  <div class="lesson-meta">Pelajaran 05 · 45 menit · Lanjutan · JavaScript</div>
+  <div class="lesson-meta">Pelajaran 05 · 150 menit · Lanjutan · Dart</div>
   <h3>Flutter client untuk API yang sama</h3>
-  
-  
-  
-  
-  
-  
+  <div class="panel good"><b>Hasil belajar</b><p>Setelah pelajaran ini, Anda dapat menyusun klien mobile yang memakai API yang sama dengan dasbor, serta menangani keadaan memuat, gagal, dan data tersimpan dengan rapi.</p></div>
+  <h4>Tujuan</h4><ul><li>Menghubungkan klien mobile dengan API yang sama.</li><li>Memakai ulang lapisan layanan pada beberapa layar.</li><li>Menangani keadaan memuat dan gagal di mobile.</li><li>Menyimpan data dan token dengan aman di perangkat.</li></ul>
+  <div class="panel"><b>Prasyarat</b><p>Dashboard web Laravel</p></div>
+  <h4>Istilah kunci</h4><dl class="glossary"><div><dt>Lapisan layanan</dt><dd>Bagian kode yang mengurus pemanggilan API sehingga layar tidak memanggil jaringan langsung.</dd></div><div><dt>Model</dt><dd>Objek yang mewakili data dari API sehingga bentuknya tidak menyebar ke seluruh aplikasi.</dd></div><div><dt>Keadaan layar</dt><dd>Keadaan yang ditampilkan sebuah layar, misalnya memuat, berisi, kosong, atau gagal.</dd></div><div><dt>Data tersimpan</dt><dd>Salinan data di perangkat yang dipakai agar aplikasi tetap berguna tanpa koneksi.</dd></div><div><dt>Penyimpanan aman</dt><dd>Tempat penyimpanan terlindungi untuk nilai sensitif seperti token.</dd></div></dl>
+  <h4>Kartu sintaks</h4><div class="panel">
+  <b><code>final tugas = await api.daftar();</code></b>
+  <p><em>Dibaca: Baca sebagai pemanggilan lapisan layanan yang mengembalikan daftar objek siap pakai.</em></p>
+  <p>Layar memanggil lapisan layanan, bukan jaringan langsung. Dengan begitu, rincian API terkumpul di satu tempat.</p>
+  <pre><code>final tugas = await api.daftar();</code></pre>
+  <p><em>Output: Layar menerima daftar objek tanpa mengetahui rincian pemanggilan jaringannya.</em></p>
+  <p><em>Hati-hati: Memanggil jaringan langsung dari layar menyebarkan rincian API ke banyak tempat.</em></p>
+</div><div class="panel">
+  <b><code>if (hasil is Error) tampilkanGagal();</code></b>
+  <p><em>Dibaca: Baca sebagai pemisahan antara hasil berhasil dan kegagalan sebelum menampilkannya.</em></p>
+  <p>Pemisahan hasil membuat layar dapat menampilkan keadaan gagal dengan jelas, bukan menampilkan data kosong.</p>
+  <pre><code>if (hasil is Error) tampilkanGagal();</code></pre>
+  <p><em>Output: Layar menampilkan keadaan gagal ketika pemanggilan tidak berhasil.</em></p>
+  <p><em>Hati-hati: Mengabaikan kegagalan membuat layar menampilkan daftar kosong padahal sebenarnya terjadi kesalahan.</em></p>
+</div><div class="panel">
+  <b><code>await PenyimpananAman.tulis(&quot;token&quot;, nilai);</code></b>
+  <p><em>Dibaca: Baca sebagai penyimpanan nilai sensitif memakai perlindungan bawaan perangkat.</em></p>
+  <p>Token disimpan terlindungi agar tidak mudah terbaca bila perangkat diperiksa.</p>
+  <pre><code>await PenyimpananAman.tulis(&quot;token&quot;, nilai);</code></pre>
+  <p><em>Output: Token tersimpan terlindungi di perangkat.</em></p>
+  <p><em>Hati-hati: Menyimpan token pada penyimpanan biasa membuatnya mudah terbaca.</em></p>
+</div>
+  <h4>Aturan penulisan</h4><ul><li>Panggil API lewat lapisan layanan, bukan langsung dari layar.</li><li>Ubah data mentah menjadi model sebelum dipakai layar.</li><li>Tampilkan keadaan memuat, kosong, dan gagal secara berbeda.</li><li>Simpan token pada penyimpanan aman, bukan penyimpanan biasa.</li><li>Pakai lapisan layanan yang sama untuk seluruh layar yang membutuhkan.</li></ul>
   <section class="lesson-section">
-  <h4>01 · Memahami konsepnya</h4>
-  <p>Buat aplikasi Flutter daftar dan detail tugas menggunakan API Laravel. Sertakan login, error state, loading, dan penyimpanan lokal secukupnya.</p><p>Gunakan model typed, repository, dan state management sesuai kebutuhan. Uji kondisi API lambat/offline, dan back navigation setelah pengeditan.</p>
+  <h4>01 · Cara membaca lapisan layanan klien</h4>
+  <p>Lapisan layanan dibaca sebagai penghubung tunggal antara aplikasi dan API. Ia menyusun permintaan, memeriksa hasilnya, dan mengubah data menjadi model.</p><p>Pada contoh, layanan menerima klien jaringan dan alamat dasar dari luar, sehingga dapat diuji dengan klien tiruan. Data diambil dari bagian data tanggapan, lalu diubah menjadi daftar model.</p><p>Perhatikan bahwa pemeriksaan status dilakukan sebelum data diubah. Bila status menandakan kesalahan, pemanggilan dihentikan sehingga kesalahan tidak tersamar sebagai data kosong.</p>
+  <pre><code>class TugasApi {
+  TugasApi(this._klien, this._alamat);
+
+  final http.Client _klien;
+  final String _alamat;
+
+  Future&lt;List&lt;Tugas&gt;&gt; daftar() async {
+    final res = await _klien.get(Uri.parse(&quot;$_alamat/v1/tugas&quot;));
+    if (res.statusCode != 200) throw Exception(&quot;HTTP ${res.statusCode}&quot;);
+    final data = jsonDecode(res.body)[&quot;data&quot;] as List&lt;dynamic&gt;;
+    return data.map((e) =&gt; Tugas.fromJson(e as Map&lt;String, dynamic&gt;)).toList();
+  }
+}</code></pre><div class="panel"><b>Output yang diharapkan</b><p>Layanan mengembalikan daftar model tugas atau melaporkan kesalahan status dengan jelas.</p></div><p>Layanan menyusun permintaan, memeriksa statusnya, lalu mengubah data menjadi model. Rincian API terkumpul di satu kelas.</p><div class="panel"><b>Bedah baris</b><ol><li>Baris 1 · <code>class TugasApi {</code> — Kelas layanan menjadi penghubung tunggal dengan API.</li><li>Baris 2 · <code>TugasApi(this._klien, this._alamat);</code> — Klien jaringan dan alamat dasar diterima dari luar.</li><li>Baris 8 · <code>final res = await _klien.get(Uri.parse(&quot;$_alamat/v1/tugas&quot;));</code> — Permintaan disusun memakai alamat dasar.</li><li>Baris 9 · <code>if (res.statusCode != 200) throw Exception(&quot;HTTP ${res.statusCode}&quot;);</code> — Status tanggapan diperiksa sebelum data diubah.</li><li>Baris 11 · <code>return data.map((e) =&gt; Tugas.fromJson(e as Map&lt;String, dynamic&gt;)).toList();</code> — Data diubah menjadi daftar model.</li></ol></div>
+  <div class="panel good"><b>Satu tempat untuk rincian API</b><p>Dengan lapisan layanan, perubahan alamat atau bentuk tanggapan cukup diubah di satu tempat.</p></div>
+  <div class="panel warn"><b>Cek pemahaman</b><p>Mengapa klien jaringan diterima dari luar, bukan dibuat di dalam layanan?</p><p>Kriteria berhasil: Agar layanan dapat diuji dengan klien tiruan tanpa benar-benar memanggil jaringan.</p></div>
+</section><section class="lesson-section">
+  <h4>02 · Menangani keadaan pada layar</h4>
+  <p>Layar mobile memerlukan penanganan keadaan yang jelas: memuat, berisi, kosong, dan gagal. Tanpa itu, pengguna melihat layar kosong yang membingungkan ketika terjadi kesalahan.</p><p>Bedakan kegagalan dari keadaan kosong. Kegagalan berarti pemanggilan tidak berhasil, sedangkan keadaan kosong berarti pemanggilan berhasil tetapi belum ada data. Keduanya perlu pesan yang berbeda.</p><p>Sediakan cara mencoba lagi pada keadaan gagal. Karena koneksi mobile sering berubah, tombol coba lagi membuat pengguna dapat memulihkan sendiri tanpa menutup aplikasi.</p><p>Sediakan keterangan yang menuntun pada setiap keadaan. Ketika gagal, sebutkan sebab yang paling mungkin dan cara mencoba lagi. Ketika kosong, sebutkan langkah pertama yang dapat dilakukan pengguna. Keterangan yang jelas mengurangi kebingungan dan membuat pengguna tidak meninggalkan aplikasi tanpa mencoba lagi.</p>
   
-  <div class="panel good"><b>Best practice</b><p>Jangan menaruh rahasia backend dalam binary mobile.</p></div><div class="panel bad"><b>Kesalahan umum</b><p>Aplikasi crash ketika API gagal atau tidak ada internet.</p></div>
+  
+  <div class="panel warn"><b>Cek pemahaman</b><p>Apa perbedaan keadaan kosong dan keadaan gagal pada layar mobile?</p><p>Kriteria berhasil: Keadaan kosong berarti pemanggilan berhasil tetapi belum ada data; keadaan gagal berarti pemanggilan tidak berhasil.</p></div>
+</section><section class="lesson-section">
+  <h4>03 · Memuat data dengan keadaan yang jelas</h4>
+  <p>Pemuatan data dibaca sebagai urutan: tandai sedang memuat, jalankan pemanggilan, lalu akhiri penanda. Urutan ini memastikan pengguna melihat keadaan yang benar pada setiap tahap.</p><p>Pada contoh, penanda memuat dinyalakan sebelum pemanggilan, dan diakhiri setelah selesai apa pun hasilnya. Bila pemanggilan gagal, keadaan gagal ditandai agar layar menampilkan pesannya.</p><p>Mengakhiri penanda memuat pada bagian yang selalu dijalankan penting. Bila penanda tidak diakhiri ketika gagal, layar terus menampilkan keadaan memuat meski pemanggilan sudah selesai.</p><p>Batasi pengambilan data yang berjalan bersamaan agar tidak saling menimpa. Ketika pengguna memicu pemuatan lagi sebelum yang sebelumnya selesai, hasil yang lebih lama dapat datang belakangan dan menimpa hasil yang lebih baru. Menandai pemanggilan terakhir atau mencegah pemanggilan ganda menyelesaikan masalah itu.</p>
+  <pre><code>Future&lt;void&gt; muat() async {
+  setState(() =&gt; _sedangMuat = true);
+  try {
+    final tugas = await _api.daftar();
+    setState(() =&gt; _tugas = tugas);
+  } catch (_) {
+    setState(() =&gt; _gagal = true);
+  } finally {
+    setState(() =&gt; _sedangMuat = false);
+  }
+}</code></pre><div class="panel"><b>Output yang diharapkan</b><p>Layar menandai keadaan memuat, menampilkan data saat berhasil, dan menandai gagal saat pemanggilan tidak berhasil.</p></div><p>Penanda memuat dinyalakan sebelum pemanggilan dan diakhiri apa pun hasilnya. Keberhasilan dan kegagalan ditandai secara terpisah.</p><div class="panel"><b>Bedah baris</b><ol><li>Baris 2 · <code>setState(() =&gt; _sedangMuat = true);</code> — Penanda memuat dinyalakan sebelum pemanggilan.</li><li>Baris 4 · <code>final tugas = await _api.daftar();</code> — Data diambil melalui lapisan layanan.</li><li>Baris 6 · <code>} catch (_) {</code> — Kegagalan ditandai agar layar menampilkan pesannya.</li><li>Baris 9 · <code>setState(() =&gt; _sedangMuat = false);</code> — Penanda memuat diakhiri apa pun hasilnya.</li></ol></div>
+  <div class="panel warn"><b>Akhiri penanda memuat</b><p>Pastikan penanda memuat selalu diakhiri. Bila tidak, layar terus menampilkan keadaan memuat meski pemanggilan sudah selesai.</p></div>
   
 </section><section class="lesson-section">
-  <h4>02 · Contoh kode</h4>
-  <p>Perhatikan input, proses, dan output. Ketik ulang, lalu ubah satu nilai.</p>
-  <pre><code>// Arsitektur klien:
-// Widget -&gt; ViewModel -&gt; TaskRepository -&gt; HttpClient
-// Model Task.fromJson mengubah payload API.</code></pre>
+  <h4>04 · Menyimpan data dan token di perangkat</h4>
+  <p>Token disimpan pada penyimpanan aman agar tidak mudah terbaca bila perangkat diperiksa. Jangan menaruh token pada penyimpanan biasa atau di dalam kode.</p><p>Data biasa, misalnya daftar tugas, dapat disimpan pada penyimpanan biasa sebagai salinan luring. Salinan itu membuat aplikasi tetap berguna saat koneksi terputus.</p><p>Tampilkan salinan lebih dulu, lalu selaraskan dengan API saat koneksi tersedia. Cara ini membuat aplikasi terasa cepat tanpa mengorbankan kesegaran data.</p><p>Bedakan data yang perlu bertahan lama dari data yang cukup sementara. Data pengguna yang perlu diselaraskan dengan peladen disimpan agar tidak hilang, sedangkan data sementara seperti daftar hasil pencarian terakhir cukup disimpan selama aplikasi berjalan. Perbedaan ini menjaga ruang perangkat tetap terkendali.</p><p>Selaraskan data secara hati-hati agar perubahan di perangkat tidak saling bertabrakan. Tandai waktu perubahan terakhir pada setiap salinan, sehingga versi yang lebih baru dapat ditentukan dengan yakin ketika keduanya berbeda. Tanpa penanda itu, sulit memutuskan versi mana yang harus dipertahankan.</p>
   
-  
+  <div class="panel warn"><b>Token dan data biasa berbeda tempat</b><p>Token memerlukan penyimpanan aman, sedangkan data biasa cukup pada penyimpanan biasa. Jangan campur keduanya.</p></div>
+  <div class="panel warn"><b>Cek pemahaman</b><p>Ke mana token dan data biasa sebaiknya disimpan?</p><p>Kriteria berhasil: Token pada penyimpanan aman, sedangkan data biasa pada penyimpanan biasa sebagai salinan luring.</p></div>
 </section>
-  <h4>Latihan bertingkat</h4><ol><li><b>Latihan 1</b> <em>(Mandiri)</em><p>Implementasikan daftar tugas Flutter dan buat skenario API mengembalikan 500.</p></li><li><b>Latihan 2</b> <em>(Mandiri)</em><p>Ubah satu input atau asumsi pada contoh, catat hasil dan jelaskan alasannya.</p></li></ol>
-  
-  
+  <h4>Latihan bertingkat</h4><ol><li><b>Hubungkan layar dengan API</b> <em>(Terbimbing)</em><p>Buat layar yang memakai lapisan layanan untuk mengambil daftar tugas dan menampilkannya.</p><ol><li>Panggil lapisan layanan dari layar.</li><li>Tampilkan keadaan memuat saat pemanggilan berjalan.</li><li>Tampilkan daftar setelah data diterima.</li><li>Tangani kegagalan dengan pesan yang jelas.</li></ol><pre><code>Future&lt;void&gt; muat() async {
+  // lengkapi
+}</code></pre><p><em>Hasil: Layar menampilkan data, keadaan memuat, dan keadaan gagal dengan benar.</em></p><details><summary>Petunjuk bertahap</summary><ol><li>Layar memanggil lapisan layanan.</li><li>Penanda memuat diakhiri apa pun hasilnya.</li><li>Kegagalan ditandai terpisah dari keadaan kosong.</li></ol></details><p><em>Tantangan: Tambahkan tombol coba lagi pada keadaan gagal.</em></p></li><li><b>Simpan dan pakai ulang layanan</b> <em>(Mandiri)</em><p>Buat layar kedua yang memakai lapisan layanan yang sama untuk mengambil satu tugas berdasarkan pengenal.</p><ol><li>Tambahkan kemampuan mengambil satu tugas pada lapisan layanan.</li><li>Panggil kemampuan itu dari layar kedua.</li><li>Tampilkan keadaan memuat dan gagal.</li><li>Pastikan layanan yang sama dipakai kedua layar.</li></ol><pre><code>Future&lt;Tugas&gt; satu(int id) async {
+  // lengkapi
+}</code></pre><p><em>Hasil: Kedua layar memakai lapisan layanan yang sama tanpa menyalin rincian API.</em></p><details><summary>Petunjuk bertahap</summary><ol><li>Rincian API tetap di lapisan layanan.</li><li>Layar kedua tidak memanggil jaringan langsung.</li><li>Keadaan layar ditangani dengan pola yang sama.</li></ol></details><p><em>Tantangan: Pindahkan penanganan keadaan yang sama menjadi komponen tersendiri.</em></p></li><li><b>Jalankan klien luring</b> <em>(Penerapan)</em><p>Buat klien mobile yang menampilkan salinan data lebih dulu, lalu menyelaraskannya dengan API saat koneksi tersedia, dengan token tersimpan aman.</p><ol><li>Simpan token pada penyimpanan aman setelah masuk.</li><li>Tampilkan salinan data lebih dulu bila ada.</li><li>Ambil data terbaru dari API lalu perbarui salinannya.</li><li>Tandai data yang belum terselaras.</li></ol><pre><code>final lokal = await bacaLokal(&quot;tugas&quot;);</code></pre><p><em>Hasil: Aplikasi berguna tanpa koneksi dan data diselaraskan saat koneksi tersedia.</em></p><details><summary>Petunjuk bertahap</summary><ol><li>Salinan dipakai lebih dulu.</li><li>Token disimpan aman.</li><li>Data diselaraskan saat koneksi tersedia.</li></ol></details><p><em>Tantangan: Catat perubahan luring dan kirim saat koneksi tersedia.</em></p></li></ol>
+  <h4>Verifikasi</h4><div class="panel"><b>Mode: Manual</b><pre><code>Jalankan klien dengan dan tanpa koneksi, uji keadaan layar, dan periksa penyimpanan token.</code></pre><p><em>Hasil yang diharapkan: Layar menampilkan data, keadaan memuat, kosong, dan gagal dengan benar; token tersimpan aman; data terselaras saat koneksi tersedia.</em></p><p><em>Bukti yang disimpan: Simpan kode klien dan catatan hasil setiap pengujian.</em></p></div>
+  <h4>Mengatasi masalah</h4><ul><li><b>Layar menampilkan daftar kosong padahal terjadi kesalahan.</b><br>Penyebab umum: Kegagalan pemanggilan tidak dibedakan dari keadaan kosong.<br>Perbaikan: Tangkap kegagalan dan tandai keadaan gagal agar layar menampilkan pesannya.</li><li><b>Layar terus menampilkan keadaan memuat.</b><br>Penyebab umum: Penanda memuat tidak diakhiri ketika pemanggilan gagal.<br>Perbaikan: Akhiri penanda memuat pada bagian yang selalu dijalankan.</li><li><b>Rincian API tersebar di banyak layar.</b><br>Penyebab umum: Layar memanggil jaringan langsung alih-alih lewat lapisan layanan.<br>Perbaikan: Pindahkan seluruh pemanggilan API ke lapisan layanan yang sama.</li><li><b>Token mudah terbaca bila perangkat diperiksa.</b><br>Penyebab umum: Token disimpan pada penyimpanan biasa.<br>Perbaikan: Pindahkan token ke penyimpanan aman.</li></ul>
   <div class="quiz"><strong>Uji pemahaman</strong><div class="quiz-question">
-    <b>1. Apa prinsip yang paling tepat untuk topik “Flutter client untuk API yang sama”?</b>
-    <ol type="A"><li>Jangan menaruh rahasia backend dalam binary mobile.</li><li>Gunakan solusi paling rumit sejak awal, meski kebutuhan belum jelas.</li><li>Lewati pengujian karena contoh kecil pasti benar.</li></ol>
-    <details><summary>Lihat pembahasan</summary><p class="answer">Jawaban: A. Jangan menaruh rahasia backend dalam binary mobile.</p></details>
+    <b>1. Mengapa pemanggilan API sebaiknya berada di lapisan layanan, bukan di layar?</b>
+    <ol type="A"><li>Agar tampilan lebih berwarna</li><li>Agar rincian API terkumpul di satu tempat dan layar mudah diuji</li><li>Agar aplikasi lebih kecil</li></ol>
+    <details><summary>Lihat pembahasan</summary><p class="answer">Jawaban: B. Lapisan layanan memusatkan rincian API sehingga layar tidak menyebarkannya dan lebih mudah diuji.</p></details>
+  </div><div class="quiz-question">
+    <b>2. Apa akibat penanda memuat tidak diakhiri ketika pemanggilan gagal?</b>
+    <ol type="A"><li>Layar menampilkan data</li><li>Layar terus menampilkan keadaan memuat</li><li>Aplikasi menutup sendiri</li></ol>
+    <details><summary>Lihat pembahasan</summary><p class="answer">Jawaban: B. Tanpa diakhiri, penanda memuat tetap menyala sehingga layar tampak terus memuat.</p></details>
+  </div><div class="quiz-question">
+    <b>3. Klien perlu menyimpan token hasil masuk. Tindakan tepat...</b>
+    <ol type="A"><li>Menyimpannya pada penyimpanan biasa</li><li>Menyimpannya pada penyimpanan aman</li><li>Menulisnya di dalam kode</li></ol>
+    <details><summary>Lihat pembahasan</summary><p class="answer">Jawaban: B. Token disimpan pada penyimpanan aman agar tidak mudah terbaca bila perangkat diperiksa.</p></details>
   </div></div>
-  
-  
-  
+  <h4>Ringkasan</h4><ul><li>Klien mobile memakai lapisan layanan yang sama untuk seluruh layar.</li><li>Layar membedakan keadaan memuat, kosong, berhasil, dan gagal.</li><li>Token disimpan pada penyimpanan aman, data biasa pada penyimpanan biasa.</li><li>Data diselaraskan dengan API saat koneksi tersedia.</li></ul>
+  <div class="panel"><b>Berikutnya</b><p>Berikutnya: pengujian keamanan, penerbitan, dan cadangan. Anda akan menyiapkan proyek agar aman dan siap dipakai.</p></div>
+  <h4>Sumber</h4><ul><li><a href="https://docs.flutter.dev/data-and-backend/networking" rel="noopener noreferrer">Flutter Docs: Networking</a> <small>Flutter · stable</small> — Dokumentasi resmi pemanggilan jaringan dari aplikasi Flutter.</li><li><a href="https://pub.dev/packages/flutter_secure_storage" rel="noopener noreferrer">pub.dev: flutter_secure_storage</a> <small>Julian Steenbakker · current</small> — Dokumentasi penyimpanan aman untuk token pada perangkat.</li><li><a href="https://docs.flutter.dev/data-and-backend/state-mgmt/intro" rel="noopener noreferrer">Flutter Docs: State Management</a> <small>Flutter · stable</small> — Panduan mengelola keadaan layar beserta pembaruannya.</li></ul>
 </article>
 <article class="lesson" id="m12-l06">
-  <div class="lesson-meta">Pelajaran 06 · 45 menit · Lanjutan · JavaScript</div>
+  <div class="lesson-meta">Pelajaran 06 · 150 menit · Lanjutan · Bash</div>
   <h3>Uji keamanan, deploy, dan backup</h3>
-  
-  
-  
-  
-  
-  
+  <div class="panel good"><b>Hasil belajar</b><p>Setelah pelajaran ini, Anda dapat memeriksa keamanan proyek, menerbitkannya dengan langkah yang dapat diulang, serta menyiapkan cadangan dan pemulihan data.</p></div>
+  <h4>Tujuan</h4><ul><li>Memeriksa kelemahan keamanan umum pada proyek.</li><li>Menerbitkan proyek melalui langkah yang dapat diulang.</li><li>Menyiapkan cadangan data yang terpisah dari sumbernya.</li><li>Menguji pemulihan data sebelum benar-benar dibutuhkan.</li></ul>
+  <div class="panel"><b>Prasyarat</b><p>Flutter client untuk API yang sama</p></div>
+  <h4>Istilah kunci</h4><dl class="glossary"><div><dt>Pemeriksaan keamanan</dt><dd>Peninjauan proyek untuk menemukan kelemahan umum sebelum diterbitkan.</dd></div><div><dt>Penerbitan</dt><dd>Proses memindahkan versi yang sudah diuji ke lingkungan tempat pengguna memakainya.</dd></div><div><dt>Cadangan</dt><dd>Salinan data yang disimpan terpisah agar dapat dipulihkan bila data aslinya hilang.</dd></div><div><dt>Pemulihan</dt><dd>Proses mengembalikan data dari cadangan ke keadaan berjalan.</dd></div><div><dt>Rahasia</dt><dd>Nilai yang memberi akses istimewa, misalnya kata kunci basis data atau kunci API.</dd></div></dl>
+  <h4>Kartu sintaks</h4><div class="panel">
+  <b><code>npm audit --omit=dev</code></b>
+  <p><em>Dibaca: Baca sebagai pemeriksaan ketergantungan yang dipakai di produksi terhadap kelemahan yang diketahui.</em></p>
+  <p>Pemeriksaan ini menemukan kelemahan pada pustaka yang dipakai, sehingga dapat diperbarui sebelum diterbitkan.</p>
+  <pre><code>npm audit --omit=dev</code></pre>
+  <p><em>Output: Kelemahan yang diketahui pada ketergantungan dilaporkan beserta saran perbaikannya.</em></p>
+  <p><em>Hati-hati: Melewati pemeriksaan ketergantungan membiarkan kelemahan yang sudah diketahui ikut terbit.</em></p>
+</div><div class="panel">
+  <b><code>npm run lint &amp;&amp; npm run test &amp;&amp; npm run build</code></b>
+  <p><em>Dibaca: Baca sebagai urutan pemeriksaan sebelum penerbitan dijalankan.</em></p>
+  <p>Urutan ini memastikan hanya versi yang sudah diperiksa dan diuji yang dibangun untuk diterbitkan.</p>
+  <pre><code>npm run lint &amp;&amp; npm run test &amp;&amp; npm run build</code></pre>
+  <p><em>Output: Penerbitan hanya berjalan setelah pemeriksaan dan pengujian lulus.</em></p>
+  <p><em>Hati-hati: Menerbitkan tanpa urutan yang tetap membuat hasilnya bergantung pada ingatan.</em></p>
+</div><div class="panel">
+  <b><code>pg_dump proyek &gt; cadangan.sql</code></b>
+  <p><em>Dibaca: Baca sebagai pembuatan salinan isi basis data ke berkas terpisah.</em></p>
+  <p>Salinan itu disimpan terpisah dari basis data aslinya sehingga gangguan pada satu tempat tidak menghilangkan keduanya.</p>
+  <pre><code>pg_dump proyek &gt; cadangan.sql</code></pre>
+  <p><em>Output: Berkas salinan berisi isi basis data untuk dipulihkan bila perlu.</em></p>
+  <p><em>Hati-hati: Menyimpan cadangan pada tempat yang sama dengan data aslinya menghilangkan keduanya sekaligus.</em></p>
+</div>
+  <h4>Aturan penulisan</h4><ul><li>Periksa kelemahan keamanan umum sebelum menerbitkan.</li><li>Jangan menaruh rahasia di dalam kode atau berkas yang ikut tersimpan.</li><li>Terbitkan melalui urutan langkah yang tetap dan dapat diulang.</li><li>Simpan cadangan di tempat terpisah dari data aslinya.</li><li>Uji pemulihan cadangan secara berkala, bukan hanya pembuatannya.</li></ul>
   <section class="lesson-section">
-  <h4>01 · Memahami konsepnya</h4>
-  <p>Sebelum merilis, lakukan test, static analysis, review akses, review secret, backup, staging migration, healthcheck, dan penilaian risiko.</p><p>Gunakan domain HTTPS, log, pemantauan uptime, dan prosedur rollback. Dokumentasikan langkah deploy dalam runbook; uji restore pada tempat terpisah.</p>
-  
-  <div class="panel good"><b>Best practice</b><p>Rilis terukur dengan bukti pengujian dan prosedur pemulihan.</p></div><div class="panel bad"><b>Kesalahan umum</b><p>Menyatakan siap produksi hanya karena halaman login bisa dibuka.</p></div>
-  
+  <h4>01 · Cara membaca skrip penerbitan</h4>
+  <p>Skrip penerbitan dibaca sebagai urutan langkah yang pasti. Setiap perintah menyiapkan atau memeriksa satu hal sebelum langkah berikutnya, dan kegagalan menghentikan seluruh urutan.</p><p>Pada contoh, pengaturan di baris awal menghentikan skrip begitu ada perintah yang gagal. Setelah itu ketergantungan dipasang, kode diperiksa, pengujian dijalankan, dan versi dibangun.</p><p>Urutan yang tetap inilah yang membuat penerbitan dapat diulang. Hasil yang sama dapat diperoleh setiap kali tanpa mengandalkan ingatan atau langkah manual yang mudah terlewat.</p>
+  <pre><code>#!/usr/bin/env bash
+set -euo pipefail
+
+npm ci
+npm run lint
+npm run test
+npm run build</code></pre><div class="panel"><b>Output yang diharapkan</b><p>Ketergantungan dipasang, kode diperiksa, pengujian dijalankan, lalu versi dibangun; kegagalan menghentikan skrip.</p></div><p>Pengaturan awal menghentikan skrip pada kegagalan. Langkah-langkah berikutnya berjalan berurutan sehingga hanya versi yang lulus yang dibangun.</p><div class="panel"><b>Bedah baris</b><ol><li>Baris 2 · <code>set -euo pipefail</code> — Skrip berhenti begitu ada perintah yang gagal.</li><li>Baris 4 · <code>npm ci</code> — Ketergantungan dipasang secara terkunci.</li><li>Baris 5 · <code>npm run lint</code> — Kode diperiksa sebelum diuji.</li><li>Baris 6 · <code>npm run test</code> — Pengujian dijalankan sebelum dibangun.</li></ol></div>
+  <div class="panel good"><b>Berhenti pada kegagalan</b><p>Pengaturan berhenti pada kegagalan mencegah langkah berikutnya berjalan dengan hasil yang belum lulus.</p></div>
+  <div class="panel warn"><b>Cek pemahaman</b><p>Mengapa skrip penerbitan perlu berhenti begitu ada perintah yang gagal?</p><p>Kriteria berhasil: Agar langkah berikutnya tidak berjalan dengan hasil yang belum lulus pemeriksaan.</p></div>
 </section><section class="lesson-section">
-  <h4>02 · Contoh kode</h4>
-  <p>Perhatikan input, proses, dan output. Ketik ulang, lalu ubah satu nilai.</p>
-  <pre><code>// Checklist go-live:
-// [ ] tests pass
-// [ ] authorization reviewed
-// [ ] secrets safe
-// [ ] backup restore tested
-// [ ] healthcheck &amp; rollback</code></pre>
+  <h4>02 · Memeriksa kelemahan keamanan</h4>
+  <p>Sebelum menerbitkan, periksa kelemahan umum: masukan yang tidak diamankan, kueri yang menyusun teks, izin yang terlalu longgar, dan rahasia yang tertulis di kode.</p><p>Periksa juga ketergantungan yang dipakai. Pustaka yang sudah usang sering memuat kelemahan yang sudah diketahui dan dapat diperbaiki dengan pembaruan.</p><p>Periksa izin pada setiap jalur yang mengubah data. Pastikan pemanggil yang tidak berhak ditolak di peladen, bukan hanya disembunyikan di tampilan.</p><p>Catat hasil pemeriksaan beserta perbaikan yang dipilih. Catatan itu menjadi rujukan pada penerbitan berikutnya dan memudahkan pemeriksaan yang sama diulang tanpa memulai dari awal.</p><p>Bedakan kerahasiaan berdasarkan risiko. Nilai yang memberi akses luas dijaga lebih ketat daripada nilai yang hanya menampilkan data tidak sensitif. Penilaian itu membantu menentukan di mana pemeriksaan tambahan benar-benar diperlukan dan di mana usaha itu lebih baik dialihkan ke bagian yang risikonya lebih besar.</p><p>Periksa pula penanganan pesan kesalahan. Pesan yang mengungkap rincian dalam sistem dapat membantu pihak yang tidak berhak memetakan kelemahan. Tampilkan pesan yang cukup jelas bagi pengguna, sementara rincian teknisnya dicatat di catatan peladen.</p>
+  
+  <div class="panel warn"><b>Periksa sebelum terbit</b><p>Kelemahan yang terbit lebih sulit diperbaiki karena sudah dapat dipakai pihak lain. Periksa kelemahan umum sebelum menerbitkan.</p></div>
+  <div class="panel warn"><b>Cek pemahaman</b><p>Sebutkan dua hal yang perlu diperiksa pada pemeriksaan keamanan sebelum terbit.</p><p>Kriteria berhasil: Masukan dan izin akses, serta ketergantungan yang usang beserta kelemahannya.</p></div>
+</section><section class="lesson-section">
+  <h4>03 · Menyiapkan cadangan dan menguji pemulihan</h4>
+  <p>Cadangan dan pemulihan dibaca sebagai pasangan. Membuat salinan tidak cukup; yang menentukan adalah apakah salinan itu dapat dipulihkan ketika diperlukan.</p><p>Pada contoh, isi basis data disalin ke berkas, lalu pemulihannya dicoba pada basis data sementara. Uji itu memastikan salinan benar-benar utuh dan langkahnya masih berjalan.</p><p>Simpan cadangan di tempat terpisah dari basis data aslinya. Bila keduanya berada pada tempat yang sama, gangguan pada tempat itu menghilangkan keduanya sekaligus.</p><p>Perkirakan waktu pemulihan yang dibutuhkan dan sesuaikan dengan seberapa lama ketiadaan data dapat ditoleransi. Bila waktu pemulihan lebih lama daripada yang dapat diterima, ubah cara pencadangan, misalnya dengan salinan tambahan yang lebih sering sehingga pemulihannya lebih cepat.</p>
+  <pre><code>pg_dump proyek &gt; cadangan-2026-10-29.sql
+
+# uji pemulihan pada basis data sementara:
+psql basis_uji &lt; cadangan-2026-10-29.sql</code></pre><div class="panel"><b>Output yang diharapkan</b><p>Isi basis data disalin ke berkas, lalu pemulihannya dicoba pada basis data sementara.</p></div><p>Pembuatan cadangan diikuti uji pemulihan. Uji itu memastikan salinan utuh dan langkah pemulihannya masih berjalan.</p><div class="panel"><b>Bedah baris</b><ol><li>Baris 1 · <code>pg_dump proyek &gt; cadangan-2026-10-29.sql</code> — Isi basis data disalin ke berkas cadangan.</li><li>Baris 4 · <code>psql basis_uji &lt; cadangan-2026-10-29.sql</code> — Pemulihan diuji pada basis data terpisah.</li></ol></div>
+  <div class="panel warn"><b>Uji pemulihan</b><p>Cadangan yang belum diuji belum terbukti berguna. Uji pemulihannya pada basis data terpisah secara berkala.</p></div>
+  <div class="panel warn"><b>Cek pemahaman</b><p>Mengapa pemulihan cadangan diuji pada basis data terpisah?</p><p>Kriteria berhasil: Agar salinan terbukti utuh dan langkah pemulihannya berjalan tanpa mengganggu data yang sedang dipakai.</p></div>
+</section><section class="lesson-section">
+  <h4>04 · Menerbitkan dengan langkah tetap</h4>
+  <p>Penerbitan dilakukan melalui langkah yang tetap, bukan serangkaian perintah yang diingat. Dengan begitu, setiap penerbitan berjalan sama dan mudah diulang bila gagal di tengah.</p><p>Siapkan cara kembali ke versi sebelumnya sebelum menerbitkan. Bila versi baru bermasalah, versi lama dapat dipakai lagi tanpa menunggu perbaikan selesai.</p><p>Pantau layanan segera setelah penerbitan. Tanpa pemantauan, masalah pada versi baru dapat berjalan lama sebelum diketahui.</p><p>Bedakan lingkungan pengujian dan lingkungan produksi dengan jelas. Uji penerbitan pada lingkungan pengujian lebih dulu, termasuk perkiraan perbedaan konfigurasi, sehingga penerbitan ke produksi tidak menjadi percobaan pertama. Perbedaan konfigurasi yang baru diketahui di produksi sering menjadi sumber gangguan yang sebenarnya dapat dihindari.</p><p>Sediakan cara memantau layanan segera setelah penerbitan, baik melalui catatan maupun pemeriksaan berkala. Pemantauan itu memastikan masalah pada versi baru diketahui lebih awal, sehingga pengembalian ke versi sebelumnya dapat dilakukan sebelum pengguna banyak terdampak.</p>
   
   
+  <div class="panel warn"><b>Cek pemahaman</b><p>Mengapa cara kembali ke versi sebelumnya disiapkan sebelum menerbitkan?</p><p>Kriteria berhasil: Agar versi lama dapat dipakai lagi dengan cepat bila versi baru bermasalah, tanpa menunggu perbaikan.</p></div>
 </section>
-  <h4>Latihan bertingkat</h4><ol><li><b>Latihan 1</b> <em>(Mandiri)</em><p>Susun runbook go-live, backup, rollback, dan monitoring untuk satu aplikasi Laravel.</p></li><li><b>Latihan 2</b> <em>(Mandiri)</em><p>Ubah satu input atau asumsi pada contoh, catat hasil dan jelaskan alasannya.</p></li></ol>
-  
-  
+  <h4>Latihan bertingkat</h4><ol><li><b>Skrip penerbitan tetap</b> <em>(Terbimbing)</em><p>Tulis skrip penerbitan yang memasang ketergantungan, memeriksa kode, menjalankan pengujian, lalu membangun versi.</p><ol><li>Tambahkan pengaturan berhenti pada kegagalan.</li><li>Pasang ketergantungan secara terkunci.</li><li>Jalankan pemeriksaan dan pengujian.</li><li>Bangun versi untuk diterbitkan.</li></ol><pre><code>#!/usr/bin/env bash
+set -euo pipefail
+# lengkapi</code></pre><p><em>Hasil: Skrip berjalan berurutan dan berhenti bila salah satu langkah gagal.</em></p><details><summary>Petunjuk bertahap</summary><ol><li>Skrip berhenti pada kegagalan.</li><li>Pemeriksaan mendahului pembangunan.</li><li>Langkahnya berurutan dan tetap.</li></ol></details><p><em>Tantangan: Tambahkan langkah pemeriksaan ketergantungan terhadap kelemahan.</em></p></li><li><b>Periksa keamanan proyek</b> <em>(Mandiri)</em><p>Periksa proyek terhadap kelemahan umum: masukan, izin, rahasia, dan ketergantungan usang.</p><ol><li>Periksa jalur masukan yang tidak diamankan.</li><li>Periksa izin pada jalur yang mengubah data.</li><li>Pastikan tidak ada rahasia di dalam kode.</li><li>Periksa ketergantungan terhadap kelemahan yang diketahui.</li></ol><pre><code>Masukan: ...
+Izin: ...
+Rahasia: ...</code></pre><p><em>Hasil: Setiap kelemahan yang ditemukan tercatat beserta perbaikannya.</em></p><details><summary>Petunjuk bertahap</summary><ol><li>Anggap setiap masukan tidak tepercaya.</li><li>Izin diperiksa di peladen.</li><li>Rahasia tidak ditulis di kode.</li></ol></details><p><em>Tantangan: Tambahkan pemeriksaan otomatis kelemahan ketergantungan pada skrip penerbitan.</em></p></li><li><b>Rancang cadangan proyek</b> <em>(Penerapan)</em><p>Rancang jadwal cadangan, tempat penyimpanan, dan pengujian pemulihan untuk data proyek akhir.</p><ol><li>Tentukan data yang perlu dicadangkan.</li><li>Tentukan jadwal dan tempat penyimpanan yang terpisah.</li><li>Tentukan langkah pemulihan.</li><li>Uji pemulihan pada basis data terpisah.</li></ol><pre><code>Data: ...
+Jadwal: ...
+Uji pemulihan: ...</code></pre><p><em>Hasil: Rancangan memuat jadwal, tempat penyimpanan terpisah, dan pemulihan yang telah diuji.</em></p><details><summary>Petunjuk bertahap</summary><ol><li>Cadangan disimpan terpisah.</li><li>Pemulihan diuji berkala.</li><li>Pemulihan tidak mengganggu data yang dipakai.</li></ol></details><p><em>Tantangan: Perkirakan waktu pemulihan yang dibutuhkan.</em></p></li></ol>
+  <h4>Verifikasi</h4><div class="panel"><b>Mode: Manual</b><pre><code>Jalankan skrip penerbitan, pemeriksaan keamanan, dan uji pemulihan cadangan.</code></pre><p><em>Hasil yang diharapkan: Penerbitan berjalan melalui langkah yang tetap dan dapat diulang, kelemahan umum diperiksa, dan data dapat dipulihkan dari cadangan.</em></p><p><em>Bukti yang disimpan: Simpan skrip, hasil pemeriksaan keamanan, dan catatan hasil pemulihan.</em></p></div>
+  <h4>Mengatasi masalah</h4><ul><li><b>Versi baru bermasalah setelah diterbitkan.</b><br>Penyebab umum: Cara kembali ke versi sebelumnya tidak disiapkan atau belum diuji.<br>Perbaikan: Siapkan dan uji pengembalian versi sebelum menerbitkan.</li><li><b>Rahasia terbaca dari riwayat perubahan.</b><br>Penyebab umum: Rahasia ditulis di dalam berkas yang ikut tersimpan.<br>Perbaikan: Pindahkan rahasia ke lingkungan, ganti nilainya, dan pastikan berkasnya diabaikan.</li><li><b>Cadangan tidak dapat dipakai saat dibutuhkan.</b><br>Penyebab umum: Pemulihan cadangan belum pernah diuji.<br>Perbaikan: Uji pemulihan pada basis data terpisah secara berkala dan perbaiki langkahnya bila gagal.</li><li><b>Penerbitan gagal di tengah dan sulit diulang.</b><br>Penyebab umum: Langkah penerbitan dijalankan manual dan tidak tetap.<br>Perbaikan: Susun langkah penerbitan sebagai skrip yang berhenti pada kegagalan dan dapat dijalankan ulang.</li></ul>
   <div class="quiz"><strong>Uji pemahaman</strong><div class="quiz-question">
-    <b>1. Apa prinsip yang paling tepat untuk topik “Uji keamanan, deploy, dan backup”?</b>
-    <ol type="A"><li>Rilis terukur dengan bukti pengujian dan prosedur pemulihan.</li><li>Gunakan solusi paling rumit sejak awal, meski kebutuhan belum jelas.</li><li>Lewati pengujian karena contoh kecil pasti benar.</li></ol>
-    <details><summary>Lihat pembahasan</summary><p class="answer">Jawaban: A. Rilis terukur dengan bukti pengujian dan prosedur pemulihan.</p></details>
+    <b>1. Apa yang menentukan keberhasilan sebuah cadangan?</b>
+    <ol type="A"><li>Ukuran berkasnya</li><li>Keberhasilan pemulihannya</li><li>Jumlah salinannya</li></ol>
+    <details><summary>Lihat pembahasan</summary><p class="answer">Jawaban: B. Yang menentukan adalah apakah cadangan dapat dipulihkan saat dibutuhkan.</p></details>
+  </div><div class="quiz-question">
+    <b>2. Apa fungsi pengaturan berhenti pada kegagalan di awal skrip penerbitan?</b>
+    <ol type="A"><li>Mempercepat skrip</li><li>Menghentikan skrip agar langkah berikutnya tidak berjalan dengan hasil yang belum lulus</li><li>Menghapus berkas lama</li></ol>
+    <details><summary>Lihat pembahasan</summary><p class="answer">Jawaban: B. Pengaturan itu menghentikan skrip pada kegagalan sehingga langkah berikutnya tidak berjalan dengan hasil yang belum lulus.</p></details>
+  </div><div class="quiz-question">
+    <b>3. Kelemahan keamanan ditemukan pada ketergantungan yang usang. Tindakan tepat...</b>
+    <ol type="A"><li>Membiarkannya</li><li>Memperbarui ketergantungan sebelum menerbitkan</li><li>Menghapus pemeriksaannya</li></ol>
+    <details><summary>Lihat pembahasan</summary><p class="answer">Jawaban: B. Kelemahan pada ketergantungan diperbaiki dengan pembaruan sebelum diterbitkan.</p></details>
   </div></div>
-  
-  
-  
+  <h4>Ringkasan</h4><ul><li>Kelemahan umum diperiksa sebelum menerbitkan, termasuk masukan, izin, rahasia, dan ketergantungan.</li><li>Penerbitan dijalankan melalui langkah yang tetap dan dapat diulang.</li><li>Cadangan disimpan terpisah dan pemulihannya diuji secara berkala.</li><li>Cara kembali ke versi sebelumnya disiapkan sebelum menerbitkan.</li></ul>
+  <div class="panel"><b>Berikutnya</b><p>Berikutnya: refleksi dan portofolio. Anda akan merangkum hasil proyek dan menyiapkan langkah lanjut.</p></div>
+  <h4>Sumber</h4><ul><li><a href="https://top10.owasp.org/2025/" rel="noopener noreferrer">OWASP Top 10:2025</a> <small>OWASP · 2025</small> — Daftar risiko keamanan teratas sebagai daftar periksa pemeriksaan.</li><li><a href="https://www.postgresql.org/docs/current/backup.html" rel="noopener noreferrer">PostgreSQL: Backup and Restore</a> <small>PostgreSQL Global Development Group · current</small> — Panduan resmi cadangan dan pemulihan basis data.</li><li><a href="https://docs.docker.com/build/building/best-practices/" rel="noopener noreferrer">Docker Docs: Building Best Practices</a> <small>Docker · current</small> — Praktik pembangunan gambar wadah yang dipakai saat menerbitkan.</li></ul>
 </article>
 <article class="lesson" id="m12-l07">
-  <div class="lesson-meta">Pelajaran 07 · 45 menit · Lanjutan · JavaScript</div>
+  <div class="lesson-meta">Pelajaran 07 · 150 menit · Lanjutan · markdown</div>
   <h3>Refleksi, portfolio, dan langkah lanjut</h3>
-  
-  
-  
-  
-  
-  
+  <div class="panel good"><b>Hasil belajar</b><p>Setelah pelajaran ini, Anda dapat merangkum hasil proyek, menyusun portofolio yang menjelaskan peran Anda, serta menentukan langkah belajar berikutnya.</p></div>
+  <h4>Tujuan</h4><ul><li>Merangkum masalah, keputusan, dan hasil proyek.</li><li>Menjelaskan peran dan kontribusi pada proyek.</li><li>Menyusun portofolio yang dapat dipahami orang lain.</li><li>Menentukan langkah belajar berikutnya.</li></ul>
+  <div class="panel"><b>Prasyarat</b><p>Uji keamanan, deploy, dan backup</p></div>
+  <h4>Istilah kunci</h4><dl class="glossary"><div><dt>Refleksi</dt><dd>Peninjauan kembali atas keputusan dan hasil kerja untuk menentukan perbaikan berikutnya.</dd></div><div><dt>Portofolio</dt><dd>Kumpulan hasil kerja yang menjelaskan masalah, keputusan, dan kontribusi Anda kepada pembaca.</dd></div><div><dt>Ringkasan proyek</dt><dd>Penjelasan singkat yang menyebut masalah, pendekatan, dan hasil dalam bahasa yang mudah dipahami.</dd></div><div><dt>Langkah lanjut</dt><dd>Rencana belajar atau pekerjaan berikutnya setelah proyek selesai.</dd></div><div><dt>Keterbatasan</dt><dd>Hal yang belum tertangani atau belum sempurna pada hasil proyek.</dd></div></dl>
+  <h4>Kartu sintaks</h4><div class="panel">
+  <b><code>## Apa yang dibangun</code></b>
+  <p><em>Dibaca: Baca sebagai bagian ringkasan yang menyebut masalah dan pendekatan yang dipakai.</em></p>
+  <p>Bagian ini memberi pembaca gambaran singkat sebelum masuk ke rincian teknis. Ia menjawab apa dan mengapa sebelum bagaimana.</p>
+  <pre><code>## Apa yang dibangun</code></pre>
+  <p><em>Output: Pembaca memahami masalah dan pendekatan proyek dari ringkasan singkat.</em></p>
+  <p><em>Hati-hati: Membuka dengan rincian teknis membuat pembaca tidak paham masalah apa yang dipecahkan.</em></p>
+</div><div class="panel">
+  <b><code>- Peran: pengembang penuh untuk web dan API</code></b>
+  <p><em>Dibaca: Baca sebagai keterangan peran yang membedakan kontribusi Anda dari kontribusi orang lain.</em></p>
+  <p>Keterangan peran membuat penilaian adil. Pembaca tahu bagian mana yang benar-benar Anda kerjakan.</p>
+  <pre><code>- Peran: pengembang penuh untuk web dan API</code></pre>
+  <p><em>Output: Pembaca mengetahui kontribusi Anda secara jelas.</em></p>
+  <p><em>Hati-hati: Tidak menyebut peran membuat kontribusi Anda samar pada pekerjaan berkelompok.</em></p>
+</div><div class="panel">
+  <b><code>- Keterbatasan: laporan belum ada</code></b>
+  <p><em>Dibaca: Baca sebagai kejujuran atas hal yang belum tertangani pada hasil proyek.</em></p>
+  <p>Menyebut keterbatasan menunjukkan pemahaman atas keadaan proyek dan menghindarkan kesan menutupi kekurangan.</p>
+  <pre><code>- Keterbatasan: laporan belum ada</code></pre>
+  <p><em>Output: Pembaca memahami batas hasil proyek tanpa perlu menebak.</em></p>
+  <p><em>Hati-hati: Menyembunyikan keterbatasan membuat pembaca kehilangan kepercayaan ketika menemukannya sendiri.</em></p>
+</div>
+  <h4>Aturan penulisan</h4><ul><li>Buka ringkasan dengan masalah dan pendekatan, bukan dengan rincian teknis.</li><li>Sebutkan peran dan kontribusi Anda secara jujur.</li><li>Jelaskan keputusan penting beserta alasannya.</li><li>Sebutkan keterbatasan hasil proyek secara terbuka.</li><li>Tutup dengan langkah belajar atau pekerjaan berikutnya.</li></ul>
   <section class="lesson-section">
-  <h4>01 · Memahami konsepnya</h4>
-  <p>Portofolio harus menjelaskan masalah, keputusan arsitektur, apa yang diuji, trade-off, dan demonstrasi fungsional. Skill dinilai dari kemampuan memecahkan masalah mandiri.</p><p>Setelah capstone, lanjutkan React+TypeScript bila butuh SPA kompleks, Redis untuk antrean/cache, atau deployment lebih maju. Pertahankan satu stack utama sampai kuat.</p>
-  
-  <div class="panel good"><b>Best practice</b><p>Tunjukkan trade-off dan bukti kemampuan, bukan hanya screenshot UI.</p></div><div class="panel bad"><b>Kesalahan umum</b><p>Berpindah framework baru sebelum menyelesaikan satu aplikasi.</p></div>
-  
+  <h4>01 · Cara membaca portofolio</h4>
+  <p>Portofolio dibaca dari masalah ke hasil, lalu ke kejujuran atas batasnya. Urutan ini membuat pembaca memahami proyek tanpa harus menebak dari kode.</p><p>Pada contoh, ringkasan menyebut apa yang dibangun, peran menyebut kontribusi, keputusan penting menyebut pilihan beserta alasannya, dan keterbatasan menyebut yang belum tertangani.</p><p>Perhatikan bagian keterbatasan. Menyebutnya secara terbuka menunjukkan pemahaman atas keadaan proyek, bukan kelemahan. Pembaca menilai kejujuran itu secara positif.</p>
+  <pre><code># Portofolio: Aplikasi Catatan Tugas
+
+## Apa yang dibangun
+Aplikasi catatan tugas untuk web dan mobile dengan API bersama.
+
+## Peran
+- Peran: pengembang tunggal untuk web, API, dan mobile
+
+## Keputusan penting
+- Memakai API bersama untuk web dan mobile
+- Menyimpan token pada penyimpanan aman perangkat
+
+## Keterbatasan
+- Laporan kemajuan belum ada
+- Kerja sama tim belum didukung</code></pre><div class="panel"><b>Output yang diharapkan</b><p>Portofolio menyatakan masalah, peran, keputusan penting, dan keterbatasan secara berurutan.</p></div><p>Ringkasan sampai keterbatasan membentuk alur yang membuat pembaca memahami proyek. Bagian keterbatasan menunjukkan kejujuran atas batas hasil.</p><div class="panel"><b>Bedah baris</b><ol><li>Baris 1 · <code># Portofolio: Aplikasi Catatan Tugas</code> — Judul menyatakan proyek yang dibahas.</li><li>Baris 4 · <code>Aplikasi catatan tugas untuk web dan mobile dengan API bersama.</code> — Ringkasan menyebut apa yang dibangun.</li><li>Baris 7 · <code>- Peran: pengembang tunggal untuk web, API, dan mobile</code> — Peran menyebut kontribusi Anda.</li><li>Baris 10 · <code>- Memakai API bersama untuk web dan mobile</code> — Keputusan penting menyebut pilihan yang diambil.</li><li>Baris 15 · <code>- Kerja sama tim belum didukung</code> — Keterbatasan menyebut yang belum tertangani.</li></ol></div>
+  <div class="panel good"><b>Jujur soal batas</b><p>Menyebut keterbatasan secara terbuka menunjukkan pemahaman dan menjaga kepercayaan pembaca.</p></div>
+  <div class="panel warn"><b>Cek pemahaman</b><p>Mengapa keterbatasan sebaiknya disebutkan pada portofolio?</p><p>Kriteria berhasil: Karena kejujuran atas batas hasil menunjukkan pemahaman dan menjaga kepercayaan pembaca.</p></div>
 </section><section class="lesson-section">
-  <h4>02 · Contoh kode</h4>
-  <p>Perhatikan input, proses, dan output. Ketik ulang, lalu ubah satu nilai.</p>
-  <pre><code>// Ringkas dalam README:
-// masalah -&gt; solusi -&gt; arsitektur -&gt; screenshot
-// setup -&gt; test -&gt; deployment -&gt; catatan keamanan</code></pre>
+  <h4>02 · Merefleksikan keputusan</h4>
+  <p>Refleksi memeriksa keputusan yang diambil selama proyek: apa yang berjalan baik, apa yang menyulitkan, dan apa yang akan dilakukan berbeda.</p><p>Tulis alasan keputusan, bukan hanya hasilnya. Catatan alasan berguna ketika keadaan berubah dan keputusan itu perlu ditinjau kembali.</p><p>Fokuskan refleksi pada perbaikan yang dapat dilakukan, bukan menyalahkan diri atau orang lain. Refleksi yang seperti itu menghasilkan perubahan yang nyata pada pekerjaan berikutnya.</p><p>Bandingkan rencana awal dengan hasil yang benar-benar dicapai. Selisihnya menunjukkan bagian mana dari perkiraan yang perlu diperbaiki pada proyek berikutnya, misalnya pekerjaan yang ternyata lebih lama atau bagian yang ternyata lebih sederhana dari dugaan. Catatan itu membuat perkiraan berikutnya lebih dekat pada kenyataan.</p><p>Libatkan rekan pada refleksi bila proyek dikerjakan bersama. Pandangan orang lain sering menunjukkan hal yang terlewat oleh orang yang mengerjakan bagiannya sendiri, dan hasil refleksi bersama lebih mungkin diterapkan karena disepakati, bukan disampaikan sepihak.</p>
   
   
+  <div class="panel warn"><b>Cek pemahaman</b><p>Mengapa alasan keputusan penting dicatat pada refleksi?</p><p>Kriteria berhasil: Agar keputusan dapat ditinjau ulang ketika keadaan berubah dan alasan aslinya tetap diketahui.</p></div>
+</section><section class="lesson-section">
+  <h4>03 · Menyusun portofolio yang jelas</h4>
+  <p>Portofolio yang jelas menyebut masalah, pendekatan, hasil, dan peran Anda. Ia ditulis untuk pembaca yang tidak mengikuti proyek dari awal.</p><p>Sertakan gambar atau tautan bila memungkinkan, tetapi jangan bergantung pada keduanya. Penjelasan tertulis tetap harus dapat dipahami tanpa membuka apa pun.</p><p>Selaraskan penjelasan dengan hasil yang benar-benar dikerjakan. Menjelaskan sesuatu yang tidak dikerjakan atau membesar-besarkan hasil akan terlihat jelas bagi pembaca yang teliti.</p><p>Pilih beberapa hasil kerja yang paling menunjukkan cara Anda berpikir, bukan seluruh pekerjaan yang pernah dibuat. Beberapa contoh yang dibahas mendalam lebih meyakinkan daripada daftar panjang yang tidak dijelaskan. Untuk setiap contoh, sebutkan keputusan penting dan alasan di baliknya.</p><p>Sertakan tautan ke kode atau hasil yang dapat dilihat bila memungkinkan, sambil tetap menjaga agar penjelasan tertulisnya utuh. Tautan dapat rusak atau tidak dapat dibuka, sehingga penjelasan yang bergantung padanya akan kehilangan makna bila hal itu terjadi.</p>
+  
+  
+  <div class="panel warn"><b>Cek pemahaman</b><p>Untuk siapa portofolio ditulis?</p><p>Kriteria berhasil: Untuk pembaca yang tidak mengikuti proyek dari awal sehingga perlu masalah, pendekatan, hasil, dan peran yang jelas.</p></div>
+</section><section class="lesson-section">
+  <h4>04 · Menentukan langkah lanjut</h4>
+  <p>Proyek yang selesai meninggalkan daftar hal yang belum tertangani. Ubah daftar itu menjadi rencana langkah berikutnya beserta alasan urutannya.</p><p>Pilih langkah lanjut yang menutup kesenjangan paling penting, bukan yang paling menarik. Kesenjangan yang menghambat pemakaian nyata biasanya lebih mendesak.</p><p>Tentukan juga cara mengukur keberhasilan langkah itu. Tanpa ukuran, pekerjaan berikutnya mudah melebar tanpa hasil yang jelas.</p><p>Susun langkah lanjut sebagai daftar yang dapat dikerjakan, bukan impian yang jauh. Setiap langkah sebaiknya cukup kecil untuk diselesaikan dalam waktu terbatas, sehingga kemajuannya dapat dilihat dan dinilai secara berkala.</p><p>Tinjau rencana langkah lanjut ketika keadaan berubah. Kesenjangan yang tadinya paling penting dapat bergeser setelah sebagian pekerjaan selesai, sehingga urutannya perlu disesuaikan agar tetap terarah.</p><p>Pilih satu langkah pertama yang akan dikerjakan, bukan seluruh daftar sekaligus. Memulai dari satu langkah membuat kemajuannya terlihat dan menjaga semangat, sedangkan mencoba mengerjakan semuanya sekaligus biasanya berakhir tanpa ada yang tuntas.</p><p>Catat alasan mengapa langkah itu dipilih lebih dulu. Catatan itu berguna ketika ada tawaran pekerjaan atau topik lain yang lebih menarik di tengah jalan, karena membantu memutuskan apakah urutannya perlu diubah atau tetap dipertahankan.</p>
+  
+  
+  <div class="panel warn"><b>Cek pemahaman</b><p>Bagaimana cara memilih langkah lanjut yang tepat?</p><p>Kriteria berhasil: Pilih yang menutup kesenjangan paling menghambat pemakaian nyata, dengan ukuran keberhasilan yang jelas.</p></div>
 </section>
-  <h4>Latihan bertingkat</h4><ol><li><b>Latihan 1</b> <em>(Mandiri)</em><p>Tulis README proyek final dan demo 5 menit yang menjelaskan alur data end-to-end.</p></li><li><b>Latihan 2</b> <em>(Mandiri)</em><p>Ubah satu input atau asumsi pada contoh, catat hasil dan jelaskan alasannya.</p></li></ol>
-  
-  
+  <h4>Latihan bertingkat</h4><ol><li><b>Tulis ringkasan proyek</b> <em>(Terbimbing)</em><p>Tulis ringkasan proyek akhir yang memuat masalah, pendekatan, dan hasil dalam bahasa yang mudah dipahami.</p><ol><li>Tulis masalah yang dipecahkan proyek.</li><li>Tulis pendekatan yang dipakai.</li><li>Tulis hasil yang dicapai.</li><li>Hindari rincian teknis pada ringkasan.</li></ol><pre><code># Proyek: ...
+## Masalah
+...</code></pre><p><em>Hasil: Ringkasan dapat dipahami pembaca tanpa latar belakang teknis mendalam.</em></p><details><summary>Petunjuk bertahap</summary><ol><li>Ringkasan dibuka dengan masalah.</li><li>Pendekatan dijelaskan cukup singkat.</li><li>Rincian teknis disimpan untuk bagian lain.</li></ol></details><p><em>Tantangan: Tambahkan satu kalimat tentang apa yang membedakan proyek ini.</em></p></li><li><b>Tuliskan keputusan dan keterbatasan</b> <em>(Mandiri)</em><p>Tulis daftar keputusan penting beserta alasannya dan daftar keterbatasan proyek secara jujur.</p><ol><li>Daftar keputusan penting yang diambil.</li><li>Tulis alasan setiap keputusan.</li><li>Daftar hal yang belum tertangani.</li><li>Periksa tidak ada yang dibesar-besarkan.</li></ol><pre><code>## Keputusan penting
+- ...
+## Keterbatasan
+- ...</code></pre><p><em>Hasil: Setiap keputusan punya alasan dan keterbatasan disampaikan secara terbuka.</em></p><details><summary>Petunjuk bertahap</summary><ol><li>Alasan dicatat bersama keputusan.</li><li>Keterbatasan disampaikan terbuka.</li><li>Penjelasan sesuai hasil yang dikerjakan.</li></ol></details><p><em>Tantangan: Tandai keputusan yang layak ditinjau ulang bila kebutuhan berubah.</em></p></li><li><b>Susun rencana langkah lanjut</b> <em>(Penerapan)</em><p>Susun rencana langkah lanjut proyek beserta alasan urutannya dan cara mengukur keberhasilannya.</p><ol><li>Daftar kesenjangan yang masih ada.</li><li>Urutkan menurut dampaknya pada pemakaian nyata.</li><li>Tentukan ukuran keberhasilan setiap langkah.</li><li>Tentukan langkah pertama yang dikerjakan.</li></ol><pre><code>Langkah 1: ...
+Alasan: ...
+Ukuran: ...</code></pre><p><em>Hasil: Rencana memuat urutan yang beralasan dan ukuran keberhasilan yang jelas.</em></p><details><summary>Petunjuk bertahap</summary><ol><li>Utamakan kesenjangan yang menghambat pemakaian.</li><li>Setiap langkah punya ukuran keberhasilan.</li><li>Langkah pertama dipilih dengan alasan yang jelas.</li></ol></details><p><em>Tantangan: Perkirakan waktu untuk langkah pertama.</em></p></li></ol>
+  <h4>Verifikasi</h4><div class="panel"><b>Mode: Manual</b><pre><code>Tinjau ringkasan, keputusan, keterbatasan, dan rencana langkah lanjut terhadap hasil proyek sebenarnya.</code></pre><p><em>Hasil yang diharapkan: Ringkasan dapat dipahami tanpa latar teknis, keputusan punya alasan, keterbatasan disampaikan terbuka, dan langkah lanjut punya ukuran keberhasilan.</em></p><p><em>Bukti yang disimpan: Simpan ringkasan, refleksi, dan rencana langkah lanjut.</em></p></div>
+  <h4>Mengatasi masalah</h4><ul><li><b>Portofolio sulit dipahami pembaca.</b><br>Penyebab umum: Ringkasan dibuka dengan rincian teknis sebelum masalah dan pendekatannya.<br>Perbaikan: Susun ulang agar masalah dan pendekatan dijelaskan lebih dulu, rincian teknis menyusul.</li><li><b>Kontribusi Anda samar pada pekerjaan berkelompok.</b><br>Penyebab umum: Peran dan bagian yang dikerjakan tidak disebutkan.<br>Perbaikan: Sebutkan peran serta bagian yang benar-benar Anda kerjakan.</li><li><b>Pembaca kehilangan kepercayaan pada portofolio.</b><br>Penyebab umum: Hasil dibesar-besarkan atau keterbatasan disembunyikan.<br>Perbaikan: Selaraskan penjelasan dengan hasil sebenarnya dan sebutkan keterbatasan secara terbuka.</li><li><b>Pekerjaan lanjutan melebar tanpa hasil yang jelas.</b><br>Penyebab umum: Langkah lanjut tidak punya ukuran keberhasilan.<br>Perbaikan: Tentukan ukuran keberhasilan untuk setiap langkah lanjut.</li></ul>
   <div class="quiz"><strong>Uji pemahaman</strong><div class="quiz-question">
-    <b>1. Apa prinsip yang paling tepat untuk topik “Refleksi, portfolio, dan langkah lanjut”?</b>
-    <ol type="A"><li>Tunjukkan trade-off dan bukti kemampuan, bukan hanya screenshot UI.</li><li>Gunakan solusi paling rumit sejak awal, meski kebutuhan belum jelas.</li><li>Lewati pengujian karena contoh kecil pasti benar.</li></ol>
-    <details><summary>Lihat pembahasan</summary><p class="answer">Jawaban: A. Tunjukkan trade-off dan bukti kemampuan, bukan hanya screenshot UI.</p></details>
+    <b>1. Apa yang sebaiknya dibuka lebih dulu pada ringkasan proyek?</b>
+    <ol type="A"><li>Rincian teknis</li><li>Masalah dan pendekatan yang dipakai</li><li>Daftar pustaka</li></ol>
+    <details><summary>Lihat pembahasan</summary><p class="answer">Jawaban: B. Ringkasan dibuka dengan masalah dan pendekatan agar pembaca memahami konteks lebih dulu.</p></details>
+  </div><div class="quiz-question">
+    <b>2. Mengapa peran dan kontribusi perlu disebutkan pada portofolio?</b>
+    <ol type="A"><li>Agar tampilan lebih menarik</li><li>Agar penilaian adil dan bagian yang Anda kerjakan jelas</li><li>Agar berkasnya lebih panjang</li></ol>
+    <details><summary>Lihat pembahasan</summary><p class="answer">Jawaban: B. Keterangan peran membuat pembaca tahu bagian mana yang benar-benar Anda kerjakan.</p></details>
+  </div><div class="quiz-question">
+    <b>3. Proyek selesai dan masih ada hal yang belum tertangani. Tindakan tepat...</b>
+    <ol type="A"><li>Menyembunyikannya</li><li>Menyebutkannya sebagai keterbatasan dan menjadikannya langkah lanjut</li><li>Menghapus catatannya</li></ol>
+    <details><summary>Lihat pembahasan</summary><p class="answer">Jawaban: B. Keterbatasan disampaikan terbuka dan dijadikan rencana langkah berikutnya.</p></details>
   </div></div>
-  
-  
-  
+  <h4>Ringkasan</h4><ul><li>Portofolio menyatakan masalah, pendekatan, hasil, peran, dan keterbatasan.</li><li>Refleksi mencatat alasan keputusan agar dapat ditinjau ulang.</li><li>Keterbatasan disampaikan terbuka untuk menjaga kepercayaan pembaca.</li><li>Langkah lanjut dipilih menurut dampaknya dan punya ukuran keberhasilan.</li></ul>
+  <div class="panel"><b>Berikutnya</b><p>Materi berikutnya melanjutkan ke pendalaman pilihan. Anda akan memilih teknologi sesuai kebutuhan proyek, bukan sekadar mengikuti tren.</p></div>
+  <h4>Sumber</h4><ul><li><a href="https://docs.github.com/en" rel="noopener noreferrer">GitHub Docs</a> <small>GitHub · rolling</small> — Cara menyusun dan membagikan portofolio proyek bersama kode.</li><li><a href="https://docs.github.com/en/pull-requests" rel="noopener noreferrer">GitHub Docs: Pull requests</a> <small>GitHub · rolling</small> — Panduan menjelaskan keputusan perubahan kepada pembaca.</li><li><a href="https://lsc.cornell.edu/how-to-study/studying-for-and-taking-exams/effective-study-strategies/" rel="noopener noreferrer">Cornell Learning Strategies Center: Effective Study Strategies</a> <small>Cornell University · rolling</small> — Strategi belajar untuk menentukan langkah lanjut yang terarah.</li></ul>
 </article>
 </section>
 <section class="module" id="m13">
