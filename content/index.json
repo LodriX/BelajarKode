@@ -1125,6 +1125,51 @@
       "tier": "official",
       "version": "rolling",
       "accessedAt": "2026-10-29"
+    },
+    {
+      "id": "mdn-html",
+      "title": "MDN: HTML elements reference",
+      "publisher": "Mozilla",
+      "url": "https://developer.mozilla.org/en-US/docs/Web/HTML",
+      "tier": "official",
+      "version": "rolling",
+      "accessedAt": "2026-10-29"
+    },
+    {
+      "id": "mdn-css",
+      "title": "MDN: CSS reference",
+      "publisher": "Mozilla",
+      "url": "https://developer.mozilla.org/en-US/docs/Web/CSS",
+      "tier": "official",
+      "version": "rolling",
+      "accessedAt": "2026-10-29"
+    },
+    {
+      "id": "mdn-forms",
+      "title": "MDN: Web forms",
+      "publisher": "Mozilla",
+      "url": "https://developer.mozilla.org/en-US/docs/Learn_web_development/Extensions/Forms",
+      "tier": "official",
+      "version": "rolling",
+      "accessedAt": "2026-10-29"
+    },
+    {
+      "id": "mdn-css-layout",
+      "title": "MDN: CSS layout",
+      "publisher": "Mozilla",
+      "url": "https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/CSS_layout",
+      "tier": "official",
+      "version": "rolling",
+      "accessedAt": "2026-10-29"
+    },
+    {
+      "id": "mdn-a11y",
+      "title": "MDN: Accessibility",
+      "publisher": "Mozilla",
+      "url": "https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/Accessibility",
+      "tier": "official",
+      "version": "rolling",
+      "accessedAt": "2026-10-29"
     }
   ],
   "modules": [
@@ -1227,7 +1272,14 @@
       "m03-l05",
       "m03-l06",
       "m03-l07",
-      "m03-l08"
+      "m03-l08",
+      "m04-l01",
+      "m04-l02",
+      "m04-l03",
+      "m04-l04",
+      "m04-l05",
+      "m04-l06",
+      "m04-l07"
     ],
     "depthWordBands": {
       "fondasi": [

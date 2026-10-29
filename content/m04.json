@@ -11,185 +11,2639 @@
   "lessons": [
     {
       "id": "m04-l01",
-      "title": "HTML semantik",
-      "minutes": 45,
+      "title": "HTML semantik dan struktur dokumen",
+      "minutes": 90,
       "level": "Dasar",
-      "intro": "HTML mendeskripsikan struktur dan makna. Gunakan header, nav, main, section, article, form, button, label sesuai peran daripada semua memakai div.",
-      "explanation": "Heading disusun berurutan berdasarkan struktur konten. Tombol untuk aksi; anchor untuk navigasi. Semantik membantu screen reader, SEO, dan pemeliharaan.",
-      "code": "<!doctype html>\n<html lang=\"id\">\n<body>\n  <main>\n    <h1>Daftar Tugas</h1>\n    <button type=\"button\">Tambah</button>\n  </main>\n</body>\n</html>",
+      "depth": "fondasi",
+      "schema": 3.1,
       "codeLanguage": "html",
-      "practice": [
-        "Buat struktur halaman profil dengan header, nav, main, artikel, dan footer.",
-        "Ubah satu input atau asumsi pada contoh, catat hasil dan jelaskan alasannya."
+      "outcome": "Setelah pelajaran ini, Anda dapat menyusun struktur halaman dengan elemen HTML yang menyatakan makna, memakai heading secara berurutan, dan memilih tombol atau tautan sesuai fungsinya.",
+      "objectives": [
+        "Menjelaskan mengapa elemen semantik lebih baik daripada div untuk hampir semua bagian halaman.",
+        "Menyusun kerangka halaman dengan header, nav, main, section, article, dan footer.",
+        "Memakai heading h1 sampai h6 sesuai tingkatan struktur, bukan sesuai ukuran teks.",
+        "Membedakan tombol untuk aksi dan tautan untuk navigasi."
       ],
-      "bestPractice": "Gunakan elemen sesuai makna dan fungsi, bukan hanya bentuk.",
-      "commonMistake": "Membuat tombol klik menggunakan div tanpa akses keyboard.",
+      "prerequisites": [
+        {
+          "label": "Klien-server: bagaimana web bekerja",
+          "lessonId": "m01-l02"
+        },
+        {
+          "label": "Variabel: let dan const",
+          "lessonId": "m03-l01"
+        }
+      ],
+      "terms": [
+        {
+          "term": "HTML",
+          "definition": "Bahasa markup yang mendeskripsikan struktur dan makna konten halaman web kepada browser dan teknologi bantu."
+        },
+        {
+          "term": "Elemen semantik",
+          "definition": "Elemen HTML yang namanya menyatakan peran kontennya, misalnya header, nav, main, article, dan footer."
+        },
+        {
+          "term": "Landmark",
+          "definition": "Wilayah halaman yang dikenali teknologi bantu sebagai titik lompat, seperti header, nav, main, dan footer."
+        },
+        {
+          "term": "Heading",
+          "definition": "Judul bertingkat h1 sampai h6 yang menggambarkan struktur konten, bukan ukuran hurufnya."
+        },
+        {
+          "term": "Atribut lang",
+          "definition": "Penanda bahasa dokumen atau bagiannya, misalnya lang=\"id\" untuk bahasa Indonesia."
+        }
+      ],
+      "syntax": [
+        {
+          "token": "<main>...</main>",
+          "readAs": "Baca sebagai penanda wilayah utama halaman yang memuat konten inti.",
+          "meaning": "main membungkus konten utama dan hanya boleh ada satu per halaman. Konten berulang seperti menu tidak diletakkan di dalamnya.",
+          "example": "<main>\n  <h1>Daftar Tugas</h1>\n</main>",
+          "output": "Teknologi bantu dapat melompat langsung ke konten utama tanpa melewati menu.",
+          "pitfall": "Memakai beberapa main membuat teknologi bantu tidak tahu wilayah utama yang mana."
+        },
+        {
+          "token": "<button type=\"button\">Tambah</button>",
+          "readAs": "Baca sebagai tombol yang menjalankan aksi ketika diaktifkan.",
+          "meaning": "button cocok untuk aksi seperti menambah atau menghapus, dan dapat difokus serta diaktifkan lewat keyboard.",
+          "example": "<button type=\"button\">Tambah</button>",
+          "output": "Tombol dapat difokus dan diaktifkan dengan Enter atau Spasi.",
+          "pitfall": "Memakai div yang diberi onclick membuat elemen tidak bisa difokus keyboard tanpa peran dan atribut tambahan."
+        },
+        {
+          "token": "<a href=\"#daftar\">Ke daftar</a>",
+          "readAs": "Baca sebagai tautan yang memindahkan pengguna ke alamat tujuan.",
+          "meaning": "a dipakai untuk berpindah ke halaman, berkas, atau bagian lain di dalam dokumen.",
+          "example": "<a href=\"#daftar\">Ke daftar</a>",
+          "output": "Aktivasi membawa pengguna ke bagian yang dituju.",
+          "pitfall": "Memakai tautan untuk aksi yang tidak berpindah tempat membingungkan; gunakan button untuk aksi."
+        }
+      ],
+      "conventions": [
+        "Pakai elemen sesuai makna dan perannya, bukan hanya karena bentuknya mirip.",
+        "Susun heading berurutan tanpa melompati tingkatan.",
+        "Sediakan satu main per halaman sebagai wilayah konten utama.",
+        "Pakai button untuk aksi dan a untuk navigasi ke alamat lain.",
+        "Sertakan atribut lang pada elemen html dan judul halaman yang deskriptif."
+      ],
+      "sections": [
+        {
+          "id": "cara-membaca",
+          "title": "Cara membaca struktur satu halaman HTML",
+          "body": [
+            "Halaman HTML dibaca sebagai pohon elemen yang saling bersarang. Mulailah dari elemen html, lalu head yang memuat informasi tentang dokumen, dan body yang memuat isi yang dilihat pengguna. Setiap elemen harus dibuka dan ditutup pada tempat yang benar.",
+            "Struktur yang baik tetap terbaca ketika gaya visual dimatikan. Atribut lang menyatakan bahasa, title menjadi judul dokumen, dan elemen semantik seperti header serta main menyatakan peran setiap wilayah. Pembaca manusia dan teknologi bantu sama-sama mengandalkan struktur ini.",
+            "Saat membaca kode orang lain, perhatikan elemen yang membungkus konten: apakah perannya jelas, atau semua dibungkus div tanpa makna. Elemen yang semantik mempersingkat waktu memahami halaman dan mengurangi kebutuhan komentar."
+          ],
+          "code": {
+            "language": "html",
+            "lab": false,
+            "code": "<!doctype html>\n<html lang=\"id\">\n  <head>\n    <meta charset=\"utf-8\" />\n    <title>Daftar Tugas</title>\n  </head>\n  <body>\n    <header>\n      <h1>Daftar Tugas</h1>\n    </header>\n    <main>\n      <button type=\"button\">Tambah</button>\n    </main>\n  </body>\n</html>",
+            "output": "Halaman memiliki bahasa, judul, dan wilayah utama yang dikenali teknologi bantu.",
+            "explain": "Atribut lang menyatakan bahasa, title menjadi judul dokumen, dan main menandai konten inti. Struktur ini dapat dipahami tanpa melihat tampilan.",
+            "annotations": [
+              {
+                "line": 2,
+                "code": "<html lang=\"id\">",
+                "note": "Atribut lang menyatakan bahasa utama dokumen."
+              },
+              {
+                "line": 4,
+                "code": "<meta charset=\"utf-8\" />",
+                "note": "meta charset memastikan teks dikodekan dengan benar."
+              },
+              {
+                "line": 5,
+                "code": "<title>Daftar Tugas</title>",
+                "note": "title menjadi judul dokumen di tab dan daftar bookmark."
+              },
+              {
+                "line": 9,
+                "code": "<h1>Daftar Tugas</h1>",
+                "note": "h1 menyatakan judul utama halaman."
+              },
+              {
+                "line": 11,
+                "code": "<main>",
+                "note": "main menandai wilayah konten utama."
+              },
+              {
+                "line": 12,
+                "code": "<button type=\"button\">Tambah</button>",
+                "note": "button adalah elemen untuk aksi, bukan div."
+              }
+            ]
+          },
+          "callouts": [
+            {
+              "tone": "good",
+              "title": "Uji tanpa CSS",
+              "body": "Matikan CSS lalu periksa apakah urutan konten dan judul masih masuk akal. Struktur yang baik tetap terbaca tanpa gaya."
+            }
+          ],
+          "checkpoint": {
+            "prompt": "Sebutkan tiga elemen semantik beserta perannya pada halaman daftar tugas.",
+            "success": "Jawaban menyebut misalnya header untuk pembuka, nav untuk navigasi, dan article untuk satu tugas."
+          }
+        },
+        {
+          "id": "struktur-dokumen",
+          "title": "Mengapa div tidak cukup",
+          "body": [
+            "div adalah wadah tanpa makna. Ia berguna untuk keperluan tata letak, tetapi tidak memberi tahu apa pun tentang isinya. Ketika seluruh halaman dibangun dari div, peran setiap bagian hanya diketahui dari kelas CSS yang bisa berubah kapan saja.",
+            "Elemen semantik menyatakan peran: header adalah pembuka, nav adalah kumpulan navigasi, main adalah konten utama, article adalah satu unit mandiri, dan footer adalah penutup. Dengan elemen ini, struktur halaman terbaca oleh manusia, mesin pencari, dan teknologi bantu tanpa bergantung pada nama kelas.",
+            "Semantik juga memengaruhi perilaku bawaan. Button dapat difokus dan diaktifkan keyboard; label mengaitkan teks dengan input; heading membentuk daftar isi. Ketika peran ditulis, sebagian tanggung jawab aksesibilitas sudah ditangani browser."
+          ],
+          "code": {
+            "language": "html",
+            "lab": false,
+            "code": "<!-- kurang baik -->\n<div class=\"atas\">Daftar Tugas</div>\n<div class=\"isi\">\n  <div class=\"item\">Belajar</div>\n</div>\n\n<!-- lebih baik -->\n<header><h1>Daftar Tugas</h1></header>\n<main>\n  <article>Belajar</article>\n</main>",
+            "output": "Versi kedua menyatakan peran tiap bagian sehingga mesin dan teknologi bantu memahami strukturnya.",
+            "explain": "div hanya berarti wadah tanpa makna, sedangkan header, main, dan article menyatakan peran konten.",
+            "annotations": [
+              {
+                "line": 1,
+                "code": "<!-- kurang baik -->",
+                "note": "Komentar menandai versi yang belum semantik."
+              },
+              {
+                "line": 2,
+                "code": "<div class=\"atas\">Daftar Tugas</div>",
+                "note": "div dengan kelas hanya menyatakan tampilan, bukan peran."
+              },
+              {
+                "line": 7,
+                "code": "<!-- lebih baik -->",
+                "note": "Komentar menandai versi yang lebih baik."
+              },
+              {
+                "line": 8,
+                "code": "<header><h1>Daftar Tugas</h1></header>",
+                "note": "header dan h1 menyatakan pembuka dan judul utama."
+              },
+              {
+                "line": 10,
+                "code": "<article>Belajar</article>",
+                "note": "article menyatakan satu unit tugas yang mandiri."
+              }
+            ]
+          },
+          "callouts": [
+            {
+              "tone": "warn",
+              "title": "Kelas bukan semantik",
+              "body": "Nama kelas seperti card atau item dapat berubah. Peran elemen tidak. Pakailah elemen yang benar agar makna tidak bergantung pada CSS."
+            }
+          ]
+        },
+        {
+          "id": "elemen-semantik",
+          "title": "Navigasi dan bagian yang dapat dibedakan",
+          "body": [
+            "Ketika sebuah halaman memiliki lebih dari satu navigasi, pembaca perlu membedakannya. Atribut aria-label memberi nama pada nav sehingga teknologi bantu mengumumkan “navigasi utama” dan bukan sekadar “navigasi”.",
+            "Bagian halaman juga dapat diberi nama. aria-labelledby menghubungkan sebuah section dengan judul yang sudah ada, sehingga namanya diambil dari teks judul. Cara ini menjaga nama tetap satu sumber dan tidak ditulis dua kali.",
+            "Nama wilayah membantu pengguna yang membaca halaman dengan daftar landmark atau melompat antarbagian. Tanpa nama, dua navigasi tampak identik dan pengguna harus menebak mana yang dimaksud."
+          ],
+          "code": {
+            "language": "html",
+            "lab": false,
+            "code": "<nav aria-label=\"Utama\">\n  <a href=\"#daftar\">Daftar</a>\n  <a href=\"#selesai\">Selesai</a>\n</nav>\n\n<section aria-labelledby=\"judul-filter\">\n  <h2 id=\"judul-filter\">Filter</h2>\n  <p>Pilih tugas yang ingin ditampilkan.</p>\n</section>",
+            "output": "Navigasi dan bagian diberi nama sehingga dapat dibedakan teknologi bantu.",
+            "explain": "aria-label menamai navigasi, sedangkan aria-labelledby menghubungkan bagian dengan judulnya sehingga namanya tidak ditulis dua kali.",
+            "annotations": [
+              {
+                "line": 1,
+                "code": "<nav aria-label=\"Utama\">",
+                "note": "aria-label membedakan navigasi ini dari navigasi lain."
+              },
+              {
+                "line": 2,
+                "code": "<a href=\"#daftar\">Daftar</a>",
+                "note": "Tautan memakai href ke bagian di dalam halaman."
+              },
+              {
+                "line": 6,
+                "code": "<section aria-labelledby=\"judul-filter\">",
+                "note": "aria-labelledby merujuk ke id judul di bawahnya."
+              },
+              {
+                "line": 7,
+                "code": "<h2 id=\"judul-filter\">Filter</h2>",
+                "note": "Judul menjadi nama bagian sekaligus teks yang terlihat."
+              }
+            ]
+          }
+        },
+        {
+          "id": "heading-dan-fokus",
+          "title": "Heading, urutan, dan fokus",
+          "body": [
+            "Heading membentuk daftar isi halaman. Susunlah berurutan: h1 untuk judul halaman, h2 untuk bagian besar, h3 untuk subbagian. Melompat dari h1 ke h3 tanpa h2 membuat struktur melompat dan menyulitkan pembaca yang menavigasi lewat heading.",
+            "Jangan memilih tingkat heading berdasarkan ukuran teks. Ukuran diatur CSS; tingkatan menyatakan kedalaman struktur. Jika sebuah judul perlu lebih kecil, ubah gayanya, bukan tingkatannya.",
+            "Urutan fokus mengikuti urutan elemen di dalam dokumen. Karena itu, susun HTML sesuai alur baca. Jika sebuah tombol muncul lebih awal di layar daripada di dokumen, pengguna keyboard akan menemukannya di tempat yang tidak terduga. Hindari memindahkan fokus dengan tabindex positif karena mengubah urutan alami."
+          ],
+          "callouts": [
+            {
+              "tone": "bad",
+              "title": "Kesalahan umum",
+              "body": "Memakai banyak h1 atau melompati tingkatan demi tampilan tertentu. Perbaiki gaya lewat CSS, bukan dengan mengubah tingkatan heading."
+            }
+          ],
+          "checkpoint": {
+            "prompt": "Periksa halaman latihan Anda: apakah heading berurutan tanpa lompatan?",
+            "success": "Setiap tingkatan heading hanya muncul setelah tingkatan di atasnya, dan hanya ada satu h1."
+          }
+        }
+      ],
+      "practice": [
+        {
+          "id": "latihan-1",
+          "level": "guided",
+          "title": "Susun kerangka halaman profil",
+          "task": "Buat struktur halaman profil dengan header, nav, main, satu article, dan footer menggunakan elemen semantik.",
+          "steps": [
+            "Tulis doctype, html dengan lang, head dengan title, lalu body.",
+            "Tambahkan header berisi h1 dan nav berisi dua tautan.",
+            "Tambahkan main dengan satu article dan satu h2.",
+            "Tutup dengan footer berisi informasi singkat."
+          ],
+          "starterCode": "<!doctype html>\n<html lang=\"id\">\n  <head>\n    <title>Profil</title>\n  </head>\n  <body>\n    <!-- lengkapi -->\n  </body>\n</html>",
+          "expected": "Kerangka memakai minimal lima elemen semantik, hanya satu h1, dan heading h2 berada di dalam main.",
+          "stretch": "Tambahkan tautan lompat ke konten utama sebelum header.",
+          "hints": [
+            "Mulai dari main karena itu konten inti.",
+            "Setiap tautan di nav memakai arah href ke bagian yang relevan.",
+            "Letakkan hanya satu h1 di seluruh halaman."
+          ],
+          "verification": {
+            "command": "Simpan berkas HTML dan buka di browser, lalu matikan CSS.",
+            "expected": "Urutan konten tetap masuk akal tanpa gaya dan heading berurutan.",
+            "evidence": "Simpan berkas HTML dan tangkapan layar struktur elemen."
+          }
+        },
+        {
+          "id": "latihan-2",
+          "level": "independent",
+          "title": "Perbaiki div menjadi semantik",
+          "task": "Diberikan markup yang seluruhnya memakai div, ganti dengan elemen semantik yang paling tepat.",
+          "steps": [
+            "Tandai bagian yang berperan sebagai pembuka, navigasi, konten utama, dan penutup.",
+            "Ganti setiap div dengan elemen yang sesuai peran itu.",
+            "Pastikan tidak ada peran yang terlewat atau dipakai dua kali secara keliru."
+          ],
+          "starterCode": "<div class=\"header\">\n  <h1>Daftar Tugas</h1>\n</div>\n<div class=\"nav\">\n  <a href=\"#aktif\">Aktif</a>\n</div>\n<div class=\"content\">\n  <div>Belajar</div>\n</div>\n<div class=\"footer\">Selesai</div>",
+          "expected": "Markup hasil memakai header, nav, main, article, dan footer tanpa mengubah teks yang terlihat.",
+          "stretch": "Tambahkan nama wilayah dengan aria-label pada navigasi.",
+          "hints": [
+            "Cocokkan setiap peran dengan elemen yang namanya menyatakan peran itu.",
+            "Satu tugas adalah unit mandiri, sehingga cocok memakai article.",
+            "Penutup halaman memakai footer."
+          ],
+          "verification": {
+            "command": "Bandingkan sebelum dan sesudah dengan inspeksi elemen di DevTools.",
+            "expected": "Semua div tanpa makna sudah diganti elemen semantik yang setara perannya.",
+            "evidence": "Simpan kedua versi markup untuk dibandingkan."
+          }
+        },
+        {
+          "id": "latihan-3",
+          "level": "transfer",
+          "title": "Struktur halaman daftar tugas lengkap",
+          "task": "Rancang struktur halaman daftar tugas yang memuat form tambah, filter, daftar tugas, dan penghitung hasil.",
+          "steps": [
+            "Tentukan peran setiap wilayah sebelum menulis elemen.",
+            "Beri nama navigasi dan bagian yang lebih dari satu jenis.",
+            "Susun heading sesuai tingkatan yang logis.",
+            "Pastikan tombol dipakai untuk aksi dan tautan untuk navigasi."
+          ],
+          "starterCode": "<main>\n  <!-- form, filter, daftar, penghitung -->\n</main>",
+          "expected": "Struktur memuat wilayah yang dinamai dengan jelas, heading berurutan, dan pemisahan tindakan serta navigasi yang konsisten.",
+          "stretch": "Tandai satu bagian yang boleh dilipat dengan elemen details dan summary.",
+          "hints": [
+            "Form, filter, dan daftar adalah tiga bagian berbeda.",
+            "Penghitung hasil biasanya berada di luar daftar karena bukan bagian dari satu tugas.",
+            "Gunakan section untuk bagian bertema dan article untuk unit tugas."
+          ],
+          "verification": {
+            "command": "Tinjau struktur dengan daftar landmark di alat pemeriksa aksesibilitas.",
+            "expected": "Setiap wilayah memiliki peran dan nama yang dapat dibedakan.",
+            "evidence": "Simpan berkas HTML dan daftar landmark yang terbaca."
+          }
+        }
+      ],
+      "verification": {
+        "mode": "manual",
+        "command": "Buka berkas HTML, matikan CSS, lalu periksa struktur dan urutan heading.",
+        "expected": "Halaman tersusun dari elemen semantik, hanya satu h1, dan urutan konten tetap masuk akal tanpa gaya.",
+        "evidence": "Simpan berkas HTML dan catatan hasil pemeriksaan struktur tanpa CSS."
+      },
+      "troubleshooting": [
+        {
+          "symptom": "Halaman tampak benar tetapi pembaca layar membacanya sebagai satu blok tanpa struktur.",
+          "cause": "Semua wilayah dibungkus div sehingga tidak ada landmark yang dikenali.",
+          "fix": "Ganti div dengan elemen semantik seperti header, nav, main, dan footer."
+        },
+        {
+          "symptom": "Tombol tidak dapat diaktifkan dengan keyboard.",
+          "cause": "Tombol dibuat dari div dengan onclick, bukan elemen button.",
+          "fix": "Gunakan elemen button dan simpan aksi di dalam event handler, bukan di atribut yang tidak aksesibel."
+        },
+        {
+          "symptom": "Struktur heading melompat dan sulit diikuti.",
+          "cause": "Tingkatan heading dipilih berdasarkan ukuran teks, bukan kedalaman struktur.",
+          "fix": "Susun kembali tingkatan heading secara berurutan dan atur ukuran melalui CSS."
+        },
+        {
+          "symptom": "Dua navigasi tampak identik saat dibaca teknologi bantu.",
+          "cause": "Navigasi tidak diberi nama sehingga keduanya hanya diumumkan sebagai navigasi.",
+          "fix": "Tambahkan aria-label yang menjelaskan peran masing-masing navigasi."
+        }
+      ],
       "quiz": {
-        "question": "Apa prinsip yang paling tepat untuk topik “HTML semantik”?",
-        "options": [
-          "Gunakan elemen sesuai makna dan fungsi, bukan hanya bentuk.",
-          "Gunakan solusi paling rumit sejak awal, meski kebutuhan belum jelas.",
-          "Lewati pengujian karena contoh kecil pasti benar."
-        ],
-        "answer": 0,
-        "explanation": "Gunakan elemen sesuai makna dan fungsi, bukan hanya bentuk."
-      }
+        "questions": [
+          {
+            "id": "q1",
+            "type": "recall",
+            "question": "Mengapa elemen semantik lebih baik daripada div untuk struktur halaman?",
+            "options": [
+              "Karena elemen semantik selalu lebih pendek ditulis",
+              "Karena elemen semantik menyatakan peran konten sehingga dapat dipahami manusia dan teknologi bantu",
+              "Karena div tidak dapat diberi gaya dengan CSS"
+            ],
+            "answer": 1,
+            "explanation": "Peran elemen semantik tidak bergantung pada nama kelas CSS, sehingga struktur tetap bermakna."
+          },
+          {
+            "id": "q2",
+            "type": "code-reading",
+            "question": "Pada struktur halaman, elemen main sebaiknya muncul berapa kali?",
+            "options": [
+              "Tidak boleh ada",
+              "Tepat satu kali",
+              "Sebanyak jumlah section"
+            ],
+            "answer": 1,
+            "explanation": "Hanya ada satu wilayah konten utama per halaman."
+          },
+          {
+            "id": "q3",
+            "type": "scenario",
+            "question": "Anda perlu membuat kontrol yang menyimpan data saat ditekan. Elemen yang tepat adalah...",
+            "options": [
+              "div dengan kelas tombol",
+              "button, karena dapat difokus dan diaktifkan keyboard",
+              "a tanpa href"
+            ],
+            "answer": 1,
+            "explanation": "button adalah elemen untuk aksi dan sudah aksesibel secara bawaan."
+          },
+          {
+            "id": "q4",
+            "type": "scenario",
+            "question": "Halaman memiliki dua navigasi. Cara membedakannya untuk teknologi bantu adalah...",
+            "options": [
+              "Memberi warna berbeda pada keduanya",
+              "Memberi aria-label yang menjelaskan peran tiap navigasi",
+              "Menggabungkan keduanya menjadi satu navigasi"
+            ],
+            "answer": 1,
+            "explanation": "aria-label memberi nama wilayah sehingga keduanya dapat dibedakan."
+          }
+        ]
+      },
+      "resources": [
+        {
+          "sourceId": "mdn-html",
+          "note": "Referensi elemen HTML beserta perannya, termasuk elemen semantik dan tombol."
+        },
+        {
+          "sourceId": "mdn-learn",
+          "note": "Kursus resmi MDN tentang HTML, struktur dokumen, dan elemen semantik."
+        },
+        {
+          "sourceId": "wcag22",
+          "note": "Pedoman W3C tentang struktur, nama peran, dan aksesibilitas halaman."
+        }
+      ],
+      "summary": [
+        "HTML mendeskripsikan struktur dan makna konten, bukan tampilan.",
+        "Elemen semantik menyatakan peran wilayah sehingga dapat dipahami manusia dan teknologi bantu.",
+        "Heading disusun berurutan sesuai kedalaman struktur, bukan berdasarkan ukuran teks.",
+        "button dipakai untuk aksi, a untuk navigasi, dan main hanya satu per halaman."
+      ],
+      "next": "Berikutnya: form dan validasi HTML. Anda akan membangun form yang aksesibel dan memakai validasi bawaan browser sebelum menambahkan pemeriksaan sendiri."
     },
     {
       "id": "m04-l02",
-      "title": "Form dan validasi",
-      "minutes": 45,
+      "title": "Form dan validasi HTML",
+      "minutes": 90,
       "level": "Dasar",
-      "intro": "Form mengumpulkan input. label yang terhubung dengan id memudahkan akses; type, required, min, max membantu validasi browser.",
-      "explanation": "Validasi sisi klien meningkatkan UX tetapi tidak cukup untuk keamanan: backend wajib memvalidasi kembali. Pesan kesalahan harus jelas, dekat field, dan bukan hanya warna.",
-      "code": "<form>\n  <label for=\"email\">Email</label>\n  <input id=\"email\" type=\"email\" required>\n  <button type=\"submit\">Daftar</button>\n</form>",
+      "depth": "fondasi",
+      "schema": 3.1,
       "codeLanguage": "html",
-      "practice": [
-        "Buat form daftar nama, email, dan usia dengan label dan validasi HTML.",
-        "Ubah satu input atau asumsi pada contoh, catat hasil dan jelaskan alasannya."
+      "outcome": "Setelah pelajaran ini, Anda dapat membangun form yang aksesibel dengan label yang benar dan memakai validasi bawaan HTML untuk menolak input tidak sesuai sebelum pemeriksaan JavaScript.",
+      "objectives": [
+        "Mengaitkan setiap input dengan label sehingga dapat dibaca teknologi bantu.",
+        "Memilih tipe input yang tepat agar browser memakai keyboard dan validasi yang sesuai.",
+        "Memakai atribut required, minlength, dan pattern untuk validasi dasar.",
+        "Menjelaskan mengapa validasi di sisi klien saja tidak cukup."
       ],
-      "bestPractice": "Validasi pada browser dan ulangi di backend untuk data tepercaya.",
-      "commonMistake": "Menggunakan placeholder sebagai pengganti label.",
+      "prerequisites": [
+        {
+          "label": "HTML semantik dan struktur dokumen",
+          "lessonId": "m04-l01"
+        }
+      ],
+      "terms": [
+        {
+          "term": "Form",
+          "definition": "Kumpulan kontrol yang mengumpulkan input pengguna lalu mengirimkannya."
+        },
+        {
+          "term": "Label",
+          "definition": "Teks atau elemen yang mengaitkan nama dengan sebuah kontrol lewat atribut for."
+        },
+        {
+          "term": "Validasi bawaan",
+          "definition": "Pemeriksaan yang dijalankan browser langsung dari atribut HTML seperti required dan pattern."
+        },
+        {
+          "term": "Constraint validation",
+          "definition": "Mekanisme browser yang mencocokkan nilai kontrol dengan aturan validasi dan menampilkan pesan bawaan."
+        }
+      ],
+      "syntax": [
+        {
+          "token": "<label for=\"judul\">Judul</label>",
+          "readAs": "Baca sebagai teks nama yang terhubung ke kontrol dengan id bernilai judul.",
+          "meaning": "Atribut for pada label harus sama dengan id kontrol. Kaitan ini membuat label dapat diklik dan dibacakan teknologi bantu.",
+          "example": "<label for=\"judul\">Judul</label>",
+          "output": "Klik pada teks label memindahkan fokus ke kontrol terkait.",
+          "pitfall": "Label tanpa for hanya teks biasa; teknologi bantu tidak tahu kontrol mana yang dinamai."
+        },
+        {
+          "token": "<input type=\"text\" id=\"judul\" name=\"judul\" required>",
+          "readAs": "Baca sebagai kontrol teks bernama judul yang wajib diisi sebelum form dikirim.",
+          "meaning": "type menentukan perilaku dan keyboard, id menghubungkan dengan label, name dipakai saat data dikirim, dan required menolak nilai kosong.",
+          "example": "<input type=\"text\" id=\"judul\" name=\"judul\" required>",
+          "output": "Browser menolak pengiriman ketika judul kosong.",
+          "pitfall": "Menulis required tanpa name membuat data tidak ikut terkirim meski validasi berjalan."
+        },
+        {
+          "token": "<input type=\"email\" id=\"email\" name=\"email\" required>",
+          "readAs": "Baca sebagai kontrol surel yang wajib diisi dan diperiksa formatnya oleh browser.",
+          "meaning": "type email memunculkan validasi format dan keyboard yang sesuai pada perangkat sentuh.",
+          "example": "<input type=\"email\" id=\"email\" name=\"email\" required>",
+          "output": "Teks tanpa tanda at tidak diterima browser.",
+          "pitfall": "type email hanya memeriksa bentuk dasar, bukan keberadaan alamat; verifikasi tetap perlu di server."
+        }
+      ],
+      "conventions": [
+        "Kaitkan setiap kontrol dengan label memakai for dan id yang sama.",
+        "Pilih tipe input sesuai data yang diminta agar browser membantu validasi.",
+        "Pakai required, minlength, dan pattern untuk aturan dasar sebelum JavaScript.",
+        "Tampilkan pesan error yang menyebut nama field dan cara memperbaikinya.",
+        "Anggap validasi klien sebagai kenyamanan; validasi penting tetap dilakukan di server."
+      ],
+      "sections": [
+        {
+          "id": "cara-membaca",
+          "title": "Cara membaca form dan aturannya",
+          "body": [
+            "Form dibaca dari atas ke bawah sebagai daftar kontrol. Untuk setiap kontrol, periksa tiga hal: apakah ia punya label yang terhubung, apakah tipenya sesuai data, dan apakah memuat aturan validasi yang diperlukan.",
+            "Atribut novalidate pada contoh mematikan validasi bawaan agar Anda dapat memeriksa aturan sendiri. Tanpa novalidate, browser menolak pengiriman ketika diperlukan dan menampilkan pesannya sendiri. Kedua pendekatan sah; pilih satu secara sadar.",
+            "Perhatikan bahwa id pada kontrol cocok dengan for pada label. Kaitan ini bukan hiasan: tanpa itu, klik label tidak memindahkan fokus dan teknologi bantu tidak mengumumkan nama kontrol."
+          ],
+          "code": {
+            "language": "html",
+            "lab": false,
+            "code": "<form novalidate>\n  <label for=\"judul\">Judul tugas</label>\n  <input type=\"text\" id=\"judul\" name=\"judul\" required minlength=\"3\" />\n\n  <label for=\"tenggat\">Tenggat</label>\n  <input type=\"date\" id=\"tenggat\" name=\"tenggat\" />\n\n  <button type=\"submit\">Simpan</button>\n</form>",
+            "output": "Setiap kontrol dipasangkan dengan label, dan aturan validasi terbaca dari atributnya.",
+            "explain": "for pada label cocok dengan id kontrol. required dan minlength menyatakan aturan yang akan diperiksa browser saat form dikirim.",
+            "annotations": [
+              {
+                "line": 1,
+                "code": "<form novalidate>",
+                "note": "novalidate mematikan validasi bawaan untuk dipelajari dulu."
+              },
+              {
+                "line": 2,
+                "code": "<label for=\"judul\">Judul tugas</label>",
+                "note": "Label menamai kontrol dan terhubung lewat for."
+              },
+              {
+                "line": 3,
+                "code": "<input type=\"text\" id=\"judul\" name=\"judul\" required minlength=\"3\" />",
+                "note": "Kontrol teks wajib dengan panjang minimal tiga karakter."
+              },
+              {
+                "line": 6,
+                "code": "<input type=\"date\" id=\"tenggat\" name=\"tenggat\" />",
+                "note": "type date memakai pemilih tanggal dan validasi format."
+              },
+              {
+                "line": 8,
+                "code": "<button type=\"submit\">Simpan</button>",
+                "note": "Tombol kirim menyerahkan form."
+              }
+            ]
+          },
+          "callouts": [
+            {
+              "tone": "good",
+              "title": "Satu kontrol, satu label",
+              "body": "Setiap kontrol punya satu label yang terhubung. Jika nama perlu penjelasan tambahan, hubungkan lewat aria-describedby, bukan label kedua."
+            }
+          ],
+          "checkpoint": {
+            "prompt": "Hitung berapa kontrol pada form contoh yang memiliki label terhubung, lalu sebutkan pasangan for dan id-nya.",
+            "success": "Dua kontrol, dengan for=\"judul\" dan id=\"judul\" serta for=\"tenggat\" dan id=\"tenggat\"."
+          }
+        },
+        {
+          "id": "tipe-input",
+          "title": "Memilih tipe input yang tepat",
+          "body": [
+            "Tipe input menentukan keyboard yang muncul di perangkat sentuh dan validasi yang dijalankan browser. type email memunculkan tombol at, type tel memunculkan papan angka, dan type date memberi pemilih tanggal dengan format yang konsisten.",
+            "Memilih tipe yang tepat mengurangi kesalahan sejak awal. Pengguna tidak perlu berpindah keyboard, dan browser dapat menolak format yang jelas salah sebelum data dikirim. Ini lebih murah daripada memeriksa semuanya di JavaScript.",
+            "Namun tipe input bukan pengaman. Nilai dari klien tetap dapat diubah, sehingga aturan penting harus diperiksa ulang di server. Tipe input adalah bantuan untuk pengalaman pengguna, bukan pengganti validasi yang tepercaya."
+          ],
+          "callouts": [
+            {
+              "tone": "warn",
+              "title": "Jangan menambah atribut asal",
+              "body": "Pakai atribut yang Anda pahami. Atribut yang salah justru membingungkan dan sering tidak berpengaruh apa pun pada validasi."
+            }
+          ],
+          "checkpoint": {
+            "prompt": "Sebutkan tipe input yang tepat untuk judul, surel, tanggal, dan deskripsi panjang.",
+            "success": "text, email, date, dan textarea untuk deskripsi panjang."
+          }
+        },
+        {
+          "id": "aturan-validasi",
+          "title": "Menulis aturan validasi yang jelas",
+          "body": [
+            "Aturan validasi dinyatakan lewat atribut pada kontrol. required menolak nilai kosong, minlength dan maxlength membatasi panjang, dan pattern memeriksa bentuk tertentu. Browser menjalankan aturan ini saat form dikirim.",
+            "Pesan bawaan browser sering terlalu singkat. Untuk menjelaskan aturan, hubungkan teks bantuan lewat aria-describedby sehingga pembaca layar mengumumkannya bersama nama kontrol. Tulis bantuan dalam bahasa yang memandu, bukan sekadar melarang.",
+            "Aturan yang saling bertentangan membuat pengguna tidak bisa mengirim data yang sah. Uji selalu dua kasus: nilai yang harus diterima dan nilai yang harus ditolak, lalu pastikan pesannya dapat dipahami."
+          ],
+          "code": {
+            "language": "html",
+            "lab": false,
+            "code": "<label for=\"judul\">Judul tugas</label>\n<input\n  type=\"text\"\n  id=\"judul\"\n  name=\"judul\"\n  required\n  minlength=\"3\"\n  maxlength=\"120\"\n  aria-describedby=\"bantuan-judul\"\n/>\n<p id=\"bantuan-judul\">3 sampai 120 karakter.</p>",
+            "output": "Aturan panjang terbaca dari atribut, dan teks bantuan diumumkan bersama nama kontrol.",
+            "explain": "required, minlength, dan maxlength membentuk rentang yang jelas. aria-describedby menghubungkan kontrol dengan teks bantuan yang menjelaskan batas itu.",
+            "annotations": [
+              {
+                "line": 1,
+                "code": "<label for=\"judul\">Judul tugas</label>",
+                "note": "Label tetap menghubungkan nama dengan kontrol."
+              },
+              {
+                "line": 6,
+                "code": "required",
+                "note": "required menolak nilai kosong."
+              },
+              {
+                "line": 7,
+                "code": "minlength=\"3\"",
+                "note": "minlength menetapkan panjang minimum yang diterima."
+              },
+              {
+                "line": 9,
+                "code": "aria-describedby=\"bantuan-judul\"",
+                "note": "aria-describedby menghubungkan kontrol dengan teks bantuan."
+              },
+              {
+                "line": 11,
+                "code": "<p id=\"bantuan-judul\">3 sampai 120 karakter.</p>",
+                "note": "Teks bantuan menjelaskan rentang yang diperbolehkan."
+              }
+            ]
+          }
+        }
+      ],
+      "practice": [
+        {
+          "id": "latihan-1",
+          "level": "guided",
+          "title": "Form tambah tugas",
+          "task": "Buat form dengan field judul wajib, tenggat opsional, dan prioritas berbentuk pilihan.",
+          "steps": [
+            "Tambahkan label dan input untuk setiap field.",
+            "Hubungkan label dengan input memakai for dan id.",
+            "Tambahkan required pada judul dan pilihan prioritas.",
+            "Tambahkan tombol kirim."
+          ],
+          "starterCode": "<form>\n  <!-- judul, tenggat, prioritas -->\n</form>",
+          "expected": "Setiap field punya label terhubung; judul dan prioritas wajib diisi.",
+          "stretch": "Tambahkan teks bantuan untuk memandu pengisian judul.",
+          "hints": [
+            "Setiap for harus cocok dengan id kontrolnya.",
+            "Pilihan prioritas dapat memakai select dengan beberapa option.",
+            "Tombol kirim memakai type submit."
+          ],
+          "verification": {
+            "command": "Kirim form dalam keadaan kosong.",
+            "expected": "Browser menolak pengiriman dan menyorot field yang wajib.",
+            "evidence": "Simpan berkas HTML dan catatan pesan validasi yang muncul."
+          }
+        },
+        {
+          "id": "latihan-2",
+          "level": "independent",
+          "title": "Perbaiki label yang salah",
+          "task": "Diberikan form dengan label yang tidak terhubung ke kontrol, perbaiki agar setiap label mengait dengan benar.",
+          "steps": [
+            "Periksa setiap for dan cocokkan dengan id kontrol.",
+            "Tambahkan id yang hilang atau betulkan nilainya.",
+            "Uji dengan mengklik teks label untuk memastikan fokus berpindah."
+          ],
+          "starterCode": "<label>Judul</label>\n<input type=\"text\" name=\"judul\" />\n<label>Surel</label>\n<input type=\"email\" name=\"email\" />",
+          "expected": "Setiap klik label memindahkan fokus ke kontrol terkait.",
+          "stretch": "Tambahkan aria-describedby untuk aturan panjang judul.",
+          "hints": [
+            "Label perlu for yang sama dengan id kontrol.",
+            "Setiap id harus unik di dalam halaman.",
+            "Fokus yang berpindah saat label diklik menandakan kaitan berhasil."
+          ],
+          "verification": {
+            "command": "Klik setiap teks label di browser.",
+            "expected": "Fokus selalu berpindah ke kontrol yang benar.",
+            "evidence": "Simpan markup sebelum dan sesudah perbaikan."
+          }
+        },
+        {
+          "id": "latihan-3",
+          "level": "transfer",
+          "title": "Aturan validasi untuk judul",
+          "task": "Tulis aturan validasi untuk judul: wajib, minimal tiga karakter, maksimal 120, dan tidak boleh hanya spasi.",
+          "steps": [
+            "Tambahkan atribut required dan batas panjang.",
+            "Tulis teks bantuan yang memandu pengisian.",
+            "Tentukan kasus uji yang harus diterima dan ditolak.",
+            "Catat bagian yang masih harus diperiksa di server."
+          ],
+          "starterCode": "<label for=\"judul\">Judul tugas</label>\n<input type=\"text\" id=\"judul\" name=\"judul\" />",
+          "expected": "Aturan rentang terbaca dari atribut, dan daftar uji memisahkan kasus diterima serta ditolak.",
+          "stretch": "Tambah pattern sederhana yang menolak kata yang hanya berisi tanda baca.",
+          "hints": [
+            "required, minlength, dan maxlength menutup sebagian besar aturan.",
+            "Aturan “bukan hanya spasi” sering lebih mudah diperiksa di server.",
+            "Pesan error sebaiknya menyebut batas 3 sampai 120 karakter."
+          ],
+          "verification": {
+            "command": "Uji tiga nilai: kosong, dua karakter, dan 121 karakter.",
+            "expected": "Ketiganya ditolak, sedangkan nilai tiga karakter diterima.",
+            "evidence": "Simpan tabel uji beserta hasil setiap kasus."
+          }
+        }
+      ],
+      "verification": {
+        "mode": "manual",
+        "command": "Kirim form dalam keadaan kosong, lalu dengan nilai yang tidak valid, lalu dengan nilai yang valid.",
+        "expected": "Form menolak input tidak valid dengan pesan yang dapat dipahami dan menerima input yang sah.",
+        "evidence": "Simpan berkas HTML dan catatan tiga hasil pengujian form."
+      },
+      "troubleshooting": [
+        {
+          "symptom": "Mengklik teks label tidak memindahkan fokus ke input.",
+          "cause": "for pada label tidak cocok dengan id kontrol, atau id tidak ada.",
+          "fix": "Samakan nilai for dan id untuk setiap pasangan label dan kontrol."
+        },
+        {
+          "symptom": "Validasi berjalan tetapi data field tidak terkirim.",
+          "cause": "Kontrol tidak memiliki atribut name.",
+          "fix": "Tambahkan name pada setiap kontrol yang datanya perlu dikirim."
+        },
+        {
+          "symptom": "Pengguna menerima pesan validasi yang tidak jelas.",
+          "cause": "Hanya pesan bawaan browser yang dipakai tanpa teks bantuan.",
+          "fix": "Tambahkan teks bantuan yang dihubungkan dengan aria-describedby dan jelaskan rentang yang sah."
+        },
+        {
+          "symptom": "Data tidak valid tetap tersimpan di server meski form menolaknya.",
+          "cause": "Validasi hanya dilakukan di sisi klien sehingga permintaan dapat dimanipulasi.",
+          "fix": "Ulangi seluruh aturan validasi di server dan jangan mempercayai data dari klien."
+        }
+      ],
       "quiz": {
-        "question": "Apa prinsip yang paling tepat untuk topik “Form dan validasi”?",
-        "options": [
-          "Validasi pada browser dan ulangi di backend untuk data tepercaya.",
-          "Gunakan solusi paling rumit sejak awal, meski kebutuhan belum jelas.",
-          "Lewati pengujian karena contoh kecil pasti benar."
-        ],
-        "answer": 0,
-        "explanation": "Validasi pada browser dan ulangi di backend untuk data tepercaya."
-      }
+        "questions": [
+          {
+            "id": "q1",
+            "type": "recall",
+            "question": "Atribut apa yang menghubungkan label dengan kontrol?",
+            "options": [
+              "class pada label dan id pada kontrol",
+              "for pada label dan id pada kontrol",
+              "name pada label dan kontrol"
+            ],
+            "answer": 1,
+            "explanation": "for pada label harus sama dengan id kontrol agar keduanya terhubung."
+          },
+          {
+            "id": "q2",
+            "type": "code-reading",
+            "question": "Apa yang terjadi bila kontrol punya required tetapi tidak punya name?",
+            "options": [
+              "Validasi tetap berjalan tetapi nilai tidak ikut terkirim",
+              "Validasi tidak berjalan sama sekali",
+              "Browser mengabaikan atribut required"
+            ],
+            "answer": 0,
+            "explanation": "required tetap diperiksa, tetapi tanpa name nilai kontrol tidak disertakan saat form dikirim."
+          },
+          {
+            "id": "q3",
+            "type": "scenario",
+            "question": "Mengapa validasi klien saja tidak cukup untuk data penting?",
+            "options": [
+              "Karena browser tidak dapat menampilkan pesan error",
+              "Karena permintaan dari klien dapat diubah sehingga server harus memverifikasi ulang",
+              "Karena validasi klien memperlambat halaman"
+            ],
+            "answer": 1,
+            "explanation": "Aturan penting harus tetap diperiksa di server karena data dari klien tidak dapat dipercaya."
+          },
+          {
+            "id": "q4",
+            "type": "scenario",
+            "question": "Field surel sebaiknya memakai tipe input apa?",
+            "options": [
+              "text",
+              "email",
+              "password"
+            ],
+            "answer": 1,
+            "explanation": "type email memberi keyboard yang sesuai dan validasi format dasar."
+          }
+        ]
+      },
+      "resources": [
+        {
+          "sourceId": "mdn-forms",
+          "note": "Panduan resmi formulir web: label, tipe input, dan validasi bawaan."
+        },
+        {
+          "sourceId": "mdn-html",
+          "note": "Referensi elemen input, label, dan atribut validasi."
+        },
+        {
+          "sourceId": "wcag22",
+          "note": "Pedoman aksesibilitas tentang label, bantuan input, dan pesan error."
+        }
+      ],
+      "summary": [
+        "Setiap kontrol dipasangkan dengan label yang terhubung lewat for dan id.",
+        "Tipe input yang tepat memberi keyboard dan validasi yang sesuai.",
+        "Aturan validasi dasar ditulis lewat atribut required, minlength, dan pattern.",
+        "Validasi klien adalah kenyamanan; aturan penting tetap diperiksa di server."
+      ],
+      "next": "Berikutnya: CSS box model dan selector. Anda akan mengatur jarak, ukuran, dan tampilan elemen secara terprediksi."
     },
     {
       "id": "m04-l03",
       "title": "CSS box model dan selector",
-      "minutes": 45,
+      "minutes": 90,
       "level": "Dasar",
-      "intro": "CSS menentukan presentasi. Box model terdiri dari content, padding, border, margin. Selector memilih elemen; specificity menentukan aturan yang menang.",
-      "explanation": "Gunakan box-sizing: border-box global supaya ukuran lebih mudah diprediksi. Prioritaskan class dan variabel CSS; hindari !important sebagai solusi utama.",
-      "code": "* { box-sizing: border-box; }\n.kartu {\n  padding: 16px;\n  border: 1px solid #ddd;\n  border-radius: 12px;\n}",
+      "depth": "fondasi",
+      "schema": 3.1,
       "codeLanguage": "css",
-      "practice": [
-        "Buat kartu berukuran maksimal 320px dengan padding dan border.",
-        "Ubah satu input atau asumsi pada contoh, catat hasil dan jelaskan alasannya."
+      "outcome": "Setelah pelajaran ini, Anda dapat menghitung ukuran elemen dengan box model, memilih selector yang tidak menimbulkan efek samping, dan mengatur jarak secara terprediksi memakai box-sizing.",
+      "objectives": [
+        "Menghitung lebar total elemen dari content, padding, border, dan margin.",
+        "Memakai box-sizing border-box agar ukuran mudah diprediksi.",
+        "Memilih selector berdasarkan kekhususan yang rendah dan stabil.",
+        "Membedakan margin untuk jarak antarelemen dan padding untuk jarak di dalam elemen."
       ],
-      "bestPractice": "Gunakan ukuran konsisten dan hindari specificity berlebihan.",
-      "commonMistake": "Mengira width menghitung padding secara otomatis tanpa border-box.",
+      "prerequisites": [
+        {
+          "label": "Form dan validasi HTML",
+          "lessonId": "m04-l02"
+        }
+      ],
+      "terms": [
+        {
+          "term": "Box model",
+          "definition": "Model perhitungan ukuran elemen yang terdiri dari content, padding, border, dan margin."
+        },
+        {
+          "term": "box-sizing",
+          "definition": "Properti yang menentukan apakah lebar mencakup padding dan border atau hanya kontennya."
+        },
+        {
+          "term": "Selector",
+          "definition": "Pola yang memilih elemen mana yang akan diberi aturan gaya."
+        },
+        {
+          "term": "Kekhususan",
+          "definition": "Bobot aturan CSS yang menentukan aturan mana yang menang ketika beberapa selector cocok."
+        }
+      ],
+      "syntax": [
+        {
+          "token": "*, *::before, *::after { box-sizing: border-box; }",
+          "readAs": "Baca sebagai aturan global yang membuat lebar elemen mencakup padding dan border.",
+          "meaning": "Dengan border-box, lebar yang Anda tetapkan sudah termasuk padding dan border, sehingga perhitungan ukuran tidak mengejutkan.",
+          "example": "*, *::before, *::after { box-sizing: border-box; }",
+          "output": "Elemen selebar 300px tetap 300px meski ditambah padding dan border.",
+          "pitfall": "Tanpa border-box, menambah padding memperbesar elemen melebihi lebar yang Anda tetapkan."
+        },
+        {
+          "token": ".kartu { padding: 1rem; border: 1px solid; }",
+          "readAs": "Baca sebagai aturan yang memberi jarak dalam dan garis pada elemen berkelas kartu.",
+          "meaning": "padding memberi jarak antara konten dan tepi elemen; border menggambar garis di tepi itu.",
+          "example": ".kartu { padding: 1rem; border: 1px solid; }",
+          "output": "Konten tidak menempel pada garis tepi elemen.",
+          "pitfall": "Memakai margin untuk menjauhkan konten dari tepi elemen sendiri membuat jarak ikut hilang saat elemen diberi latar."
+        },
+        {
+          "token": ".daftar li + li { margin-top: 0.5rem; }",
+          "readAs": "Baca sebagai aturan yang memberi jarak atas pada setiap item daftar kecuali yang pertama.",
+          "meaning": "Selector bersaudara + li memilih li yang didahului li lain, sehingga item pertama tidak mendapat jarak tambahan.",
+          "example": ".daftar li + li { margin-top: 0.5rem; }",
+          "output": "Jarak antaritem konsisten tanpa celah berlebih di awal daftar.",
+          "pitfall": "Memakai margin pada semua li menyisakan ruang di atas item pertama yang sulit dihilangkan."
+        }
+      ],
+      "conventions": [
+        "Terapkan box-sizing border-box secara global agar ukuran mudah diprediksi.",
+        "Pilih selector dengan kekhususan serendah mungkin agar mudah ditimpa.",
+        "Pakai kelas untuk gaya yang dipakai ulang, bukan selector berdasarkan posisi yang rapuh.",
+        "Gunakan padding untuk jarak di dalam elemen dan margin untuk jarak antarelemen.",
+        "Tetapkan skala jarak yang konsisten, misalnya kelipatan 0.5rem."
+      ],
+      "sections": [
+        {
+          "id": "cara-membaca",
+          "title": "Cara membaca dan menghitung box model",
+          "body": [
+            "Setiap elemen adalah kotak berlapis. Bagian paling dalam adalah content, lalu padding yang mendorong konten menjauh dari tepi, border yang menggambar garis, dan margin yang memberi jarak ke elemen lain. Urutan dari dalam ke luar inilah yang dibaca saat menghitung ukuran.",
+            "Dengan box-sizing border-box, lebar 300px sudah mencakup padding dan border. Elemen tetap 300px meski padding dan border ditambahkan, sehingga tata letak tidak meleset. Tanpa border-box, lebar total menjadi 300 ditambah padding dua sisi ditambah border dua sisi.",
+            "Margin termasuk dalam perhitungan tata letak, tetapi tidak dihitung sebagai ukuran elemen di layar. Margin juga dapat bertumpuk dengan margin elemen tetangga; jika jarak antarblok terasa berbeda dari yang Anda tulis, kemungkinan margin sedang bertumpuk."
+          ],
+          "code": {
+            "language": "css",
+            "lab": false,
+            "code": ".kartu {\n  box-sizing: border-box;\n  width: 300px;\n  padding: 16px;\n  border: 2px solid #5f8a72;\n  margin: 8px;\n  background: #eef3ee;\n}",
+            "output": "Lebar elemen di layar tetap 300px untuk bagian terlihat, dengan jarak 8px ke elemen lain.",
+            "explain": "box-sizing border-box membuat width mencakup padding dan border. Margin di luar kotak memberi jarak ke elemen tetangga, sedangkan padding mengatur jarak konten dari tepi.",
+            "annotations": [
+              {
+                "line": 2,
+                "code": "box-sizing: border-box;",
+                "note": "border-box membuat lebar mencakup padding dan border."
+              },
+              {
+                "line": 3,
+                "code": "width: 300px;",
+                "note": "width 300px adalah ukuran kotak terlihat."
+              },
+              {
+                "line": 4,
+                "code": "padding: 16px;",
+                "note": "padding mendorong konten menjauh dari tepi."
+              },
+              {
+                "line": 5,
+                "code": "border: 2px solid #5f8a72;",
+                "note": "border menggambar garis pada tepi kotak."
+              },
+              {
+                "line": 6,
+                "code": "margin: 8px;",
+                "note": "margin memberi jarak ke elemen lain."
+              },
+              {
+                "line": 7,
+                "code": "background: #eef3ee;",
+                "note": "Latar menegaskan batas kotak yang sebenarnya."
+              }
+            ]
+          },
+          "callouts": [
+            {
+              "tone": "good",
+              "title": "Aturan pertama",
+              "body": "Letakkan box-sizing border-box untuk semua elemen di awal stylesheet. Kebiasaan ini mencegah hampir semua kejutan ukuran."
+            }
+          ],
+          "checkpoint": {
+            "prompt": "Elemen memakai border-box, width 200px, padding 10px, dan border 1px. Berapa lebar total yang terlihat?",
+            "success": "200px, karena padding dan border sudah termasuk di dalam width."
+          }
+        },
+        {
+          "id": "selector",
+          "title": "Selector dan kekhususan",
+          "body": [
+            "Selector memilih elemen mana yang diberi aturan. Ada selector tipe seperti p, kelas seperti .kartu, dan id seperti #daftar. Ketika beberapa selector cocok pada elemen yang sama, aturan dengan kekhususan tertinggi yang menang.",
+            "Kekhususan tinggi mudah menjadi masalah. Selector id mengalahkan hampir semua aturan lain sehingga sulit ditimpa tanpa menaikkan kekhususan lagi. Gaya yang paling mudah dirawat bertumpu pada kelas dengan kekhususan serendah mungkin.",
+            "Contoh ini memberi warna berbeda pada satu kartu istimewa lewat dua kelas, lalu memberi warna lain pada kartu di dalam daftar lewat id. Selector id yang menang menjelaskan mengapa warna dalam daftar mengalahkan yang lain; urutan ini sengaja diperlihatkan agar Anda waspada."
+          ],
+          "code": {
+            "language": "css",
+            "lab": false,
+            "code": ".kartu { border: 1px solid; }\n.kartu.utama { border-color: #5f8a72; }\n#daftar .kartu { border-color: #b08a5a; }",
+            "output": "Kartu biasa memakai warna tepi netral; kartu istimewa hijau; kartu di dalam daftar cokelat karena selector id lebih kuat.",
+            "explain": "Kelas .kartu.utama memberi kekhususan sedang, sedangkan #daftar .kartu menambah id sehingga menang. Memahami urutan ini mencegah perang antaraturan.",
+            "annotations": [
+              {
+                "line": 1,
+                "code": ".kartu { border: 1px solid; }",
+                "note": "Selector kelas tunggal memiliki kekhususan rendah."
+              },
+              {
+                "line": 2,
+                "code": ".kartu.utama { border-color: #5f8a72; }",
+                "note": "Dua kelas menaikkan kekhususan secara terkendali."
+              },
+              {
+                "line": 3,
+                "code": "#daftar .kartu { border-color: #b08a5a; }",
+                "note": "Id menaikkan kekhususan paling besar sehingga menang."
+              }
+            ]
+          },
+          "callouts": [
+            {
+              "tone": "warn",
+              "title": "Hindari id untuk gaya",
+              "body": "Pakai id untuk menautkan, bukan untuk memberi gaya. Kelas lebih mudah dipakai ulang dan ditimpa."
+            }
+          ]
+        },
+        {
+          "id": "jarak-konsisten",
+          "title": "Jarak yang konsisten",
+          "body": [
+            "Jarak yang acak membuat halaman terasa berantakan meski setiap warna benar. Tetapkan skala, misalnya 0.25, 0.5, 1, dan 2 rem, lalu pilih nilai dari skala itu. Keteraturan ini membuat keputusan lebih cepat dan hasil lebih rapi.",
+            "Bedakan padding dan margin sesuai perannya. Padding adalah jarak di dalam elemen, sehingga tetap terlihat saat elemen diberi latar. Margin adalah jarak ke elemen lain dan dapat bertumpuk. Memilih sesuai peran mencegah perbaikan jarak yang saling bertabrakan.",
+            "Untuk jarak antaritem berulang, cara yang paling stabil adalah memberi jarak pada item kecuali yang pertama, misalnya dengan selector bersaudara. Pendekatan ini menghindari ruang berlebih di tepi daftar."
+          ],
+          "checkpoint": {
+            "prompt": "Anda ingin kartu berjarak 16px dari konten di dalamnya dan 8px dari kartu di sebelahnya. Properti mana untuk masing-masing?",
+            "success": "padding 16px untuk jarak dalam, margin 8px untuk jarak ke kartu lain."
+          }
+        }
+      ],
+      "practice": [
+        {
+          "id": "latihan-1",
+          "level": "guided",
+          "title": "Hitung ukuran kartu",
+          "task": "Sebuah elemen memakai border-box, width 240px, padding 12px, dan border 2px. Hitung lebar total terlihat, lalu jelaskan perbedaannya bila box-sizing diubah ke content-box.",
+          "steps": [
+            "Tentukan lebar kotak terlihat dengan border-box.",
+            "Hitung lebar total dengan content-box.",
+            "Tulis selisih dan penyebabnya."
+          ],
+          "starterCode": ".kotak { box-sizing: border-box; width: 240px; padding: 12px; border: 2px solid; }",
+          "expected": "240px dengan border-box; 240 + 24 + 4 = 268px dengan content-box.",
+          "stretch": "Ubah nilai padding dan periksa bagaimana lebar total berubah pada kedua mode.",
+          "hints": [
+            "Padding berlaku pada dua sisi, sehingga ditambahkan dua kali.",
+            "Border juga berlaku pada dua sisi.",
+            "border-box sudah memasukkan keduanya ke dalam width."
+          ],
+          "verification": {
+            "command": "Periksa ukuran di DevTools pada tab Layout atau Box Model.",
+            "expected": "Nilai terlihat sesuai perhitungan Anda untuk kedua mode.",
+            "evidence": "Simpan tangkapan layar panel Box Model."
+          }
+        },
+        {
+          "id": "latihan-2",
+          "level": "independent",
+          "title": "Rapikan selector yang terlalu kuat",
+          "task": "Diberikan aturan yang memakai id dan banyak kelas, tulis ulang memakai kelas dengan kekhususan serendah mungkin tanpa mengubah tampilan.",
+          "steps": [
+            "Catat elemen mana yang perlu gaya khusus.",
+            "Ganti selector id dengan kelas.",
+            "Kurangi penggabungan kelas yang tidak perlu.",
+            "Bandingkan hasil tampilan sebelum dan sesudah."
+          ],
+          "starterCode": "#halaman .daftar .item.utama { color: #5f8a72; }",
+          "expected": "Aturan baru memakai satu atau dua kelas dan tampilan tetap sama.",
+          "stretch": "Tambahkan komentar singkat yang menjelaskan alasan tiap kelas.",
+          "hints": [
+            "Id jarang diperlukan untuk memberi gaya.",
+            "Kelas khusus seperti utama cukup untuk menandai pengecualian.",
+            "Semakin sedikit kelas digabung, semakin mudah aturan ditimpa."
+          ],
+          "verification": {
+            "command": "Bandingkan tampilan dan nilai kekhususan sebelum serta sesudah.",
+            "expected": "Tampilan identik dengan selector yang lebih sederhana.",
+            "evidence": "Simpan kedua versi CSS untuk dibandingkan."
+          }
+        },
+        {
+          "id": "latihan-3",
+          "level": "transfer",
+          "title": "Skala jarak untuk halaman tugas",
+          "task": "Tetapkan skala jarak untuk daftar tugas dan terapkan pada padding kartu, jarak antaritem, serta jarak antarbagian.",
+          "steps": [
+            "Tentukan empat nilai dari skala jarak.",
+            "Pakai padding untuk jarak dalam kartu.",
+            "Pakai jarak antaritem yang seragam.",
+            "Beri jarak antarbagian yang lebih besar daripada jarak antaritem."
+          ],
+          "starterCode": ":root { --gap-1: 0.5rem; --gap-2: 1rem; }",
+          "expected": "Halaman memakai nilai dari skala yang sama sehingga jarak terasa konsisten.",
+          "stretch": "Ubah satu nilai skala dan pastikan seluruh halaman tetap seimbang.",
+          "hints": [
+            "Jarak antarbagian biasanya lebih besar daripada jarak antaritem.",
+            "Nilai skala dipakai berulang agar halaman terasa seragam.",
+            "Hindari nilai acak seperti 7px atau 13px."
+          ],
+          "verification": {
+            "command": "Periksa bahwa setiap jarak berasal dari skala yang ditetapkan.",
+            "expected": "Tidak ada jarak di luar skala yang dipakai pada tata letak utama.",
+            "evidence": "Simpan daftar nilai skala dan penggunaannya."
+          }
+        }
+      ],
+      "verification": {
+        "mode": "manual",
+        "command": "Periksa ukuran elemen di DevTools dan bandingkan dengan perhitungan Anda.",
+        "expected": "Lebar kotak terlihat sesuai perhitungan border-box dan selector yang dipakai memiliki kekhususan rendah.",
+        "evidence": "Simpan tangkapan layar panel Box Model dan daftar selector yang dipakai."
+      },
+      "troubleshooting": [
+        {
+          "symptom": "Elemen melebar melebihi lebar yang ditetapkan setelah ditambah padding.",
+          "cause": "box-sizing masih content-box sehingga padding ditambahkan di luar width.",
+          "fix": "Terapkan box-sizing border-box pada elemen atau secara global."
+        },
+        {
+          "symptom": "Jarak antarelemen lebih besar dari yang ditulis.",
+          "cause": "Margin atas dan bawah elemen bertumpuk, lalu diambil nilai yang lebih besar.",
+          "fix": "Pakai satu arah margin atau ganti margin bertumpuk dengan jarak yang lebih terkendali."
+        },
+        {
+          "symptom": "Aturan CSS tidak berpengaruh meski terlihat benar.",
+          "cause": "Ada aturan lain dengan kekhususan lebih tinggi atau urutan yang menang.",
+          "fix": "Periksa kekhususan selector di DevTools, lalu turunkan kekhususan aturan yang menghalangi."
+        },
+        {
+          "symptom": "Latar elemen terpotong di tepi konten.",
+          "cause": "Jarak dari tepi elemen dibuat dengan margin, bukan padding.",
+          "fix": "Pindahkan jarak itu ke padding agar latar tetap meluas sampai tepi."
+        }
+      ],
       "quiz": {
-        "question": "Apa prinsip yang paling tepat untuk topik “CSS box model dan selector”?",
-        "options": [
-          "Gunakan ukuran konsisten dan hindari specificity berlebihan.",
-          "Gunakan solusi paling rumit sejak awal, meski kebutuhan belum jelas.",
-          "Lewati pengujian karena contoh kecil pasti benar."
-        ],
-        "answer": 0,
-        "explanation": "Gunakan ukuran konsisten dan hindari specificity berlebihan."
-      }
+        "questions": [
+          {
+            "id": "q1",
+            "type": "recall",
+            "question": "Properti apa yang membuat width sudah mencakup padding dan border?",
+            "options": [
+              "box-sizing: content-box",
+              "box-sizing: border-box",
+              "display: block"
+            ],
+            "answer": 1,
+            "explanation": "border-box memasukkan padding dan border ke dalam perhitungan width."
+          },
+          {
+            "id": "q2",
+            "type": "code-reading",
+            "question": "Elemen memakai content-box, width 100px, padding 10px, border 1px. Berapa lebar totalnya?",
+            "options": [
+              "100px",
+              "122px",
+              "112px"
+            ],
+            "answer": 1,
+            "explanation": "100 ditambah padding dua sisi 20 dan border dua sisi 2 menjadi 122px."
+          },
+          {
+            "id": "q3",
+            "type": "scenario",
+            "question": "Anda ingin memberi jarak antara konten dan tepi elemen sehingga latar tetap meluas. Properti yang tepat adalah...",
+            "options": [
+              "margin",
+              "padding",
+              "border"
+            ],
+            "answer": 1,
+            "explanation": "Padding memberi jarak di dalam elemen sehingga latar tetap mencakup area itu."
+          },
+          {
+            "id": "q4",
+            "type": "scenario",
+            "question": "Mengapa selector id sebaiknya dihindari untuk memberi gaya?",
+            "options": [
+              "Karena id tidak dapat diberi gaya sama sekali",
+              "Karena kekhususan id yang tinggi menyulitkan aturan lain untuk menimpanya",
+              "Karena id memperlambat pemuatan halaman"
+            ],
+            "answer": 1,
+            "explanation": "Kekhususan id yang tinggi membuat gaya sulit dirawat dan ditimpa."
+          }
+        ]
+      },
+      "resources": [
+        {
+          "sourceId": "mdn-css",
+          "note": "Referensi properti CSS termasuk box-sizing, padding, border, margin, dan selector."
+        },
+        {
+          "sourceId": "mdn-css-layout",
+          "note": "Penjelasan box model dan dasar tata letak CSS dari MDN."
+        }
+      ],
+      "summary": [
+        "Setiap elemen adalah kotak berlapis: content, padding, border, dan margin.",
+        "Dengan border-box, width sudah mencakup padding dan border sehingga ukuran mudah diprediksi.",
+        "Selector dengan kekhususan rendah lebih mudah dirawat daripada selector id.",
+        "Padding memberi jarak di dalam elemen; margin memberi jarak ke elemen lain."
+      ],
+      "next": "Berikutnya: Flexbox dan Grid. Anda akan menyusun baris, kolom, dan kisi layout yang menyesuaikan ruang."
     },
     {
       "id": "m04-l04",
-      "title": "Flexbox, Grid, dan layout",
-      "minutes": 45,
-      "level": "Dasar",
-      "intro": "Flexbox cocok untuk penataan satu dimensi (baris/kolom), Grid untuk layout dua dimensi. minmax dan auto-fit dapat membuat grid adaptif.",
-      "explanation": "Mulai dari tata letak sederhana lalu tingkatkan. Gunakan gap untuk jarak item dan hindari margin acak antar elemen. Uji saat teks panjang.",
-      "code": ".grid {\n  display: grid;\n  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));\n  gap: 16px;\n}",
+      "title": "Flexbox dan Grid untuk layout",
+      "minutes": 90,
+      "level": "Menengah",
+      "depth": "fondasi",
+      "schema": 3.1,
       "codeLanguage": "css",
-      "practice": [
-        "Buat galeri kartu yang berubah dari 3 kolom menjadi 1 kolom pada layar sempit.",
-        "Ubah satu input atau asumsi pada contoh, catat hasil dan jelaskan alasannya."
+      "outcome": "Setelah pelajaran ini, Anda dapat memilih Flexbox atau Grid sesuai bentuk layout, menyusun baris dan kolom dengan benar, serta membuat kisi responsif tanpa media query bila memungkinkan.",
+      "objectives": [
+        "Membedakan kapan memakai Flexbox dan kapan memakai Grid.",
+        "Menata item pada satu dimensi memakai justify-content dan align-items.",
+        "Membuat kisi dua dimensi memakai grid-template-columns dan gap.",
+        "Membuat kisi responsif dengan repeat dan minmax tanpa media query."
       ],
-      "bestPractice": "Pilih Flexbox atau Grid sesuai struktur, bukan karena kebiasaan.",
-      "commonMistake": "Menentukan lebar kartu tetap sehingga terjadi overflow di HP.",
+      "prerequisites": [
+        {
+          "label": "CSS box model dan selector",
+          "lessonId": "m04-l03"
+        }
+      ],
+      "terms": [
+        {
+          "term": "Flexbox",
+          "definition": "Model tata letak satu dimensi yang membagi ruang antaritem pada satu baris atau satu kolom."
+        },
+        {
+          "term": "Grid",
+          "definition": "Model tata letak dua dimensi yang menyusun item ke dalam baris dan kolom."
+        },
+        {
+          "term": "Sumbu utama",
+          "definition": "Arah utama pembagian ruang pada Flexbox, ditentukan oleh properti flex-direction."
+        },
+        {
+          "term": "gap",
+          "definition": "Properti yang memberi jarak antaritem pada Flexbox maupun Grid tanpa margin tambahan."
+        }
+      ],
+      "syntax": [
+        {
+          "token": ".baris { display: flex; gap: 1rem; }",
+          "readAs": "Baca sebagai perintah menyusun anak elemen dalam satu baris dengan jarak satu rem.",
+          "meaning": "display flex mengaktifkan tata letak fleksibel; gap memberi jarak antaritem sehingga tidak perlu margin satu per satu.",
+          "example": ".baris { display: flex; gap: 1rem; align-items: center; }",
+          "output": "Anak elemen berbaris rapi dan sejajar di tengah sumbu lintang.",
+          "pitfall": "Menambah gap dan margin bersamaan membuat jarak menjadi dua kali lipat."
+        },
+        {
+          "token": ".kisi { display: grid; grid-template-columns: repeat(3, 1fr); }",
+          "readAs": "Baca sebagai perintah menyusun anak elemen ke dalam tiga kolom sama lebar.",
+          "meaning": "grid-template-columns mendefinisikan jumlah dan lebar kolom; repeat(3, 1fr) berarti tiga kolom berbagi ruang sama.",
+          "example": ".kisi { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }",
+          "output": "Item mengisi kisi tiga kolom secara otomatis ke baris berikutnya.",
+          "pitfall": "Memakai fr pada kontainer tanpa lebar yang jelas membuat kolom bisa menyempit tak terduga."
+        },
+        {
+          "token": "grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));",
+          "readAs": "Baca sebagai perintah membuat kolom sebanyak yang muat, masing-masing minimal 220px.",
+          "meaning": "auto-fit menghitung jumlah kolom sesuai ruang, sedangkan minmax menetapkan lebar minimum dan maksimum.",
+          "example": "grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));",
+          "output": "Kisi menambah kolom saat ruang cukup dan berkurang saat layar menyempit.",
+          "pitfall": "Menetapkan minimum lebih besar daripada lebar layar terkecil membuat item meluber."
+        }
+      ],
+      "conventions": [
+        "Pakai Flexbox untuk satu dimensi: baris atau kolom tunggal.",
+        "Pakai Grid untuk tata letak dua dimensi dengan baris dan kolom.",
+        "Gunakan gap untuk jarak antaritem, bukan margin pada setiap anak.",
+        "Utamakan kisi responsif dengan repeat dan minmax sebelum menambah media query.",
+        "Tetapkan flex-wrap ketika item boleh berpindah baris."
+      ],
+      "sections": [
+        {
+          "id": "cara-membaca",
+          "title": "Cara membaca aturan tata letak Flexbox",
+          "body": [
+            "Flexbox mengatur item pada satu arah. display flex mengubah anak elemen menjadi item fleksibel, flex-direction menentukan arah, justify-content mengatur sebaran sepanjang arah itu, dan align-items mengatur perataan pada arah yang tegak lurus.",
+            "Pada contoh toolbar, item dibagi ke tepi kiri dan kanan oleh space-between, sejajar secara vertikal oleh align-items center, dan diberi jarak oleh gap. flex-wrap mengizinkan item berpindah baris saat ruang tidak cukup, sehingga toolbar tetap rapi di layar sempit.",
+            "Urutan properti pada contoh bukan aturan wajib, tetapi membantu pembacaan: aktifkan tata letak dulu, tentukan arah, lalu atur sebaran dan jarak. Dengan urutan ini, membaca CSS orang lain menjadi lebih cepat."
+          ],
+          "code": {
+            "language": "css",
+            "lab": false,
+            "code": ".toolbar {\n  display: flex;\n  justify-content: space-between;\n  align-items: center;\n  gap: 1rem;\n  flex-wrap: wrap;\n}",
+            "output": "Item toolbar tersebar ke kedua ujung, sejajar di tengah, dan berpindah baris bila sempit.",
+            "explain": "justify-content mengatur sebaran pada sumbu utama, align-items menyejajarkan pada sumbu lintang, dan gap memberi jarak tanpa margin.",
+            "annotations": [
+              {
+                "line": 2,
+                "code": "display: flex;",
+                "note": "display flex mengaktifkan tata letak satu dimensi."
+              },
+              {
+                "line": 3,
+                "code": "justify-content: space-between;",
+                "note": "justify-content mengatur sebaran pada sumbu utama."
+              },
+              {
+                "line": 4,
+                "code": "align-items: center;",
+                "note": "align-items menyejajarkan item pada sumbu lintang."
+              },
+              {
+                "line": 5,
+                "code": "gap: 1rem;",
+                "note": "gap memberi jarak antaritem."
+              },
+              {
+                "line": 6,
+                "code": "flex-wrap: wrap;",
+                "note": "flex-wrap mengizinkan item pindah baris."
+              }
+            ]
+          },
+          "callouts": [
+            {
+              "tone": "good",
+              "title": "gap menggantikan margin",
+              "body": "Bila memakai gap, jangan menambahkan margin pada anak hanya untuk memberi jarak. Pilih satu cara agar jarak tidak berlipat."
+            }
+          ],
+          "checkpoint": {
+            "prompt": "Anda ingin menaruh dua tombol di kiri dan kanan. Properti apa yang dipakai pada kontainer flex?",
+            "success": "justify-content: space-between pada kontainer flex."
+          }
+        },
+        {
+          "id": "kisi-responsif",
+          "title": "Kisi responsif tanpa media query",
+          "body": [
+            "Grid menyusun item pada dua dimensi sekaligus. grid-template-columns menentukan bentuk kolom, dan repeat dengan auto-fit menghitung jumlah kolom sesuai ruang yang tersedia. Item yang tidak muat otomatis pindah ke baris berikutnya.",
+            "minmax menetapkan lebar minimum dan maksimum kolom. Pada contoh, setiap kolom minimal 220px dan boleh tumbuh mengisi ruang. Ketika layar menyempit, jumlah kolom berkurang dengan sendirinya tanpa satu pun media query.",
+            "Pendekatan ini bekerja untuk daftar kartu, galeri, dan kumpulan item yang seragam. Ia tidak menggantikan media query untuk perubahan besar seperti menyusun ulang navigasi, tetapi menutup sebagian besar kebutuhan tata letak daftar."
+          ],
+          "code": {
+            "language": "css",
+            "lab": false,
+            "code": ".daftar-tugas {\n  display: grid;\n  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));\n  gap: 1rem;\n}",
+            "output": "Jumlah kolom menyesuaikan lebar layar: lebih banyak di layar lebar, lebih sedikit di layar sempit.",
+            "explain": "auto-fit menghitung berapa kolom yang muat, sedangkan minmax menjaga setiap kolom minimal 220px. gap memberi jarak antaritem pada kedua arah.",
+            "annotations": [
+              {
+                "line": 2,
+                "code": "display: grid;",
+                "note": "display grid mengaktifkan tata letak dua dimensi."
+              },
+              {
+                "line": 3,
+                "code": "grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));",
+                "note": "auto-fit menghitung jumlah kolom sesuai ruang."
+              },
+              {
+                "line": 4,
+                "code": "gap: 1rem;",
+                "note": "gap memberi jarak pada baris dan kolom sekaligus."
+              }
+            ]
+          }
+        },
+        {
+          "id": "memilih-model",
+          "title": "Memilih Flexbox atau Grid",
+          "body": [
+            "Pertanyaan pertama saat menata layout adalah apakah tata letaknya satu dimensi atau dua dimensi. Bila item hanya mengalir pada satu baris atau satu kolom, Flexbox langsung cocok. Bila item perlu sejajar dalam baris dan kolom sekaligus, Grid lebih sederhana.",
+            "Keduanya dapat digabung. Sebuah halaman dapat memakai Grid untuk kerangka besar dan Flexbox untuk isi di dalam satu kartu. Menggabungkan bukan tanda kebingungan selama peran masing-masing jelas.",
+            "Hindari meniru Grid memakai banyak Flexbox bertingkat bila Grid dapat menyelesaikannya lebih langsung. Sebaliknya, jangan memaksa Grid untuk satu baris tombol sederhana; Flexbox lebih ringkas untuk kasus itu."
+          ],
+          "callouts": [
+            {
+              "tone": "warn",
+              "title": "Jangan mencampur jarak",
+              "body": "Pilih gap atau margin, jangan keduanya, untuk jarak yang sama. Dua mekanisme jarak adalah penyebab paling umum tata letak yang tampak meleset."
+            }
+          ],
+          "checkpoint": {
+            "prompt": "Untuk daftar kartu yang menyesuaikan jumlah kolom, model mana yang Anda pilih dan mengapa?",
+            "success": "Grid dengan repeat dan minmax, karena membuat kisi dua dimensi yang menyesuaikan ruang."
+          }
+        }
+      ],
+      "practice": [
+        {
+          "id": "latihan-1",
+          "level": "guided",
+          "title": "Toolbar dengan Flexbox",
+          "task": "Buat toolbar berisi judul di kiri dan dua tombol di kanan yang tetap rapi saat layar sempit.",
+          "steps": [
+            "Aktifkan display flex pada kontainer.",
+            "Sebarkan item ke tepi dengan justify-content.",
+            "Sejajarkan item secara vertikal dengan align-items.",
+            "Izinkan item berpindah baris dengan flex-wrap."
+          ],
+          "starterCode": "<div class=\"toolbar\">\n  <h2>Daftar Tugas</h2>\n  <button type=\"button\">Filter</button>\n  <button type=\"button\">Tambah</button>\n</div>",
+          "expected": "Judul dan tombol terpisah ke dua ujung, dan berpindah baris di layar sempit tanpa meluber.",
+          "stretch": "Bungkus dua tombol dalam satu grup flex agar tetap berdampingan.",
+          "hints": [
+            "space-between membagi ruang ke ujung-ujung.",
+            "align-items center menyejajarkan tinggi item.",
+            "flex-wrap wrap mencegah item meluber di layar kecil."
+          ],
+          "verification": {
+            "command": "Ubah lebar jendela dari lebar ke sempit.",
+            "expected": "Toolbar tetap rapi dan tidak ada item yang terpotong.",
+            "evidence": "Simpan berkas HTML dan tangkapan layar pada dua ukuran."
+          }
+        },
+        {
+          "id": "latihan-2",
+          "level": "independent",
+          "title": "Kisi kartu tugas",
+          "task": "Buat kisi daftar tugas yang menampilkan tiga kolom di layar lebar dan satu kolom di layar sempit tanpa media query.",
+          "steps": [
+            "Aktifkan display grid pada kontainer.",
+            "Tetapkan kolom dengan repeat dan minmax.",
+            "Beri jarak dengan gap."
+          ],
+          "starterCode": "<div class=\"daftar-tugas\">\n  <article>Belajar</article>\n  <article>Olahraga</article>\n  <article>Membaca</article>\n</div>",
+          "expected": "Jumlah kolom berubah sesuai lebar layar dengan lebar item tetap nyaman dibaca.",
+          "stretch": "Tambahkan alineasi item agar tinggi kartu seragam.",
+          "hints": [
+            "auto-fit menghitung kolom yang muat.",
+            "minmax menetapkan lebar minimum kolom.",
+            "gap memberi jarak tanpa margin pada setiap kartu."
+          ],
+          "verification": {
+            "command": "Ubah lebar jendela dan hitung jumlah kolom pada tiap ukuran.",
+            "expected": "Kolom bertambah di layar lebar dan berkurang di layar sempit tanpa media query.",
+            "evidence": "Simpan berkas HTML dan catatan jumlah kolom pada tiga ukuran."
+          }
+        },
+        {
+          "id": "latihan-3",
+          "level": "transfer",
+          "title": "Kerangka halaman dengan Grid dan Flex",
+          "task": "Susun kerangka halaman dengan Grid untuk bagian utama dan Flexbox untuk bilah alat, lalu jelaskan pilihan Anda.",
+          "steps": [
+            "Tentukan bagian yang dua dimensi dan yang satu dimensi.",
+            "Pakai Grid untuk kerangka utama.",
+            "Pakai Flexbox untuk bilah alat dan baris tombol.",
+            "Tulis alasan singkat setiap pilihan."
+          ],
+          "starterCode": "<div class=\"halaman\">\n  <header class=\"toolbar\">...</header>\n  <main class=\"kisi\">...</main>\n</div>",
+          "expected": "Grid menangani kisi utama dan Flexbox menangani baris, dengan alasan yang jelas.",
+          "stretch": "Tambahkan area samping yang hanya muncul di layar lebar.",
+          "hints": [
+            "Kisi dua dimensi paling pas dengan Grid.",
+            "Baris item tunggal paling ringkas dengan Flexbox.",
+            "Kedua model boleh dipakai di halaman yang sama."
+          ],
+          "verification": {
+            "command": "Periksa tampilan pada dua ukuran layar.",
+            "expected": "Kerangka tetap rapi dan pembagian peran Grid serta Flexbox terlihat konsisten.",
+            "evidence": "Simpan berkas dan catatan alasan pemilihan model."
+          }
+        }
+      ],
+      "verification": {
+        "mode": "manual",
+        "command": "Ubah lebar jendela dan periksa kisi serta toolbar pada beberapa ukuran.",
+        "expected": "Kisi berubah jumlah kolom sesuai ruang dan toolbar tetap rapi tanpa item meluber.",
+        "evidence": "Simpan berkas HTML dan tangkapan layar pada ukuran lebar dan sempit."
+      },
+      "troubleshooting": [
+        {
+          "symptom": "Item meluber keluar dari kontainer flex.",
+          "cause": "Item tidak boleh menyusut atau kontainer tidak mengizinkan item berpindah baris.",
+          "fix": "Tambahkan flex-wrap wrap dan periksa nilai min-width item."
+        },
+        {
+          "symptom": "Jarak antaritem menjadi dua kali lipat.",
+          "cause": "gap pada kontainer dipakai bersamaan dengan margin pada anak.",
+          "fix": "Hapus salah satu; utamakan gap dan buang margin jarak pada anak."
+        },
+        {
+          "symptom": "Kisi membuat kolom terlalu sempit di layar kecil.",
+          "cause": "Nilai minimum pada minmax lebih besar daripada lebar layar.",
+          "fix": "Turunkan nilai minimum atau gunakan auto-fit dengan batas yang lebih kecil."
+        },
+        {
+          "symptom": "Align-items tidak mengubah apa pun.",
+          "cause": "Properti itu bekerja pada sumbu lintang; sumbu utama diatur oleh justify-content.",
+          "fix": "Pastikan properti dipasang pada kontainer, bukan anak, dan sesuai arah flex-direction."
+        }
+      ],
       "quiz": {
-        "question": "Apa prinsip yang paling tepat untuk topik “Flexbox, Grid, dan layout”?",
-        "options": [
-          "Pilih Flexbox atau Grid sesuai struktur, bukan karena kebiasaan.",
-          "Gunakan solusi paling rumit sejak awal, meski kebutuhan belum jelas.",
-          "Lewati pengujian karena contoh kecil pasti benar."
-        ],
-        "answer": 0,
-        "explanation": "Pilih Flexbox atau Grid sesuai struktur, bukan karena kebiasaan."
-      }
+        "questions": [
+          {
+            "id": "q1",
+            "type": "recall",
+            "question": "Model tata letak mana yang paling tepat untuk susunan dua dimensi?",
+            "options": [
+              "Flexbox",
+              "Grid",
+              "Float"
+            ],
+            "answer": 1,
+            "explanation": "Grid dirancang untuk baris dan kolom sekaligus."
+          },
+          {
+            "id": "q2",
+            "type": "code-reading",
+            "question": "Apa fungsi repeat(auto-fit, minmax(220px, 1fr)) pada grid-template-columns?",
+            "options": [
+              "Membuat satu kolom selebar 220px",
+              "Membuat kolom sebanyak yang muat dengan lebar minimal 220px",
+              "Menghapus kolom yang tidak dipakai"
+            ],
+            "answer": 1,
+            "explanation": "auto-fit menghitung jumlah kolom sesuai ruang dan minmax menjaga lebar minimumnya."
+          },
+          {
+            "id": "q3",
+            "type": "scenario",
+            "question": "Jarak antaritem flex tampak dua kali lipat. Penyebab paling mungkin...",
+            "options": [
+              "gap dan margin dipakai bersamaan",
+              "flex-direction salah",
+              "align-items belum diatur"
+            ],
+            "answer": 0,
+            "explanation": "Dua mekanisme jarak yang dipakai bersama menggandakan jarak."
+          }
+        ]
+      },
+      "resources": [
+        {
+          "sourceId": "mdn-css-layout",
+          "note": "Panduan resmi tata letak CSS termasuk Flexbox dan Grid."
+        },
+        {
+          "sourceId": "mdn-css",
+          "note": "Referensi properti display, gap, grid-template-columns, dan properti flex."
+        }
+      ],
+      "summary": [
+        "Flexbox untuk tata letak satu dimensi; Grid untuk baris dan kolom sekaligus.",
+        "justify-content mengatur sumbu utama, align-items mengatur sumbu lintang.",
+        "Kisi responsif dapat dibuat dengan repeat, auto-fit, dan minmax tanpa media query.",
+        "Pilih satu mekanisme jarak, gap atau margin, agar jarak tidak berlipat."
+      ],
+      "next": "Berikutnya: responsive design dan mobile-first. Anda akan menyusun tampilan dari layar kecil lalu menambah penyesuaian untuk layar besar."
     },
     {
       "id": "m04-l05",
       "title": "Responsive design dan mobile-first",
-      "minutes": 45,
-      "level": "Dasar",
-      "intro": "Responsive design menyesuaikan UI dengan ruang layar, bukan mendeteksi merek perangkat. Pendekatan mobile-first memulai dari layout kecil lalu menambah aturan untuk layar besar.",
-      "explanation": "Gunakan viewport meta, unit fleksibel, media query saat dibutuhkan, dan gambar yang tidak melebihi kontainer. Uji di DevTools dengan berbagai ukuran termasuk zoom 200%.",
-      "code": "body { padding: 16px; }\n@media (min-width: 768px) {\n  body { padding: 32px; }\n}",
+      "minutes": 90,
+      "level": "Menengah",
+      "depth": "fondasi",
+      "schema": 3.1,
       "codeLanguage": "css",
-      "practice": [
-        "Buat navigasi yang dapat dipakai di layar 360px dan 1280px.",
-        "Ubah satu input atau asumsi pada contoh, catat hasil dan jelaskan alasannya."
+      "outcome": "Setelah pelajaran ini, Anda dapat menyusun tampilan mobile-first, memakai satuan relatif dan meta viewport, serta menambahkan media query hanya pada titik yang benar-benar dibutuhkan desain.",
+      "objectives": [
+        "Menjelaskan arti mobile-first dan mengapa tampilan dimulai dari layar kecil.",
+        "Memakai satuan relatif rem, persen, dan clamp agar ukuran lentur.",
+        "Menulis meta viewport sehingga halaman mengikuti lebar perangkat.",
+        "Menambahkan media query pada titik yang ditentukan kebutuhan desain."
       ],
-      "bestPractice": "Uji konten pada viewport sempit, besar, dan zoom tinggi.",
-      "commonMistake": "Membuat UI hanya nyaman pada resolusi laptop sendiri.",
+      "prerequisites": [
+        {
+          "label": "Flexbox dan Grid untuk layout",
+          "lessonId": "m04-l04"
+        }
+      ],
+      "terms": [
+        {
+          "term": "Mobile-first",
+          "definition": "Pendekatan menyusun tampilan untuk layar kecil terlebih dahulu, lalu menambah penyesuaian untuk layar lebih besar."
+        },
+        {
+          "term": "Meta viewport",
+          "definition": "Elemen di head yang memberi tahu browser cara menyesuaikan lebar halaman dengan perangkat."
+        },
+        {
+          "term": "Satuan relatif",
+          "definition": "Satuan ukuran yang bergantung pada konteks, seperti rem terhadap ukuran huruf akar dan persen terhadap induknya."
+        },
+        {
+          "term": "Breakpoint",
+          "definition": "Lebar tertentu tempat tata letak berubah karena kebutuhan desain, bukan karena merek perangkat."
+        },
+        {
+          "term": "Media query",
+          "definition": "Aturan CSS yang hanya diterapkan ketika kondisi tertentu, misalnya lebar layar, terpenuhi."
+        }
+      ],
+      "syntax": [
+        {
+          "token": "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">",
+          "readAs": "Baca sebagai aturan yang membuat lebar halaman mengikuti lebar perangkat dan tidak diperkecil otomatis.",
+          "meaning": "Tanpa baris ini, browser seluler menganggap halaman desktop dan memperkecilnya sehingga teks sulit dibaca.",
+          "example": "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">",
+          "output": "Halaman memakai lebar layar sebenarnya tanpa perlu dicubit.",
+          "pitfall": "Menambah maximum-scale atau user-scalable menghalangi pengguna memperbesar teks."
+        },
+        {
+          "token": "font-size: clamp(1rem, 2.5vw, 1.5rem)",
+          "readAs": "Baca sebagai ukuran huruf yang menyesuaikan lebar layar, dibatasi antara satu rem dan satu setengah rem.",
+          "meaning": "clamp memberi nilai minimum, nilai lentur yang mengikuti viewport, dan nilai maksimum sekaligus.",
+          "example": "h1 { font-size: clamp(1.25rem, 2.5vw, 2rem); }",
+          "output": "Judul membesar di layar lebar dan tetap terbaca di layar kecil tanpa melompat.",
+          "pitfall": "Memakai vw tanpa batas membuat teks bisa terlalu kecil atau terlalu besar di ukuran ekstrem."
+        },
+        {
+          "token": "@media (min-width: 48rem) { ... }",
+          "readAs": "Baca sebagai aturan yang hanya berlaku ketika lebar layar minimal 48rem.",
+          "meaning": "Media query menambah penyesuaian untuk layar yang lebih besar; gaya dasar tetap untuk layar kecil.",
+          "example": "@media (min-width: 48rem) { .daftar { grid-template-columns: repeat(2, 1fr); } }",
+          "output": "Daftar memakai satu kolom di layar kecil dan dua kolom di layar lebar.",
+          "pitfall": "Menulis media query berdasarkan merek perangkat membuat kode rapuh saat ukuran baru muncul."
+        }
+      ],
+      "conventions": [
+        "Sertakan meta viewport agar halaman tidak diperkecil otomatis di perangkat seluler.",
+        "Mulai dari tata letak layar kecil, lalu tambahkan penyesuaian untuk layar lebih besar.",
+        "Pakai satuan relatif seperti rem dan persen agar ukuran menyesuaikan preferensi pengguna.",
+        "Tambahkan media query pada titik yang diminta desain, bukan berdasarkan merek perangkat.",
+        "Uji pada lebar 390px dan pastikan tidak ada konten yang meluber secara horizontal."
+      ],
+      "sections": [
+        {
+          "id": "cara-membaca",
+          "title": "Cara membaca halaman yang mobile-first",
+          "body": [
+            "Halaman mobile-first dibaca dari layar terkecil. Gaya dasar ditulis untuk lebar sempit, lalu media query menambahkan penyesuaian untuk layar lebih besar. Pola ini memaksa Anda memastikan tata letak tetap layak pada ruang paling terbatas.",
+            "Baris meta viewport adalah syarat pertama. Tanpa baris ini, perangkat seluler menganggap halaman selebar desktop lalu memperkecilnya, sehingga teks dan tombol menjadi terlalu kecil untuk disentuh nyaman.",
+            "Setelah viewport benar, periksa satuan ukuran. Satuan relatif membuat halaman menghormati pengaturan ukuran huruf pengguna. Ukuran tetap dalam piksel sering membuat teks tetap kecil meski pengguna meminta lebih besar."
+          ],
+          "code": {
+            "language": "html",
+            "lab": false,
+            "code": "<!doctype html>\n<html lang=\"id\">\n  <head>\n    <meta charset=\"utf-8\" />\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" />\n    <title>Daftar Tugas</title>\n  </head>\n  <body>\n    <main>Konten utama</main>\n  </body>\n</html>",
+            "output": "Halaman memakai lebar perangkat sebenarnya dan tata letak menyesuaikan dari layar kecil ke layar besar.",
+            "explain": "Baris viewport membuat lebar mengikuti perangkat. charset menjaga teks benar. Gaya dasar nantinya disusun untuk lebar sempit sebelum penyesuaian layar besar ditambahkan.",
+            "annotations": [
+              {
+                "line": 2,
+                "code": "<html lang=\"id\">",
+                "note": "Bahasa dokumen menyatakan agar teks dan pembaca layar tepat."
+              },
+              {
+                "line": 4,
+                "code": "<meta charset=\"utf-8\" />",
+                "note": "charset memastikan karakter ditampilkan dengan benar."
+              },
+              {
+                "line": 5,
+                "code": "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" />",
+                "note": "Baris viewport adalah syarat utama halaman responsif."
+              },
+              {
+                "line": 9,
+                "code": "<main>Konten utama</main>",
+                "note": "Konten utama berada di dalam main."
+              }
+            ]
+          },
+          "callouts": [
+            {
+              "tone": "good",
+              "title": "Uji dengan lebar kecil",
+              "body": "Jadikan lebar 390px sebagai titik uji rutin. Jika tata letak bertahan di sana, ia biasanya juga bertahan di layar lebih besar."
+            }
+          ],
+          "checkpoint": {
+            "prompt": "Mengapa halaman tanpa meta viewport tampak diperkecil di perangkat seluler?",
+            "success": "Karena browser menganggap halaman selebar desktop lalu memperkecilnya agar muat."
+          }
+        },
+        {
+          "id": "satuan-lentur",
+          "title": "Satuan yang lentur",
+          "body": [
+            "Satuan relatif membuat ukuran menyesuaikan konteks. rem mengikuti ukuran huruf akar sehingga menghormati preferensi pengguna; persen mengikuti induknya; vw mengikuti lebar viewport. Memilih satuan yang tepat mengurangi kebutuhan penyesuaian manual.",
+            "clamp memberikan tiga nilai sekaligus: minimum, nilai lentur, dan maksimum. Ia berguna untuk ukuran huruf judul yang harus membesar di layar lebar tetapi tidak sampai berlebihan. min dan max memilih nilai terkecil atau terbesar dari beberapa pilihan.",
+            "Batas penting agar tata letak tetap aman di ukuran ekstrem. Ukuran lentur tanpa batas dapat menjadi terlalu kecil di layar sempit atau terlalu besar di layar sangat lebar."
+          ],
+          "code": {
+            "language": "css",
+            "lab": false,
+            "code": ":root { font-size: 100%; }\n.judul { font-size: clamp(1.25rem, 2.5vw, 2rem); }\n.kartu { width: min(100%, 32rem); padding: 1rem; }",
+            "output": "Judul menyesuaikan lebar layar dalam rentang aman, dan kartu tidak melebar melebihi 32rem.",
+            "explain": "clamp membatasi ukuran judul di antara minimum dan maksimum, sedangkan min memastikan kartu tidak lebih sempit dari ruang tersedia dan tidak melebihi lebar nyaman baca.",
+            "annotations": [
+              {
+                "line": 1,
+                "code": ":root { font-size: 100%; }",
+                "note": "Ukuran huruf akar dibiarkan mengikuti pengaturan pengguna."
+              },
+              {
+                "line": 2,
+                "code": ".judul { font-size: clamp(1.25rem, 2.5vw, 2rem); }",
+                "note": "clamp memberi batas minimum, nilai lentur, dan maksimum."
+              },
+              {
+                "line": 3,
+                "code": ".kartu { width: min(100%, 32rem); padding: 1rem; }",
+                "note": "min memilih lebar terkecil antara ruang tersedia dan batas nyaman."
+              }
+            ]
+          }
+        },
+        {
+          "id": "breakpoint-dan-media",
+          "title": "Breakpoint yang mengikuti desain",
+          "body": [
+            "Media query menambahkan penyesuaian ketika kondisi terpenuhi. Gaya dasar berlaku untuk layar kecil, dan blok media query menambah kolom atau bagian yang hanya muat di layar lebar.",
+            "Breakpoint sebaiknya ditentukan oleh desain, bukan oleh merek perangkat. Geser lebar jendela sampai tata letak mulai terasa sempit atau terlalu longgar; di situlah breakpoint ditambahkan. Dengan begitu, kode tidak perlu diubah setiap kali muncul ukuran perangkat baru.",
+            "Tulis media query dari breakpoint terkecil ke terbesar agar aturan saling menumpuk secara alami. Setiap penambahan hanya menyesuaikan bagian yang benar-benar berubah, bukan menulis ulang seluruh tata letak."
+          ],
+          "code": {
+            "language": "css",
+            "lab": false,
+            "code": ".daftar { display: grid; gap: 1rem; }\n\n@media (min-width: 48rem) {\n  .daftar { grid-template-columns: repeat(2, 1fr); }\n  .samping { display: block; }\n}",
+            "output": "Daftar memakai satu kolom di layar kecil, dua kolom di layar minimal 48rem, dan bagian samping muncul di layar lebar.",
+            "explain": "Gaya dasar berlaku untuk semua ukuran. Blok media query hanya menambah kolom dan memunculkan bagian samping ketika ruang mencukupi.",
+            "annotations": [
+              {
+                "line": 1,
+                "code": ".daftar { display: grid; gap: 1rem; }",
+                "note": "Gaya dasar menyusun daftar satu kolom untuk layar kecil."
+              },
+              {
+                "line": 3,
+                "code": "@media (min-width: 48rem) {",
+                "note": "Media query menambah penyesuaian untuk layar minimal 48rem."
+              },
+              {
+                "line": 4,
+                "code": ".daftar { grid-template-columns: repeat(2, 1fr); }",
+                "note": "Dua kolom hanya ditambahkan pada layar yang cukup lebar."
+              },
+              {
+                "line": 5,
+                "code": ".samping { display: block; }",
+                "note": "Bagian samping dimunculkan ketika ruang tersedia."
+              }
+            ]
+          },
+          "callouts": [
+            {
+              "tone": "warn",
+              "title": "Jangan terlalu banyak breakpoint",
+              "body": "Setiap breakpoint menambah kode yang harus dirawat. Tambahkan hanya saat tata letak benar-benar perlu berubah."
+            }
+          ]
+        },
+        {
+          "id": "uji-layar-kecil",
+          "title": "Menguji di layar kecil",
+          "body": [
+            "Pengujian responsiveness dimulai dari lebar terkecil yang Anda dukung. Periksa tiga hal: apakah ada konten meluber ke samping, apakah teks tetap terbaca tanpa memperbesar, dan apakah tombol cukup besar untuk disentuh.",
+            "Konten meluber biasanya muncul dari gambar tanpa batas lebar atau elemen dengan lebar tetap lebih besar daripada layar. Mencegahnya lebih mudah daripada memperbaikinya: batasi gambar dengan max-width 100% dan hindari lebar tetap yang kaku.",
+            "Uji juga dengan memperbesar teks di pengaturan browser. Tata letak yang baik tetap terbaca ketika ukuran huruf dasar dinaikkan. Jika teks meluber keluar kotak, kemungkinan ada tinggi atau lebar yang dipatok tetap."
+          ],
+          "checkpoint": {
+            "prompt": "Apa tiga hal yang diperiksa saat menguji tampilan pada lebar 390px?",
+            "success": "Tidak ada konten meluber, teks terbaca tanpa diperbesar, dan tombol cukup besar untuk disentuh."
+          }
+        }
+      ],
+      "practice": [
+        {
+          "id": "latihan-1",
+          "level": "guided",
+          "title": "Perbaiki halaman agar responsif",
+          "task": "Diberikan halaman tanpa meta viewport dan dengan lebar tetap, perbaiki agar mengikuti lebar perangkat.",
+          "steps": [
+            "Tambahkan meta viewport di dalam head.",
+            "Ganti lebar tetap elemen utama dengan ukuran lentur.",
+            "Batasi gambar agar tidak meluber."
+          ],
+          "starterCode": "<head>\n  <meta charset=\"utf-8\" />\n</head>\n<div class=\"konten\" style=\"width: 900px\">...</div>",
+          "expected": "Halaman mengikuti lebar perangkat dan tidak ada konten meluber di layar kecil.",
+          "stretch": "Tambahkan batas lebar nyaman baca untuk teks panjang.",
+          "hints": [
+            "Meta viewport diletakkan bersama meta charset.",
+            "Ganti lebar tetap dengan min atau persen.",
+            "Gambar diberi max-width 100%."
+          ],
+          "verification": {
+            "command": "Buka di lebar 390px dan periksa ada tidaknya gulir horizontal.",
+            "expected": "Tidak ada gulir horizontal dan teks tetap terbaca.",
+            "evidence": "Simpan berkas dan tangkapan layar lebar kecil."
+          }
+        },
+        {
+          "id": "latihan-2",
+          "level": "independent",
+          "title": "Judul yang lentur",
+          "task": "Buat ukuran judul yang membesar di layar lebar tetapi tidak terlalu besar, memakai clamp.",
+          "steps": [
+            "Tentukan ukuran minimum yang nyaman di ponsel.",
+            "Pilih nilai lentur berbasis viewport.",
+            "Tetapkan ukuran maksimum agar tidak berlebihan."
+          ],
+          "starterCode": "h1 { font-size: 32px; }",
+          "expected": "Judul memakai clamp dengan batas bawah dan atas yang wajar.",
+          "stretch": "Terapkan pola serupa untuk ukuran h2 dan teks paragraf.",
+          "hints": [
+            "clamp menerima minimum, nilai lentur, dan maksimum.",
+            "Pakai rem untuk batas agar menghormati pengaturan pengguna.",
+            "Uji di lebar 390px dan lebar besar."
+          ],
+          "verification": {
+            "command": "Periksa ukuran judul pada lebar kecil dan besar.",
+            "expected": "Judul tetap terbaca di ponsel dan tidak berlebihan di layar besar.",
+            "evidence": "Simpan berkas CSS dan tangkapan layar dua ukuran."
+          }
+        },
+        {
+          "id": "latihan-3",
+          "level": "transfer",
+          "title": "Tata letak bertingkat untuk daftar tugas",
+          "task": "Susun tata letak daftar tugas yang satu kolom di ponsel, dua kolom di tablet, dan tiga kolom di layar besar, lalu jelaskan pilihan breakpoint Anda.",
+          "steps": [
+            "Mulai dari gaya dasar satu kolom.",
+            "Tentukan lebar tempat dua kolom mulai terasa nyaman.",
+            "Tambahkan breakpoint untuk tiga kolom.",
+            "Tulis alasan setiap breakpoint."
+          ],
+          "starterCode": ".daftar { display: grid; gap: 1rem; }",
+          "expected": "Jumlah kolom bertambah pada dua breakpoint dengan alasan yang mengacu pada kenyamanan baca.",
+          "stretch": "Ganti breakpoint kedua dengan kisi auto-fit dan bandingkan hasilnya.",
+          "hints": [
+            "Breakpoint ditentukan oleh kebutuhan desain, bukan merek perangkat.",
+            "Uji dengan menggeser lebar jendela secara perlahan.",
+            "Setiap kolom sebaiknya tidak terlalu sempit untuk teks."
+          ],
+          "verification": {
+            "command": "Geser lebar jendela dan hitung jumlah kolom pada tiap ukuran.",
+            "expected": "Satu, dua, dan tiga kolom muncul pada titik yang Anda tentukan.",
+            "evidence": "Simpan berkas dan catatan alasan breakpoint."
+          }
+        }
+      ],
+      "verification": {
+        "mode": "manual",
+        "command": "Uji halaman pada lebar 390px dan lebar layar besar, lalu perbesar ukuran teks.",
+        "expected": "Tidak ada konten meluber, teks tetap terbaca, dan tata letak menyesuaikan tanpa label merek perangkat.",
+        "evidence": "Simpan tangkapan layar pada dua ukuran dan catatan hasil uji pembesaran teks."
+      },
+      "troubleshooting": [
+        {
+          "symptom": "Gulir horizontal muncul di ponsel.",
+          "cause": "Ada elemen dengan lebar tetap lebih besar daripada layar atau gambar tanpa batas.",
+          "fix": "Ganti lebar tetap dengan ukuran lentur dan batasi gambar dengan max-width 100%."
+        },
+        {
+          "symptom": "Halaman tampak diperkecil di perangkat seluler.",
+          "cause": "Meta viewport tidak ada di dalam head.",
+          "fix": "Tambahkan meta viewport dengan width=device-width dan initial-scale 1."
+        },
+        {
+          "symptom": "Teks meluber keluar kotak saat ukuran huruf diperbesar.",
+          "cause": "Tinggi atau lebar elemen dipatok tetap sehingga tidak tumbuh mengikuti teks.",
+          "fix": "Ganti ukuran tetap dengan min-height atau ukuran lentur."
+        },
+        {
+          "symptom": "Banyak media query tetapi tata letak tetap salah di beberapa ukuran.",
+          "cause": "Breakpoint ditentukan berdasarkan merek perangkat, bukan kebutuhan desain.",
+          "fix": "Sederhanakan breakpoint dan tentukan dari hasil menggeser lebar jendela."
+        }
+      ],
       "quiz": {
-        "question": "Apa prinsip yang paling tepat untuk topik “Responsive design dan mobile-first”?",
-        "options": [
-          "Uji konten pada viewport sempit, besar, dan zoom tinggi.",
-          "Gunakan solusi paling rumit sejak awal, meski kebutuhan belum jelas.",
-          "Lewati pengujian karena contoh kecil pasti benar."
-        ],
-        "answer": 0,
-        "explanation": "Uji konten pada viewport sempit, besar, dan zoom tinggi."
-      }
+        "questions": [
+          {
+            "id": "q1",
+            "type": "recall",
+            "question": "Apa tujuan meta viewport pada halaman responsif?",
+            "options": [
+              "Mempercepat pemuatan halaman",
+              "Membuat lebar halaman mengikuti lebar perangkat",
+              "Menonaktifkan zoom pengguna"
+            ],
+            "answer": 1,
+            "explanation": "Meta viewport membuat halaman memakai lebar layar sebenarnya."
+          },
+          {
+            "id": "q2",
+            "type": "code-reading",
+            "question": "Apa arti clamp(1rem, 2.5vw, 1.5rem) pada ukuran huruf?",
+            "options": [
+              "Selalu 1rem",
+              "Nilai lentur 2.5vw yang dibatasi antara 1rem dan 1.5rem",
+              "Selalu 1.5rem"
+            ],
+            "answer": 1,
+            "explanation": "clamp membatasi nilai lentur dengan batas bawah dan atas."
+          },
+          {
+            "id": "q3",
+            "type": "scenario",
+            "question": "Bagaimana cara menentukan breakpoint yang baik?",
+            "options": [
+              "Mengikuti ukuran layar merek ponsel terbaru",
+              "Menggeser lebar jendela sampai tata letak perlu berubah",
+              "Menambah breakpoint setiap 100px"
+            ],
+            "answer": 1,
+            "explanation": "Breakpoint ditentukan oleh kebutuhan desain yang terlihat saat menggeser lebar."
+          }
+        ]
+      },
+      "resources": [
+        {
+          "sourceId": "mdn-css-layout",
+          "note": "Panduan resmi tata letak responsif dan media query."
+        },
+        {
+          "sourceId": "mdn-learn",
+          "note": "Kursus MDN tentang desain responsif dan satuan relatif."
+        },
+        {
+          "sourceId": "wcag22",
+          "note": "Pedoman tentang pembesaran teks, reflow, dan orientasi layar."
+        }
+      ],
+      "summary": [
+        "Mobile-first menyusun gaya dasar untuk layar kecil lalu menambah penyesuaian untuk layar besar.",
+        "Meta viewport membuat halaman mengikuti lebar perangkat sebenarnya.",
+        "Satuan relatif dan clamp membuat ukuran lentur sekaligus tetap dalam batas aman.",
+        "Breakpoint ditentukan oleh kebutuhan desain, bukan oleh merek perangkat."
+      ],
+      "next": "Berikutnya: aksesibilitas dan WCAG. Anda akan memeriksa kontras, navigasi keyboard, dan nama yang dapat dibaca teknologi bantu."
     },
     {
       "id": "m04-l06",
-      "title": "Aksesibilitas WCAG dan UX",
-      "minutes": 45,
-      "level": "Dasar",
-      "intro": "Aksesibilitas adalah kemampuan orang dengan kebutuhan beragam menggunakan aplikasi. Fokus keyboard, label form, kontras, teks alternatif, dan status error yang jelas.",
-      "explanation": "Prinsip POUR: perceivable, operable, understandable, robust. Periksa urutan Tab, fokus terlihat, serta bahwa informasi tidak hanya berdasarkan warna. WCAG 2.2 AA berguna sebagai target.",
-      "code": "button:focus-visible {\n  outline: 3px solid #4f46e5;\n  outline-offset: 3px;\n}",
-      "codeLanguage": "css",
-      "practice": [
-        "Coba menavigasi form latihan hanya memakai tombol Tab, Shift+Tab, Enter.",
-        "Ubah satu input atau asumsi pada contoh, catat hasil dan jelaskan alasannya."
+      "title": "Aksesibilitas dan WCAG",
+      "minutes": 90,
+      "level": "Menengah",
+      "depth": "fondasi",
+      "schema": 3.1,
+      "codeLanguage": "html",
+      "outcome": "Setelah pelajaran ini, Anda dapat memeriksa aksesibilitas dasar halaman dengan pedoman WCAG: kontras warna, navigasi keyboard, nama yang dapat dibaca, dan fokus yang terlihat.",
+      "objectives": [
+        "Menjelaskan empat prinsip WCAG: dapat dipersepsi, dioperasikan, dipahami, dan kokoh.",
+        "Memeriksa kontras teks terhadap latar memenuhi ambang AA.",
+        "Memastikan seluruh fungsi dapat dicapai dengan keyboard dan fokus terlihat.",
+        "Memberi nama yang dapat dibaca pada gambar, tombol ikon, dan kontrol."
       ],
-      "bestPractice": "Bangun semantik dan navigasi keyboard sejak awal, bukan sebagai patch akhir.",
-      "commonMistake": "Menyembunyikan outline fokus agar tampak rapi.",
+      "prerequisites": [
+        {
+          "label": "Responsive design dan mobile-first",
+          "lessonId": "m04-l05"
+        }
+      ],
+      "terms": [
+        {
+          "term": "WCAG",
+          "definition": "Pedoman aksesibilitas konten web dari W3C yang menjadi acuan umum tingkat kepatuhan."
+        },
+        {
+          "term": "Rasio kontras",
+          "definition": "Perbandingan terang relatif antara warna teks dan latar; ambang AA adalah 4.5 banding 1 untuk teks normal."
+        },
+        {
+          "term": "Nama yang dapat diakses",
+          "definition": "Teks yang diumumkan teknologi bantu untuk sebuah kontrol atau gambar."
+        },
+        {
+          "term": "Fokus",
+          "definition": "Penanda elemen yang sedang aktif menerima input keyboard."
+        },
+        {
+          "term": "Teknologi bantu",
+          "definition": "Perangkat lunak seperti pembaca layar yang membantu pengguna mengakses konten."
+        }
+      ],
+      "syntax": [
+        {
+          "token": "<img src=\"selesai.svg\" alt=\"Tugas selesai\" />",
+          "readAs": "Baca sebagai gambar dengan teks alternatif yang menjelaskan isinya.",
+          "meaning": "alt menggantikan gambar ketika tidak terlihat atau dibacakan teknologi bantu. Untuk gambar murni hiasan, alt dikosongkan.",
+          "example": "<img src=\"selesai.svg\" alt=\"Tugas selesai\" />",
+          "output": "Pembaca layar mengumumkan “Tugas selesai” alih-alih melewatkan gambar.",
+          "pitfall": "Menuliskan alt seperti “gambar” atau nama berkas tidak memberi informasi yang berguna."
+        },
+        {
+          "token": ":focus-visible { outline: 3px solid; outline-offset: 2px; }",
+          "readAs": "Baca sebagai aturan yang menampilkan garis fokus yang jelas saat elemen aktif lewat keyboard.",
+          "meaning": "Fokus yang terlihat wajib agar pengguna keyboard tahu di mana posisinya.",
+          "example": ".tombol:focus-visible { outline: 3px solid #2f6f5a; outline-offset: 2px; }",
+          "output": "Pengguna keyboard melihat penanda pada elemen yang sedang difokus.",
+          "pitfall": "Menghapus outline tanpa menggantinya membuat pengguna keyboard kehilangan jejak."
+        },
+        {
+          "token": "<button aria-label=\"Hapus tugas Belajar\">Hapus</button>",
+          "readAs": "Baca sebagai tombol yang diberi nama lebih lengkap lewat aria-label.",
+          "meaning": "aria-label memberi nama yang dapat dibaca ketika teks yang terlihat terlalu singkat atau berupa ikon.",
+          "example": "<button type=\"button\" aria-label=\"Hapus tugas Belajar\">Hapus</button>",
+          "output": "Teknologi bantu mengumumkan nama lengkap tindakan tersebut.",
+          "pitfall": "Memberi aria-label yang berbeda dari teks terlihat membingungkan pengguna pengenal suara."
+        }
+      ],
+      "conventions": [
+        "Pastikan teks memenuhi rasio kontras minimal 4.5 banding 1 untuk ukuran normal.",
+        "Jangan menghapus penanda fokus; ganti dengan gaya yang jelas dan terlihat.",
+        "Isi alt sesuai makna gambar, dan kosongkan untuk gambar hiasan.",
+        "Beri nama yang dapat dibaca pada setiap kontrol dan ikon yang dapat ditekan.",
+        "Uji seluruh alur hanya dengan keyboard sebelum menyerahkan pekerjaan."
+      ],
+      "sections": [
+        {
+          "id": "cara-membaca",
+          "title": "Cara membaca halaman dari sisi aksesibilitas",
+          "body": [
+            "Memeriksa aksesibilitas berarti memakai halaman dengan cara selain mengandalkan tampilan. Coba jelajahi tombol dan kontrol hanya dengan tombol Tab dan Enter. Jika ada fungsi yang tidak dapat dicapai atau diaktifkan, halaman belum aksesibel.",
+            "Untuk setiap gambar dan ikon, tanyakan informasi apa yang hilang bila gambar tidak terlihat. Jawaban itulah isi alt. Ikon hiasan yang tidak menambah makna diberi alt kosong agar tidak diumumkan.",
+            "Nama yang dapat dibaca menjelaskan tindakan, bukan bentuk. Tombol dengan teks “Hapus” pada daftar tugas lebih jelas diberi nama “Hapus tugas Belajar” agar pengguna tahu tugas mana yang dihapus."
+          ],
+          "code": {
+            "language": "html",
+            "lab": false,
+            "code": "<button type=\"button\" aria-label=\"Hapus tugas Belajar\">\n  Hapus\n</button>\n\n<img src=\"selesai.svg\" alt=\"Tugas selesai\" />",
+            "output": "Tombol diumumkan dengan nama lengkap, dan gambar diumumkan dengan maknanya.",
+            "explain": "aria-label melengkapi nama tombol agar menyebut tugas tertentu. alt menjelaskan makna gambar sehingga informasi tetap tersedia tanpa gambar.",
+            "annotations": [
+              {
+                "line": 1,
+                "code": "<button type=\"button\" aria-label=\"Hapus tugas Belajar\">",
+                "note": "aria-label memberi nama tindakan yang lebih lengkap."
+              },
+              {
+                "line": 2,
+                "code": "Hapus",
+                "note": "Teks terlihat tetap ada meski nama berbeda."
+              },
+              {
+                "line": 5,
+                "code": "<img src=\"selesai.svg\" alt=\"Tugas selesai\" />",
+                "note": "alt menjelaskan makna gambar, bukan bentuknya."
+              }
+            ]
+          },
+          "callouts": [
+            {
+              "tone": "good",
+              "title": "Uji dengan keyboard",
+              "body": "Setelah membuka halaman, tekan Tab berulang kali. Jika fokus menghilang atau ada kontrol yang terlewat, perbaiki sebelum lanjut."
+            }
+          ],
+          "checkpoint": {
+            "prompt": "Tulis teks alt yang tepat untuk gambar tanda centang pada tugas yang selesai, dan untuk garis pemisah hiasan.",
+            "success": "“Tugas selesai” untuk tanda centang, dan alt kosong untuk garis hiasan."
+          }
+        },
+        {
+          "id": "kontras",
+          "title": "Kontras warna yang cukup",
+          "body": [
+            "Kontras adalah perbandingan terang antara warna teks dan latar. Ambang AA menetapkan 4.5 banding 1 untuk teks normal dan 3 banding 1 untuk teks besar. Warna yang tampak berbeda di mata Anda belum tentu cukup terang perbedaannya bagi mata lain atau di layar berbeda.",
+            "Ukur kontras dengan alat, bukan menebak. Setiap warna teks yang dipakai berulang layak diperiksa sekali terhadap latarnya. Perbaikan paling murah adalah menggelapkan teks atau mengubah latar, bukan mengubah ukuran huruf.",
+            "Perhatikan juga keadaan non-teks seperti batas kontrol dan ikon, yang membutuhkan kontras minimal 3 banding 1. Latar yang berubah karena tema juga harus diuji ulang, karena kombinasi yang aman di tema terang belum tentu aman di tema malam."
+          ],
+          "code": {
+            "language": "css",
+            "lab": false,
+            "code": "/* Teks utama: kontras sekitar 13:1, lolos AAA. */\n.teks-utama { color: #15232a; background: #f4f1ea; }\n\n/* Teks redup: kontras sekitar 4.7:1, lolos AA. */\n.teks-redup { color: #5b6470; background: #f4f1ea; }",
+            "output": "Kedua kombinasi teks lolos ambang kontras: satu pada tingkat AAA, satu pada tingkat AA.",
+            "explain": "Warna teks utama sangat gelap terhadap latar terang sehingga kontrasnya tinggi. Warna redup tetap cukup gelap untuk melewati ambang AA tanpa harus menyamai warna utama.",
+            "annotations": [
+              {
+                "line": 1,
+                "code": "/* Teks utama: kontras sekitar 13:1, lolos AAA. */",
+                "note": "Komentar mencatat hasil pengukuran kontras."
+              },
+              {
+                "line": 2,
+                "code": ".teks-utama { color: #15232a; background: #f4f1ea; }",
+                "note": "Kombinasi teks utama jauh melewati ambang AA."
+              },
+              {
+                "line": 4,
+                "code": "/* Teks redup: kontras sekitar 4.7:1, lolos AA. */",
+                "note": "Komentar mencatat kombinasi kedua."
+              },
+              {
+                "line": 5,
+                "code": ".teks-redup { color: #5b6470; background: #f4f1ea; }",
+                "note": "Warna redup tetap memenuhi ambang AA untuk teks normal."
+              }
+            ]
+          },
+          "callouts": [
+            {
+              "tone": "warn",
+              "title": "Ukur, jangan menebak",
+              "body": "Dua warna yang terlihat mirip bisa berbeda jauh kontrasnya. Pakai alat pengukur kontras untuk setiap kombinasi yang berulang."
+            }
+          ]
+        },
+        {
+          "id": "keyboard-dan-fokus",
+          "title": "Navigasi keyboard dan fokus",
+          "body": [
+            "Sebagian pengguna menavigasi tanpa tetikus. Mereka berpindah antarelemen dengan Tab dan mengaktifkan dengan Enter atau Spasi. Jika sebuah fungsi hanya bisa dijalankan dengan klik tetikus, fungsi itu tidak dapat diakses.",
+            "Fokus harus selalu terlihat. Penanda fokus bawaan sering tipis dan mudah hilang saat elemen diberi latar. Gaya fokus khusus memastikan pengguna selalu tahu di mana posisinya, termasuk di tema gelap.",
+            "Urutan fokus mengikuti urutan elemen di dokumen. Hindari tabindex positif karena mengubah urutan alami dan membingungkan. Bila ada bagian yang tersembunyi, pastikan bagian itu memang keluar dari urutan fokus agar pengguna tidak terjebak pada elemen yang tidak terlihat."
+          ],
+          "code": {
+            "language": "css",
+            "lab": false,
+            "code": ".tombol:focus-visible {\n  outline: 3px solid #2f6f5a;\n  outline-offset: 2px;\n}",
+            "output": "Elemen yang difokus keyboard menampilkan garis tebal dengan jarak dari tepi sehingga mudah terlihat.",
+            "explain": "focus-visible menampilkan penanda hanya saat elemen difokus lewat keyboard, bukan saat diklik. outline-offset memisahkan garis dari tepi sehingga tidak tertutup latar.",
+            "annotations": [
+              {
+                "line": 1,
+                "code": ".tombol:focus-visible {",
+                "note": "focus-visible menargetkan fokus dari keyboard."
+              },
+              {
+                "line": 2,
+                "code": "outline: 3px solid #2f6f5a;",
+                "note": "Garis fokus dibuat tebal agar jelas."
+              },
+              {
+                "line": 3,
+                "code": "outline-offset: 2px;",
+                "note": "outline-offset menjaga garis tetap terlihat di atas latar."
+              }
+            ]
+          },
+          "checkpoint": {
+            "prompt": "Jelajahi halaman latihan hanya dengan Tab. Sebutkan setiap tempat fokus menghilang atau terjebak.",
+            "success": "Setiap kontrol dapat dicapai, penanda fokus selalu terlihat, dan tidak ada elemen tersembunyi yang ikut difokus."
+          }
+        }
+      ],
+      "practice": [
+        {
+          "id": "latihan-1",
+          "level": "guided",
+          "title": "Perbaiki kontras teks",
+          "task": "Diberikan teks kelabu di atas latar terang yang kontrasnya kurang, ubah warnanya agar melewati ambang AA.",
+          "steps": [
+            "Ukur kontras kombinasi awal.",
+            "Gelapkan warna teks atau ubah latarnya.",
+            "Ukur ulang sampai melewati 4.5 banding 1."
+          ],
+          "starterCode": ".hint { color: #9aa0a6; background: #f4f1ea; }",
+          "expected": "Kombinasi akhir memenuhi ambang AA untuk teks normal.",
+          "stretch": "Pastikan kombinasi tetap lolos pada tema malam.",
+          "hints": [
+            "Menggelapkan teks biasanya cukup tanpa mengubah latar.",
+            "Gunakan alat pengukur kontras daring.",
+            "Catat hasil ukuran sebelum dan sesudah."
+          ],
+          "verification": {
+            "command": "Ukur kontras kombinasi akhir dengan alat.",
+            "expected": "Rasio kontras minimal 4.5 banding 1.",
+            "evidence": "Simpan nilai kontras sebelum dan sesudah perbaikan."
+          }
+        },
+        {
+          "id": "latihan-2",
+          "level": "independent",
+          "title": "Tombol ikon yang bernama",
+          "task": "Buat tombol hapus yang hanya menampilkan ikon, lalu beri nama yang dapat dibaca teknologi bantu.",
+          "steps": [
+            "Tulis tombol dengan elemen button.",
+            "Tambahkan ikon sebagai isi tombol.",
+            "Beri nama lewat aria-label yang menyebut tugas terkait."
+          ],
+          "starterCode": "<button type=\"button\">🗑</button>",
+          "expected": "Tombol dapat difokus, diaktifkan keyboard, dan memiliki nama yang jelas.",
+          "stretch": "Bandingkan nama yang diumumkan sebelum dan sesudah ditambah aria-label.",
+          "hints": [
+            "Elemen button sudah aksesibel secara bawaan.",
+            "aria-label menggantikan nama yang berasal dari ikon.",
+            "Sebutkan tugas yang dihapus agar nama spesifik."
+          ],
+          "verification": {
+            "command": "Periksa nama tombol dengan pemeriksa aksesibilitas atau pembaca layar.",
+            "expected": "Tombol diumumkan dengan nama tindakan yang jelas.",
+            "evidence": "Simpan markup dan nama yang terbaca."
+          }
+        },
+        {
+          "id": "latihan-3",
+          "level": "transfer",
+          "title": "Audit keyboard halaman daftar tugas",
+          "task": "Jelajahi halaman daftar tugas hanya dengan keyboard dan catat setiap masalah aksesibilitas yang ditemukan.",
+          "steps": [
+            "Buka halaman dan tekan Tab dari awal sampai akhir.",
+            "Catat elemen yang terlewat atau fokus yang menghilang.",
+            "Periksa apakah setiap aksi dapat diaktifkan dengan keyboard.",
+            "Perbaiki satu masalah dan uji ulang."
+          ],
+          "starterCode": "Catatan audit:\n1. ...\n2. ...",
+          "expected": "Daftar masalah disertai bukti dan setidaknya satu perbaikan yang teruji.",
+          "stretch": "Tambahkan tautan lompat ke konten utama di awal halaman.",
+          "hints": [
+            "Gunakan hanya Tab, Enter, dan Spasi.",
+            "Fokus yang menghilang biasanya karena outline dihapus.",
+            "Aksi yang tak dapat dicapai sering berasal dari div yang diberi onclick."
+          ],
+          "verification": {
+            "command": "Ulangi audit setelah perbaikan.",
+            "expected": "Masalah yang diperbaiki tidak muncul lagi dan tidak ada masalah baru yang timbul.",
+            "evidence": "Simpan catatan audit sebelum dan sesudah perbaikan."
+          }
+        }
+      ],
+      "verification": {
+        "mode": "manual",
+        "command": "Jalankan pemeriksa aksesibilitas dan lakukan audit keyboard pada halaman latihan.",
+        "expected": "Tidak ada pelanggaran kontras, fokus selalu terlihat, dan setiap kontrol punya nama.",
+        "evidence": "Simpan laporan pemeriksa dan catatan audit keyboard."
+      },
+      "troubleshooting": [
+        {
+          "symptom": "Pemeriksa melaporkan kontras teks kurang.",
+          "cause": "Warna teks dan latar terlalu berdekatan terangnya.",
+          "fix": "Gelapkan teks atau ubah latar, lalu ukur ulang sampai melewati ambang AA."
+        },
+        {
+          "symptom": "Pengguna keyboard kehilangan jejak posisi.",
+          "cause": "Penanda fokus dihapus atau terlalu tipis untuk terlihat.",
+          "fix": "Tambahkan gaya focus-visible dengan garis tebal dan outline-offset."
+        },
+        {
+          "symptom": "Tombol ikon dibacakan tanpa nama yang jelas.",
+          "cause": "Nama berasal dari ikon atau berkas gambar tanpa teks alternatif.",
+          "fix": "Tambahkan aria-label yang menyebut tindakan dan objeknya."
+        },
+        {
+          "symptom": "Fungsi tidak dapat diaktifkan dengan keyboard.",
+          "cause": "Kontrol dibuat dari div yang diberi klik, bukan elemen interaktif.",
+          "fix": "Ganti dengan elemen button atau tautan sesuai perannya."
+        }
+      ],
       "quiz": {
-        "question": "Apa prinsip yang paling tepat untuk topik “Aksesibilitas WCAG dan UX”?",
-        "options": [
-          "Bangun semantik dan navigasi keyboard sejak awal, bukan sebagai patch akhir.",
-          "Gunakan solusi paling rumit sejak awal, meski kebutuhan belum jelas.",
-          "Lewati pengujian karena contoh kecil pasti benar."
-        ],
-        "answer": 0,
-        "explanation": "Bangun semantik dan navigasi keyboard sejak awal, bukan sebagai patch akhir."
-      }
+        "questions": [
+          {
+            "id": "q1",
+            "type": "recall",
+            "question": "Berapa rasio kontras minimum untuk teks normal pada tingkat AA?",
+            "options": [
+              "2 banding 1",
+              "4.5 banding 1",
+              "10 banding 1"
+            ],
+            "answer": 1,
+            "explanation": "AA menetapkan 4.5 banding 1 untuk teks normal dan 3 banding 1 untuk teks besar."
+          },
+          {
+            "id": "q2",
+            "type": "code-reading",
+            "question": "Apa fungsi alt=\"\" pada sebuah gambar?",
+            "options": [
+              "Menghilangkan gambar dari halaman",
+              "Menandai gambar sebagai hiasan sehingga tidak diumumkan",
+              "Mengganti gambar menjadi teks"
+            ],
+            "answer": 1,
+            "explanation": "alt kosong menandai gambar hiasan agar tidak mengganggu pembaca layar."
+          },
+          {
+            "id": "q3",
+            "type": "scenario",
+            "question": "Pemeriksa melaporkan fokus tidak terlihat pada tombol berlatar gelap. Perbaikan tepat...",
+            "options": [
+              "Menghapus outline agar bersih",
+              "Menambah gaya focus-visible dengan warna kontras",
+              "Menonaktifkan navigasi keyboard"
+            ],
+            "answer": 1,
+            "explanation": "Fokus harus terlihat; ganti gaya fokus agar kontras terhadap latar."
+          }
+        ]
+      },
+      "resources": [
+        {
+          "sourceId": "wcag22",
+          "note": "Pedoman resmi WCAG 2.2 tentang kontras, fokus, dan nama yang dapat diakses."
+        },
+        {
+          "sourceId": "mdn-a11y",
+          "note": "Panduan MDN tentang dasar aksesibilitas dan pengujian."
+        },
+        {
+          "sourceId": "mdn-learn",
+          "note": "Kursus MDN tentang HTML aksesibel dan praktik terbaik."
+        }
+      ],
+      "summary": [
+        "WCAG menyusun aksesibilitas lewat prinsip dapat dipersepsi, dioperasikan, dipahami, dan kokoh.",
+        "Teks normal membutuhkan kontras minimal 4.5 banding 1 pada tingkat AA.",
+        "Seluruh fungsi harus dapat dicapai dengan keyboard dan memiliki penanda fokus yang terlihat.",
+        "Setiap gambar dan kontrol memerlukan nama yang dapat dibaca."
+      ],
+      "next": "Berikutnya: design system kecil. Anda akan menyusun token warna, jarak, dan tipografi lalu menerapkannya secara konsisten."
     },
     {
       "id": "m04-l07",
       "title": "Design system kecil",
-      "minutes": 45,
-      "level": "Dasar",
-      "intro": "Design system mendefinisikan token warna, spasi, radius, tipografi, dan komponen UI. Konsistensi mempercepat perubahan dan mengurangi kesalahan visual.",
-      "explanation": "Gunakan CSS custom properties untuk nilai desain yang berulang. Bedakan state hover, active, focus, disabled, loading, success, error dan empty state.",
-      "code": ":root {\n  --primary: #4f46e5;\n  --space: 8px;\n}\n.btn { padding: var(--space) calc(var(--space)*2); }",
+      "minutes": 90,
+      "level": "Menengah",
+      "depth": "fondasi",
+      "schema": 3.1,
       "codeLanguage": "css",
-      "practice": [
-        "Rancang token untuk 3 warna, 4 ukuran spasi, dan tombol primer/sekunder.",
-        "Ubah satu input atau asumsi pada contoh, catat hasil dan jelaskan alasannya."
+      "outcome": "Setelah pelajaran ini, Anda dapat menyusun design system kecil dengan token warna, jarak, dan tipografi, lalu menerapkannya secara konsisten pada komponen dan tema.",
+      "objectives": [
+        "Menjelaskan manfaat design system untuk konsistensi dan kecepatan kerja.",
+        "Mendefinisikan token warna, jarak, dan tipografi dengan custom property CSS.",
+        "Menyusun komponen yang memakai token, bukan nilai mentah.",
+        "Menjaga kontras saat mengganti tema dengan menimpa nilai token."
       ],
-      "bestPractice": "Tetapkan token desain bersama dan siapkan semua state interaksi.",
-      "commonMistake": "Menentukan warna dan spasi baru di setiap halaman tanpa konsistensi.",
+      "prerequisites": [
+        {
+          "label": "Aksesibilitas dan WCAG",
+          "lessonId": "m04-l06"
+        }
+      ],
+      "terms": [
+        {
+          "term": "Design system",
+          "definition": "Kumpulan keputusan desain yang terdokumentasi: warna, jarak, tipografi, dan komponen yang dipakai ulang."
+        },
+        {
+          "term": "Token desain",
+          "definition": "Nama yang mewakili satu nilai desain, misalnya --warna-aksen, sehingga nilainya dapat diubah di satu tempat."
+        },
+        {
+          "term": "Custom property",
+          "definition": "Variabel CSS yang dideklarasikan dengan awalan -- dan dipakai lewat fungsi var()."
+        },
+        {
+          "term": "Komponen",
+          "definition": "Bagian antarmuka yang dapat dipakai ulang, misalnya tombol, kartu, dan lencana."
+        },
+        {
+          "term": "Tema",
+          "definition": "Sekumpulan nilai token yang berbeda, misalnya mode terang dan malam, tanpa mengubah komponennya."
+        }
+      ],
+      "syntax": [
+        {
+          "token": ":root { --warna-aksen: #5f8a72; }",
+          "readAs": "Baca sebagai pendefinisian nilai yang dapat dipakai ulang di seluruh dokumen.",
+          "meaning": "Custom property menyimpan nilai dengan nama. Karena didefinisikan di :root, token dapat dipakai oleh elemen mana pun.",
+          "example": ":root { --jarak-2: 1rem; }",
+          "output": "Nilai dapat dipanggil lewat var(--jarak-2) di semua komponen.",
+          "pitfall": "Menulis nilai mentah di banyak tempat membatalkan manfaat token ketika nilainya perlu diubah."
+        },
+        {
+          "token": "padding: var(--jarak-2);",
+          "readAs": "Baca sebagai pemakaian nilai token sebagai jarak dalam elemen.",
+          "meaning": "var() mengambil nilai token. Mengubah token di satu tempat memperbarui semua pemakaiannya.",
+          "example": ".kartu { padding: var(--jarak-2); }",
+          "output": "Seluruh kartu memakai jarak yang sama tanpa penyalinan nilai.",
+          "pitfall": "Menulis var dengan nama yang salah membuat properti tidak berlaku tanpa peringatan yang jelas."
+        },
+        {
+          "token": "[data-tema=\"malam\"] { --warna-teks: #e8efe9; }",
+          "readAs": "Baca sebagai penimpaan token ketika atribut tema bernilai malam.",
+          "meaning": "Tema diterapkan dengan mengganti nilai token pada selektor tertentu; komponen tidak perlu diubah.",
+          "example": "[data-tema=\"malam\"] { --warna-latar: #1b2320; }",
+          "output": "Komponen yang memakai token otomatis mengikuti nilai tema baru.",
+          "pitfall": "Mengganti nilai tanpa memeriksa kontras membuat tema baru berpotensi melanggar ambang aksesibilitas."
+        }
+      ],
+      "conventions": [
+        "Kumpulkan seluruh token di :root agar mudah ditemukan dan diubah.",
+        "Beri nama token sesuai perannya, bukan sesuai nilainya.",
+        "Komponen selalu memakai var() alih-alih nilai mentah.",
+        "Ganti tema dengan menimpa token, bukan dengan menulis ulang aturan komponen.",
+        "Uji kontras setiap tema sebelum dirilis."
+      ],
+      "sections": [
+        {
+          "id": "cara-membaca",
+          "title": "Cara membaca design system lewat token",
+          "body": [
+            "Design system dibaca sebagai daftar keputusan yang diberi nama. Warna, jarak, dan tipografi masing-masing menjadi token di :root. Komponen tidak menyimpan nilai sendiri; ia memanggil token sehingga perubahan cukup dilakukan sekali.",
+            "Nama token menyatakan perannya. --warna-aksen lebih baik daripada --hijau-5f8a72 karena peran tetap meski nilainya berubah. Nama berbasis peran juga memudahkan penggantian tema tanpa mengubah komponen.",
+            "Saat membaca stylesheet yang memakai token, perhatikan bahwa nilai mentah hampir tidak muncul di aturan komponen. Kehadiran nilai mentah di luar blok token biasanya menandakan keputusan yang belum dimasukkan ke sistem."
+          ],
+          "code": {
+            "language": "css",
+            "lab": false,
+            "code": ":root {\n  --warna-latar: #f4f1ea;\n  --warna-teks: #15232a;\n  --warna-aksen: #5f8a72;\n  --jarak-1: 0.5rem;\n  --jarak-2: 1rem;\n}",
+            "output": "Seluruh keputusan dasar tersedia sebagai token yang dapat dipanggil komponen mana pun.",
+            "explain": "Token didefinisikan sekali di :root. Komponen cukup memanggil var() sehingga nilai hanya perlu diubah di satu tempat.",
+            "annotations": [
+              {
+                "line": 2,
+                "code": "--warna-latar: #f4f1ea;",
+                "note": "Token latar menyimpan warna dasar halaman."
+              },
+              {
+                "line": 3,
+                "code": "--warna-teks: #15232a;",
+                "note": "Token teks menyimpan warna teks utama."
+              },
+              {
+                "line": 4,
+                "code": "--warna-aksen: #5f8a72;",
+                "note": "Token aksen menyimpan warna penekanan."
+              },
+              {
+                "line": 5,
+                "code": "--jarak-1: 0.5rem;",
+                "note": "Token jarak menyimpan nilai skala terkecil."
+              },
+              {
+                "line": 6,
+                "code": "--jarak-2: 1rem;",
+                "note": "Token jarak kedua menyimpan nilai skala lebih besar."
+              }
+            ]
+          },
+          "callouts": [
+            {
+              "tone": "good",
+              "title": "Nama peran, bukan nilai",
+              "body": "Beri nama token sesuai perannya seperti --warna-teks. Nama berbasis nilai seperti --abu-333 cepat usang ketika nilainya berubah."
+            }
+          ],
+          "checkpoint": {
+            "prompt": "Sebutkan tiga token yang Anda perlukan untuk kartu tugas dan jelaskan peran masing-masing.",
+            "success": "Misalnya token latar, teks, dan jarak, masing-masing mewakili satu keputusan desain."
+          }
+        },
+        {
+          "id": "komponen",
+          "title": "Komponen yang memakai token",
+          "body": [
+            "Komponen adalah kumpulan aturan yang memakai token. Karena semua nilai berasal dari token, satu komponen dapat tampil konsisten dengan komponen lain dan langsung mengikuti perubahan tema.",
+            "Cara membaca komponen adalah menanyakan keputusan mana yang dikandungnya. Warna latar, warna teks, jarak dalam, dan garis penekanan semuanya merujuk token. Tidak ada nilai mentah yang perlu ditebak asalnya.",
+            "Ketika sebuah komponen butuh nilai yang belum ada sebagai token, tambahkan token baru alih-alih menulis nilai mentah. Kebiasaan ini menjaga design system tetap lengkap dan menghindari nilai yang tersebar."
+          ],
+          "code": {
+            "language": "css",
+            "lab": false,
+            "code": ".kartu {\n  background: var(--warna-latar);\n  color: var(--warna-teks);\n  padding: var(--jarak-2);\n  border-left: 4px solid var(--warna-aksen);\n}",
+            "output": "Kartu mengikuti tema secara otomatis karena seluruh nilainya berasal dari token.",
+            "explain": "Setiap properti memanggil token, sehingga mengganti nilai token akan mengubah seluruh kartu tanpa menyentuh aturan komponennya.",
+            "annotations": [
+              {
+                "line": 2,
+                "code": "background: var(--warna-latar);",
+                "note": "Latar memakai token agar ikut berubah saat tema berganti."
+              },
+              {
+                "line": 3,
+                "code": "color: var(--warna-teks);",
+                "note": "Warna teks memakai token yang sama di semua komponen."
+              },
+              {
+                "line": 4,
+                "code": "padding: var(--jarak-2);",
+                "note": "Jarak dalam memakai token skala jarak."
+              },
+              {
+                "line": 5,
+                "code": "border-left: 4px solid var(--warna-aksen);",
+                "note": "Garis penekanan memakai token aksen."
+              }
+            ]
+          }
+        },
+        {
+          "id": "tema",
+          "title": "Tema dengan menimpa token",
+          "body": [
+            "Tema dibuat dengan menimpa nilai token pada selektor tertentu. Ketika atribut tema bernilai malam, token yang didefinisikan di dalam blok itu menggantikan nilai di :root untuk seluruh bagian turunnya. Komponen tidak perlu diubah sama sekali.",
+            "Cara ini menjaga satu sumber kebenaran: komponen hanya tahu token, bukan warna tertentu. Menambah tema ketiga cukup menambah satu blok token. Risiko menyalin aturan komponen yang berbeda per tema pun hilang.",
+            "Karena warna tema baru berbeda, kontras harus diuji ulang. Kombinasi yang lolos ambang AA di tema terang belum tentu lolos di tema malam. Uji setiap tema dengan alat pengukur kontras sebelum dirilis."
+          ],
+          "code": {
+            "language": "css",
+            "lab": false,
+            "code": "[data-tema=\"malam\"] {\n  --warna-latar: #1b2320;\n  --warna-teks: #e8efe9;\n  --warna-aksen: #8fbfa4;\n}",
+            "output": "Saat tema malam aktif, latar menjadi gelap dan teks menjadi terang tanpa mengubah aturan komponen.",
+            "explain": "Blok tema hanya menimpa nilai token. Semua komponen yang memakai var() otomatis mengikuti, sehingga warna tetap konsisten di seluruh halaman.",
+            "annotations": [
+              {
+                "line": 1,
+                "code": "[data-tema=\"malam\"] {",
+                "note": "Selektor memilih saat atribut tema bernilai malam."
+              },
+              {
+                "line": 2,
+                "code": "--warna-latar: #1b2320;",
+                "note": "Latar diganti menjadi gelap untuk tema malam."
+              },
+              {
+                "line": 3,
+                "code": "--warna-teks: #e8efe9;",
+                "note": "Warna teks diganti menjadi terang agar kontras tetap terjaga."
+              },
+              {
+                "line": 4,
+                "code": "--warna-aksen: #8fbfa4;",
+                "note": "Aksen disesuaikan agar tetap terlihat di latar gelap."
+              }
+            ]
+          },
+          "callouts": [
+            {
+              "tone": "warn",
+              "title": "Uji kontras setiap tema",
+              "body": "Ganti tema, lalu jalankan pemeriksa aksesibilitas. Kontras yang aman di satu tema belum tentu aman di tema lain."
+            }
+          ],
+          "checkpoint": {
+            "prompt": "Anda menambahkan tema kontras tinggi. Apa yang perlu diuji setelah token ditimpa?",
+            "success": "Kontras teks terhadap latar dan batas kontrol pada setiap komponen utama."
+          }
+        }
+      ],
+      "practice": [
+        {
+          "id": "latihan-1",
+          "level": "guided",
+          "title": "Kumpulkan token warna",
+          "task": "Pindahkan seluruh warna pada stylesheet latihan ke dalam token di :root, lalu ganti pemakaian langsung dengan var().",
+          "steps": [
+            "Daftar setiap warna yang muncul lebih dari sekali.",
+            "Beri nama token sesuai perannya.",
+            "Definisikan token di :root.",
+            "Ganti pemakaian langsung dengan var()."
+          ],
+          "starterCode": ".tombol { background: #5f8a72; color: #f4f1ea; }\n.lencana { background: #5f8a72; }",
+          "expected": "Tidak ada warna yang diulang sebagai nilai mentah; semuanya memakai token.",
+          "stretch": "Tambahkan token untuk warna garis tepi.",
+          "hints": [
+            "Warna yang muncul berulang paling layak dijadikan token.",
+            "Nama token menyatakan perannya.",
+            "Periksa ulang tidak ada nilai mentah yang tertinggal."
+          ],
+          "verification": {
+            "command": "Cari kemunculan nilai heksadesimal di luar blok token.",
+            "expected": "Nilai heksadesimal tidak lagi muncul di aturan komponen.",
+            "evidence": "Simpan stylesheet sebelum dan sesudah."
+          }
+        },
+        {
+          "id": "latihan-2",
+          "level": "independent",
+          "title": "Lencana yang memakai token",
+          "task": "Buat komponen lencana status yang memakai token warna, jarak, dan tipografi.",
+          "steps": [
+            "Pilih token yang diperlukan.",
+            "Susun aturan komponen hanya dengan var().",
+            "Uji lencana di tema terang dan malam."
+          ],
+          "starterCode": ".lencana { /* pakai token */ }",
+          "expected": "Lencana tampil konsisten di kedua tema tanpa aturan berbeda per tema.",
+          "stretch": "Tambahkan varian warna untuk status penting memakai token terpisah.",
+          "hints": [
+            "Komponen tidak boleh menyimpan nilai mentah.",
+            "Perubahan tema ditangani oleh token, bukan komponen.",
+            "Uji kontras label lencana di kedua tema."
+          ],
+          "verification": {
+            "command": "Ganti tema dan periksa tampilan lencana.",
+            "expected": "Lencana tetap terbaca dan memakai warna tema yang aktif.",
+            "evidence": "Simpan tangkapan layar lencana pada dua tema."
+          }
+        },
+        {
+          "id": "latihan-3",
+          "level": "transfer",
+          "title": "Tema malam kecil",
+          "task": "Tambahkan tema malam yang menimpa token warna saja, lalu pastikan seluruh komponen mengikutinya tanpa diubah.",
+          "steps": [
+            "Tentukan token yang berbeda pada tema malam.",
+            "Tulis blok penimpaan token.",
+            "Pastikan tidak ada aturan komponen yang berubah.",
+            "Uji kontras setiap komponen di tema malam."
+          ],
+          "starterCode": "[data-tema=\"malam\"] {\n  /* timpa token warna */\n}",
+          "expected": "Seluruh halaman berganti tema dari token, dan kontras tetap memenuhi ambang AA.",
+          "stretch": "Tambahkan tema kontras tinggi dengan token tambahan.",
+          "hints": [
+            "Hanya token yang ditimpa, bukan komponen.",
+            "Uji dengan mengubah atribut tema di elemen akar.",
+            "Periksa kontras teks redup di latar gelap."
+          ],
+          "verification": {
+            "command": "Aktifkan tema malam lalu jalankan pemeriksa aksesibilitas.",
+            "expected": "Tidak ada pelanggaran kontras dan komponen mengikuti tema.",
+            "evidence": "Simpan berkas CSS dan laporan pemeriksaan tema malam."
+          }
+        }
+      ],
+      "verification": {
+        "mode": "manual",
+        "command": "Ganti tema dan jalankan pemeriksa aksesibilitas pada setiap tema.",
+        "expected": "Seluruh komponen memakai token, tema berganti tanpa mengubah komponen, dan tidak ada pelanggaran kontras.",
+        "evidence": "Simpan stylesheet final dan laporan pemeriksaan untuk dua tema."
+      },
+      "troubleshooting": [
+        {
+          "symptom": "Mengubah token tidak berpengaruh pada komponen.",
+          "cause": "Komponen memakai nilai mentah alih-alih var(), atau nama token salah tulis.",
+          "fix": "Ganti nilai mentah dengan var() dan periksa ejaan nama token."
+        },
+        {
+          "symptom": "Properti memakai var() tampak diabaikan.",
+          "cause": "Token tidak didefinisikan pada lingkup yang dapat dijangkau elemen.",
+          "fix": "Definisikan token di :root atau pada induk yang mencakup elemen."
+        },
+        {
+          "symptom": "Tema malam melanggar kontras meski tema terang aman.",
+          "cause": "Kontras diuji hanya pada tema terang.",
+          "fix": "Ukur kontras setiap kombinasi pada tiap tema dan sesuaikan token."
+        },
+        {
+          "symptom": "Dua komponen sejenis tampak berbeda.",
+          "cause": "Salah satu komponen memakai nilai mentah yang tidak sama dengan token.",
+          "fix": "Satukan keduanya memakai token yang sama."
+        }
+      ],
       "quiz": {
-        "question": "Apa prinsip yang paling tepat untuk topik “Design system kecil”?",
-        "options": [
-          "Tetapkan token desain bersama dan siapkan semua state interaksi.",
-          "Gunakan solusi paling rumit sejak awal, meski kebutuhan belum jelas.",
-          "Lewati pengujian karena contoh kecil pasti benar."
-        ],
-        "answer": 0,
-        "explanation": "Tetapkan token desain bersama dan siapkan semua state interaksi."
-      }
+        "questions": [
+          {
+            "id": "q1",
+            "type": "recall",
+            "question": "Apa keuntungan utama token desain?",
+            "options": [
+              "Membuat berkas CSS lebih panjang",
+              "Mengubah satu nilai di satu tempat memperbarui semua pemakaiannya",
+              "Menghilangkan kebutuhan menguji kontras"
+            ],
+            "answer": 1,
+            "explanation": "Token memusatkan nilai sehingga perubahan cukup dilakukan sekali."
+          },
+          {
+            "id": "q2",
+            "type": "code-reading",
+            "question": "Apa yang terjadi bila [data-tema=\"malam\"] menimpa --warna-teks?",
+            "options": [
+              "Hanya satu elemen berubah",
+              "Komponen yang memakai token itu mengikuti nilai baru",
+              "Seluruh CSS harus ditulis ulang"
+            ],
+            "answer": 1,
+            "explanation": "Token yang ditimpa berlaku bagi elemen turun, sehingga komponen otomatis mengikuti."
+          },
+          {
+            "id": "q3",
+            "type": "scenario",
+            "question": "Sebuah komponen butuh nilai jarak yang belum ada sebagai token. Tindakan tepat...",
+            "options": [
+              "Menulis nilai mentah langsung di komponen",
+              "Menambah token baru pada skala jarak",
+              "Memakai nilai acak agar cepat"
+            ],
+            "answer": 1,
+            "explanation": "Menambah token menjaga design system tetap lengkap dan konsisten."
+          }
+        ]
+      },
+      "resources": [
+        {
+          "sourceId": "mdn-css",
+          "note": "Referensi custom property CSS dan fungsi var()."
+        },
+        {
+          "sourceId": "wcag22",
+          "note": "Pedoman kontras yang harus dijaga saat mengganti nilai token antar tema."
+        },
+        {
+          "sourceId": "mdn-learn",
+          "note": "Kursus MDN tentang penyusunan gaya dan pemakaian ulang aturan."
+        }
+      ],
+      "summary": [
+        "Design system mengumpulkan keputusan warna, jarak, dan tipografi sebagai token yang dipakai ulang.",
+        "Token didefinisikan di :root dengan nama sesuai peran, bukan sesuai nilainya.",
+        "Komponen memakai var() sehingga perubahan cukup dilakukan sekali.",
+        "Tema dibuat dengan menimpa token, dan kontras setiap tema harus diuji."
+      ],
+      "next": "Berikutnya: DOM dan event. Anda akan memakai JavaScript untuk mengubah halaman serta menanggapi tindakan pengguna."
     }
   ]
 }
