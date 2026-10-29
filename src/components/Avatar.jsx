@@ -5,7 +5,7 @@ export function initials(name = '') {
   return `${parts[0][0]}${parts[parts.length - 1][0]}`.toUpperCase();
 }
 
-export default function Avatar({ name, color = '#6EE7B7', size = 'md', guest = false }) {
+export default function Avatar({ name, color = '#5f8a72', size = 'md', guest = false }) {
   return (
     <span
       className={`avatar avatar-${size} ${guest ? 'avatar-guest' : ''}`.trim()}

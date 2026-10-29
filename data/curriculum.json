@@ -16560,7 +16560,7 @@
     },
     {
       "id": "m08",
-      "title": "PHP Modern & Laravel",
+      "title": "PHP Modern dan Laravel",
       "subtitle": "Backend utama untuk aplikasi web dan layanan API",
       "weeks": [
         28,
@@ -20769,7 +20769,7 @@
     },
     {
       "id": "m13",
-      "title": "Pendalaman Opsional & Teknologi Baru",
+      "title": "Pendalaman Opsional dan Teknologi Baru",
       "subtitle": "Memilih teknologi sesuai kebutuhan, bukan ikut tren",
       "weeks": [
         50,
@@ -21211,17 +21211,17 @@
     {
       "week": 1,
       "focus": "Cara kerja komputer dan sistem operasi",
-      "deliverable": "Diagram perangkat, sistem operasi, aplikasi, dan file"
+      "deliverable": "Diagram perangkat, sistem operasi, aplikasi, dan berkas"
     },
     {
       "week": 2,
-      "focus": "File, folder, path, dan terminal",
+      "focus": "Berkas, folder, jalur, dan terminal",
       "deliverable": "Struktur folder proyek dan 10 perintah terminal"
     },
     {
       "week": 3,
       "focus": "Internet, browser, keamanan akun, dan DevTools",
-      "deliverable": "Menjelaskan perjalanan request dan menyelesaikan checklist keamanan akun"
+      "deliverable": "Menjelaskan perjalanan permintaan dan menyelesaikan daftar persiapan keamanan akun"
     },
     {
       "week": 4,
@@ -21230,8 +21230,8 @@
     },
     {
       "week": 5,
-      "focus": "Workflow developer, debugging, dan cara belajar aktif",
-      "deliverable": "Alur edit-jalankan-uji, jadwal belajar, dan catatan error pertama"
+      "focus": "Alur kerja pengembang, mengatasi masalah, dan cara belajar aktif",
+      "deliverable": "Alur ubah-jalankan-uji, jadwal belajar, dan catatan error pertama"
     },
     {
       "week": 6,
@@ -21321,7 +21321,7 @@
     {
       "week": 23,
       "focus": "Pull request, review, dan dokumentasi",
-      "deliverable": "PR dengan README dan review checklist"
+      "deliverable": "PR dengan README dan daftar periksa tinjauan"
     },
     {
       "week": 24,
@@ -21340,8 +21340,8 @@
     },
     {
       "week": 27,
-      "focus": "Index, transaksi, migrasi, dan backup",
-      "deliverable": "Simulasi transaksi dan restore"
+      "focus": "Index, transaksi, migrasi, dan cadangan",
+      "deliverable": "Simulasi transaksi dan pemulihan"
     },
     {
       "week": 28,
@@ -21415,8 +21415,8 @@
     },
     {
       "week": 42,
-      "focus": "Secrets, HTTPS, header, dan supply chain",
-      "deliverable": "Checklist konfigurasi aman"
+      "focus": "Rahasia, HTTPS, header, dan rantai pasok",
+      "deliverable": "Daftar persiapan konfigurasi aman"
     },
     {
       "week": 43,
@@ -21451,7 +21451,7 @@
     {
       "week": 49,
       "focus": "Buffer: melengkapi gerbang yang belum lulus dan pola ulang",
-      "deliverable": "Checklist gerbang fondasi, web, backend, mobile semua hijau"
+      "deliverable": "Daftar persiapan gerbang fondasi, web, backend, mobile semua hijau"
     },
     {
       "week": 50,

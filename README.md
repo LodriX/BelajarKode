@@ -2,14 +2,14 @@
 
 Ruang belajar pemrograman mandiri yang berjalan sebagai **satu berkas HTML**. React + Vite dipakai untuk membangun, tetapi hasil akhirnya tidak membutuhkan server, npm, atau internet.
 
-Isi saat ini: 14 modul, 97 pelajaran, roadmap 52 minggu (~4-5 jam/minggu), halaman **Mulai** dengan checklist instalasi, kuis, catatan, bookmark, kamus, laboratorium kode, gamifikasi, dan buku offline dengan 5 bab pendalaman. M00 (dasar komputer, internet, keamanan) dan M01 (orientasi/cara belajar) ditulis dengan schema v2 dan sumber registry tepercaya. M02 (logika & algoritma) ditulis ulang penuh dengan schema v3: outcome, kartu sintaks pseudocode, latihan bertingkat dengan hint, verifikasi, dan edge case; `m05-l02` menjadi pilot integrasi schema v3. Dua pelajaran M03 (`m03-l01` variabel dan `m03-l03` operator) memakai schema v3.1: kartu sintaks dengan cara baca, aturan penulisan, kode beroutput dengan bedah baris, dan jembatan ke pelajaran berikutnya. Tersedia tiga mode tampilan: **Nyaman**, **Terang**, dan **Malam**. Struktur target adalah 16 modul / 108 pelajaran; M14 (AI) dan M15 (deployment) menyusul.
+Isi saat ini: 14 modul, 97 pelajaran, roadmap 52 minggu (~4-5 jam/minggu), halaman **Mulai** dengan daftar persiapan instalasi, kuis, catatan, materi tersimpan, kamus, laboratorium kode, gamifikasi, dan buku offline dengan 5 blok pendalaman. Sebanyak 22 pelajaran memakai schema v3.1 penuh (**m00** 8 pelajaran, **m01** 6 pelajaran, **m03** 8 pelajaran): outcome, kartu sintaks dengan cara baca, aturan penulisan, bagian **cara membaca** dengan kode beroutput dan bedah baris, latihan bertingkat, verifikasi, dan jembatan ke pelajaran berikutnya. Delapan pelajaran memakai schema v3 (**m02** 7 pelajaran dan `m05-l02`). Sisanya masih schema v2 dan ditandai **Materi versi sebelumnya**. Tersedia tiga mode tampilan: **Nyaman**, **Terang**, dan **Malam**. Struktur target adalah 16 modul / 108 pelajaran; M14 (AI) dan M15 (deployment) menyusul.
 
 ## Cara membuka
 
 1. Klik dua kali **`BelajarKode.html`**.
 2. Buku offline: klik dua kali **`buku-belajarkode.html`**, atau buka menu **Buku**.
 3. Buat profil atau masuk sebagai tamu.
-4. Buka **Mulai** untuk checklist alat dan verifikasi instalasi.
+4. Buka **Mulai** untuk daftar persiapan alat dan verifikasi instalasi.
 
 Tidak ada proses install, server lokal, atau koneksi internet yang diperlukan untuk membaca materi.
 
@@ -19,10 +19,10 @@ Tidak ada proses install, server lokal, atau koneksi internet yang diperlukan un
 
 - Multi-profil lokal di satu perangkat.
 - PIN 6 digit di-hash dengan **PBKDF2-SHA256** (`@noble/hashes`, 150.000 iterasi, salt acak 16 byte). Tidak memakai WebCrypto agar tetap berjalan di `file://`.
-- Mode tamu tanpa PIN; PIN dapat diaktifkan kemudian dari **Settings**.
+- Mode tamu tanpa PIN; PIN dapat diaktifkan kemudian dari **Pengaturan**.
 - Batas 5 percobaan salah, lalu jeda 30 detik.
 - Sesi bertahan saat refresh; opsi "Tetap masuk" menyimpan sesi di browser.
-- **PIN mengunci profil, bukan mengenkripsi data.** Data `localStorage` masih dapat dibaca lewat DevTools. Tidak ada pemulihan PIN; gunakan backup JSON.
+- **PIN mengunci profil, bukan mengenkripsi data.** Data `localStorage` masih dapat dibaca lewat DevTools. Tidak ada pemulihan PIN; gunakan cadangan JSON.
 
 Data tersimpan dengan kunci:
 
@@ -35,9 +35,9 @@ bk.v2.remember
 
 Progres versi lama (`belajarkode-user-v1`) ditawarkan untuk diimpor saat membuat profil pertama.
 
-## Mulai dan checklist
+## Mulai dan daftar persiapan
 
-Halaman `#/mulai` berisi checklist per sistem operasi untuk browser/DevTools, VS Code, Git, Node 24, PHP 8.5, Composer, PostgreSQL 18, Flutter 3.47, folder proyek, dan backup. Aplikasi **tidak mendeteksi instalasi otomatis**; pengguna mencentang item setelah menjalankan perintah verifikasi. Progres checklist disimpan per profil di `state.setup` dan ditampilkan sebagai pengingat di Base.
+Halaman `#/mulai` berisi daftar persiapan per sistem operasi untuk browser/DevTools, VS Code, Git, Node 24, PHP 8.5, Composer, PostgreSQL 18, Flutter 3.47, folder proyek, dan cadangan. Aplikasi **tidak mendeteksi instalasi otomatis**; pengguna mencentang item setelah menjalankan perintah verifikasi. Progres daftar persiapan disimpan per profil di `state.setup` dan ditampilkan sebagai pengingat di Beranda.
 
 ## Tampilan
 
@@ -45,31 +45,31 @@ Pengaturan menyediakan tiga mode warna: **Nyaman** (default, shell hangat dan ke
 
 ## Gamifikasi
 
-| Sumber | XP |
+| Sumber | Poin |
 | --- | --- |
 | Pelajaran selesai | 200 |
 | Kuis benar, percobaan pertama | 80 |
 | Kuis benar setelah salah | 20 |
-| Modul tuntas | 300 |
-| Quest harian lengkap | 100 |
-| Streak 7 hari | 200 (sekali) |
-| Streak 30 hari | 1.000 (sekali) |
+| Modul selesai | 300 |
+| Target harian lengkap | 100 |
+| Runtutan 7 hari | 200 (sekali) |
+| Runtutan 30 hari | 1.000 (sekali) |
 
-- 10 level dengan ambang kumulatif 0, 600, 1.400, 2.600, 4.200, 6.200, 8.600, 11.400, 14.600, 18.200.
-- Quest harian: satu pelajaran, satu kuis benar, satu eksekusi Lab.
-- 12 badge untuk penyelesaian, konsistensi, dan latihan.
-- Streak dihitung dari hari dengan pelajaran selesai atau kuis benar.
-- Kuis multi-pertanyaan: XP percobaan pertama dihitung dari percobaan maksimum per pertanyaan.
+- 10 jenjang dengan ambang kumulatif 0, 600, 1.400, 2.600, 4.200, 6.200, 8.600, 11.400, 14.600, 18.200.
+- Target harian: satu pelajaran, satu kuis benar, satu eksekusi Lab.
+- 12 lencana untuk penyelesaian, konsistensi, dan latihan.
+- Runtutan dihitung dari hari dengan pelajaran selesai atau kuis benar.
+- Kuis multi-pertanyaan: poin percobaan pertama dihitung dari percobaan maksimum per pertanyaan.
 
 ## Progres dan portabilitas
 
 Progres hidup di `localStorage` browser, bukan di berkas HTML. Menyalin `BelajarKode.html` **tidak** membawa progres.
 
-- Pindah perangkat: **Settings → Ekspor JSON**, lalu **Impor JSON** di perangkat baru.
-- Impor menggantikan seluruh progres; aplikasi mengunduh backup keadaan sekarang terlebih dahulu.
+- Pindah perangkat: **Pengaturan → Unduh cadangan**, lalu **Pulihkan** di perangkat baru.
+- Pemulihan menggantikan seluruh progres; aplikasi mengunduh cadangan keadaan sekarang terlebih dahulu.
 - Progres terikat pada perangkat, browser, dan lokasi berkas. Jangan memindahkan atau mengganti nama HTML jika tidak perlu.
-- Membersihkan data situs browser akan menghapus progres yang belum dibackup.
-- Backup schema 2 berisi pelajaran, kuis, catatan, bookmark, progres baca, checklist persiapan, XP, activity, badge, dan pengaturan. Backup schema 1 dari versi lama tetap dapat diimpor.
+- Membersihkan data situs browser akan menghapus progres yang belum dibuatkan cadangan.
+- Cadangan schema 2 berisi pelajaran, kuis, catatan, materi tersimpan, progres baca, daftar persiapan, poin, activity, lencana, dan pengaturan. Cadangan schema 1 dari versi lama tetap dapat dipulihkan.
 
 ## Pengembangan
 
@@ -98,8 +98,8 @@ CARA-BUKA.txt               # petunjuk singkat untuk pengguna
 index.html                  # entry Vite
 content/
   index.json                # metadata, roadmap, tools, policy
-  m00/ .. m02/              # modul yang sudah ditulis ulang (module.json + lesson-*.json)
-  m03.json .. m13.json      # modul legacy; m03-l01/l03 sudah v3.1, sisanya menyusul
+  m00/ m01/ m02/            # modul dengan module.json + lesson-*.json
+  m03.json .. m13.json      # m00-m03 sudah 3.1; m04-m13 ditulis ulang menyusul
 data/curriculum.json        # hasil generate dari content/
 src/
   App.jsx                   # shell, router hash, guard login
@@ -107,7 +107,7 @@ src/
   components/               # Rail, TopBar, Quiz, PinInput, dialogs
   lib/                      # auth, storage, xp, streak, badges, setup
   state/AppStore.jsx        # state, aksi, persistensi, notifikasi
-  styles/app.css            # warm mint dashboard design system
+  styles/app.css            # sistem desain Sage & Sand
 book/
   book.css                  # tema buku
   deep-dive/01..05.html     # konten pendalaman hasil ekstraksi
@@ -145,8 +145,8 @@ scripts/
 
 ## Verifikasi
 
-- `npm run test`: XP, level, streak, quest, auth, normalisasi state, backup/migrasi.
-- `npm run smoke`: alur file:// — buat profil, checklist Mulai, tandai selesai, kuis, lab, reload, logout/login PIN, ekspor/impor, pencarian, drawer mobile, dan buku.
+- `npm run test`: poin, jenjang, runtutan, target harian, auth, normalisasi state, cadangan/migrasi.
+- `npm run smoke`: alur file:// — buat profil, daftar persiapan Mulai, tandai selesai, kuis, lab, reload, logout/login PIN, unduh/pulihkan, pencarian, drawer mobile, dan buku.
 - `npm run smoke:legacy`: migrasi `belajarkode-user-v1` ke profil baru.
 - `npm run smoke:guest`: profil tamu, aktivasi PIN, lalu login dengan PIN.
 - `npm run a11y`: axe pada permukaan desktop/mobile; saat ini 0 pelanggaran WCAG 2.1/2.2 AA.
